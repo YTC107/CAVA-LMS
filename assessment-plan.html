@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PT Academy | Level 3 CAVA | Assessment Plan</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #f4f4f4;
+      color: #222;
+      font-size: 0.9rem;
+    }
+
+    .site-header {
+      background: #111;
+      padding: 20px 40px;
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+    .site-header img { height: 60px; width: auto; }
+    .header-text h1 { color: #c9a84c; font-size: 1.3rem; font-weight: 700; letter-spacing: 1px; }
+    .header-text p { color: #ccc; font-size: 0.82rem; margin-top: 3px; }
+
+    .back-bar {
+      background: #1a1a1a;
+      padding: 10px 30px;
+      border-bottom: 3px solid #c9a84c;
+    }
+    .back-bar a {
+      color: #c9a84c;
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+    }
+    .back-bar a:hover { text-decoration: underline; }
+
+    .page-wrap {
+      max-width: 1400px;
+      margin: 30px auto;
+      padding: 0 20px 60px;
+    }
+
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #111;
+      border-left: 5px solid #c9a84c;
+      padding-left: 14px;
+      margin-bottom: 24px;
+    }
+
+    .details-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 24px 28px;
+      margin-bottom: 28px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .details-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 8px;
+    }
+    .details-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+    }
+    .field label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #555;
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+    }
+    .field input[type="text"],
+    .field input[type="date"] {
+      width: 100%;
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.88rem;
+      color: #222;
+    }
+
+    .unit-block {
+      background: #fff;
+      border-radius: 8px;
+      margin-bottom: 28px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      overflow: hidden;
+    }
+    .unit-header {
+      background: #111;
+      color: #c9a84c;
+      padding: 14px 20px;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+    }
+
+    .track-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    .track-table th {
+      background: #222;
+      color: #c9a84c;
+      font-size: 0.72rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      padding: 10px 8px;
+      text-align: left;
+    }
+    .track-table td {
+      padding: 10px 8px;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: middle;
+    }
+    .track-table tr:last-child td { border-bottom: none; }
+    .track-table tr:nth-child(even) td { background: #fafafa; }
+
+    .col-lo    { width: 28%; }
+    .col-date  { width: 10%; }
+    .col-out   { width: 8%; }
+    .col-init  { width: 7%; }
+
+    .lo-label {
+      font-weight: 700;
+      color: #111;
+      font-size: 0.82rem;
+    }
+    .lo-desc {
+      font-size: 0.78rem;
+      color: #555;
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+
+    .track-table input[type="date"] {
+      padding: 4px 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      color: #222;
+      width: 100%;
+    }
+    .track-table input[type="text"] {
+      padding: 4px 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      color: #222;
+      width: 100%;
+    }
+
+    .outcome-select {
+      padding: 4px 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      width: 100%;
+      cursor: pointer;
+    }
+    .outcome-select.pass   { background: #d4edda; color: #155724; border-color: #c3e6cb; }
+    .outcome-select.refer  { background: #f8d7da; color: #721c24; border-color: #f5c6cb; }
+    .outcome-select.pending { background: #fff; color: #555; }
+
+    .signoff-card {
+      background: #fff;
+      border-radius: 8px;
+      padding: 28px;
+      margin-bottom: 28px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+    .signoff-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #111;
+      margin-bottom: 16px;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 8px;
+    }
+    .signoff-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .sig-line-wrap label {
+      display: block;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #555;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+    }
+    .sig-line {
+      display: block;
+      width: 100%;
+      border: none;
+      border-bottom: 1px solid #aaa;
+      height: 32px;
+    }
+    .sig-note { font-size: 0.75rem; color: #888; margin-top: 3px; }
+
+    .pdf-bar {
+      background: #fff;
+      border-radius: 8px;
+      padding: 20px 28px;
+      margin-bottom: 28px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .pdf-bar p { font-size: 0.88rem; color: #555; }
+    .pdf-btn {
+      background: #c9a84c;
+      color: #111;
+      font-weight: 700;
+      font-size: 0.85rem;
+      padding: 10px 22px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      letter-spacing: 0.5px;
+      transition: background 0.2s;
+    }
+    .pdf-btn:hover { background: #b8933e; }
+
+    .site-footer {
+      background: #111;
+      color: #c9a84c;
+      text-align: center;
+      padding: 18px;
+      font-size: 0.82rem;
+      letter-spacing: 0.5px;
+      margin-top: 40px;
+    }
+
+    @media (max-width: 900px) {
+      .track-table { table-layout: auto; }
+      .col-lo, .col-date, .col-out, .col-init { width: auto; }
+    }
+
+    @media (max-width: 600px) {
+      .site-header { flex-direction: column; text-align: center; }
+    }
+
+    @media print {
+      .back-bar, .pdf-bar { display: none; }
+      body { background: #fff; }
+      .unit-block, .details-card, .signoff-card { box-shadow: none; border: 1px solid #ddd; }
+    }
+  </style>
+</head>
+<body>
+<nav class="top-nav">
+  <button onclick="window.location.href='index.html#intro'" id="btn-intro">Introduction</button>
+  <button onclick="window.location.href='index.html#structure'" id="btn-structure">Qualification Structure</button>
+  <button onclick="window.location.href='index.html#requirements'" id="btn-requirements">Requirements</button>
+  <button onclick="window.location.href='index.html'" id="btn-documents" class="active">Assessment Documents</button>
+  <button onclick="window.location.href='index.html#declaration'" id="btn-declaration">Declaration</button>
+</nav>
+
+<header class="site-header">
+  <img src="pt-academy-logo.png" alt="PT Academy"
+    onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block'"/>
+  <span id="logo-fallback" style="display:none; color:#c9a84c; font-size:1.6rem; font-weight:900; letter-spacing:2px;">PT ACADEMY</span>
+  <div class="header-text">
+    <h1>Level 3 Certificate in Assessing Vocational Achievement</h1>
+    <p>Focus Awards | QRN: 601/6104/8 | Assessment Plan &amp; Tracking Document</p>
+  </div>
+</header>
+
+<div class="back-bar">
+  <a href="index.html">Back to Assessor Hub</a>
+</div>
+
+<div class="page-wrap">
+
+  <h2 class="page-title">Assessment Plan &amp; Tracking Document</h2>
+
+  <div class="details-card">
+    <h3>Learner &amp; Assessor Details</h3>
+    <div class="details-grid">
+      <div class="field"><label>Learner Name</label><input type="text" placeholder="Full name" /></div>
+      <div class="field"><label>Learner ID / Cohort</label><input type="text" placeholder="e.g. PTA-2024-001" /></div>
+      <div class="field"><label>Assessor Name</label><input type="text" placeholder="Full name" /></div>
+      <div class="field"><label>IQA Name</label><input type="text" placeholder="Full name" /></div>
+      <div class="field"><label>Registration Date</label><input type="date" /></div>
+      <div class="field"><label>Target Completion Date</label><input type="date" /></div>
+    </div>
+  </div>
+
+  <div class="pdf-bar">
+    <p>When all tracking is complete, use this button to save a PDF copy for your records.</p>
+    <button class="pdf-btn" onclick="window.print()">Download as PDF</button>
+  </div>
+
+  <!-- UNIT 1 -->
+  <div class="unit-block">
+    <div class="unit-header">Unit 1: Understanding the Principles and Practices of Assessment</div>
+    <table class="track-table">
+      <thead>
+        <tr>
+          <th class="col-lo">Learning Outcome</th>
+          <th class="col-date">Planned Date</th>
+          <th class="col-date">Date Assessed</th>
+          <th class="col-out">Outcome</th>
+          <th class="col-date">Resub Date</th>
+          <th class="col-out">Resub Outcome</th>
+          <th class="col-date">Sign-off Date</th>
+          <th class="col-init">Initials</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="lo-label">LO1</div><div class="lo-desc">Understand the principles and requirements of assessment</div></td>
+          <td><input type="date" /></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><input type="text" placeholder="Initials" /></td>
+        </tr>
+        <tr>
+          <td><div class="lo-label">LO2</div><div class="lo-desc">Understand different types of assessment method</div></td>
+          <td><input type="date" /></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><input type="text" placeholder="Initials" /></td>
+        </tr>
+        <tr>
+          <td><div class="lo-label">LO3</div><div class="lo-desc">Understand how to plan assessment</div></td>
+          <td><input type="date" /></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><input type="text" placeholder="Initials" /></td>
+        </tr>
+        <tr>
+          <td><div class="lo-label">LO4</div><div class="lo-desc">Understand how to involve learners and others in assessment</div></td>
+          <td><input type="date" /></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><input type="text" placeholder="Initials" /></td>
+        </tr>
+        <tr>
+          <td><div class="lo-label">LO5</div><div class="lo-desc">Understand how to make assessment decisions</div></td>
+          <td><input type="date" /></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><input type="text" placeholder="Initials" /></td>
+        </tr>
+        <tr>
+          <td><div class="lo-label">LO6</div><div class="lo-desc">Understand quality assurance of the assessment process</div></td>
+          <td><input type="date" /></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><input type="text" placeholder="Initials" /></td>
+        </tr>
+        <tr>
+          <td><div class="lo-label">LO7</div><div class="lo-desc">Understand how to manage information relating to assessment</div></td>
+          <td><input type="date" /></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><input type="text" placeholder="Initials" /></td>
+        </tr>
+        <tr>
+          <td><div class="lo-label">LO8</div><div class="lo-desc">Understand the legal and good practice requirements in relation to assessment</div></td>
+          <td><input type="date" /></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><input type="text" placeholder="Initials" /></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- UNIT 2 -->
+  <div class="unit-block">
+    <div class="unit-header">Unit 2: Assess Occupational Competence in the Work Environment</div>
+    <table class="track-table">
+      <thead>
+        <tr>
+          <th class="col-lo">Learning Outcome</th>
+          <th class="col-date">Planned Date</th>
+          <th class="col-date">Date Assessed</th>
+          <th class="col-out">Outcome</th>
+          <th class="col-date">Resub Date</th>
+          <th class="col-out">Resub Outcome</th>
+          <th class="col-date">Sign-off Date</th>
+          <th class="col-init">Initials</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="lo-label">LO1</div><div class="lo-desc">Understand the principles and requirements of assessment in the work environment</div></td>
+          <td><input type="date" /></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><input type="text" placeholder="Initials" /></td>
+        </tr>
+        <tr>
+          <td><div class="lo-label">LO2</div><div class="lo-desc">Plan the assessment of occupational competence</div></td>
+          <td><input type="date" /></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><input type="text" placeholder="Initials" /></td>
+        </tr>
+        <tr>
+          <td><div class="lo-label">LO3</div><div class="lo-desc">Assess occupational competence in the work environment</div></td>
+          <td><input type="date" /></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><input type="text" placeholder="Initials" /></td>
+        </tr>
+        <tr>
+          <td><div class="lo-label">LO4</div><div class="lo-desc">Review assessment decisions</div></td>
+          <td><input type="date" /></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><input type="text" placeholder="Initials" /></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- UNIT 3 -->
+  <div class="unit-block">
+    <div class="unit-header">Unit 3: Assess Vocational Skills, Knowledge and Understanding</div>
+    <table class="track-table">
+      <thead>
+        <tr>
+          <th class="col-lo">Learning Outcome</th>
+          <th class="col-date">Planned Date</th>
+          <th class="col-date">Date Assessed</th>
+          <th class="col-out">Outcome</th>
+          <th class="col-date">Resub Date</th>
+          <th class="col-out">Resub Outcome</th>
+          <th class="col-date">Sign-off Date</th>
+          <th class="col-init">Initials</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><div class="lo-label">LO1</div><div class="lo-desc">Understand the principles and requirements of assessing vocational skills, knowledge and understanding</div></td>
+          <td><input type="date" /></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><input type="text" placeholder="Initials" /></td>
+        </tr>
+        <tr>
+          <td><div class="lo-label">LO2</div><div class="lo-desc">Plan the assessment of vocational skills, knowledge and understanding</div></td>
+          <td><input type="date" /></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><input type="text" placeholder="Initials" /></td>
+        </tr>
+        <tr>
+          <td><div class="lo-label">LO3</div><div class="lo-desc">Assess vocational skills, knowledge and understanding</div></td>
+          <td><input type="date" /></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><input type="text" placeholder="Initials" /></td>
+        </tr>
+        <tr>
+          <td><div class="lo-label">LO4</div><div class="lo-desc">Review assessment decisions</div></td>
+          <td><input type="date" /></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">Select</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td>
+          <td><input type="date" /></td>
+          <td><input type="text" placeholder="Initials" /></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- FINAL SIGN-OFF -->
+  <div class="signoff-card">
+    <h3>Final Qualification Sign-Off</h3>
+    <div class="signoff-grid">
+      <div class="field"><label>All Units Completed</label><input type="date" /></div>
+      <div class="field"><label>IQA Sampling Date</label><input type="date" /></div>
+      <div class="field"><label>IQA Sign-off Date</label><input type="date" /></div>
+      <div class="field"><label>Certificate Claim Date</label><input type="date" /></div>
+    </div>
+    <div class="signoff-grid" style="margin-top:16px;">
+      <div class="sig-line-wrap">
+        <label>Assessor Signature</label>
+        <span class="sig-line"></span>
+        <p class="sig-note">Sign above</p>
+      </div>
+      <div class="sig-line-wrap">
+        <label>IQA Signature</label>
+        <span class="sig-line"></span>
+        <p class="sig-note">Sign above</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="site-footer">
+  PT Academy | Focus Awards Level 3 CAVA | QRN: 601/6104/8 | Assessment Plan &amp; Tracking Document
+</footer>
+
+<script>
+  function styleSelect(sel) {
+    sel.classList.remove('pass', 'refer', 'pending');
+    if (sel.value === 'pass') sel.classList.add('pass');
+    else if (sel.value === 'refer') sel.classList.add('refer');
+    else sel.classList.add('pending');
+  }
+</script>
+
+</body>
+</html>
