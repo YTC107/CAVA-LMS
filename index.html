@@ -3,543 +3,102 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PT Academy | Level 3 CAVA | Assessor Hub</title>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-
-    body {
-      font-family: 'Segoe UI', Arial, sans-serif;
-      background: #f4f4f4;
-      color: #222;
-    }
-
-    .site-header {
-      background: #111;
-      padding: 20px 40px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-    }
-    .site-header img { height: 60px; width: auto; }
-    .header-text h1 {
-      color: #c9a84c;
-      font-size: 1.4rem;
-      font-weight: 700;
-      letter-spacing: 1px;
-    }
-    .header-text p {
-      color: #ccc;
-      font-size: 0.85rem;
-      margin-top: 3px;
-    }
-
-    .top-nav {
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      background: #1a1a1a;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 4px;
-      padding: 10px 20px;
-      border-bottom: 3px solid #c9a84c;
-    }
-    .top-nav button {
-      background: transparent;
-      border: 1px solid #c9a84c;
-      color: #c9a84c;
-      padding: 7px 16px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 0.82rem;
-      font-weight: 600;
-      letter-spacing: 0.5px;
-      transition: background 0.2s, color 0.2s;
-    }
-    .top-nav button:hover,
-    .top-nav button.active {
-      background: #c9a84c;
-      color: #111;
-    }
-
-    .section {
-      display: none;
-      max-width: 960px;
-      margin: 40px auto;
-      padding: 0 20px 60px;
-    }
-    .section.active { display: block; }
-
-    .section-title {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: #111;
-      border-left: 5px solid #c9a84c;
-      padding-left: 14px;
-      margin-bottom: 24px;
-    }
-
-    .card {
-      background: #fff;
-      border-radius: 8px;
-      padding: 24px 28px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-    .card h3 {
-      font-size: 1.05rem;
-      color: #c9a84c;
-      margin-bottom: 10px;
-      font-weight: 700;
-    }
-    .card p, .card li {
-      font-size: 0.93rem;
-      line-height: 1.7;
-      color: #333;
-    }
-    .card ul {
-      padding-left: 18px;
-      margin-top: 8px;
-    }
-    .card ul li { margin-bottom: 5px; }
-
-    .unit-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-      gap: 18px;
-      margin-top: 10px;
-    }
-    .unit-card {
-      background: #fff;
-      border-radius: 8px;
-      padding: 22px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      border-top: 4px solid #c9a84c;
-    }
-    .unit-card h4 {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #111;
-      margin-bottom: 6px;
-    }
-    .unit-card p {
-      font-size: 0.87rem;
-      color: #555;
-      line-height: 1.6;
-    }
-
-    .req-block {
-      background: #fff;
-      border-radius: 8px;
-      padding: 24px 28px;
-      margin-bottom: 20px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-    .req-block h3 {
-      font-size: 1rem;
-      font-weight: 700;
-      color: #fff;
-      background: #111;
-      padding: 10px 14px;
-      border-radius: 5px;
-      margin-bottom: 14px;
-    }
-    .req-block ul { padding-left: 18px; }
-    .req-block ul li {
-      font-size: 0.92rem;
-      color: #333;
-      line-height: 1.7;
-      margin-bottom: 5px;
-    }
-
-    .doc-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
-      margin-top: 10px;
-    }
-    .doc-card {
-      background: #fff;
-      border-radius: 8px;
-      padding: 22px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      text-align: center;
-      border-bottom: 4px solid #c9a84c;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 12px;
-    }
-    .doc-card .doc-icon { font-size: 2.4rem; }
-    .doc-card h4 {
-      font-size: 0.95rem;
-      font-weight: 700;
-      color: #111;
-    }
-    .doc-card p {
-      font-size: 0.83rem;
-      color: #666;
-      line-height: 1.5;
-    }
-    .doc-btn {
-      display: inline-block;
-      background: #c9a84c;
-      color: #111;
-      font-weight: 700;
-      font-size: 0.82rem;
-      padding: 8px 18px;
-      border-radius: 4px;
-      text-decoration: none;
-      letter-spacing: 0.5px;
-      transition: background 0.2s;
-    }
-    .doc-btn:hover { background: #b8933e; }
-    .doc-btn.coming-soon {
-      background: #ccc;
-      color: #666;
-      cursor: not-allowed;
-      pointer-events: none;
-    }
-
-    .declaration-box {
-      background: #fff;
-      border-radius: 8px;
-      padding: 28px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      margin-bottom: 24px;
-    }
-    .declaration-box h3 {
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: #111;
-      margin-bottom: 6px;
-    }
-    .declaration-notice {
-      background: #fff4e0;
-      border-left: 4px solid #c9a84c;
-      padding: 10px 14px;
-      font-size: 0.88rem;
-      color: #7a5c00;
-      font-weight: 600;
-      margin-bottom: 16px;
-      border-radius: 0 4px 4px 0;
-    }
-    .declaration-box label {
-      display: flex;
-      align-items: flex-start;
-      gap: 10px;
-      font-size: 0.9rem;
-      color: #333;
-      margin-bottom: 10px;
-      line-height: 1.5;
-      cursor: pointer;
-    }
-    .declaration-box input[type="checkbox"] {
-      margin-top: 3px;
-      width: 16px;
-      height: 16px;
-      flex-shrink: 0;
-      accent-color: #c9a84c;
-    }
-    .sig-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 20px;
-      margin-top: 20px;
-    }
-    .sig-field label {
-      display: block;
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #111;
-      margin-bottom: 6px;
-    }
-    .sig-field input[type="text"],
-    .sig-field input[type="date"] {
-      width: 100%;
-      padding: 9px 12px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 0.9rem;
-      color: #222;
-    }
-    .sig-line {
-      width: 100%;
-      border: none;
-      border-bottom: 1px solid #aaa;
-      margin-top: 12px;
-      height: 32px;
-      display: block;
-    }
-    .sig-field .sig-label-small {
-      font-size: 0.78rem;
-      color: #888;
-      margin-top: 4px;
-    }
-
-    .site-footer {
-      background: #111;
-      color: #c9a84c;
-      text-align: center;
-      padding: 18px;
-      font-size: 0.82rem;
-      letter-spacing: 0.5px;
-      margin-top: 40px;
-    }
-
-    @media (max-width: 600px) {
-      .sig-row { grid-template-columns: 1fr; }
-      .site-header { flex-direction: column; text-align: center; }
-    }
-
-    @media print {
-      .top-nav { display: none; }
-      .site-footer { display: block; }
-      .section { display: block !important; }
-    }
-  </style>
+  <title>CAVA – Learner Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
+<body class="min-h-screen bg-gray-950 text-white px-4 py-8">
 
-<header class="site-header">
-  <img src="pt-academy-logo.png" alt="PT Academy"
-    onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block'"/>
-  <span id="logo-fallback" style="display:none; color:#c9a84c; font-size:1.6rem; font-weight:900; letter-spacing:2px;">PT ACADEMY</span>
-  <div class="header-text">
-    <h1>Level 3 Certificate in Assessing Vocational Achievement</h1>
-    <p>Focus Awards | QRN: 601/6104/8 | Assessor Hub</p>
-  </div>
-</header>
+  <div class="max-w-4xl mx-auto">
 
-<nav class="top-nav">
-  <button onclick="showSection('intro')" id="btn-intro" class="active">Introduction</button>
-  <button onclick="showSection('structure')" id="btn-structure">Qualification Structure</button>
-  <button onclick="showSection('requirements')" id="btn-requirements">Requirements</button>
-  <button onclick="showSection('documents')" id="btn-documents">Assessment Documents</button>
-  <button onclick="showSection('declaration')" id="btn-declaration">Declaration</button>
-</nav>
-
-<!-- INTRODUCTION -->
-<section class="section active" id="intro">
-  <h2 class="section-title">Welcome to Your Assessor Qualification</h2>
-
-  <div class="card">
-    <h3>What Is This Qualification?</h3>
-    <p>The <strong>Level 3 Certificate in Assessing Vocational Achievement (CAVA)</strong> is a nationally recognised qualification awarded by Focus Awards. It is designed for professionals working in a training or coaching environment who assess the competence, skills, knowledge, and understanding of learners.</p>
-    <p style="margin-top:10px;">As a PT Academy assessor, you will work with personal training learners, observing their practice, reviewing their work, making assessment decisions, and providing constructive feedback to support their development.</p>
-  </div>
-
-  <div class="card">
-    <h3>Who Is This For?</h3>
-    <p>This qualification is for PT Academy assessors who are responsible for assessing Level 2 and Level 3 personal training learners in both practical workplace environments and knowledge-based settings.</p>
-    <ul>
-      <li>You must be occupationally competent in personal training</li>
-      <li>You will work with a minimum of two learners, one at Level 2 (Gym Instructing) and one at Level 3 (Personal Training)</li>
-      <li>You will gather evidence, plan assessments, and submit a portfolio for review</li>
-    </ul>
-  </div>
-
-  <div class="card">
-    <h3>How to Use This Hub</h3>
-    <p>Use the navigation above to move between sections. Before accessing any assessment documents, please read the Qualification Structure and Requirements sections, then complete and sign the Declaration.</p>
-    <ul style="margin-top:10px;">
-      <li><strong>Introduction:</strong> what the qualification is and who it is for</li>
-      <li><strong>Qualification Structure:</strong> the three units explained</li>
-      <li><strong>Requirements:</strong> what you must produce for each unit</li>
-      <li><strong>Assessment Documents:</strong> your unit worksheets and evidence tools</li>
-      <li><strong>Declaration:</strong> sign before you begin submitting work</li>
-    </ul>
-  </div>
-</section>
-
-<!-- STRUCTURE -->
-<section class="section" id="structure">
-  <h2 class="section-title">Qualification Structure</h2>
-
-  <div class="card">
-    <p>The Level 3 CAVA is made up of <strong>three units</strong>. You are required to complete all three units. Unit 1 covers the underpinning theory and principles of assessment.</p>
-  </div>
-
-  <div class="unit-grid">
-    <div class="unit-card">
-      <h4>Unit 1: Understanding the Principles and Practices of Assessment</h4>
-      <p>The theory unit. Covers the functions of assessment, types of assessment, quality assurance, and the legal and ethical responsibilities of an assessor. Assessed through written questions.</p>
-    </div>
-    <div class="unit-card">
-      <h4>Unit 2: Assess Occupational Competence in the Work Environment</h4>
-      <p>The practical unit. You will plan and carry out work-based assessments with your PT learners, using direct observation, work products, and professional discussion to judge competence.</p>
-    </div>
-    <div class="unit-card">
-      <h4>Unit 3: Assess Vocational Skills, Knowledge and Understanding</h4>
-      <p>The knowledge assessment unit. You will assess learners in classroom or theory-based settings using a range of methods including assignments, oral questioning, and skills tests.</p>
-    </div>
-  </div>
-
-  <div class="card" style="margin-top:20px;">
-    <h3>Your Two Learners</h3>
-    <p>Throughout this qualification you must work with <strong>two PT learners at different levels</strong>:</p>
-    <ul>
-      <li><strong>Learner 1:</strong> Level 2 Gym Instructing</li>
-      <li><strong>Learner 2:</strong> Level 3 Personal Training</li>
-    </ul>
-    <p style="margin-top:10px;">You must use a minimum of <strong>7 different assessment methods</strong> across both learners. Evidence from Units 2 and 3 is linked and the Observation Record maps across both units.</p>
-  </div>
-</section>
-
-<!-- REQUIREMENTS -->
-<section class="section" id="requirements">
-  <h2 class="section-title">What You Must Produce</h2>
-
-  <div class="req-block">
-    <h3>Unit 2: Assess Occupational Competence in the Work Environment</h3>
-    <ul>
-      <li>Learning Outcome 1: Evidence Gathering and Reflection</li>
-      <li>Learning Outcome 2: Evidence Gathering and Reflection</li>
-      <li>Learning Outcome 3: Evidence Gathering and Reflection</li>
-      <li>Learning Outcome 4: Evidence Gathering and Reflection</li>
-      <li>Observation Record (shared with Unit 3, maps across both units)</li>
-    </ul>
-  </div>
-
-  <div class="req-block">
-    <h3>Unit 3: Assess Vocational Skills, Knowledge and Understanding</h3>
-    <ul>
-      <li>Learning Outcome 1: Evidence Gathering and Reflection</li>
-      <li>Learning Outcome 2: Evidence Gathering and Reflection</li>
-      <li>Learning Outcome 3: Evidence Gathering and Reflection</li>
-      <li>Learning Outcome 4: Evidence Gathering and Reflection</li>
-      <li>Observation Record (same record as Unit 2, criteria map into each other)</li>
-    </ul>
-  </div>
-
-  <div class="card">
-    <h3>The 7 Mandatory Assessment Methods</h3>
-    <p>Across both learners and both units, you must demonstrate the use of all seven methods:</p>
-    <ul>
-      <li>Recognition of Prior Learning (RPL)</li>
-      <li>Direct Observation</li>
-      <li>Examining Work Products</li>
-      <li>Questioning (oral or written)</li>
-      <li>Witness Testimony and Expert Witness</li>
-      <li>Learner Statement and Professional Discussion</li>
-      <li>Simulation (where appropriate)</li>
-    </ul>
-  </div>
-</section>
-
-<!-- DOCUMENTS -->
-<section class="section" id="documents">
-  <h2 class="section-title">Assessment Documents</h2>
-
-  <div class="card">
-    <p>Use the buttons below to open each assessment document. Complete all sections within the document and save or print to PDF when finished. New documents will appear here as they become available.</p>
-  </div>
-
-  <div class="doc-grid">
-    <div class="doc-card">
-      <div class="doc-icon">📝</div>
-      <h4>Unit 1 Knowledge Questions</h4>
-      <p>Understanding the Principles and Practices of Assessment. Written knowledge questions across all 8 learning outcomes.</p>
-      <a href="unit1.html" target="_blank" class="doc-btn">Open Unit 1</a>
-    </div>
-    <div class="doc-card">
-      <div class="doc-icon">📋</div>
-      <h4>Unit 2 Evidence Worksheet</h4>
-      <p>Assess Occupational Competence in the Work Environment. LO1 to LO4 with evidence, reflection, and observation record.</p>
-      <a href="unit2.html" target="_blank" class="doc-btn">Open Unit 2</a>
-    </div>
-    <div class="doc-card">
-      <div class="doc-icon">📋</div>
-      <h4>Unit 3 Evidence Worksheet</h4>
-      <p>Assess Vocational Skills, Knowledge and Understanding. LO1 to LO4 with evidence, reflection, and observation record.</p>
-      <span class="doc-btn coming-soon">Coming Soon</span>
-    </div>
-    <div class="doc-card">
-      <div class="doc-icon">👁️</div>
-      <h4>Observation Record</h4>
-      <p>Used by assessors to observe and record the trainee assessor in practice. Maps across Units 2 and 3. Must be completed by a qualified assessor or expert witness.</p>
-      <a href="observation.html" target="_blank" class="doc-btn">Open Observation Record</a>
-    </div>
-    <div class="doc-card">
-      <div class="doc-icon">📄</div>
-      <h4>Assessment Plan and Tracking Document</h4>
-      <p>Plan and track assessment dates, decisions, resubmissions, and final sign-off across all units.</p>
-      <a href="assessment-plan.html" target="_blank" class="doc-btn">Open Plan</a>
-    </div>
-  </div>
-</section>
-
-<!-- DECLARATION -->
-<section class="section" id="declaration">
-  <h2 class="section-title">Learner Declaration</h2>
-
-  <div class="declaration-box">
-    <h3>Learner Declaration and Plagiarism Statement</h3>
-    <div class="declaration-notice">
-      Important: By completing and submitting your assessment work, you confirm that all of the following statements are true.
-    </div>
-    <label><input type="checkbox" /> All work submitted for assessment is my own original work and has not been copied from any other source.</label>
-    <label><input type="checkbox" /> I have used AI tools (if at all) only to support my learning, not to complete, generate, or write assessed work on my behalf.</label>
-    <label><input type="checkbox" /> I understand what constitutes plagiarism and malpractice, and I know the consequences of submitting work that is not my own.</label>
-    <label><input type="checkbox" /> I can explain and justify all decisions, responses, and content contained within my submitted work.</label>
-    <label><input type="checkbox" /> I have not submitted this work for assessment elsewhere.</label>
-    <label><input type="checkbox" /> I am aware that submitting work that is not my own may result in sanctions, including disqualification from this qualification.</label>
-
-    <div class="sig-row" style="margin-top:24px;">
-      <div class="sig-field">
-        <label>Learner Name (print)</label>
-        <input type="text" placeholder="Full name" />
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h1 class="text-2xl font-bold text-white">Focus Awards</h1>
+        <p class="text-gray-400 text-sm">Level 3 Certificate in Assessing Vocational Achievement</p>
       </div>
-      <div class="sig-field">
-        <label>Date</label>
-        <input type="date" />
+      <div class="text-right">
+        <p class="text-gray-400 text-sm mb-1" id="user-email">Loading...</p>
+        <button onclick="logout()" class="text-red-400 text-sm hover:text-red-300 transition">Sign out</button>
       </div>
     </div>
-    <div class="sig-row">
-      <div class="sig-field">
-        <label>Learner Signature</label>
-        <span class="sig-line"></span>
-        <p class="sig-label-small">Sign above</p>
-      </div>
+
+    <!-- Welcome Banner -->
+    <div class="bg-indigo-900 border border-indigo-700 rounded-2xl p-6 mb-8">
+      <h2 class="text-xl font-semibold mb-1">Welcome back!</h2>
+      <p class="text-indigo-300 text-sm">Your assessor is <strong class="text-white">Mike Yardley</strong>. Complete each unit below and submit your work for marking.</p>
     </div>
+
+    <!-- Units Grid -->
+    <h3 class="text-gray-400 text-sm uppercase tracking-widest mb-4">Your Units</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+
+      <a href="unit1.html" class="block bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-2xl p-6 transition group">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs bg-indigo-600 text-white px-2 py-1 rounded-full">Unit 1</span>
+          <span class="text-xs text-gray-500 group-hover:text-gray-300 transition">Open →</span>
+        </div>
+        <h4 class="font-semibold text-white mb-1">Understanding the Principles and Practices of Assessment</h4>
+        <p class="text-gray-400 text-sm">Theory-based unit covering assessment principles, legislation, and ethics.</p>
+      </a>
+
+      <a href="unit2.html" class="block bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-2xl p-6 transition group">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs bg-indigo-600 text-white px-2 py-1 rounded-full">Unit 2</span>
+          <span class="text-xs text-gray-500 group-hover:text-gray-300 transition">Open →</span>
+        </div>
+        <h4 class="font-semibold text-white mb-1">Assess Occupational Competence in the Work Environment</h4>
+        <p class="text-gray-400 text-sm">Practice-based unit — observation records, questioning, and professional discussion.</p>
+      </a>
+
+      <a href="assessment-plan.html" class="block bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-2xl p-6 transition group">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs bg-purple-600 text-white px-2 py-1 rounded-full">Document</span>
+          <span class="text-xs text-gray-500 group-hover:text-gray-300 transition">Open →</span>
+        </div>
+        <h4 class="font-semibold text-white mb-1">Assessment Plan</h4>
+        <p class="text-gray-400 text-sm">Agree your assessment schedule and methods with your assessor.</p>
+      </a>
+
+      <a href="Action Plan.html" class="block bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-2xl p-6 transition group">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs bg-purple-600 text-white px-2 py-1 rounded-full">Document</span>
+          <span class="text-xs text-gray-500 group-hover:text-gray-300 transition">Open →</span>
+        </div>
+        <h4 class="font-semibold text-white mb-1">Action Plan</h4>
+        <p class="text-gray-400 text-sm">Review targets and actions agreed with your assessor.</p>
+      </a>
+
+      <a href="observation.html" class="block bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-2xl p-6 transition group sm:col-span-2">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs bg-green-700 text-white px-2 py-1 rounded-full">Observation</span>
+          <span class="text-xs text-gray-500 group-hover:text-gray-300 transition">Open →</span>
+        </div>
+        <h4 class="font-semibold text-white mb-1">Observation Record</h4>
+        <p class="text-gray-400 text-sm">Your assessor's written record of observed practice in your workplace.</p>
+      </a>
+
+    </div>
+
+    <p class="text-center text-gray-600 text-xs">CAVA LMS · Focus Awards · Yardley Training Club</p>
   </div>
 
-  <div class="declaration-box">
-    <h3>Assessor Declaration</h3>
-    <p style="font-size:0.9rem; color:#444; margin-bottom:18px;">I confirm that I have reviewed this learner's declaration, verified their identity, and that the assessment process will be conducted in accordance with PT Academy and Focus Awards requirements.</p>
-    <div class="sig-row">
-      <div class="sig-field">
-        <label>Assessor Name (print)</label>
-        <input type="text" placeholder="Full name" />
-      </div>
-      <div class="sig-field">
-        <label>Date</label>
-        <input type="date" />
-      </div>
-    </div>
-    <div class="sig-row">
-      <div class="sig-field">
-        <label>Assessor Signature</label>
-        <span class="sig-line"></span>
-        <p class="sig-label-small">Sign above</p>
-      </div>
-    </div>
-  </div>
-</section>
+  <script>
+    const token = localStorage.getItem('cava_token');
+    const userRaw = localStorage.getItem('cava_user');
 
-<footer class="site-footer">
-  PT Academy | Focus Awards Level 3 CAVA | QRN: 601/6104/8 | Assessor Hub
-</footer>
+    if (!token || !userRaw) {
+      window.location.href = 'login.html';
+    } else {
+      const user = JSON.parse(userRaw);
+      document.getElementById('user-email').textContent = user.email || 'Learner';
+    }
 
-<script>
-  function showSection(id) {
-    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-    document.querySelectorAll('.top-nav button').forEach(b => b.classList.remove('active'));
-    document.getElementById(id).classList.add('active');
-    document.getElementById('btn-' + id).classList.add('active');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-</script>
+    function logout() {
+      localStorage.removeItem('cava_token');
+      localStorage.removeItem('cava_user');
+      window.location.href = 'login.html';
+    }
+  </script>
 
 </body>
 </html>
