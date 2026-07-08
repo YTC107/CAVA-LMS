@@ -500,31 +500,21 @@ let isSubmitted = false;
 
 // --- AUTH ---
 async function init() {
-  // Give Supabase time to restore session from localStorage
-  await new Promise(resolve => setTimeout(resolve, 100));
+  const token = localStorage.getItem('cava_token');
+  const userRaw = localStorage.getItem('cava_user');
 
-  const { data: { session } } = await sb.auth.getSession();
-
-  if (session && session.user) {
-    currentUser = session.user;
-    document.getElementById('authCheck').style.display = 'none';
-    document.getElementById('worksheetContent').style.display = 'block';
-    await loadSavedData();
-    updateProgress();
+  if (!token || !userRaw) {
+    window.location.href = 'login.html';
     return;
   }
 
-  // Hard fallback — check server directly
-  const { data: { user } } = await sb.auth.getUser();
-  if (user) {
-    currentUser = user;
-    document.getElementById('authCheck').style.display = 'none';
-    document.getElementById('worksheetContent').style.display = 'block';
-    await loadSavedData();
-    updateProgress();
-  } else {
-    window.location.href = 'login.html';
-  }
+  const userData = JSON.parse(userRaw);
+  currentUser = userData;
+
+  document.getElementById('authCheck').style.display = 'none';
+  document.getElementById('worksheetContent').style.display = 'block';
+  await loadSavedData();
+  updateProgress();
 }
 
 // --- LOAD DATA ---
