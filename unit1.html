@@ -19,6 +19,10 @@
   .lo-card:hover { transform: translateY(-2px); }
   .saved-indicator { font-size: 11px; color: #6b7280; margin-top: 4px; height: 16px; }
   .submitted-banner { display: none; background: #065f46; color: white; padding: 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: 600; }
+  .feedback-panel { display: none; background: #fefdf5; border: 1.5px solid #c9a84c; border-radius: 8px; padding: 16px; margin-top: 20px; }
+  .feedback-panel.visible { display: block; }
+  .outcome-pass { background: #16a34a; color: white; font-size: 12px; font-weight: 700; padding: 3px 12px; border-radius: 20px; display: inline-block; }
+  .outcome-refer { background: #dc2626; color: white; font-size: 12px; font-weight: 700; padding: 3px 12px; border-radius: 20px; display: inline-block; }
   .nav-link { cursor: pointer; padding: 6px 14px; font-size: 13px; color: #ccc; border-bottom: 2px solid transparent; transition: all 0.2s; text-decoration: none; display: inline-block; }
   .nav-link:hover { color: #fff; }
 </style>
@@ -35,15 +39,15 @@
     </div>
   </div>
   <div class="flex items-center gap-4">
-    <a href="index.html" class="gold text-black text-xs font-semibold px-3 py-2 rounded hover:opacity-90 transition">← Back to Hub</a>
+    <a href="index.html" class="gold text-black text-xs font-semibold px-3 py-2 rounded hover:opacity-90 transition">&larr; Back to Hub</a>
     <div class="text-right text-xs text-gray-400">
       <div>Qualification Ref: R/616/2834</div>
-      <div>Learning Outcomes 1–8</div>
+      <div>Learning Outcomes 1&ndash;8</div>
     </div>
   </div>
 </div>
 
-<!-- NAV BAR — links back to index.html sections -->
+<!-- NAV BAR -->
 <div class="nav-bar text-white flex gap-0 px-6 overflow-x-auto">
   <a href="index.html#intro" class="nav-link">Introduction</a>
   <a href="index.html#qual-structure" class="nav-link">Qualification Structure</a>
@@ -57,12 +61,12 @@
   <!-- AUTH CHECK -->
   <div id="authCheck" class="text-center py-10 text-gray-500">Checking login status...</div>
 
-  <!-- WORKSHEET CONTENT (hidden until auth confirmed) -->
+  <!-- WORKSHEET CONTENT -->
   <div id="worksheetContent" style="display:none;">
 
     <!-- SUBMITTED BANNER -->
     <div class="submitted-banner" id="submittedBanner">
-      ✅ This worksheet has been submitted for marking. Your assessor has been notified.
+      &#x2705; This worksheet has been submitted for marking. Your assessor has been notified.
     </div>
 
     <!-- INTRO SECTION -->
@@ -71,7 +75,7 @@
       <!-- Learner Manual -->
       <div class="bg-white border border-gray-200 rounded-lg p-5 mb-6" style="border-left: 4px solid #c9a84c;">
         <div class="font-bold text-base mb-1" style="color:#c9a84c;">Learner Manual</div>
-        <div class="text-sm text-gray-600 mb-3">Download your Unit 1 learner guide. This handbook gives you a head start on what's ahead. This worksheet aligns fully with this document before you begin.</div>
+        <div class="text-sm text-gray-600 mb-3">Download your Unit 1 learner guide. This handbook gives you a head start on what&rsquo;s ahead. This worksheet aligns fully with this document before you begin.</div>
         <div class="flex flex-wrap gap-3 items-center">
           <input type="file" id="manualFile" class="text-sm border border-gray-300 rounded px-2 py-1">
           <button onclick="uploadManual()" class="gold text-black text-sm font-semibold px-4 py-2 rounded">Upload File</button>
@@ -119,7 +123,7 @@
           <div class="border-l-4 border-red-500 pl-3">
             <div class="font-bold text-red-500 text-sm">DEFINE</div>
             <div class="text-sm text-gray-600">State the meaning of a term, concept, or item. Your answer should be concise, accurate and informative.</div>
-            <div class="text-xs text-gray-400 italic mt-1">Example: Define the term 'validity' in assessment</div>
+            <div class="text-xs text-gray-400 italic mt-1">Example: Define the term &lsquo;validity&rsquo; in assessment</div>
           </div>
           <div class="border-l-4 border-blue-500 pl-3">
             <div class="font-bold text-blue-500 text-sm">IDENTIFY</div>
@@ -195,13 +199,65 @@
           </div>
         </div>
       </div>
-    </div>
+
+      <!-- DECLARATION & SIGN OFF — inline, below LO grid -->
+      <div id="declarationBlock" class="mt-8">
+        <div class="dark-header text-white px-6 py-4 rounded-t-lg">
+          <div class="font-semibold" style="color:#c9a84c;">Declaration &amp; Sign Off</div>
+          <div class="text-xs text-gray-400 mt-1">Complete all learning outcomes above before signing and submitting.</div>
+        </div>
+
+        <div class="bg-white p-6 shadow-sm mb-1">
+          <h2 class="text-base font-bold mb-2">Learner Declaration &amp; Plagiarism Statement</h2>
+          <p class="text-sm text-red-600 font-semibold mb-3">Important: By completing and submitting this worksheet, you confirm that:</p>
+          <div class="space-y-2 mb-4">
+            <label class="flex items-start gap-2 text-sm"><input type="checkbox" id="dec1" class="mt-1"> All work submitted is my own original work and has not been copied from any other source.</label>
+            <label class="flex items-start gap-2 text-sm"><input type="checkbox" id="dec2" class="mt-1"> I have not submitted this work for assessment elsewhere.</label>
+            <label class="flex items-start gap-2 text-sm"><input type="checkbox" id="dec3" class="mt-1"> Any sources or references I used have been properly acknowledged and cited.</label>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-xs font-semibold text-gray-500">Learner Name (print):</label>
+              <input type="text" id="decLearnerName" class="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-sm">
+            </div>
+            <div>
+              <label class="text-xs font-semibold text-gray-500">Date:</label>
+              <input type="date" id="decDate" class="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-sm">
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white p-6 shadow-sm rounded-b-lg mb-6">
+          <h2 class="text-base font-bold mb-2">Assessor Declaration</h2>
+          <p class="text-sm text-gray-600 mb-4">I confirm that I have reviewed this learner&rsquo;s assessment work and provided appropriate feedback on the learner outcomes.</p>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label class="text-xs font-semibold text-gray-500">Assessor Name (print):</label>
+              <input type="text" id="decAssessorName" class="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-sm" readonly>
+            </div>
+            <div>
+              <label class="text-xs font-semibold text-gray-500">Date:</label>
+              <input type="date" id="decAssessorDate" class="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-sm" readonly>
+            </div>
+          </div>
+        </div>
+
+        <button onclick="submitForMarking()" id="submitBtn" class="w-full gold text-black font-bold py-3 rounded-lg text-sm hover:opacity-90 transition">
+          &#x2705; SUBMIT FOR MARKING
+        </button>
+        <div id="submitMsg" class="text-center text-sm mt-3"></div>
+        <div class="mt-4">
+          <a href="index.html" class="block text-center text-sm text-gray-500 hover:text-gray-700 py-2">&larr; Return to Learner Hub</a>
+        </div>
+      </div>
+
+    </div><!-- /section-intro -->
 
     <!-- LO1 -->
     <div id="section-lo1" class="lo-section">
       <div class="dark-header text-white px-6 py-3 rounded-t-lg flex items-center justify-between mb-6">
         <span class="font-semibold" style="color:#c9a84c;">LO1: Understand the principles and requirements of assessment</span>
-        <button onclick="goToIntro()" class="text-xs border border-gray-500 text-gray-300 px-3 py-1 rounded hover:bg-gray-700">← Back to Worksheet</button>
+        <button onclick="goToIntro()" class="text-xs border border-gray-500 text-gray-300 px-3 py-1 rounded hover:bg-gray-700">&larr; Back to Worksheet</button>
       </div>
       <div class="bg-white rounded-lg p-6 shadow-sm space-y-6">
         <div>
@@ -225,14 +281,22 @@
           <div class="saved-indicator" id="saved_q1_4"></div>
         </div>
       </div>
-      <button onclick="goToIntro()" class="w-full mt-4 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">← Back to All Learning Outcomes</button>
+      <!-- LO1 Feedback Panel -->
+      <div id="feedback-lo1" class="feedback-panel">
+        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
+        <div id="feedback-lo1-outcome" class="mb-3"></div>
+        <div class="text-xs font-semibold text-gray-500 mb-1">Feedback to Learner</div>
+        <div id="feedback-lo1-text" class="text-sm text-gray-700 whitespace-pre-wrap"></div>
+      </div>
+      <button onclick="scrollToDeclaration()" class="w-full gold text-black font-bold py-3 rounded-lg text-sm mt-4 hover:opacity-90">Complete Declaration &amp; Submit &rarr;</button>
+      <button onclick="goToIntro()" class="w-full mt-2 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">&larr; Back to All Learning Outcomes</button>
     </div>
 
     <!-- LO2 -->
     <div id="section-lo2" class="lo-section">
       <div class="dark-header text-white px-6 py-3 rounded-t-lg flex items-center justify-between mb-6">
         <span class="font-semibold" style="color:#c9a84c;">LO2: Understand different types of assessment method</span>
-        <button onclick="goToIntro()" class="text-xs border border-gray-500 text-gray-300 px-3 py-1 rounded hover:bg-gray-700">← Back to Worksheet</button>
+        <button onclick="goToIntro()" class="text-xs border border-gray-500 text-gray-300 px-3 py-1 rounded hover:bg-gray-700">&larr; Back to Worksheet</button>
       </div>
       <div class="bg-white rounded-lg p-6 shadow-sm space-y-6">
         <div>
@@ -241,14 +305,22 @@
           <div class="saved-indicator" id="saved_q2_1"></div>
         </div>
       </div>
-      <button onclick="goToIntro()" class="w-full mt-4 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">← Back to All Learning Outcomes</button>
+      <!-- LO2 Feedback Panel -->
+      <div id="feedback-lo2" class="feedback-panel">
+        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
+        <div id="feedback-lo2-outcome" class="mb-3"></div>
+        <div class="text-xs font-semibold text-gray-500 mb-1">Feedback to Learner</div>
+        <div id="feedback-lo2-text" class="text-sm text-gray-700 whitespace-pre-wrap"></div>
+      </div>
+      <button onclick="scrollToDeclaration()" class="w-full gold text-black font-bold py-3 rounded-lg text-sm mt-4 hover:opacity-90">Complete Declaration &amp; Submit &rarr;</button>
+      <button onclick="goToIntro()" class="w-full mt-2 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">&larr; Back to All Learning Outcomes</button>
     </div>
 
     <!-- LO3 -->
     <div id="section-lo3" class="lo-section">
       <div class="dark-header text-white px-6 py-3 rounded-t-lg flex items-center justify-between mb-6">
         <span class="font-semibold" style="color:#c9a84c;">LO3: Understand how to plan assessment</span>
-        <button onclick="goToIntro()" class="text-xs border border-gray-500 text-gray-300 px-3 py-1 rounded hover:bg-gray-700">← Back to Worksheet</button>
+        <button onclick="goToIntro()" class="text-xs border border-gray-500 text-gray-300 px-3 py-1 rounded hover:bg-gray-700">&larr; Back to Worksheet</button>
       </div>
       <div class="bg-white rounded-lg p-6 shadow-sm space-y-6">
         <div>
@@ -267,14 +339,22 @@
           <div class="saved-indicator" id="saved_q3_3"></div>
         </div>
       </div>
-      <button onclick="goToIntro()" class="w-full mt-4 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">← Back to All Learning Outcomes</button>
+      <!-- LO3 Feedback Panel -->
+      <div id="feedback-lo3" class="feedback-panel">
+        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
+        <div id="feedback-lo3-outcome" class="mb-3"></div>
+        <div class="text-xs font-semibold text-gray-500 mb-1">Feedback to Learner</div>
+        <div id="feedback-lo3-text" class="text-sm text-gray-700 whitespace-pre-wrap"></div>
+      </div>
+      <button onclick="scrollToDeclaration()" class="w-full gold text-black font-bold py-3 rounded-lg text-sm mt-4 hover:opacity-90">Complete Declaration &amp; Submit &rarr;</button>
+      <button onclick="goToIntro()" class="w-full mt-2 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">&larr; Back to All Learning Outcomes</button>
     </div>
 
     <!-- LO4 -->
     <div id="section-lo4" class="lo-section">
       <div class="dark-header text-white px-6 py-3 rounded-t-lg flex items-center justify-between mb-6">
         <span class="font-semibold" style="color:#c9a84c;">LO4: Understand how to involve learners and others in assessment</span>
-        <button onclick="goToIntro()" class="text-xs border border-gray-500 text-gray-300 px-3 py-1 rounded hover:bg-gray-700">← Back to Worksheet</button>
+        <button onclick="goToIntro()" class="text-xs border border-gray-500 text-gray-300 px-3 py-1 rounded hover:bg-gray-700">&larr; Back to Worksheet</button>
       </div>
       <div class="bg-white rounded-lg p-6 shadow-sm space-y-6">
         <div>
@@ -298,14 +378,22 @@
           <div class="saved-indicator" id="saved_q4_4"></div>
         </div>
       </div>
-      <button onclick="goToIntro()" class="w-full mt-4 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">← Back to All Learning Outcomes</button>
+      <!-- LO4 Feedback Panel -->
+      <div id="feedback-lo4" class="feedback-panel">
+        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
+        <div id="feedback-lo4-outcome" class="mb-3"></div>
+        <div class="text-xs font-semibold text-gray-500 mb-1">Feedback to Learner</div>
+        <div id="feedback-lo4-text" class="text-sm text-gray-700 whitespace-pre-wrap"></div>
+      </div>
+      <button onclick="scrollToDeclaration()" class="w-full gold text-black font-bold py-3 rounded-lg text-sm mt-4 hover:opacity-90">Complete Declaration &amp; Submit &rarr;</button>
+      <button onclick="goToIntro()" class="w-full mt-2 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">&larr; Back to All Learning Outcomes</button>
     </div>
 
     <!-- LO5 -->
     <div id="section-lo5" class="lo-section">
       <div class="dark-header text-white px-6 py-3 rounded-t-lg flex items-center justify-between mb-6">
         <span class="font-semibold" style="color:#c9a84c;">LO5: Understand how to make assessment decisions</span>
-        <button onclick="goToIntro()" class="text-xs border border-gray-500 text-gray-300 px-3 py-1 rounded hover:bg-gray-700">← Back to Worksheet</button>
+        <button onclick="goToIntro()" class="text-xs border border-gray-500 text-gray-300 px-3 py-1 rounded hover:bg-gray-700">&larr; Back to Worksheet</button>
       </div>
       <div class="bg-white rounded-lg p-6 shadow-sm space-y-6">
         <div>
@@ -324,14 +412,22 @@
           <div class="saved-indicator" id="saved_q5_3"></div>
         </div>
       </div>
-      <button onclick="goToIntro()" class="w-full mt-4 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">← Back to All Learning Outcomes</button>
+      <!-- LO5 Feedback Panel -->
+      <div id="feedback-lo5" class="feedback-panel">
+        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
+        <div id="feedback-lo5-outcome" class="mb-3"></div>
+        <div class="text-xs font-semibold text-gray-500 mb-1">Feedback to Learner</div>
+        <div id="feedback-lo5-text" class="text-sm text-gray-700 whitespace-pre-wrap"></div>
+      </div>
+      <button onclick="scrollToDeclaration()" class="w-full gold text-black font-bold py-3 rounded-lg text-sm mt-4 hover:opacity-90">Complete Declaration &amp; Submit &rarr;</button>
+      <button onclick="goToIntro()" class="w-full mt-2 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">&larr; Back to All Learning Outcomes</button>
     </div>
 
     <!-- LO6 -->
     <div id="section-lo6" class="lo-section">
       <div class="dark-header text-white px-6 py-3 rounded-t-lg flex items-center justify-between mb-6">
         <span class="font-semibold" style="color:#c9a84c;">LO6: Understand quality assurance of the assessment process</span>
-        <button onclick="goToIntro()" class="text-xs border border-gray-500 text-gray-300 px-3 py-1 rounded hover:bg-gray-700">← Back to Worksheet</button>
+        <button onclick="goToIntro()" class="text-xs border border-gray-500 text-gray-300 px-3 py-1 rounded hover:bg-gray-700">&larr; Back to Worksheet</button>
       </div>
       <div class="bg-white rounded-lg p-6 shadow-sm space-y-6">
         <div>
@@ -345,14 +441,22 @@
           <div class="saved-indicator" id="saved_q6_2"></div>
         </div>
       </div>
-      <button onclick="goToIntro()" class="w-full mt-4 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">← Back to All Learning Outcomes</button>
+      <!-- LO6 Feedback Panel -->
+      <div id="feedback-lo6" class="feedback-panel">
+        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
+        <div id="feedback-lo6-outcome" class="mb-3"></div>
+        <div class="text-xs font-semibold text-gray-500 mb-1">Feedback to Learner</div>
+        <div id="feedback-lo6-text" class="text-sm text-gray-700 whitespace-pre-wrap"></div>
+      </div>
+      <button onclick="scrollToDeclaration()" class="w-full gold text-black font-bold py-3 rounded-lg text-sm mt-4 hover:opacity-90">Complete Declaration &amp; Submit &rarr;</button>
+      <button onclick="goToIntro()" class="w-full mt-2 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">&larr; Back to All Learning Outcomes</button>
     </div>
 
     <!-- LO7 -->
     <div id="section-lo7" class="lo-section">
       <div class="dark-header text-white px-6 py-3 rounded-t-lg flex items-center justify-between mb-6">
         <span class="font-semibold" style="color:#c9a84c;">LO7: Understand how to manage information relating to assessment</span>
-        <button onclick="goToIntro()" class="text-xs border border-gray-500 text-gray-300 px-3 py-1 rounded hover:bg-gray-700">← Back to Worksheet</button>
+        <button onclick="goToIntro()" class="text-xs border border-gray-500 text-gray-300 px-3 py-1 rounded hover:bg-gray-700">&larr; Back to Worksheet</button>
       </div>
       <div class="bg-white rounded-lg p-6 shadow-sm space-y-6">
         <div>
@@ -371,14 +475,22 @@
           <div class="saved-indicator" id="saved_q7_3"></div>
         </div>
       </div>
-      <button onclick="goToIntro()" class="w-full mt-4 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">← Back to All Learning Outcomes</button>
+      <!-- LO7 Feedback Panel -->
+      <div id="feedback-lo7" class="feedback-panel">
+        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
+        <div id="feedback-lo7-outcome" class="mb-3"></div>
+        <div class="text-xs font-semibold text-gray-500 mb-1">Feedback to Learner</div>
+        <div id="feedback-lo7-text" class="text-sm text-gray-700 whitespace-pre-wrap"></div>
+      </div>
+      <button onclick="scrollToDeclaration()" class="w-full gold text-black font-bold py-3 rounded-lg text-sm mt-4 hover:opacity-90">Complete Declaration &amp; Submit &rarr;</button>
+      <button onclick="goToIntro()" class="w-full mt-2 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">&larr; Back to All Learning Outcomes</button>
     </div>
 
     <!-- LO8 -->
     <div id="section-lo8" class="lo-section">
       <div class="dark-header text-white px-6 py-3 rounded-t-lg flex items-center justify-between mb-6">
         <span class="font-semibold" style="color:#c9a84c;">LO8: Understand the legal and good practice requirements in relation to assessment</span>
-        <button onclick="goToIntro()" class="text-xs border border-gray-500 text-gray-300 px-3 py-1 rounded hover:bg-gray-700">← Back to Worksheet</button>
+        <button onclick="goToIntro()" class="text-xs border border-gray-500 text-gray-300 px-3 py-1 rounded hover:bg-gray-700">&larr; Back to Worksheet</button>
       </div>
       <div class="bg-white rounded-lg p-6 shadow-sm space-y-6">
         <div>
@@ -402,66 +514,22 @@
           <div class="saved-indicator" id="saved_q8_4"></div>
         </div>
       </div>
-      <button onclick="goToIntro()" class="w-full mt-4 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">← Back to All Learning Outcomes</button>
-    </div>
-
-    <!-- DECLARATION — at the bottom of the document, not a tab -->
-    <div id="section-declaration" class="lo-section">
-      <div class="dark-header text-white px-6 py-3 rounded-t-lg flex items-center justify-between mb-6">
-        <span class="font-semibold" style="color:#c9a84c;">Declaration &amp; Submission</span>
-        <button onclick="goToIntro()" class="text-xs border border-gray-500 text-gray-300 px-3 py-1 rounded hover:bg-gray-700">← Back to Worksheet</button>
+      <!-- LO8 Feedback Panel -->
+      <div id="feedback-lo8" class="feedback-panel">
+        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
+        <div id="feedback-lo8-outcome" class="mb-3"></div>
+        <div class="text-xs font-semibold text-gray-500 mb-1">Feedback to Learner</div>
+        <div id="feedback-lo8-text" class="text-sm text-gray-700 whitespace-pre-wrap"></div>
       </div>
-
-      <div class="bg-white rounded-lg p-6 shadow-sm mb-6">
-        <h2 class="text-lg font-bold mb-3">Learner Declaration &amp; Plagiarism Statement</h2>
-        <p class="text-sm text-red-600 font-semibold mb-3">Important: By completing and submitting this worksheet, you confirm that:</p>
-        <div class="space-y-2 mb-4">
-          <label class="flex items-start gap-2 text-sm"><input type="checkbox" id="dec1" class="mt-1"> All work submitted is my own original work and has not been copied from any other source.</label>
-          <label class="flex items-start gap-2 text-sm"><input type="checkbox" id="dec2" class="mt-1"> I have not submitted this work for assessment elsewhere.</label>
-          <label class="flex items-start gap-2 text-sm"><input type="checkbox" id="dec3" class="mt-1"> Any sources or references I used have been properly acknowledged and cited.</label>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="text-xs font-semibold text-gray-500">Learner Name (print):</label>
-            <input type="text" id="decLearnerName" class="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-sm">
-          </div>
-          <div>
-            <label class="text-xs font-semibold text-gray-500">Date:</label>
-            <input type="date" id="decDate" class="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-sm">
-          </div>
-        </div>
-      </div>
-
-      <div class="bg-white rounded-lg p-6 shadow-sm mb-6">
-        <h2 class="text-lg font-bold mb-3">Assessor Declaration</h2>
-        <p class="text-sm text-gray-600 mb-4">I confirm that I have reviewed this learner's assessment work and provided appropriate feedback on the learner outcomes.</p>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="text-xs font-semibold text-gray-500">Assessor Name (print):</label>
-            <input type="text" id="decAssessorName" class="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-sm" readonly>
-          </div>
-          <div>
-            <label class="text-xs font-semibold text-gray-500">Date:</label>
-            <input type="date" id="decAssessorDate" class="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-sm" readonly>
-          </div>
-        </div>
-      </div>
-
-      <button onclick="submitForMarking()" id="submitBtn" class="w-full gold text-black font-bold py-3 rounded-lg text-sm hover:opacity-90 transition">
-        ✅ SUBMIT FOR MARKING
-      </button>
-      <div id="submitMsg" class="text-center text-sm mt-3"></div>
-
-      <div class="mt-4">
-        <a href="index.html" class="block text-center text-sm text-gray-500 hover:text-gray-700 py-2">← Return to Learner Hub</a>
-      </div>
+      <button onclick="scrollToDeclaration()" class="w-full gold text-black font-bold py-3 rounded-lg text-sm mt-4 hover:opacity-90">Complete Declaration &amp; Submit &rarr;</button>
+      <button onclick="goToIntro()" class="w-full mt-2 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">&larr; Back to All Learning Outcomes</button>
     </div>
 
   </div><!-- /worksheetContent -->
 </div><!-- /main -->
 
 <!-- FOOTER -->
-<div class="text-center py-6 text-xs text-gray-400">Focus Awards Level 3 CAVA — Unit 1 Evidence Worksheet</div>
+<div class="text-center py-6 text-xs text-gray-400">Focus Awards Level 3 CAVA &mdash; Unit 1 Evidence Worksheet</div>
 
 <script>
 const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
@@ -489,12 +557,10 @@ let isSubmitted = false;
 async function init() {
   const token = localStorage.getItem('cava_token');
   const userRaw = localStorage.getItem('cava_user');
-
   if (!token || !userRaw) {
     window.location.href = 'login.html';
     return;
   }
-
   currentUser = JSON.parse(userRaw);
   document.getElementById('authCheck').style.display = 'none';
   document.getElementById('worksheetContent').style.display = 'block';
@@ -515,16 +581,37 @@ async function loadSavedData() {
     if (data.learner_name) document.getElementById('learnerName').value = data.learner_name;
     if (data.date_started) document.getElementById('dateStarted').value = data.date_started;
     if (data.assessor_name) document.getElementById('assessorName').value = data.assessor_name;
-
     QUESTION_IDS.forEach(qid => {
       const el = document.getElementById(qid);
       if (el && data[qid]) el.value = data[qid];
     });
-
     if (isSubmitted) {
       lockForm();
       document.getElementById('submittedBanner').style.display = 'block';
     }
+  }
+
+  // Load assessor feedback for each LO
+  const { data: feedbackRows } = await sb
+    .from('unit1_feedback')
+    .select('*')
+    .eq('user_id', currentUser.id);
+
+  if (feedbackRows && feedbackRows.length > 0) {
+    feedbackRows.forEach(row => {
+      const lo = row.lo; // e.g. 'lo1'
+      const panel = document.getElementById('feedback-' + lo);
+      const outcomeEl = document.getElementById('feedback-' + lo + '-outcome');
+      const textEl = document.getElementById('feedback-' + lo + '-text');
+      if (panel && row.feedback_text) {
+        panel.classList.add('visible');
+        if (outcomeEl) {
+          const cls = row.outcome === 'Pass' ? 'outcome-pass' : 'outcome-refer';
+          outcomeEl.innerHTML = `<span class="${cls}">${row.outcome || ''}</span>`;
+        }
+        if (textEl) textEl.textContent = row.feedback_text;
+      }
+    });
   }
 }
 
@@ -561,7 +648,7 @@ async function saveAnswer(qid) {
   const payload = { user_id: currentUser.id, [qid]: value, updated_at: new Date().toISOString() };
   const { error } = await sb.from('unit1_submissions').upsert(payload, { onConflict: 'user_id' });
   const indicator = document.getElementById('saved_' + qid);
-  if (indicator) indicator.textContent = error ? '⚠ Save failed' : '✓ Saved';
+  if (indicator) indicator.textContent = error ? '&#x26A0; Save failed' : '&#x2713; Saved';
 }
 
 // --- PROGRESS ---
@@ -583,12 +670,12 @@ async function submitForMarking() {
   const date = document.getElementById('decDate').value;
 
   if (!dec1 || !dec2 || !dec3) {
-    document.getElementById('submitMsg').textContent = '⚠ Please tick all three declaration checkboxes.';
+    document.getElementById('submitMsg').textContent = '&#x26A0; Please tick all three declaration checkboxes.';
     document.getElementById('submitMsg').className = 'text-center text-sm mt-3 text-red-600';
     return;
   }
   if (!name || !date) {
-    document.getElementById('submitMsg').textContent = '⚠ Please enter your name and the date in the declaration.';
+    document.getElementById('submitMsg').textContent = '&#x26A0; Please enter your name and the date in the declaration.';
     document.getElementById('submitMsg').className = 'text-center text-sm mt-3 text-red-600';
     return;
   }
@@ -608,10 +695,10 @@ async function submitForMarking() {
   const { error } = await sb.from('unit1_submissions').upsert(payload, { onConflict: 'user_id' });
 
   if (error) {
-    document.getElementById('submitMsg').textContent = '⚠ Submission failed. Please try again.';
+    document.getElementById('submitMsg').textContent = '&#x26A0; Submission failed. Please try again.';
     document.getElementById('submitMsg').className = 'text-center text-sm mt-3 text-red-600';
     document.getElementById('submitBtn').disabled = false;
-    document.getElementById('submitBtn').textContent = '✅ SUBMIT FOR MARKING';
+    document.getElementById('submitBtn').textContent = '&#x2705; SUBMIT FOR MARKING';
   } else {
     isSubmitted = true;
     lockForm();
@@ -627,7 +714,7 @@ function lockForm() {
     el.disabled = true;
   });
   const btn = document.getElementById('submitBtn');
-  if (btn) { btn.disabled = true; btn.textContent = '✅ Submitted for Marking'; }
+  if (btn) { btn.disabled = true; btn.textContent = '&#x2705; Submitted for Marking'; }
 }
 
 // --- NAVIGATION ---
@@ -645,6 +732,14 @@ function goToLO(lo) {
 }
 
 function goToIntro() { showSection('intro'); }
+
+function scrollToDeclaration() {
+  showSection('intro');
+  setTimeout(() => {
+    const block = document.getElementById('declarationBlock');
+    if (block) block.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 80);
+}
 
 function uploadManual() { document.getElementById('manualStatus').textContent = 'File linked successfully.'; }
 function linkManual() {
