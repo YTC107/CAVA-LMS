@@ -5,16 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CAVA – Learner Dashboard</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #0a0a0a; }
+    .gold { color: #c9a84c; }
+    .bg-gold { background-color: #c9a84c; }
+    .border-gold { border-color: #c9a84c; }
+    .bg-gold-dark { background-color: #a07830; }
+    .welcome-banner {
+      background: linear-gradient(135deg, #1a1a1a 0%, #111111 100%);
+      border: 1px solid #c9a84c;
+    }
+    .card {
+      background-color: #111111;
+      border: 1px solid #2a2a2a;
+      transition: border-color 0.2s, background-color 0.2s;
+    }
+    .card:hover {
+      background-color: #1a1a1a;
+      border-color: #c9a84c;
+    }
+  </style>
 </head>
-<body class="min-h-screen bg-gray-950 text-white px-4 py-8">
+<body class="min-h-screen text-white px-4 py-8" style="background-color:#0a0a0a;">
 
   <div class="max-w-4xl mx-auto">
 
     <!-- Header -->
     <div class="flex items-center justify-between mb-8">
-      <div>
-        <h1 class="text-2xl font-bold text-white">Focus Awards</h1>
-        <p class="text-gray-400 text-sm">Level 3 Certificate in Assessing Vocational Achievement</p>
+      <div class="flex items-center gap-4">
+        <img
+          src="https://kplomedo.github.io/CAVA-LMS/pt-academy-logo.png"
+          alt="PT Academy"
+          class="h-14 w-auto"
+          onerror="this.style.display='none'"
+        />
+        <div>
+          <h1 class="text-2xl font-bold gold">PT Academy</h1>
+          <p class="text-gray-400 text-sm">Level 3 Certificate in Assessing Vocational Achievement</p>
+        </div>
       </div>
       <div class="text-right">
         <p class="text-gray-400 text-sm mb-1" id="user-email">Loading...</p>
@@ -23,63 +51,58 @@
     </div>
 
     <!-- Welcome Banner -->
-    <div class="bg-indigo-900 border border-indigo-700 rounded-2xl p-6 mb-8">
-      <h2 class="text-xl font-semibold mb-1" id="welcome-heading">Welcome back!</h2>
-      <p class="text-indigo-300 text-sm">Your assessor is <strong class="text-white">Michael Kplomedo</strong>. Complete each unit below and submit your work for marking.</p>
+    <div class="welcome-banner rounded-2xl p-6 mb-8">
+      <h2 class="text-xl font-semibold mb-1 gold" id="welcome-heading">Welcome back!</h2>
+      <p class="text-gray-300 text-sm">Your assessor is <strong class="gold">Michael Kplomedo</strong>. Complete each section below and submit your work for marking.</p>
     </div>
 
     <!-- Units Grid -->
-    <h3 class="text-gray-400 text-sm uppercase tracking-widest mb-4">Your Units</h3>
+    <h3 class="text-gray-500 text-sm uppercase tracking-widest mb-4">Your Units &amp; Documents</h3>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
 
-      <a href="unit1.html" class="block bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-2xl p-6 transition group">
+      <!-- Assessment Plan – FIRST -->
+      <a href="assessment-plan.html" class="card block rounded-2xl p-6 group sm:col-span-2">
         <div class="flex items-center justify-between mb-3">
-          <span class="text-xs bg-indigo-600 text-white px-2 py-1 rounded-full">Unit 1</span>
-          <span class="text-xs text-gray-500 group-hover:text-gray-300 transition">Open →</span>
+          <span class="text-xs bg-gold text-black px-2 py-1 rounded-full font-semibold">Start Here</span>
+          <span class="text-xs text-gray-500 group-hover:text-yellow-400 transition">Open →</span>
+        </div>
+        <h4 class="font-semibold text-white mb-1">Assessment Plan</h4>
+        <p class="text-gray-400 text-sm">Agree your assessment schedule and methods with your assessor. Complete this first.</p>
+      </a>
+
+      <!-- Unit 1 -->
+      <a href="unit1.html" class="card block rounded-2xl p-6 group">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs border border-gold gold px-2 py-1 rounded-full">Unit 1</span>
+          <span class="text-xs text-gray-500 group-hover:text-yellow-400 transition">Open →</span>
         </div>
         <h4 class="font-semibold text-white mb-1">Understanding the Principles and Practices of Assessment</h4>
         <p class="text-gray-400 text-sm">Theory-based unit covering assessment principles, legislation, and ethics.</p>
       </a>
 
-      <a href="unit2.html" class="block bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-2xl p-6 transition group">
+      <!-- Unit 2 -->
+      <a href="unit2.html" class="card block rounded-2xl p-6 group">
         <div class="flex items-center justify-between mb-3">
-          <span class="text-xs bg-indigo-600 text-white px-2 py-1 rounded-full">Unit 2</span>
-          <span class="text-xs text-gray-500 group-hover:text-gray-300 transition">Open →</span>
+          <span class="text-xs border border-gold gold px-2 py-1 rounded-full">Unit 2</span>
+          <span class="text-xs text-gray-500 group-hover:text-yellow-400 transition">Open →</span>
         </div>
         <h4 class="font-semibold text-white mb-1">Assess Occupational Competence in the Work Environment</h4>
         <p class="text-gray-400 text-sm">Practice-based unit: observation records, questioning, and professional discussion.</p>
       </a>
 
-      <a href="assessment-plan.html" class="block bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-2xl p-6 transition group">
+      <!-- Action Plan -->
+      <a href="Action Plan.html" class="card block rounded-2xl p-6 group sm:col-span-2">
         <div class="flex items-center justify-between mb-3">
-          <span class="text-xs bg-purple-600 text-white px-2 py-1 rounded-full">Document</span>
-          <span class="text-xs text-gray-500 group-hover:text-gray-300 transition">Open →</span>
-        </div>
-        <h4 class="font-semibold text-white mb-1">Assessment Plan</h4>
-        <p class="text-gray-400 text-sm">Agree your assessment schedule and methods with your assessor.</p>
-      </a>
-
-      <a href="Action Plan.html" class="block bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-2xl p-6 transition group">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-xs bg-purple-600 text-white px-2 py-1 rounded-full">Document</span>
-          <span class="text-xs text-gray-500 group-hover:text-gray-300 transition">Open →</span>
+          <span class="text-xs border border-gold gold px-2 py-1 rounded-full">Document</span>
+          <span class="text-xs text-gray-500 group-hover:text-yellow-400 transition">Open →</span>
         </div>
         <h4 class="font-semibold text-white mb-1">Action Plan</h4>
         <p class="text-gray-400 text-sm">Review targets and actions agreed with your assessor.</p>
       </a>
 
-      <a href="observation.html" class="block bg-gray-900 hover:bg-gray-800 border border-gray-700 rounded-2xl p-6 transition group sm:col-span-2">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-xs bg-green-700 text-white px-2 py-1 rounded-full">Observation</span>
-          <span class="text-xs text-gray-500 group-hover:text-gray-300 transition">Open →</span>
-        </div>
-        <h4 class="font-semibold text-white mb-1">Observation Record</h4>
-        <p class="text-gray-400 text-sm">Your assessor's written record of observed practice in your workplace.</p>
-      </a>
-
     </div>
 
-    <p class="text-center text-gray-600 text-xs">CAVA LMS · Focus Awards · PT Academy</p>
+    <p class="text-center text-gray-600 text-xs">CAVA LMS &middot; Focus Awards &middot; PT Academy</p>
   </div>
 
   <script>
@@ -92,8 +115,8 @@
       const user = JSON.parse(userRaw);
       document.getElementById('user-email').textContent = user.email || 'Learner';
 
-      // Display learner's name in welcome heading if available
-      const name = user.full_name || user.name || user.email || null;
+      const firstName = localStorage.getItem('cava_first_name');
+      const name = firstName || user.full_name || user.name || null;
       if (name) {
         document.getElementById('welcome-heading').textContent = 'Welcome back, ' + name + '!';
       }
@@ -102,6 +125,7 @@
     function logout() {
       localStorage.removeItem('cava_token');
       localStorage.removeItem('cava_user');
+      localStorage.removeItem('cava_first_name');
       window.location.href = 'login.html';
     }
   </script>
