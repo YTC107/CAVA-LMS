@@ -33,11 +33,8 @@
   </div>
 
   <script>
-    // =====================================================
-    // PASTE YOUR SUPABASE VALUES HERE
     const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
-    // =====================================================
 
     const form = document.getElementById('login-form');
     const errorBox = document.getElementById('error-box');
@@ -67,11 +64,19 @@
         return;
       }
 
-      // Store session
-      localStorage.setItem('cava_token', data.access_token);
-      localStorage.setItem('cava_user', JSON.stringify(data.user));
+      // Extract full name from user_metadata, fall back to email if not set
+      const metadata = data.user?.user_metadata || {};
+      const fullName = metadata.full_name || metadata.name || '';
+      const firstName = fullName.split(' ')[0] || '';
 
-      // Redirect to learner hub
+      // Store session and user info
+      localStorage.setItem('cava_token', data.access_token);
+      localStorage.setItem('cava_user', JSON.stringify({
+        ...data.user,
+        full_name: fullName,
+        first_name: firstName
+      }));
+
       window.location.href = 'index.html';
     });
   </script>
