@@ -19,6 +19,7 @@
     .unit-header { background-color: #111; color: #fff; border-radius: 0.5rem; padding: 0.6rem 1rem; margin-bottom: 0.75rem; font-weight: 600; font-size: 0.875rem; }
     .doc-card { border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1.25rem; background: #fff; transition: border-color 0.2s, box-shadow 0.2s; }
     .doc-card:hover { border-color: #c9a84c; box-shadow: 0 2px 8px rgba(201,168,76,0.15); }
+    .sub-heading { font-size: 1.1rem; font-weight: 700; color: #1f2937; border-left: 4px solid #c9a84c; padding-left: 0.75rem; margin-bottom: 1.25rem; margin-top: 2rem; }
   </style>
 </head>
 <body class="bg-gray-100 min-h-screen" style="font-family: sans-serif;">
@@ -44,8 +45,6 @@
   <nav class="bg-black border-t border-gray-800 px-6">
     <div class="max-w-5xl mx-auto flex gap-1 py-1">
       <button class="tab-btn active text-xs px-3 py-1.5 rounded" onclick="showTab('introduction', this)">Introduction</button>
-      <button class="tab-btn text-xs px-3 py-1.5 rounded" onclick="showTab('structure', this)">Qualification Structure</button>
-      <button class="tab-btn text-xs px-3 py-1.5 rounded" onclick="showTab('requirements', this)">Requirements</button>
       <button class="tab-btn text-xs px-3 py-1.5 rounded" onclick="showTab('documents', this)">Assessment Documents</button>
     </div>
   </nav>
@@ -61,6 +60,8 @@
 
     <!-- INTRODUCTION -->
     <div id="tab-introduction" class="section active">
+
+      <!-- What Is This Qualification -->
       <h2 class="text-xl font-bold text-gray-800 border-l-4 border-yellow-500 pl-3 mb-5">Introduction</h2>
 
       <div class="bg-white rounded-xl border border-gray-200 p-6 mb-5 shadow-sm">
@@ -69,6 +70,7 @@
         <p class="text-sm text-gray-600 mt-2">As a PT Academy learner, you will complete written questions, observation records, and a portfolio of evidence to demonstrate your ability to assess others.</p>
       </div>
 
+      <!-- Step by Step -->
       <div class="bg-white rounded-xl border border-gray-200 p-6 mb-5 shadow-sm">
         <h3 class="font-bold text-gray-800 gold mb-4">Your Step-by-Step Guide</h3>
         <div class="flex flex-col gap-4">
@@ -77,7 +79,7 @@
             <div class="step-num">1</div>
             <div>
               <p class="font-semibold text-gray-800 text-sm">Read the course information</p>
-              <p class="text-sm text-gray-500 mt-0.5">Work through the <strong>Qualification Structure</strong> and <strong>Requirements</strong> tabs so you understand what each unit involves and what you need to produce.</p>
+              <p class="text-sm text-gray-500 mt-0.5">Work through the <strong>Qualification Structure</strong> and <strong>Requirements</strong> sections below so you understand what each unit involves and what you need to produce.</p>
             </div>
           </div>
 
@@ -115,14 +117,12 @@
 
         </div>
       </div>
-    </div>
 
-    <!-- QUALIFICATION STRUCTURE -->
-    <div id="tab-structure" class="section">
-      <h2 class="text-xl font-bold text-gray-800 border-l-4 border-yellow-500 pl-3 mb-5">Qualification Structure</h2>
+      <!-- Qualification Structure Sub-section -->
+      <div class="sub-heading">Qualification Structure</div>
 
       <div class="bg-white rounded-xl border border-gray-200 p-6 mb-5 shadow-sm">
-        <p class="text-sm text-gray-600 mb-4">The Level 3 CAVA is made up of <strong>three units</strong>. You are required to complete all three units. Unit 1 covers the underpinning theory and principles of assessment.</p>
+        <p class="text-sm text-gray-600 mb-4">The Level 3 CAVA is made up of <strong>three units</strong>. You are required to complete all three. Unit 1 covers the underpinning theory and principles of assessment.</p>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
           <div class="unit-card">
             <p class="font-bold text-sm text-gray-800 mb-1">Unit 1: Understanding the Principles and Practices of Assessment</p>
@@ -139,7 +139,7 @@
         </div>
       </div>
 
-      <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+      <div class="bg-white rounded-xl border border-gray-200 p-6 mb-5 shadow-sm">
         <h3 class="font-bold gold mb-3">Your Two Learners</h3>
         <p class="text-sm text-gray-600 mb-3">Throughout this qualification you must work with <strong>two PT learners at different levels:</strong></p>
         <ul class="list-disc list-inside text-sm text-gray-600 mb-3">
@@ -148,16 +148,14 @@
         </ul>
         <p class="text-sm text-gray-600">You must use a minimum of <strong>7 different assessment methods</strong> across both learners. Evidence from Units 2 and 3 is linked and the Observation Record maps across both units.</p>
       </div>
-    </div>
 
-    <!-- REQUIREMENTS -->
-    <div id="tab-requirements" class="section">
-      <h2 class="text-xl font-bold text-gray-800 border-l-4 border-yellow-500 pl-3 mb-5">What You Must Produce</h2>
+      <!-- Requirements Sub-section -->
+      <div class="sub-heading">Requirements</div>
 
       <div class="bg-white rounded-xl border border-gray-200 p-6 mb-5 shadow-sm">
         <div class="unit-header">Unit 1: Understanding the Principles and Practices of Assessment</div>
         <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
-          <li>Answer all written questions — fully and in your own words</li>
+          <li>Answer all written questions fully and in your own words</li>
           <li>Learning Outcome 1: Functions of assessment</li>
           <li>Learning Outcome 2: Legislation, equality, and ethics</li>
           <li>Learning Outcome 3: Peer and professional relationships</li>
@@ -187,7 +185,7 @@
         </ul>
       </div>
 
-      <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+      <div class="bg-white rounded-xl border border-gray-200 p-6 mb-8 shadow-sm">
         <h3 class="font-bold gold mb-3">The 7 Mandatory Assessment Methods</h3>
         <p class="text-sm text-gray-600 mb-3">Across both learners and both units, you must demonstrate the use of all seven methods:</p>
         <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
@@ -200,6 +198,7 @@
           <li>Simulation (where appropriate)</li>
         </ul>
       </div>
+
     </div>
 
     <!-- ASSESSMENT DOCUMENTS -->
@@ -228,10 +227,10 @@
 
         <a href="unit2.html" class="doc-card block">
           <div class="flex items-center justify-between mb-2">
-            <span class="text-xs border border-yellow-500 gold px-2 py-1 rounded-full">Units 2 & 3</span>
+            <span class="text-xs border border-yellow-500 gold px-2 py-1 rounded-full">Units 2 &amp; 3</span>
             <span class="text-xs text-gray-400 hover:text-yellow-500">Open →</span>
           </div>
-          <h4 class="font-semibold text-gray-800 mb-1">Assess Occupational Competence & Vocational Skills</h4>
+          <h4 class="font-semibold text-gray-800 mb-1">Assess Occupational Competence &amp; Vocational Skills</h4>
           <p class="text-sm text-gray-500">Observation records, evidence gathering, and reflection across both practical units.</p>
         </a>
 
