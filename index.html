@@ -27,6 +27,9 @@
     .page-title { font-size: 1.25rem; font-weight: 700; color: #1f2937; border-left: 4px solid #c9a84c; padding-left: 0.75rem; margin-bottom: 1.5rem; }
     .sub-heading { font-size: 1rem; font-weight: 700; color: #1f2937; border-left: 3px solid #c9a84c; padding-left: 0.6rem; margin-bottom: 1rem; margin-top: 0.25rem; }
     .sub-section { background: #fff; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .sub-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 0.75rem 1rem; margin-bottom: 1.5rem; }
+    .sub-nav a { font-size: 0.75rem; font-weight: 600; color: #374151; background: #fff; border: 1px solid #d1d5db; border-radius: 9999px; padding: 0.3rem 0.85rem; text-decoration: none; transition: border-color 0.15s, color 0.15s; }
+    .sub-nav a:hover { border-color: #c9a84c; color: #c9a84c; }
   </style>
 </head>
 <body class="bg-gray-100 min-h-screen" style="font-family: sans-serif;">
@@ -69,15 +72,23 @@
     <div id="tab-introduction" class="section active">
       <h2 class="page-title">Introduction</h2>
 
+      <!-- Sub-navigation -->
+      <div class="sub-nav">
+        <a href="#intro-what">What Is This Qualification?</a>
+        <a href="#intro-steps">Your Step-by-Step Guide</a>
+        <a href="#qual-structure">Qualification Structure</a>
+        <a href="#requirements">Requirements</a>
+      </div>
+
       <!-- What Is This Qualification -->
-      <div class="sub-section">
+      <div class="sub-section" id="intro-what">
         <h3 class="sub-heading">What Is This Qualification?</h3>
         <p class="text-sm text-gray-600">The <strong>Level 3 Certificate in Assessing Vocational Achievement (CAVA)</strong> is a nationally recognised qualification awarded by Focus Awards. It is designed for anyone working in a training or coaching environment who assesses the competence, skills, knowledge, and understanding of learners.</p>
         <p class="text-sm text-gray-600 mt-2">As a PT Academy learner, you will complete written questions, observation records, and a portfolio of evidence to demonstrate your ability to assess others.</p>
       </div>
 
       <!-- Step-by-Step Guide -->
-      <div class="sub-section">
+      <div class="sub-section" id="intro-steps">
         <h3 class="sub-heading">Your Step-by-Step Guide</h3>
         <div class="flex flex-col gap-4">
 
