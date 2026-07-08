@@ -500,12 +500,27 @@ let isSubmitted = false;
 
 // --- AUTH ---
 async function init() {
+  // Allow Supabase to process any session tokens in the URL hash first
+  await sb.auth.getSession();
+
+  let user = null;
+
+  // Try getSession first
   const { data: { session } } = await sb.auth.getSession();
-  if (!session) {
+  if (session) {
+    user = session.user;
+  } else {
+    // Fallback: try getUser() which hits the server directly
+    const { data: { user: u } } = await sb.auth.getUser();
+    user = u || null;
+  }
+
+  if (!user) {
     window.location.href = 'login.html';
     return;
   }
-  currentUser = session.user;
+
+  currentUser = user;
   document.getElementById('authCheck').style.display = 'none';
   document.getElementById('worksheetContent').style.display = 'block';
   await loadSavedData();
