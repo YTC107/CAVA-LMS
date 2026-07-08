@@ -500,31 +500,31 @@ let isSubmitted = false;
 
 // --- AUTH ---
 async function init() {
-  // Allow Supabase to process any session tokens in the URL hash first
-  await sb.auth.getSession();
+  // Give Supabase time to restore session from localStorage
+  await new Promise(resolve => setTimeout(resolve, 100));
 
-  let user = null;
-
-  // Try getSession first
   const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    user = session.user;
-  } else {
-    // Fallback: try getUser() which hits the server directly
-    const { data: { user: u } } = await sb.auth.getUser();
-    user = u || null;
-  }
 
-  if (!user) {
-    window.location.href = 'login.html';
+  if (session && session.user) {
+    currentUser = session.user;
+    document.getElementById('authCheck').style.display = 'none';
+    document.getElementById('worksheetContent').style.display = 'block';
+    await loadSavedData();
+    updateProgress();
     return;
   }
 
-  currentUser = user;
-  document.getElementById('authCheck').style.display = 'none';
-  document.getElementById('worksheetContent').style.display = 'block';
-  await loadSavedData();
-  updateProgress();
+  // Hard fallback — check server directly
+  const { data: { user } } = await sb.auth.getUser();
+  if (user) {
+    currentUser = user;
+    document.getElementById('authCheck').style.display = 'none';
+    document.getElementById('worksheetContent').style.display = 'block';
+    await loadSavedData();
+    updateProgress();
+  } else {
+    window.location.href = 'login.html';
+  }
 }
 
 // --- LOAD DATA ---
