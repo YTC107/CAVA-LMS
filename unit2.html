@@ -719,5 +719,60 @@ function showFilename(input, targetId) {
   if (target && input.files && input.files[0]) target.textContent = 'Attached: ' + input.files[0].name;
 }
 </script>
+  <!-- ==================== SAVE BAR ==================== -->
+<!-- Paste this immediately BEFORE the closing </body> tag in unit2.html -->
+
+<div id="save-bar" style="
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: #111;
+  border-top: 3px solid #c9a84c;
+  padding: 10px 24px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  z-index: 2000;
+  font-family: Arial, sans-serif;
+">
+  <div style="flex:1;">
+    <label style="font-size:12px; font-weight:600; color:#c9a84c; display:block; margin-bottom:4px;">Trainee Assessor Name (used to save and load your work)</label>
+    <input
+      type="text"
+      id="save-learner-name"
+      placeholder="Type your full name to save"
+      oninput="scheduleSave()"
+      style="
+        width:100%; max-width:320px;
+        padding:7px 10px;
+        background:#222;
+        color:#c9a84c;
+        border:1px solid #c9a84c;
+        border-radius:4px;
+        font-size:13px;
+        font-family:Arial,sans-serif;
+      "
+    >
+  </div>
+  <div style="display:flex; align-items:center; gap:12px;">
+    <span id="save-status" style="font-size:13px; color:#c9a84c; min-width:160px; text-align:right;"></span>
+    <button
+      onclick="saveNow()"
+      style="
+        background:#c9a84c;
+        color:#111;
+        border:none;
+        padding:9px 22px;
+        font-size:14px;
+        font-weight:bold;
+        border-radius:4px;
+        cursor:pointer;
+      "
+    >Save Now</button>
+  </div>
+</div>
+
+<!-- Spacer so page content isn't hidden behind the save bar -->
+<div style="height:70px;"></div>
+
 </body>
 </html>
