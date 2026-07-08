@@ -15,13 +15,12 @@
   textarea { resize: vertical; min-height: 120px; }
   .lo-section { display: none; }
   .lo-section.active { display: block; }
-  .tab-btn { cursor: pointer; padding: 6px 14px; font-size: 13px; color: #ccc; border-bottom: 2px solid transparent; transition: all 0.2s; }
-  .tab-btn:hover { color: #fff; }
-  .tab-btn.active-tab { color: #c9a84c; border-bottom: 2px solid #c9a84c; }
   .lo-card { transition: transform 0.15s; cursor: pointer; }
   .lo-card:hover { transform: translateY(-2px); }
   .saved-indicator { font-size: 11px; color: #6b7280; margin-top: 4px; height: 16px; }
   .submitted-banner { display: none; background: #065f46; color: white; padding: 16px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: 600; }
+  .nav-link { cursor: pointer; padding: 6px 14px; font-size: 13px; color: #ccc; border-bottom: 2px solid transparent; transition: all 0.2s; text-decoration: none; display: inline-block; }
+  .nav-link:hover { color: #fff; }
 </style>
 </head>
 <body>
@@ -29,25 +28,27 @@
 <!-- TOP HEADER -->
 <div class="dark-header text-white px-6 py-3 flex items-center justify-between">
   <div class="flex items-center gap-3">
-    <img src="pt-academy-logo.png" alt="PT Academy" class="h-10 w-auto">
+    <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy" class="h-10 w-auto">
     <div>
       <div class="font-semibold text-sm">Focus Awards Level 3 Certificate in Assessing Vocational Achievement (CAVA)</div>
       <div class="text-xs text-gray-400">Unit 1 Evidence Worksheet</div>
     </div>
   </div>
-  <div class="text-right text-xs text-gray-400">
-    <div>Qualification Ref: R/616/2834</div>
-    <div>Learning Outcomes 1–8</div>
+  <div class="flex items-center gap-4">
+    <a href="index.html" class="gold text-black text-xs font-semibold px-3 py-2 rounded hover:opacity-90 transition">← Back to Hub</a>
+    <div class="text-right text-xs text-gray-400">
+      <div>Qualification Ref: R/616/2834</div>
+      <div>Learning Outcomes 1–8</div>
+    </div>
   </div>
 </div>
 
-<!-- NAV TABS -->
+<!-- NAV BAR — links back to index.html sections -->
 <div class="nav-bar text-white flex gap-0 px-6 overflow-x-auto">
-  <button class="tab-btn active-tab" onclick="showSection('intro')">Introduction</button>
-  <button class="tab-btn" onclick="showSection('structure')">Qualification Structure</button>
-  <button class="tab-btn" onclick="showSection('requirements')">Requirements</button>
-  <button class="tab-btn" onclick="showSection('assessment')">Assessment Documents</button>
-  <button class="tab-btn" onclick="showSection('declaration')">Declaration</button>
+  <a href="index.html#intro" class="nav-link">Introduction</a>
+  <a href="index.html#qual-structure" class="nav-link">Qualification Structure</a>
+  <a href="index.html#requirements" class="nav-link">Requirements</a>
+  <a href="index.html?tab=assessment" class="nav-link">Assessment Documents</a>
 </div>
 
 <!-- MAIN CONTENT -->
@@ -196,72 +197,6 @@
       </div>
     </div>
 
-    <!-- STRUCTURE SECTION -->
-    <div id="section-structure" class="lo-section">
-      <div class="bg-white rounded-lg p-6 shadow-sm">
-        <h2 class="text-lg font-bold mb-3">Qualification Structure</h2>
-        <p class="text-sm text-gray-600">The Level 3 Certificate in Assessing Vocational Achievement (CAVA) consists of two mandatory units and one optional unit. Unit 1 covers the principles and requirements of assessment and must be completed in full.</p>
-      </div>
-    </div>
-
-    <!-- REQUIREMENTS SECTION -->
-    <div id="section-requirements" class="lo-section">
-      <div class="bg-white rounded-lg p-6 shadow-sm">
-        <h2 class="text-lg font-bold mb-3">Requirements</h2>
-        <p class="text-sm text-gray-600">All 25 questions must be answered in full. Answers should be in your own words and reflect your own practice. Evidence must be authentic, sufficient, and current.</p>
-      </div>
-    </div>
-
-    <!-- ASSESSMENT DOCUMENTS SECTION -->
-    <div id="section-assessment" class="lo-section">
-      <div class="bg-white rounded-lg p-6 shadow-sm">
-        <h2 class="text-lg font-bold mb-3">Assessment Documents</h2>
-        <p class="text-sm text-gray-600">Your assessor will review your submitted answers and provide written feedback against each learning outcome. Feedback will be visible in your learner dashboard once marked.</p>
-      </div>
-    </div>
-
-    <!-- DECLARATION SECTION -->
-    <div id="section-declaration" class="lo-section">
-      <div class="bg-white rounded-lg p-6 shadow-sm mb-6">
-        <h2 class="text-lg font-bold mb-3">Learner Declaration &amp; Plagiarism Statement</h2>
-        <p class="text-sm text-red-600 font-semibold mb-3">Important: By completing and submitting this worksheet, you confirm that:</p>
-        <div class="space-y-2 mb-4">
-          <label class="flex items-start gap-2 text-sm"><input type="checkbox" id="dec1" class="mt-1"> All work submitted is my own original work and has not been copied from any other source.</label>
-          <label class="flex items-start gap-2 text-sm"><input type="checkbox" id="dec2" class="mt-1"> I have not submitted this work for assessment elsewhere.</label>
-          <label class="flex items-start gap-2 text-sm"><input type="checkbox" id="dec3" class="mt-1"> Any sources or references I used have been properly acknowledged and cited.</label>
-        </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="text-xs font-semibold text-gray-500">Learner Name (print):</label>
-            <input type="text" id="decLearnerName" class="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-sm">
-          </div>
-          <div>
-            <label class="text-xs font-semibold text-gray-500">Date:</label>
-            <input type="date" id="decDate" class="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-sm">
-          </div>
-        </div>
-      </div>
-      <div class="bg-white rounded-lg p-6 shadow-sm mb-6">
-        <h2 class="text-lg font-bold mb-3">Assessor Declaration</h2>
-        <p class="text-sm text-gray-600 mb-4">I confirm that I have reviewed this learner's assessment work and provided appropriate feedback on the learner outcomes.</p>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label class="text-xs font-semibold text-gray-500">Assessor Name (print):</label>
-            <input type="text" id="decAssessorName" class="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-sm" readonly>
-          </div>
-          <div>
-            <label class="text-xs font-semibold text-gray-500">Date:</label>
-            <input type="date" id="decAssessorDate" class="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-sm" readonly>
-          </div>
-        </div>
-      </div>
-      <button onclick="submitForMarking()" id="submitBtn" class="w-full gold text-black font-bold py-3 rounded-lg text-sm hover:opacity-90 transition">
-        ✅ SUBMIT FOR MARKING
-      </button>
-      <div id="submitMsg" class="text-center text-sm mt-3"></div>
-    </div>
-
-    <!-- LO QUESTION SECTIONS -->
     <!-- LO1 -->
     <div id="section-lo1" class="lo-section">
       <div class="dark-header text-white px-6 py-3 rounded-t-lg flex items-center justify-between mb-6">
@@ -290,7 +225,7 @@
           <div class="saved-indicator" id="saved_q1_4"></div>
         </div>
       </div>
-      <button onclick="showSection('declaration')" class="w-full gold text-black font-bold py-3 rounded-lg text-sm mt-4 hover:opacity-90">Submit Assessment →</button>
+      <button onclick="goToIntro()" class="w-full mt-4 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">← Back to All Learning Outcomes</button>
     </div>
 
     <!-- LO2 -->
@@ -306,7 +241,7 @@
           <div class="saved-indicator" id="saved_q2_1"></div>
         </div>
       </div>
-      <button onclick="showSection('declaration')" class="w-full gold text-black font-bold py-3 rounded-lg text-sm mt-4 hover:opacity-90">Submit Assessment →</button>
+      <button onclick="goToIntro()" class="w-full mt-4 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">← Back to All Learning Outcomes</button>
     </div>
 
     <!-- LO3 -->
@@ -332,7 +267,7 @@
           <div class="saved-indicator" id="saved_q3_3"></div>
         </div>
       </div>
-      <button onclick="showSection('declaration')" class="w-full gold text-black font-bold py-3 rounded-lg text-sm mt-4 hover:opacity-90">Submit Assessment →</button>
+      <button onclick="goToIntro()" class="w-full mt-4 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">← Back to All Learning Outcomes</button>
     </div>
 
     <!-- LO4 -->
@@ -363,7 +298,7 @@
           <div class="saved-indicator" id="saved_q4_4"></div>
         </div>
       </div>
-      <button onclick="showSection('declaration')" class="w-full gold text-black font-bold py-3 rounded-lg text-sm mt-4 hover:opacity-90">Submit Assessment →</button>
+      <button onclick="goToIntro()" class="w-full mt-4 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">← Back to All Learning Outcomes</button>
     </div>
 
     <!-- LO5 -->
@@ -389,7 +324,7 @@
           <div class="saved-indicator" id="saved_q5_3"></div>
         </div>
       </div>
-      <button onclick="showSection('declaration')" class="w-full gold text-black font-bold py-3 rounded-lg text-sm mt-4 hover:opacity-90">Submit Assessment →</button>
+      <button onclick="goToIntro()" class="w-full mt-4 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">← Back to All Learning Outcomes</button>
     </div>
 
     <!-- LO6 -->
@@ -410,7 +345,7 @@
           <div class="saved-indicator" id="saved_q6_2"></div>
         </div>
       </div>
-      <button onclick="showSection('declaration')" class="w-full gold text-black font-bold py-3 rounded-lg text-sm mt-4 hover:opacity-90">Submit Assessment →</button>
+      <button onclick="goToIntro()" class="w-full mt-4 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">← Back to All Learning Outcomes</button>
     </div>
 
     <!-- LO7 -->
@@ -436,7 +371,7 @@
           <div class="saved-indicator" id="saved_q7_3"></div>
         </div>
       </div>
-      <button onclick="showSection('declaration')" class="w-full gold text-black font-bold py-3 rounded-lg text-sm mt-4 hover:opacity-90">Submit Assessment →</button>
+      <button onclick="goToIntro()" class="w-full mt-4 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">← Back to All Learning Outcomes</button>
     </div>
 
     <!-- LO8 -->
@@ -467,7 +402,59 @@
           <div class="saved-indicator" id="saved_q8_4"></div>
         </div>
       </div>
-      <button onclick="showSection('declaration')" class="w-full gold text-black font-bold py-3 rounded-lg text-sm mt-4 hover:opacity-90">Submit Assessment →</button>
+      <button onclick="goToIntro()" class="w-full mt-4 border border-gray-300 text-gray-600 font-semibold py-3 rounded-lg text-sm hover:bg-gray-100 transition">← Back to All Learning Outcomes</button>
+    </div>
+
+    <!-- DECLARATION — at the bottom of the document, not a tab -->
+    <div id="section-declaration" class="lo-section">
+      <div class="dark-header text-white px-6 py-3 rounded-t-lg flex items-center justify-between mb-6">
+        <span class="font-semibold" style="color:#c9a84c;">Declaration &amp; Submission</span>
+        <button onclick="goToIntro()" class="text-xs border border-gray-500 text-gray-300 px-3 py-1 rounded hover:bg-gray-700">← Back to Worksheet</button>
+      </div>
+
+      <div class="bg-white rounded-lg p-6 shadow-sm mb-6">
+        <h2 class="text-lg font-bold mb-3">Learner Declaration &amp; Plagiarism Statement</h2>
+        <p class="text-sm text-red-600 font-semibold mb-3">Important: By completing and submitting this worksheet, you confirm that:</p>
+        <div class="space-y-2 mb-4">
+          <label class="flex items-start gap-2 text-sm"><input type="checkbox" id="dec1" class="mt-1"> All work submitted is my own original work and has not been copied from any other source.</label>
+          <label class="flex items-start gap-2 text-sm"><input type="checkbox" id="dec2" class="mt-1"> I have not submitted this work for assessment elsewhere.</label>
+          <label class="flex items-start gap-2 text-sm"><input type="checkbox" id="dec3" class="mt-1"> Any sources or references I used have been properly acknowledged and cited.</label>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="text-xs font-semibold text-gray-500">Learner Name (print):</label>
+            <input type="text" id="decLearnerName" class="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-sm">
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500">Date:</label>
+            <input type="date" id="decDate" class="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-sm">
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg p-6 shadow-sm mb-6">
+        <h2 class="text-lg font-bold mb-3">Assessor Declaration</h2>
+        <p class="text-sm text-gray-600 mb-4">I confirm that I have reviewed this learner's assessment work and provided appropriate feedback on the learner outcomes.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="text-xs font-semibold text-gray-500">Assessor Name (print):</label>
+            <input type="text" id="decAssessorName" class="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-sm" readonly>
+          </div>
+          <div>
+            <label class="text-xs font-semibold text-gray-500">Date:</label>
+            <input type="date" id="decAssessorDate" class="w-full border border-gray-300 rounded px-3 py-2 mt-1 text-sm" readonly>
+          </div>
+        </div>
+      </div>
+
+      <button onclick="submitForMarking()" id="submitBtn" class="w-full gold text-black font-bold py-3 rounded-lg text-sm hover:opacity-90 transition">
+        ✅ SUBMIT FOR MARKING
+      </button>
+      <div id="submitMsg" class="text-center text-sm mt-3"></div>
+
+      <div class="mt-4">
+        <a href="index.html" class="block text-center text-sm text-gray-500 hover:text-gray-700 py-2">← Return to Learner Hub</a>
+      </div>
     </div>
 
   </div><!-- /worksheetContent -->
@@ -508,9 +495,7 @@ async function init() {
     return;
   }
 
-  const userData = JSON.parse(userRaw);
-  currentUser = userData;
-
+  currentUser = JSON.parse(userRaw);
   document.getElementById('authCheck').style.display = 'none';
   document.getElementById('worksheetContent').style.display = 'block';
   await loadSavedData();
@@ -519,7 +504,7 @@ async function init() {
 
 // --- LOAD DATA ---
 async function loadSavedData() {
-  const { data, error } = await sb
+  const { data } = await sb
     .from('unit1_submissions')
     .select('*')
     .eq('user_id', currentUser.id)
@@ -527,13 +512,10 @@ async function loadSavedData() {
 
   if (data) {
     isSubmitted = data.submitted || false;
-
-    // Load details
     if (data.learner_name) document.getElementById('learnerName').value = data.learner_name;
     if (data.date_started) document.getElementById('dateStarted').value = data.date_started;
     if (data.assessor_name) document.getElementById('assessorName').value = data.assessor_name;
 
-    // Load answers
     QUESTION_IDS.forEach(qid => {
       const el = document.getElementById(qid);
       if (el && data[qid]) el.value = data[qid];
@@ -651,12 +633,8 @@ function lockForm() {
 // --- NAVIGATION ---
 function showSection(name) {
   document.querySelectorAll('.lo-section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active-tab'));
   const sec = document.getElementById('section-' + name);
   if (sec) sec.classList.add('active');
-  const tabs = { intro: 0, structure: 1, requirements: 2, assessment: 3, declaration: 4 };
-  const tabBtns = document.querySelectorAll('.tab-btn');
-  if (tabs[name] !== undefined) tabBtns[tabs[name]]?.classList.add('active-tab');
   window.scrollTo(0, 0);
 }
 
