@@ -3,106 +3,255 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CAVA – Learner Dashboard</title>
+  <title>CAVA – Learner Hub</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { background-color: #0a0a0a; }
     .gold { color: #c9a84c; }
     .bg-gold { background-color: #c9a84c; }
     .border-gold { border-color: #c9a84c; }
-    .bg-gold-dark { background-color: #a07830; }
-    .welcome-banner {
-      background: linear-gradient(135deg, #1a1a1a 0%, #111111 100%);
-      border: 1px solid #c9a84c;
-    }
-    .card {
-      background-color: #111111;
-      border: 1px solid #2a2a2a;
-      transition: border-color 0.2s, background-color 0.2s;
-    }
-    .card:hover {
-      background-color: #1a1a1a;
-      border-color: #c9a84c;
-    }
+    .tab-btn { transition: background 0.15s, color 0.15s; }
+    .tab-btn.active { background-color: #c9a84c; color: #000; font-weight: 600; }
+    .tab-btn:not(.active):hover { background-color: #f3f4f6; }
+    .section { display: none; }
+    .section.active { display: block; }
+    .step-num { background-color: #c9a84c; color: #000; font-weight: 700; border-radius: 9999px; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .unit-card { border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1.25rem; background: #fff; }
+    .unit-header { background-color: #111; color: #fff; border-radius: 0.5rem; padding: 0.6rem 1rem; margin-bottom: 0.75rem; font-weight: 600; font-size: 0.875rem; }
+    .doc-card { border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1.25rem; background: #fff; transition: border-color 0.2s, box-shadow 0.2s; }
+    .doc-card:hover { border-color: #c9a84c; box-shadow: 0 2px 8px rgba(201,168,76,0.15); }
   </style>
 </head>
-<body class="min-h-screen text-white px-4 py-8" style="background-color:#0a0a0a;">
+<body class="bg-gray-100 min-h-screen" style="font-family: sans-serif;">
 
-  <div class="max-w-4xl mx-auto">
-
-    <!-- Header -->
-    <div class="flex items-center justify-between mb-8">
-      <div class="flex items-center gap-4">
-        <img
-          src="https://kplomedo.github.io/CAVA-LMS/pt-academy-logo.png"
-          alt="PT Academy"
-          class="h-14 w-auto"
-        />
+  <!-- Header -->
+  <header class="bg-black text-white px-6 py-3">
+    <div class="max-w-5xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy" class="h-12 w-auto" />
         <div>
-          <h1 class="text-2xl font-bold gold">PT Academy</h1>
-          <p class="text-gray-400 text-sm">Level 3 Certificate in Assessing Vocational Achievement</p>
+          <p class="font-bold text-base leading-tight gold">Level 3 Certificate in Assessing Vocational Achievement</p>
+          <p class="text-xs text-gray-400">Focus Awards | QRN: 601/6104/8 | Learner Hub</p>
         </div>
       </div>
       <div class="text-right">
-        <p class="text-gray-400 text-sm mb-1" id="user-email">Loading...</p>
-        <button onclick="logout()" class="text-red-400 text-sm hover:text-red-300 transition">Sign out</button>
+        <p class="text-gray-400 text-xs mb-1" id="user-email">Loading...</p>
+        <button onclick="logout()" class="text-red-400 text-xs hover:text-red-300 transition">Sign out</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Nav Tabs -->
+  <nav class="bg-black border-t border-gray-800 px-6">
+    <div class="max-w-5xl mx-auto flex gap-1 py-1">
+      <button class="tab-btn active text-xs px-3 py-1.5 rounded" onclick="showTab('introduction', this)">Introduction</button>
+      <button class="tab-btn text-xs px-3 py-1.5 rounded" onclick="showTab('structure', this)">Qualification Structure</button>
+      <button class="tab-btn text-xs px-3 py-1.5 rounded" onclick="showTab('requirements', this)">Requirements</button>
+      <button class="tab-btn text-xs px-3 py-1.5 rounded" onclick="showTab('documents', this)">Assessment Documents</button>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main class="max-w-5xl mx-auto px-6 py-8">
+
+    <!-- Welcome Banner -->
+    <div class="bg-white border-l-4 border-yellow-500 rounded-xl p-5 mb-6 shadow-sm">
+      <h2 class="text-lg font-bold text-gray-800" id="welcome-heading">Welcome back!</h2>
+      <p class="text-sm text-gray-600 mt-1">Your assessor is <strong class="gold">Michael Kplomedo</strong>. Work through each section using the navigation above.</p>
+    </div>
+
+    <!-- INTRODUCTION -->
+    <div id="tab-introduction" class="section active">
+      <h2 class="text-xl font-bold text-gray-800 border-l-4 border-yellow-500 pl-3 mb-5">Introduction</h2>
+
+      <div class="bg-white rounded-xl border border-gray-200 p-6 mb-5 shadow-sm">
+        <h3 class="font-bold text-gray-800 gold mb-2">What Is This Qualification?</h3>
+        <p class="text-sm text-gray-600">The <strong>Level 3 Certificate in Assessing Vocational Achievement (CAVA)</strong> is a nationally recognised qualification awarded by Focus Awards. It is designed for anyone working in a training or coaching environment who assesses the competence, skills, knowledge, and understanding of learners.</p>
+        <p class="text-sm text-gray-600 mt-2">As a PT Academy learner, you will complete written questions, observation records, and a portfolio of evidence to demonstrate your ability to assess others.</p>
+      </div>
+
+      <div class="bg-white rounded-xl border border-gray-200 p-6 mb-5 shadow-sm">
+        <h3 class="font-bold text-gray-800 gold mb-4">Your Step-by-Step Guide</h3>
+        <div class="flex flex-col gap-4">
+
+          <div class="flex items-start gap-3">
+            <div class="step-num">1</div>
+            <div>
+              <p class="font-semibold text-gray-800 text-sm">Read the course information</p>
+              <p class="text-sm text-gray-500 mt-0.5">Work through the <strong>Qualification Structure</strong> and <strong>Requirements</strong> tabs so you understand what each unit involves and what you need to produce.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="step-num">2</div>
+            <div>
+              <p class="font-semibold text-gray-800 text-sm">Complete your Assessment Plan</p>
+              <p class="text-sm text-gray-500 mt-0.5">Open the Assessment Plan in the <strong>Assessment Documents</strong> tab and fill in your planned completion dates for each unit. Your assessor will countersign this with you.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="step-num">3</div>
+            <div>
+              <p class="font-semibold text-gray-800 text-sm">Unit 1 — Complete all written questions</p>
+              <p class="text-sm text-gray-500 mt-0.5">Unit 1 is knowledge-based. You must answer all written questions fully and in your own words. These cover the principles, types, and legal responsibilities of assessment.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="step-num">4</div>
+            <div>
+              <p class="font-semibold text-gray-800 text-sm">Units 2 & 3 — Complete your practical assessments</p>
+              <p class="text-sm text-gray-500 mt-0.5">For Units 2 and 3, you will work with two PT learners (one Level 2 Gym, one Level 3 Personal Training). You must gather evidence across all seven assessment methods and complete Observation Records for both units.</p>
+            </div>
+          </div>
+
+          <div class="flex items-start gap-3">
+            <div class="step-num">5</div>
+            <div>
+              <p class="font-semibold text-gray-800 text-sm">Submit your portfolio for review</p>
+              <p class="text-sm text-gray-500 mt-0.5">Once all units are complete, submit your portfolio. Your assessor will review your evidence and provide feedback before sign-off.</p>
+            </div>
+          </div>
+
+        </div>
       </div>
     </div>
 
-    <!-- Welcome Banner -->
-    <div class="welcome-banner rounded-2xl p-6 mb-8">
-      <h2 class="text-xl font-semibold mb-1 gold" id="welcome-heading">Welcome back!</h2>
-      <p class="text-gray-300 text-sm">Your assessor is <strong class="gold">Michael Kplomedo</strong>. Complete each section below and submit your work for marking.</p>
+    <!-- QUALIFICATION STRUCTURE -->
+    <div id="tab-structure" class="section">
+      <h2 class="text-xl font-bold text-gray-800 border-l-4 border-yellow-500 pl-3 mb-5">Qualification Structure</h2>
+
+      <div class="bg-white rounded-xl border border-gray-200 p-6 mb-5 shadow-sm">
+        <p class="text-sm text-gray-600 mb-4">The Level 3 CAVA is made up of <strong>three units</strong>. You are required to complete all three units. Unit 1 covers the underpinning theory and principles of assessment.</p>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="unit-card">
+            <p class="font-bold text-sm text-gray-800 mb-1">Unit 1: Understanding the Principles and Practices of Assessment</p>
+            <p class="text-xs text-gray-500">The theory unit. Covers the functions of assessment, types of assessment, quality assurance, and the legal and ethical responsibilities of an assessor. Assessed through written questions.</p>
+          </div>
+          <div class="unit-card">
+            <p class="font-bold text-sm text-gray-800 mb-1">Unit 2: Assess Occupational Competence in the Work Environment</p>
+            <p class="text-xs text-gray-500">The practical unit. You will plan and carry out work-based assessments with your PT learners, using direct observation, work products, and professional discussion to judge competence.</p>
+          </div>
+          <div class="unit-card">
+            <p class="font-bold text-sm text-gray-800 mb-1">Unit 3: Assess Vocational Skills, Knowledge and Understanding</p>
+            <p class="text-xs text-gray-500">The knowledge assessment unit. You will assess learners in classroom or theory-based settings using a range of methods including assignments, oral questioning, and skills tests.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+        <h3 class="font-bold gold mb-3">Your Two Learners</h3>
+        <p class="text-sm text-gray-600 mb-3">Throughout this qualification you must work with <strong>two PT learners at different levels:</strong></p>
+        <ul class="list-disc list-inside text-sm text-gray-600 mb-3">
+          <li>Learner 1: Level 2 Gym Instructing</li>
+          <li>Learner 2: Level 3 Personal Training</li>
+        </ul>
+        <p class="text-sm text-gray-600">You must use a minimum of <strong>7 different assessment methods</strong> across both learners. Evidence from Units 2 and 3 is linked and the Observation Record maps across both units.</p>
+      </div>
     </div>
 
-    <!-- Units Grid -->
-    <h3 class="text-gray-500 text-sm uppercase tracking-widest mb-4">Your Units &amp; Documents</h3>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+    <!-- REQUIREMENTS -->
+    <div id="tab-requirements" class="section">
+      <h2 class="text-xl font-bold text-gray-800 border-l-4 border-yellow-500 pl-3 mb-5">What You Must Produce</h2>
 
-      <!-- Assessment Plan – FIRST -->
-      <a href="assessment-plan.html" class="card block rounded-2xl p-6 group sm:col-span-2">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-xs bg-gold text-black px-2 py-1 rounded-full font-semibold">Start Here</span>
-          <span class="text-xs text-gray-500 group-hover:text-yellow-400 transition">Open →</span>
-        </div>
-        <h4 class="font-semibold text-white mb-1">Assessment Plan</h4>
-        <p class="text-gray-400 text-sm">Agree your assessment schedule and methods with your assessor. Complete this first.</p>
-      </a>
+      <div class="bg-white rounded-xl border border-gray-200 p-6 mb-5 shadow-sm">
+        <div class="unit-header">Unit 1: Understanding the Principles and Practices of Assessment</div>
+        <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+          <li>Answer all written questions — fully and in your own words</li>
+          <li>Learning Outcome 1: Functions of assessment</li>
+          <li>Learning Outcome 2: Legislation, equality, and ethics</li>
+          <li>Learning Outcome 3: Peer and professional relationships</li>
+          <li>Learning Outcome 4: Quality assurance</li>
+        </ul>
+      </div>
 
-      <!-- Unit 1 -->
-      <a href="unit1.html" class="card block rounded-2xl p-6 group">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-xs border border-gold gold px-2 py-1 rounded-full">Unit 1</span>
-          <span class="text-xs text-gray-500 group-hover:text-yellow-400 transition">Open →</span>
-        </div>
-        <h4 class="font-semibold text-white mb-1">Understanding the Principles and Practices of Assessment</h4>
-        <p class="text-gray-400 text-sm">Theory-based unit covering assessment principles, legislation, and ethics.</p>
-      </a>
+      <div class="bg-white rounded-xl border border-gray-200 p-6 mb-5 shadow-sm">
+        <div class="unit-header">Unit 2: Assess Occupational Competence in the Work Environment</div>
+        <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+          <li>Learning Outcome 1: Evidence Gathering and Reflection</li>
+          <li>Learning Outcome 2: Evidence Gathering and Reflection</li>
+          <li>Learning Outcome 3: Evidence Gathering and Reflection</li>
+          <li>Learning Outcome 4: Evidence Gathering and Reflection</li>
+          <li>Observation Record (shared with Unit 3 — maps across both units)</li>
+        </ul>
+      </div>
 
-      <!-- Unit 2 -->
-      <a href="unit2.html" class="card block rounded-2xl p-6 group">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-xs border border-gold gold px-2 py-1 rounded-full">Unit 2</span>
-          <span class="text-xs text-gray-500 group-hover:text-yellow-400 transition">Open →</span>
-        </div>
-        <h4 class="font-semibold text-white mb-1">Assess Occupational Competence in the Work Environment</h4>
-        <p class="text-gray-400 text-sm">Practice-based unit: observation records, questioning, and professional discussion.</p>
-      </a>
+      <div class="bg-white rounded-xl border border-gray-200 p-6 mb-5 shadow-sm">
+        <div class="unit-header">Unit 3: Assess Vocational Skills, Knowledge and Understanding</div>
+        <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+          <li>Learning Outcome 1: Evidence Gathering and Reflection</li>
+          <li>Learning Outcome 2: Evidence Gathering and Reflection</li>
+          <li>Learning Outcome 3: Evidence Gathering and Reflection</li>
+          <li>Learning Outcome 4: Evidence Gathering and Reflection</li>
+          <li>Observation Record (same record as Unit 2 — criteria map into each other)</li>
+        </ul>
+      </div>
 
-      <!-- Action Plan -->
-      <a href="Action Plan.html" class="card block rounded-2xl p-6 group sm:col-span-2">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-xs border border-gold gold px-2 py-1 rounded-full">Document</span>
-          <span class="text-xs text-gray-500 group-hover:text-yellow-400 transition">Open →</span>
-        </div>
-        <h4 class="font-semibold text-white mb-1">Action Plan</h4>
-        <p class="text-gray-400 text-sm">Review targets and actions agreed with your assessor.</p>
-      </a>
-
+      <div class="bg-white rounded-xl border border-gray-200 p-6 shadow-sm">
+        <h3 class="font-bold gold mb-3">The 7 Mandatory Assessment Methods</h3>
+        <p class="text-sm text-gray-600 mb-3">Across both learners and both units, you must demonstrate the use of all seven methods:</p>
+        <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
+          <li>Recognition of Prior Learning (RPL)</li>
+          <li>Direct Observation</li>
+          <li>Examining Work Products</li>
+          <li>Questioning (oral or written)</li>
+          <li>Witness Testimony and Expert Witness</li>
+          <li>Learner Statement and Professional Discussion</li>
+          <li>Simulation (where appropriate)</li>
+        </ul>
+      </div>
     </div>
 
-    <p class="text-center text-gray-600 text-xs">CAVA LMS &middot; Focus Awards &middot; PT Academy</p>
-  </div>
+    <!-- ASSESSMENT DOCUMENTS -->
+    <div id="tab-documents" class="section">
+      <h2 class="text-xl font-bold text-gray-800 border-l-4 border-yellow-500 pl-3 mb-5">Assessment Documents</h2>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+
+        <a href="assessment-plan.html" class="doc-card sm:col-span-2 block">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs bg-gold text-black px-2 py-1 rounded-full font-semibold">Start Here</span>
+            <span class="text-xs text-gray-400 hover:text-yellow-500">Open →</span>
+          </div>
+          <h4 class="font-semibold text-gray-800 mb-1">Assessment Plan</h4>
+          <p class="text-sm text-gray-500">Agree your assessment schedule and methods with your assessor. Fill in your planned end dates and have this countersigned before you begin.</p>
+        </a>
+
+        <a href="unit1.html" class="doc-card block">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs border border-yellow-500 gold px-2 py-1 rounded-full">Unit 1</span>
+            <span class="text-xs text-gray-400 hover:text-yellow-500">Open →</span>
+          </div>
+          <h4 class="font-semibold text-gray-800 mb-1">Understanding the Principles and Practices of Assessment</h4>
+          <p class="text-sm text-gray-500">Written questions covering assessment theory, legislation, and ethics.</p>
+        </a>
+
+        <a href="unit2.html" class="doc-card block">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs border border-yellow-500 gold px-2 py-1 rounded-full">Units 2 & 3</span>
+            <span class="text-xs text-gray-400 hover:text-yellow-500">Open →</span>
+          </div>
+          <h4 class="font-semibold text-gray-800 mb-1">Assess Occupational Competence & Vocational Skills</h4>
+          <p class="text-sm text-gray-500">Observation records, evidence gathering, and reflection across both practical units.</p>
+        </a>
+
+        <a href="action-plan.html" class="doc-card sm:col-span-2 block">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs border border-yellow-500 gold px-2 py-1 rounded-full">Document</span>
+            <span class="text-xs text-gray-400 hover:text-yellow-500">Open →</span>
+          </div>
+          <h4 class="font-semibold text-gray-800 mb-1">Action Plan</h4>
+          <p class="text-sm text-gray-500">Review targets and actions agreed with your assessor following feedback sessions.</p>
+        </a>
+
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="text-center text-gray-400 text-xs py-4">
+    PT Academy &middot; Focus Awards Level 3 CAVA &middot; QRN: 601/6104/8 &middot; Learner Hub
+  </footer>
 
   <script>
     const token = localStorage.getItem('cava_token');
@@ -113,11 +262,10 @@
     } else {
       const user = JSON.parse(userRaw);
       document.getElementById('user-email').textContent = user.email || 'Learner';
-
       const firstName = localStorage.getItem('cava_first_name');
       const name = firstName || user.full_name || user.name || null;
       if (name) {
-        document.getElementById('welcome-heading').textContent = 'Welcome back, ' + name + '!';
+        document.getElementById('welcome-heading').textContent = 'Welcome, ' + name + '!';
       }
     }
 
@@ -126,6 +274,13 @@
       localStorage.removeItem('cava_user');
       localStorage.removeItem('cava_first_name');
       window.location.href = 'login.html';
+    }
+
+    function showTab(id, btn) {
+      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.getElementById('tab-' + id).classList.add('active');
+      btn.classList.add('active');
     }
   </script>
 
