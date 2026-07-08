@@ -773,6 +773,275 @@ function showFilename(input, targetId) {
 
 <!-- Spacer so page content isn't hidden behind the save bar -->
 <div style="height:70px;"></div>
+<!--
+  ==================== STEP 3: SUPABASE SAVE/LOAD JAVASCRIPT ====================
+  Paste this block immediately AFTER the existing <script>...</script> block
+  and BEFORE </body> in unit2.html.
+  Replace YOUR_SUPABASE_URL and YOUR_SUPABASE_ANON_KEY with your actual values.
+-->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function () {
+
+  // ── CONFIG ──────────────────────────────────────────────────────────────────
+  const SUPABASE_URL  = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
+  const SUPABASE_KEY  = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
+  const TABLE         = 'unit2_submissions';
+  const DEBOUNCE_MS   = 3000;
+
+  // ── INIT ────────────────────────────────────────────────────────────────────
+  const { createClient } = supabase;
+  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let saveTimer = null;
+
+  // ── FIELD COLLECTION ────────────────────────────────────────────────────────
+  // Collects every saveable field into a plain object.
+  // Keys are element IDs (or generated stable keys for anonymous elements).
+  function collectData() {
+    const data = {};
+
+    // Text inputs, date inputs, textareas — all have IDs in this form
+    document.querySelectorAll('textarea[id], input[type="text"][id], input[type="date"][id]')
+      .forEach(function (el) {
+        data[el.id] = el.value;
+      });
+
+    // Named selects (plan-type selects, evidence multi-selects, unit selects)
+    document.querySelectorAll('select[id]').forEach(function (el) {
+      data[el.id] = Array.from(el.selectedOptions).map(function (o) { return o.value || o.text; });
+    });
+
+    // Anonymous selects (evidence + unit selects without IDs — keyed by stable index)
+    document.querySelectorAll('select:not([id])').forEach(function (el, i) {
+      data['__select_' + i] = Array.from(el.selectedOptions).map(function (o) { return o.value || o.text; });
+    });
+
+    // Anonymous date inputs (summary blocks — no IDs)
+    document.querySelectorAll('input[type="date"]:not([id])').forEach(function (el, i) {
+      data['__date_' + i] = el.value;
+    });
+
+    // Anonymous text inputs (signature fields in summary blocks — no IDs)
+    document.querySelectorAll('input[type="text"]:not([id])').forEach(function (el, i) {
+      data['__text_' + i] = el.value;
+    });
+
+    // Anonymous textareas (Additional Notes in summary blocks — no IDs)
+    document.querySelectorAll('textarea:not([id])').forEach(function (el, i) {
+      data['__textarea_' + i] = el.value;
+    });
+
+    // Toggle buttons (Pass/Refer in judgement panels)
+    data['__toggles'] = collectToggles();
+
+    // Summary toggles (Pass/Refer in summary blocks)
+    data['__summary_toggles'] = collectSummaryToggles();
+
+    return data;
+  }
+
+  function collectToggles() {
+    const state = [];
+    document.querySelectorAll('.toggle-row').forEach(function (row) {
+      var active = row.querySelector('.toggle-btn.active');
+      state.push(active ? active.textContent.trim() : null);
+    });
+    return state;
+  }
+
+  function collectSummaryToggles() {
+    const state = [];
+    document.querySelectorAll('.summary-toggle-row').forEach(function (row) {
+      var active = row.querySelector('.summary-toggle.active');
+      state.push(active ? active.textContent.trim() : null);
+    });
+    return state;
+  }
+
+  // ── FIELD RESTORATION ───────────────────────────────────────────────────────
+  function restoreData(data) {
+    if (!data) return;
+
+    // Named textareas, text inputs, date inputs
+    document.querySelectorAll('textarea[id], input[type="text"][id], input[type="date"][id]')
+      .forEach(function (el) {
+        if (data[el.id] !== undefined) el.value = data[el.id];
+      });
+
+    // Named selects
+    document.querySelectorAll('select[id]').forEach(function (el) {
+      var saved = data[el.id];
+      if (!saved) return;
+      Array.from(el.options).forEach(function (opt) {
+        opt.selected = saved.indexOf(opt.value || opt.text) !== -1;
+      });
+    });
+
+    // Anonymous selects
+    document.querySelectorAll('select:not([id])').forEach(function (el, i) {
+      var saved = data['__select_' + i];
+      if (!saved) return;
+      Array.from(el.options).forEach(function (opt) {
+        opt.selected = saved.indexOf(opt.value || opt.text) !== -1;
+      });
+    });
+
+    // Anonymous date inputs
+    document.querySelectorAll('input[type="date"]:not([id])').forEach(function (el, i) {
+      if (data['__date_' + i] !== undefined) el.value = data['__date_' + i];
+    });
+
+    // Anonymous text inputs
+    document.querySelectorAll('input[type="text"]:not([id])').forEach(function (el, i) {
+      if (data['__text_' + i] !== undefined) el.value = data['__text_' + i];
+    });
+
+    // Anonymous textareas
+    document.querySelectorAll('textarea:not([id])').forEach(function (el, i) {
+      if (data['__textarea_' + i] !== undefined) el.value = data['__textarea_' + i];
+    });
+
+    // Toggle buttons
+    if (Array.isArray(data['__toggles'])) {
+      document.querySelectorAll('.toggle-row').forEach(function (row, i) {
+        var saved = data['__toggles'][i];
+        if (!saved) return;
+        row.querySelectorAll('.toggle-btn').forEach(function (btn) {
+          btn.classList.toggle('active', btn.textContent.trim() === saved);
+        });
+      });
+    }
+
+    // Summary toggles
+    if (Array.isArray(data['__summary_toggles'])) {
+      document.querySelectorAll('.summary-toggle-row').forEach(function (row, i) {
+        var saved = data['__summary_toggles'][i];
+        if (!saved) return;
+        row.querySelectorAll('.summary-toggle').forEach(function (btn) {
+          btn.classList.toggle('active', btn.textContent.trim() === saved);
+        });
+      });
+    }
+  }
+
+  // ── STATUS HELPER ───────────────────────────────────────────────────────────
+  function setStatus(msg, colour) {
+    var el = document.getElementById('save-status');
+    if (el) {
+      el.textContent = msg;
+      el.style.color = colour || '#c9a84c';
+    }
+  }
+
+  // ── GET LEARNER NAME ────────────────────────────────────────────────────────
+  function getLearnerName() {
+    var el = document.getElementById('save-learner-name');
+    return el ? el.value.trim() : '';
+  }
+
+  // ── SAVE ────────────────────────────────────────────────────────────────────
+  async function saveNow() {
+    var name = getLearnerName();
+    if (!name) {
+      setStatus('Enter your name to save.', '#e0c97a');
+      return;
+    }
+    setStatus('Saving\u2026', '#e0c97a');
+    try {
+      var payload = {
+        learner_name: name,
+        form_data: collectData(),
+        updated_at: new Date().toISOString()
+      };
+      var { error } = await db
+        .from(TABLE)
+        .upsert(payload, { onConflict: 'learner_name' });
+
+      if (error) throw error;
+      setStatus('Saved ' + new Date().toLocaleTimeString('en-GB'), '#a8e063');
+    } catch (err) {
+      console.error('Save error:', err);
+      setStatus('Save failed \u2014 check connection.', '#e05555');
+    }
+  }
+
+  // ── AUTO-SAVE SCHEDULER ─────────────────────────────────────────────────────
+  function scheduleSave() {
+    clearTimeout(saveTimer);
+    var name = getLearnerName();
+    if (!name) return;
+    setStatus('Unsaved changes\u2026', '#e0c97a');
+    saveTimer = setTimeout(saveNow, DEBOUNCE_MS);
+  }
+
+  // ── LOAD ────────────────────────────────────────────────────────────────────
+  async function loadData(name) {
+    if (!name) return;
+    setStatus('Loading\u2026', '#e0c97a');
+    try {
+      var { data, error } = await db
+        .from(TABLE)
+        .select('form_data')
+        .eq('learner_name', name)
+        .maybeSingle();
+
+      if (error) throw error;
+      if (data && data.form_data) {
+        restoreData(data.form_data);
+        setStatus('Loaded ' + new Date().toLocaleTimeString('en-GB'), '#a8e063');
+      } else {
+        setStatus('No saved data found.', '#e0c97a');
+      }
+    } catch (err) {
+      console.error('Load error:', err);
+      setStatus('Load failed \u2014 check connection.', '#e05555');
+    }
+  }
+
+  // ── ATTACH CHANGE LISTENERS ─────────────────────────────────────────────────
+  // Fires scheduleSave on any field change (except the name input, which
+  // already calls scheduleSave via oninput in the HTML).
+  function attachListeners() {
+    document.querySelectorAll(
+      'textarea, input[type="text"], input[type="date"], select'
+    ).forEach(function (el) {
+      if (el.id === 'save-learner-name') return; // handled separately
+      el.addEventListener('change', scheduleSave);
+      el.addEventListener('input', scheduleSave);
+    });
+
+    // Toggle buttons — observe via click delegation
+    document.addEventListener('click', function (e) {
+      if (e.target.classList.contains('toggle-btn') ||
+          e.target.classList.contains('summary-toggle')) {
+        scheduleSave();
+      }
+    });
+  }
+
+  // ── LOAD ON NAME BLUR ───────────────────────────────────────────────────────
+  // When the user finishes typing their name and moves away, attempt to load.
+  var nameInput = document.getElementById('save-learner-name');
+  if (nameInput) {
+    nameInput.addEventListener('blur', function () {
+      var name = getLearnerName();
+      if (name) loadData(name);
+    });
+  }
+
+  // ── EXPOSE GLOBALS ──────────────────────────────────────────────────────────
+  // saveNow() is called by the Save Now button onclick in the HTML.
+  // scheduleSave() is called by oninput on the name field in the HTML.
+  window.saveNow      = saveNow;
+  window.scheduleSave = scheduleSave;
+
+  // ── INIT ────────────────────────────────────────────────────────────────────
+  attachListeners();
+
+})();
+</script>
 
 </body>
 </html>
