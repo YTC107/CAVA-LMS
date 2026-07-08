@@ -1,19 +1,26 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>CAVA – Assessor Hub</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    :root {
-      --gold: #C9A84C;
-      --gold-light: #e2c97e;
-    }
+    :root { --gold: #C9A84C; }
     .gold-text { color: #C9A84C; }
-    .gold-border { border-color: #C9A84C; }
     .gold-bg { background-color: #C9A84C; }
     .card-hover:hover { border-color: #C9A84C; box-shadow: 0 4px 16px rgba(201,168,76,0.15); }
+    .judgement-btn { border: 2px solid; padding: 4px 18px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s; background: white; }
+    .judgement-btn.pass-btn { border-color: #16a34a; color: #16a34a; }
+    .judgement-btn.pass-btn.selected { background: #16a34a; color: white; }
+    .judgement-btn.refer-btn { border-color: #dc2626; color: #dc2626; }
+    .judgement-btn.refer-btn.selected { background: #dc2626; color: white; }
+    .feedback-card { background: #fefdf5; border: 1.5px solid #C9A84C; border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+    .save-indicator { font-size: 11px; color: #6b7280; height: 16px; margin-top: 4px; }
+    .lo-label { background: #1a1a2e; color: #C9A84C; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+    details > summary { list-style: none; cursor: pointer; }
+    details > summary::-webkit-details-marker { display: none; }
   </style>
 </head>
 <body class="min-h-screen bg-gray-50 text-gray-900 px-4 py-8">
@@ -23,11 +30,7 @@
     <!-- Header -->
     <div class="flex items-center justify-between mb-8 px-6 py-5 rounded-2xl" style="background-color:#0a0a0a;">
       <div class="flex items-center gap-4">
-        <img
-          src="https://kplomedo.github.io/CAVA-LMS/pt-academy-logo.png"
-          alt="PT Academy Logo"
-          class="h-14 w-auto"
-        />
+        <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy Logo" class="h-14 w-auto" />
         <div>
           <h1 class="text-2xl font-bold gold-text">Assessor Hub</h1>
           <p class="text-gray-400 text-sm">Level 3 Certificate in Assessing Vocational Achievement</p>
@@ -42,14 +45,14 @@
     <!-- Welcome Banner -->
     <div class="rounded-2xl p-6 mb-8 border-l-4 bg-white shadow-sm" style="border-left-color:#C9A84C;">
       <h2 class="text-xl font-semibold text-gray-900 mb-1">Welcome, Michael</h2>
-      <p class="text-gray-500 text-sm">Manage learner progress, complete observation records, and track assessment activity across all learners below.</p>
+      <p class="text-gray-500 text-sm">Manage learner progress, complete observation records, and mark submitted unit work below.</p>
     </div>
 
     <!-- Assessor Documents -->
     <h3 class="text-gray-400 text-xs uppercase tracking-widest mb-4">Assessor Documents</h3>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
 
-      <!-- Assessment Plan – FIRST, full width -->
+      <!-- Assessment Plan -->
       <a href="assessment-plan.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group sm:col-span-2">
         <div class="flex items-center justify-between mb-3">
           <span class="text-xs text-black px-2 py-1 rounded-full font-semibold gold-bg">Start Here</span>
@@ -84,8 +87,6 @@
     <!-- Learner Progress Dashboard -->
     <h3 class="text-gray-400 text-xs uppercase tracking-widest mb-4">Learner Progress</h3>
     <div class="bg-white rounded-2xl border overflow-hidden mb-10 shadow-sm" style="border-color:#C9A84C;">
-
-      <!-- Table Header -->
       <div class="grid grid-cols-6 text-xs uppercase tracking-widest px-4 py-3 font-semibold" style="background-color:#0a0a0a; color:#C9A84C; border-bottom:1px solid #C9A84C;">
         <div class="col-span-2">Learner</div>
         <div class="text-center">Assessment Plan</div>
@@ -93,11 +94,7 @@
         <div class="text-center">Unit 2</div>
         <div class="text-center">Action Plan</div>
       </div>
-
-      <!-- Learner Rows -->
       <div id="learner-table">
-
-        <!-- Anthony Bevan -->
         <div class="grid grid-cols-6 items-center px-4 py-4 border-b border-gray-100">
           <div class="col-span-2">
             <p class="text-gray-900 font-medium text-sm">Anthony Bevan</p>
@@ -108,8 +105,6 @@
           <a href="unit2.html" class="text-center text-lg block hover:scale-110 transition" title="Unit 2">⬜</a>
           <a href="Action Plan.html" class="text-center text-lg block hover:scale-110 transition" title="Action Plan">⬜</a>
         </div>
-
-        <!-- Michael Kplomedo (test) -->
         <div class="grid grid-cols-6 items-center px-4 py-4 border-b border-gray-100">
           <div class="col-span-2">
             <p class="text-gray-900 font-medium text-sm">Michael Kplomedo</p>
@@ -120,21 +115,188 @@
           <a href="unit2.html" class="text-center text-lg block hover:scale-110 transition" title="Unit 2">🔄</a>
           <a href="Action Plan.html" class="text-center text-lg block hover:scale-110 transition" title="Action Plan">⬜</a>
         </div>
-
       </div>
-
-      <!-- Legend -->
       <div class="flex gap-6 px-4 py-3 text-xs text-gray-400 bg-gray-50">
         <span>✅ Complete</span>
         <span>🔄 In Progress</span>
         <span>⬜ Not Started</span>
       </div>
+    </div>
+
+    <!-- Unit 1 Marking -->
+    <h3 class="text-gray-400 text-xs uppercase tracking-widest mb-4">Mark Unit 1 — Select Learner</h3>
+
+    <!-- Learner Selector -->
+    <div class="bg-white rounded-2xl border border-gray-200 p-5 mb-6 shadow-sm">
+      <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Learner</label>
+      <select id="markingLearner" onchange="loadFeedback()" class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-2 text-sm">
+        <option value="">— Select a learner —</option>
+        <option value="anthony-bevan">Anthony Bevan</option>
+        <option value="michael-kplomedo">Michael Kplomedo (test)</option>
+      </select>
+      <div id="learnerLoadMsg" class="text-xs text-gray-400 mt-2"></div>
+    </div>
+
+    <!-- Per-LO Feedback Cards -->
+    <div id="markingPanel" style="display:none;">
+
+      <!-- Note -->
+      <div class="bg-blue-50 border border-blue-200 rounded-xl px-5 py-3 mb-6 text-sm text-blue-700">
+        Select <strong>Pass</strong> or <strong>Refer</strong> for each learning outcome, write your feedback, then click <strong>Save Feedback</strong>. The learner will see this immediately when they next open their worksheet.
+      </div>
+
+      <!-- LO Cards -->
+      <div id="loFeedbackCards"></div>
 
     </div>
 
-    <p class="text-center text-gray-400 text-xs">CAVA LMS · Focus Awards · PT Academy</p>
+    <p class="text-center text-gray-400 text-xs mt-10">CAVA LMS &middot; Focus Awards &middot; PT Academy</p>
 
   </div>
+
+<script>
+const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const LO_LIST = [
+  { id: 'lo1', label: 'LO1', title: 'Understand the principles and requirements of assessment' },
+  { id: 'lo2', label: 'LO2', title: 'Understand different types of assessment method' },
+  { id: 'lo3', label: 'LO3', title: 'Understand how to plan assessment' },
+  { id: 'lo4', label: 'LO4', title: 'Understand how to involve learners and others in assessment' },
+  { id: 'lo5', label: 'LO5', title: 'Understand how to make assessment decisions' },
+  { id: 'lo6', label: 'LO6', title: 'Understand quality assurance of the assessment process' },
+  { id: 'lo7', label: 'LO7', title: 'Understand how to manage information relating to assessment' },
+  { id: 'lo8', label: 'LO8', title: 'Understand the legal and good practice requirements in relation to assessment' }
+];
+
+// Map selector values to Supabase user IDs
+// These should match the actual user IDs in your auth table
+const LEARNER_USER_IDS = {
+  'anthony-bevan': 'anthony-bevan-user-id',
+  'michael-kplomedo': 'michael-kplomedo-user-id'
+};
+
+let selectedUserId = null;
+let outcomeSelections = {};
+
+function buildMarkingCards() {
+  const container = document.getElementById('loFeedbackCards');
+  container.innerHTML = '';
+  LO_LIST.forEach(lo => {
+    outcomeSelections[lo.id] = null;
+    container.innerHTML += `
+      <div class="feedback-card" id="card-${lo.id}">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <span class="lo-label">${lo.label}</span>
+            <div class="text-sm font-semibold text-gray-800 mt-1">${lo.title}</div>
+          </div>
+        </div>
+        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
+        <div class="flex gap-3 mb-4">
+          <button class="judgement-btn pass-btn" id="pass-${lo.id}" onclick="selectOutcome('${lo.id}', 'Pass')">Pass</button>
+          <button class="judgement-btn refer-btn" id="refer-${lo.id}" onclick="selectOutcome('${lo.id}', 'Refer')">Refer</button>
+        </div>
+        <div class="text-xs font-semibold text-gray-500 mb-1">Feedback to Learner</div>
+        <textarea id="fb-${lo.id}" rows="4" placeholder="Write your feedback here..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm resize-y"></textarea>
+        <div class="flex items-center justify-between mt-3">
+          <div class="save-indicator" id="si-${lo.id}"></div>
+          <button onclick="saveFeedback('${lo.id}')" class="gold-bg text-black text-xs font-bold px-5 py-2 rounded-lg hover:opacity-90 transition">Save Feedback</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function selectOutcome(loId, outcome) {
+  outcomeSelections[loId] = outcome;
+  const passBtn = document.getElementById('pass-' + loId);
+  const referBtn = document.getElementById('refer-' + loId);
+  passBtn.classList.toggle('selected', outcome === 'Pass');
+  referBtn.classList.toggle('selected', outcome === 'Refer');
+}
+
+async function loadFeedback() {
+  const sel = document.getElementById('markingLearner').value;
+  const panel = document.getElementById('markingPanel');
+  const msg = document.getElementById('learnerLoadMsg');
+
+  if (!sel) { panel.style.display = 'none'; msg.textContent = ''; return; }
+
+  msg.textContent = 'Loading...';
+
+  // Fetch user_id from unit1_submissions by matching learner name
+  const nameMap = { 'anthony-bevan': 'Anthony Bevan', 'michael-kplomedo': 'Michael Kplomedo' };
+  const { data: subData } = await sb
+    .from('unit1_submissions')
+    .select('user_id, learner_name')
+    .ilike('learner_name', nameMap[sel])
+    .maybeSingle();
+
+  if (!subData) {
+    msg.textContent = 'No submitted worksheet found for this learner yet.';
+    panel.style.display = 'none';
+    return;
+  }
+
+  selectedUserId = subData.user_id;
+  msg.textContent = '';
+
+  buildMarkingCards();
+  panel.style.display = 'block';
+
+  // Load existing feedback if any
+  const { data: rows } = await sb
+    .from('unit1_feedback')
+    .select('*')
+    .eq('user_id', selectedUserId);
+
+  if (rows && rows.length > 0) {
+    rows.forEach(row => {
+      const fbEl = document.getElementById('fb-' + row.lo);
+      if (fbEl) fbEl.value = row.feedback_text || '';
+      if (row.outcome) selectOutcome(row.lo, row.outcome);
+      const si = document.getElementById('si-' + row.lo);
+      if (si) si.textContent = '✓ Previously saved';
+    });
+  }
+}
+
+async function saveFeedback(loId) {
+  if (!selectedUserId) return;
+  const outcome = outcomeSelections[loId];
+  const text = document.getElementById('fb-' + loId)?.value.trim();
+  const si = document.getElementById('si-' + loId);
+
+  if (!outcome) { si.textContent = '⚠ Please select Pass or Refer'; si.style.color = '#dc2626'; return; }
+  if (!text) { si.textContent = '⚠ Please write feedback before saving'; si.style.color = '#dc2626'; return; }
+
+  si.textContent = 'Saving...';
+  si.style.color = '#6b7280';
+
+  const payload = {
+    user_id: selectedUserId,
+    lo: loId,
+    outcome: outcome,
+    feedback_text: text,
+    saved_at: new Date().toISOString()
+  };
+
+  const { error } = await sb
+    .from('unit1_feedback')
+    .upsert(payload, { onConflict: 'user_id,lo' });
+
+  if (error) {
+    si.textContent = '⚠ Save failed — ' + error.message;
+    si.style.color = '#dc2626';
+  } else {
+    si.textContent = '✓ Feedback saved';
+    si.style.color = '#16a34a';
+  }
+}
+</script>
 
 </body>
 </html>
