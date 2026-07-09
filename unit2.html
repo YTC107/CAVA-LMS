@@ -791,7 +791,7 @@ function showFilename(input, targetId) {
   const DEBOUNCE_MS   = 3000;
 
   // ── INIT ────────────────────────────────────────────────────────────────────
-  const { createClient } = supabase;
+const { createClient } = window.supabase;
   const db = createClient(SUPABASE_URL, SUPABASE_KEY);
 
   let saveTimer = null;
