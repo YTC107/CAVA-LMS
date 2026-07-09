@@ -951,13 +951,13 @@ const { createClient } = window.supabase;
     setStatus('Saving\u2026', '#e0c97a');
     try {
       var payload = {
-        learner_name: name,
+trainee_assessor_name: name,
         form_data: collectData(),
         updated_at: new Date().toISOString()
       };
       var { error } = await db
         .from(TABLE)
-        .upsert(payload, { onConflict: 'learner_name' });
+        .upsert(payload, { onConflict: 'trainee_assessor_name'});
 
       if (error) throw error;
       setStatus('Saved ' + new Date().toLocaleTimeString('en-GB'), '#a8e063');
@@ -984,7 +984,7 @@ const { createClient } = window.supabase;
       var { data, error } = await db
         .from(TABLE)
         .select('form_data')
-        .eq('learner_name', name)
+        .eq('trainee_assessor_name', name)
         .maybeSingle();
 
       if (error) throw error;
