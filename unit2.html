@@ -346,23 +346,36 @@ function collectData() {
 async function saveData() {
   const name = document.getElementById('cand-name').value.trim();
   if (!name) { alert('Please enter the Trainee Assessor Name before saving.'); return; }
-  document.getElementById('save-status').textContent = 'Saving\u2026';
+  const statusEl = document.getElementById('save-status');
+  statusEl.textContent = 'Saving\u2026';
+  statusEl.style.color = '#c9a84c';
   const payload = { trainee_assessor_name: name, form_data: collectData(), updated_at: new Date().toISOString() };
   try {
     const res = await fetch(SUPABASE_URL + '/rest/v1/unit2_submissions', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + SUPABASE_KEY, 'Prefer': 'resolution=merge-duplicates' },
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Prefer': 'resolution=merge-duplicates,return=minimal'
+      },
       body: JSON.stringify(payload)
     });
     if (!res.ok) throw new Error(await res.text());
     unsaved = false;
     const t = new Date();
     const hh = String(t.getHours()).padStart(2,'0'), mm = String(t.getMinutes()).padStart(2,'0'), ss = String(t.getSeconds()).padStart(2,'0');
-    document.getElementById('save-status').textContent = 'Saved \u2713 ' + hh + ':' + mm + ':' + ss;
+    statusEl.textContent = 'Saved \u2713 ' + hh + ':' + mm + ':' + ss;
+    statusEl.style.color = '#a8e063';
+    setTimeout(() => { if (!unsaved) statusEl.style.color = '#c9a84c'; }, 3000);
   } catch(e) {
-    document.getElementById('save-status').textContent = 'Save failed \u2014 ' + e.message;
+    statusEl.textContent = 'Save failed \u2014 ' + e.message;
+    statusEl.style.color = '#ff6b6b';
   }
 }
+
+// Autosave every 60 seconds if there are unsaved changes
+setInterval(() => { if (unsaved) saveData(); }, 60000);
 
 async function loadData() {
   const name = document.getElementById('cand-name').value.trim();
