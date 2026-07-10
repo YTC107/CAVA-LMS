@@ -288,6 +288,7 @@ textarea { resize: vertical; }
 const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3amVqcXFna3Zrcm9xaG1mZ2xnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0MjA4NDIsImV4cCI6MjA5ODk5Njg0Mn0.BKvPDF3heQZ-sLgIa8hwx6kRhRam5tZgCMGvgAYXXmU';
 let unsaved = false;
+let saveDebounce = null;
 
 function showLO(n) {
   document.querySelectorAll('.lo-section').forEach(s => s.classList.remove('active'));
@@ -327,6 +328,9 @@ function showFilename(input, displayId) {
 function markUnsaved() {
   unsaved = true;
   document.getElementById('save-status').textContent = 'Unsaved changes\u2026';
+  document.getElementById('save-status').style.color = '#c9a84c';
+  clearTimeout(saveDebounce);
+  saveDebounce = setTimeout(() => { if (unsaved) saveData(); }, 2000);
 }
 
 document.querySelectorAll('input, textarea, select').forEach(el => {
@@ -374,8 +378,7 @@ async function saveData() {
   }
 }
 
-// Autosave every 60 seconds if there are unsaved changes
-setInterval(() => { if (unsaved) saveData(); }, 60000);
+// Autosave is debounce-triggered via markUnsaved — no interval needed
 
 async function loadData() {
   const name = document.getElementById('cand-name').value.trim();
