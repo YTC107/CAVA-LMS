@@ -404,13 +404,9 @@
       btn.classList.toggle('open', !isOpen);
       chevron.classList.toggle('open', !isOpen);
     }
-              chevron.classList.toggle('open', !isOpen);
-        }
 
-        // Auto-switch to Assessment Documents tab if URL hash matches
-        if (window.location.hash === '#assessment-documents') {
-          const docBtn = document.querySelector('.tab-btn[onclick*="\'documents\'"]');
-          if (docBtn) showTab('documents', docBtn);
+if (window.location.hash === '#assessment-documents') {
+  showTabByName('documents');
         }
     </script>
   </script>
