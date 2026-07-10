@@ -69,29 +69,67 @@ textarea { resize: vertical; }
 .summary-toggle { padding: 9px 24px; border: 2px solid #c9a84c; background: #222; color: #c9a84c; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px; }
 .summary-toggle.active { background: #c9a84c; color: #111; }
 .site-footer { background: #111; color: #c9a84c; text-align: center; padding: 16px; font-size: 13px; font-weight: bold; margin-top: 30px; }
+/* Auth overlay */
+#auth-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9000; display: flex; align-items: center; justify-content: center; }
+#auth-box { background: #1a1a1a; border: 2px solid #c9a84c; border-radius: 10px; padding: 36px 32px; width: 100%; max-width: 400px; }
+#auth-box h2 { color: #c9a84c; font-size: 18px; margin-bottom: 6px; }
+#auth-box p { color: #e0c97a; font-size: 13px; margin-bottom: 20px; }
+#auth-box label { color: #c9a84c; font-size: 13px; font-weight: bold; margin-bottom: 4px; margin-top: 12px; }
+#auth-box input { background: #222; color: #c9a84c; border: 1px solid #c9a84c; border-radius: 4px; padding: 9px 12px; font-size: 14px; width: 100%; }
+#auth-box input::placeholder { color: #666; }
+#auth-submit { margin-top: 20px; width: 100%; background: #c9a84c; color: #111; border: none; padding: 11px; font-size: 15px; font-weight: bold; border-radius: 5px; cursor: pointer; }
+#auth-submit:hover { background: #e0c97a; }
+#auth-toggle-link { display: block; text-align: center; margin-top: 14px; color: #e0c97a; font-size: 13px; cursor: pointer; text-decoration: underline; }
+#auth-message { margin-top: 12px; font-size: 13px; text-align: center; min-height: 18px; }
+/* Save bar */
+#save-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #111; border-top: 3px solid #c9a84c; padding: 10px 24px; display: flex; align-items: center; gap: 16px; z-index: 2000; }
+#save-bar-user { color: #e0c97a; font-size: 13px; flex: 1; }
+#save-status { font-size: 13px; color: #c9a84c; min-width: 180px; text-align: right; }
+#logout-btn { background: transparent; color: #c9a84c; border: 1px solid #c9a84c; padding: 7px 16px; font-size: 13px; font-weight: bold; border-radius: 4px; cursor: pointer; }
+#logout-btn:hover { background: #c9a84c; color: #111; }
+@media print { #auth-overlay, #save-bar, .top-nav, .pdf-btn { display: none !important; } .lo-section { display: block !important; } }
 </style>
 </head>
 <body>
-<nav class="top-nav">
-  <button onclick="window.location.href='index.html#intro'" id="btn-intro">Introduction</button>
-  <button onclick="window.location.href='index.html#structure'" id="btn-structure">Qualification Structure</button>
-  <button onclick="window.location.href='index.html#requirements'" id="btn-requirements">Requirements</button>
-  <button onclick="window.location.href='index.html'" id="btn-documents" class="active">Assessment Documents</button>
-  <button onclick="window.location.href='index.html#declaration'" id="btn-declaration">Declaration</button>
+
+<!-- ==================== AUTH OVERLAY ==================== -->
+<div id="auth-overlay">
+  <div id="auth-box">
+    <h2>PT Academy &bull; Unit 2 Worksheet</h2>
+    <p id="auth-subtitle">Sign in to access and save your work.</p>
+    <label for="auth-email">Email address</label>
+    <input type="email" id="auth-email" placeholder="you@example.com" autocomplete="username">
+    <label for="auth-password">Password</label>
+    <input type="password" id="auth-password" placeholder="Password" autocomplete="current-password">
+    <button id="auth-submit" onclick="authAction()">Sign In</button>
+    <span id="auth-toggle-link" onclick="toggleAuthMode()">No account yet? Register here</span>
+    <div id="auth-message"></div>
+  </div>
+</div>
+
+<!-- ==================== TOP NAV (links to index.html) ==================== -->
+<nav class="top-nav" style="background:#1a1a1a; gap:6px;">
+  <button onclick="window.location.href='index.html#intro'" style="background:#222;color:#c9a84c;border:1px solid #c9a84c;padding:7px 14px;border-radius:4px;cursor:pointer;font-size:13px;">Introduction</button>
+  <button onclick="window.location.href='index.html#structure'" style="background:#222;color:#c9a84c;border:1px solid #c9a84c;padding:7px 14px;border-radius:4px;cursor:pointer;font-size:13px;">Qualification Structure</button>
+  <button onclick="window.location.href='index.html#requirements'" style="background:#222;color:#c9a84c;border:1px solid #c9a84c;padding:7px 14px;border-radius:4px;cursor:pointer;font-size:13px;">Requirements</button>
+  <button onclick="window.location.href='index.html'" style="background:#c9a84c;color:#111;border:1px solid #c9a84c;padding:7px 14px;border-radius:4px;cursor:pointer;font-size:13px;font-weight:bold;">Assessment Documents</button>
+  <button onclick="window.location.href='index.html#declaration'" style="background:#222;color:#c9a84c;border:1px solid #c9a84c;padding:7px 14px;border-radius:4px;cursor:pointer;font-size:13px;">Declaration</button>
 </nav>
 
+<!-- ==================== SITE HEADER ==================== -->
 <header class="site-header">
   <div class="header-left">
     <div class="logo-box">
-      <img src="pt-academy-logo.png" alt="PT Academy Logo" style="width:60px; height:60px; object-fit:contain;" onerror="this.style.display='none'">
+      <img src="pt-academy-logo.png" alt="PT Academy Logo" onerror="this.style.display='none'">
     </div>
     <div class="header-titles">
-      <h1>Focus Awards Level 3 Certificate in Assessing Vocational Achievement (RQF) (CAVA)<br>Unit 2 Evidence Worksheet</h1>
+      <h1 style="font-size:16px;">Focus Awards Level 3 Certificate in Assessing Vocational Achievement (RQF) (CAVA)<br>Unit 2 Evidence Worksheet</h1>
     </div>
   </div>
-  <div style="color:#ffffff;">QRN: 601/6104/8</div>
+  <div style="color:#ffffff; font-size:13px;">QRN: 601/6104/8</div>
 </header>
 
+<!-- ==================== LO NAV TABS ==================== -->
 <div class="top-nav">
   <button class="nav-tab active-tab" onclick="showLO(1)">LO1 Plan Assessment</button>
   <button class="nav-tab" onclick="showLO(2)">LO2 Assessment Decisions</button>
@@ -100,15 +138,15 @@ textarea { resize: vertical; }
   <button class="pdf-btn" onclick="window.print()">&#11015; Download as PDF</button>
 </div>
 
-<!-- CANDIDATE DETAILS -->
+<!-- ==================== CANDIDATE DETAILS ==================== -->
 <div style="max-width:960px; margin:30px auto 0 auto; padding:0 20px;">
   <div style="border:2px solid #c9a84c; border-radius:8px; padding:20px 24px; background:#fff;">
     <div style="font-size:13px; font-weight:700; color:#c9a84c; text-transform:uppercase; letter-spacing:1px; margin-bottom:16px;">Candidate Details</div>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px;">
-      <div><label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Trainee Assessor Name</label><input type="text" placeholder="Full name"></div>
-      <div><label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Date Started</label><input type="date"></div>
-      <div><label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">Assessor / Tutor Name</label><input type="text" placeholder="Full name"></div>
-      <div><label style="font-size:12px; font-weight:600; display:block; margin-bottom:4px;">IQA Name</label><input type="text" placeholder="Full name"></div>
+      <div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Trainee Assessor Name</label><input type="text" id="cand-name" placeholder="Full name"></div>
+      <div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Date Started</label><input type="date" id="cand-date-started"></div>
+      <div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">Assessor / Tutor Name</label><input type="text" id="cand-tutor" placeholder="Full name"></div>
+      <div><label style="font-size:12px;font-weight:600;display:block;margin-bottom:4px;">IQA Name</label><input type="text" id="cand-iqa" placeholder="Full name"></div>
     </div>
   </div>
 </div>
@@ -121,6 +159,7 @@ textarea { resize: vertical; }
     <div class="lo-description"><strong>What this Learning Outcome is about:</strong> This outcome requires you to show that you can plan assessments effectively for learners working towards occupational qualifications. You must demonstrate that you are able to select appropriate assessment methods, communicate clearly with each learner about what assessment involves and why it takes place, adapt your planning to suit the individual needs of each learner, and recognise where assessment activity can cover more than one unit or criterion at the same time. Your evidence must relate to <strong style="color:#a8e063;">Learner 1 (Level 2 Gym Instructor)</strong> and <strong style="color:#d4aaff;">Learner 2 (Level 3 Personal Training)</strong>.</div>
   </div>
 
+  <!-- LO1 Learner 1 -->
   <div class="learner-block green">
     <div class="learner-header green">Learner 1 &bull; Level 2 Gym Instructor</div>
     <div class="learner-body">
@@ -134,6 +173,7 @@ textarea { resize: vertical; }
         <textarea id="l1-lo1-plan-summary" class="min-160" placeholder="Summarise the key agreements made..."></textarea>
         <div class="cross-ref-note">&#128204; <strong>Cross-reference note:</strong> This Assessment Plan also provides evidence for LO2 and LO3.</div>
       </div>
+      <!-- AC 1.1 L1 -->
       <div class="ac-block"><div class="ac-title">AC 1.1 &bull; Plan assessment of occupational competence</div><div class="ac-body">
         <div class="ac-description">Demonstrate that you have planned an assessment of occupational competence for this learner, showing which methods you selected, why they are appropriate, and how the plan was agreed.</div>
         <label>Evidence Type (select at least 2)</label>
@@ -146,6 +186,7 @@ textarea { resize: vertical; }
         <label for="l1-lo1-ac1-feedback">Feedback to Learner</label>
         <textarea id="l1-lo1-ac1-feedback" class="min-160" placeholder="Write your feedback here."></textarea></div>
       </div></div>
+      <!-- AC 1.2 L1 -->
       <div class="ac-block"><div class="ac-title">AC 1.2 &bull; Communicate the purpose of assessment to the learner</div><div class="ac-body">
         <div class="ac-description">Show that you have communicated clearly with this learner about the purpose of assessment, what it involves, and what is expected of them throughout the process.</div>
         <label>Evidence Type (select at least 2)</label>
@@ -158,6 +199,7 @@ textarea { resize: vertical; }
         <label for="l1-lo1-ac2-feedback">Feedback to Learner</label>
         <textarea id="l1-lo1-ac2-feedback" class="min-160" placeholder="Write your feedback here."></textarea></div>
       </div></div>
+      <!-- AC 1.3 L1 -->
       <div class="ac-block"><div class="ac-title">AC 1.3 &bull; Plan assessment of occupational competence to address learner needs</div><div class="ac-body">
         <div class="ac-description">Demonstrate that your assessment planning took into account the individual needs of this learner, including support requirements, prior experience, or adjustments needed.</div>
         <label>Evidence Type (select at least 2)</label>
@@ -170,6 +212,7 @@ textarea { resize: vertical; }
         <label for="l1-lo1-ac3-feedback">Feedback to Learner</label>
         <textarea id="l1-lo1-ac3-feedback" class="min-160" placeholder="Write your feedback here."></textarea></div>
       </div></div>
+      <!-- AC 1.4 L1 -->
       <div class="ac-block"><div class="ac-title">AC 1.4 &bull; Identify opportunities for holistic assessment</div><div class="ac-body">
         <div class="ac-description">Show that you have identified where a single piece of evidence can meet the requirements of more than one unit or criterion at the same time.</div>
         <label>Evidence Type (select at least 2)</label>
@@ -184,12 +227,13 @@ textarea { resize: vertical; }
       </div></div>
       <div class="summary-block"><h3>Summary &bull; Learner 1 &bull; LO1</h3><div>Overall Outcome for this Learning Outcome</div>
         <div class="summary-toggle-row"><button class="summary-toggle" onclick="toggleSummary(this)">Pass</button><button class="summary-toggle" onclick="toggleSummary(this)">Refer</button></div>
-        <div class="summary-grid"><div><label>Date of Assessment</label><input type="date"></div><div><label>Assessor Signature</label><input type="text" placeholder="Type full name as signature"></div><div><label>Learner Signature</label><input type="text" placeholder="Type full name as signature"></div></div>
-        <label>Additional Notes</label><textarea style="min-height:100px;background:#222;color:#c9a84c;border-color:#c9a84c;"></textarea>
+        <div class="summary-grid"><div><label>Date of Assessment</label><input type="date" id="l1-lo1-date"></div><div><label>Assessor Signature</label><input type="text" id="l1-lo1-assessor-sig" placeholder="Type full name as signature"></div><div><label>Learner Signature</label><input type="text" id="l1-lo1-learner-sig" placeholder="Type full name as signature"></div></div>
+        <label>Additional Notes</label><textarea id="l1-lo1-notes" style="min-height:100px;background:#222;color:#c9a84c;border-color:#c9a84c;"></textarea>
       </div>
     </div>
   </div>
 
+  <!-- LO1 Learner 2 -->
   <div class="learner-block purple">
     <div class="learner-header purple">Learner 2 &bull; Level 3 Personal Training</div>
     <div class="learner-body">
@@ -203,6 +247,7 @@ textarea { resize: vertical; }
         <textarea id="l2-lo1-plan-summary" class="min-160" placeholder="Summarise the key agreements made..."></textarea>
         <div class="cross-ref-note">&#128204; <strong>Cross-reference note:</strong> This Assessment Plan also provides evidence for LO2 and LO3.</div>
       </div>
+      <!-- AC 1.1 L2 -->
       <div class="ac-block"><div class="ac-title">AC 1.1 &bull; Plan assessment of occupational competence</div><div class="ac-body">
         <div class="ac-description">Demonstrate that you have planned an assessment of occupational competence for this learner, showing which methods you selected, why they are appropriate, and how the plan was agreed.</div>
         <label>Evidence Type (select at least 2)</label>
@@ -215,6 +260,7 @@ textarea { resize: vertical; }
         <label for="l2-lo1-ac1-feedback">Feedback to Learner</label>
         <textarea id="l2-lo1-ac1-feedback" class="min-160" placeholder="Write your feedback here."></textarea></div>
       </div></div>
+      <!-- AC 1.2 L2 -->
       <div class="ac-block"><div class="ac-title">AC 1.2 &bull; Communicate the purpose of assessment to the learner</div><div class="ac-body">
         <div class="ac-description">Show that you have communicated clearly with this learner about the purpose of assessment, what it involves, and what is expected of them throughout the process.</div>
         <label>Evidence Type (select at least 2)</label>
@@ -227,6 +273,7 @@ textarea { resize: vertical; }
         <label for="l2-lo1-ac2-feedback">Feedback to Learner</label>
         <textarea id="l2-lo1-ac2-feedback" class="min-160" placeholder="Write your feedback here."></textarea></div>
       </div></div>
+      <!-- AC 1.3 L2 -->
       <div class="ac-block"><div class="ac-title">AC 1.3 &bull; Plan assessment of occupational competence to address learner needs</div><div class="ac-body">
         <div class="ac-description">Demonstrate that your assessment planning took into account the individual needs of this learner, including support requirements, prior experience, or adjustments needed.</div>
         <label>Evidence Type (select at least 2)</label>
@@ -239,6 +286,7 @@ textarea { resize: vertical; }
         <label for="l2-lo1-ac3-feedback">Feedback to Learner</label>
         <textarea id="l2-lo1-ac3-feedback" class="min-160" placeholder="Write your feedback here."></textarea></div>
       </div></div>
+      <!-- AC 1.4 L2 -->
       <div class="ac-block"><div class="ac-title">AC 1.4 &bull; Identify opportunities for holistic assessment</div><div class="ac-body">
         <div class="ac-description">Show that you have identified where a single piece of evidence can meet the requirements of more than one unit or criterion at the same time.</div>
         <label>Evidence Type (select at least 2)</label>
@@ -253,8 +301,8 @@ textarea { resize: vertical; }
       </div></div>
       <div class="summary-block"><h3>Summary &bull; Learner 2 &bull; LO1</h3><div>Overall Outcome for this Learning Outcome</div>
         <div class="summary-toggle-row"><button class="summary-toggle" onclick="toggleSummary(this)">Pass</button><button class="summary-toggle" onclick="toggleSummary(this)">Refer</button></div>
-        <div class="summary-grid"><div><label>Date of Assessment</label><input type="date"></div><div><label>Assessor Signature</label><input type="text" placeholder="Type full name as signature"></div><div><label>Learner Signature</label><input type="text" placeholder="Type full name as signature"></div></div>
-        <label>Additional Notes</label><textarea style="min-height:100px;background:#222;color:#c9a84c;border-color:#c9a84c;"></textarea>
+        <div class="summary-grid"><div><label>Date of Assessment</label><input type="date" id="l2-lo1-date"></div><div><label>Assessor Signature</label><input type="text" id="l2-lo1-assessor-sig" placeholder="Type full name as signature"></div><div><label>Learner Signature</label><input type="text" id="l2-lo1-learner-sig" placeholder="Type full name as signature"></div></div>
+        <label>Additional Notes</label><textarea id="l2-lo1-notes" style="min-height:100px;background:#222;color:#c9a84c;border-color:#c9a84c;"></textarea>
       </div>
     </div>
   </div>
@@ -269,6 +317,7 @@ textarea { resize: vertical; }
   </div>
   <div class="info-box"><strong>Guidance for AC 2.1:</strong> You must demonstrate use of all seven assessment methods across both learners. Learner 1 evidence must come from the Level 2 Gym Instructor programme. Learner 2 evidence must come from the Level 3 Personal Training programme.</div>
 
+  <!-- LO2 Learner 1 -->
   <div class="learner-block green">
     <div class="learner-header green">Learner 1 &bull; Level 2 Gym Instructor</div>
     <div class="learner-body">
@@ -332,12 +381,13 @@ textarea { resize: vertical; }
       </div></div>
       <div class="summary-block"><h3>Summary &bull; Learner 1 &bull; LO2</h3><div>Overall Outcome for this Learning Outcome</div>
         <div class="summary-toggle-row"><button class="summary-toggle" onclick="toggleSummary(this)">Pass</button><button class="summary-toggle" onclick="toggleSummary(this)">Refer</button></div>
-        <div class="summary-grid"><div><label>Date of Assessment</label><input type="date"></div><div><label>Assessor Signature</label><input type="text" placeholder="Type full name as signature"></div><div><label>Learner Signature</label><input type="text" placeholder="Type full name as signature"></div></div>
-        <label>Additional Notes</label><textarea style="min-height:100px;background:#222;color:#c9a84c;border-color:#c9a84c;"></textarea>
+        <div class="summary-grid"><div><label>Date of Assessment</label><input type="date" id="l1-lo2-date"></div><div><label>Assessor Signature</label><input type="text" id="l1-lo2-assessor-sig" placeholder="Type full name as signature"></div><div><label>Learner Signature</label><input type="text" id="l1-lo2-learner-sig" placeholder="Type full name as signature"></div></div>
+        <label>Additional Notes</label><textarea id="l1-lo2-notes" style="min-height:100px;background:#222;color:#c9a84c;border-color:#c9a84c;"></textarea>
       </div>
     </div>
   </div>
 
+  <!-- LO2 Learner 2 -->
   <div class="learner-block purple">
     <div class="learner-header purple">Learner 2 &bull; Level 3 Personal Training</div>
     <div class="learner-body">
@@ -360,9 +410,20 @@ textarea { resize: vertical; }
         <label for="l2-lo2-ac1-reflect">Learner Reflective Account</label>
         <textarea id="l2-lo2-ac1-reflect" class="min-160" placeholder="The learner should describe the assessment methods used and how these were appropriate to their programme."></textarea>
         <div class="judgement-panel"><h4>Assessor Judgement</h4><div class="toggle-row"><button class="toggle-btn pass" onclick="toggleOutcome(this)">Pass</button><button class="toggle-btn refer" onclick="toggleOutcome(this)">Refer</button></div>
-        <label for="l2-lo2-ac1-feedback">Feedback to Learner</label>
+        <label for="l2-lo2-ac1-feedback">Feedback to Learner
+<!-- ================================================================
+     UNIT2-PART2.HTML
+     Instructions: Open unit2-part1.html in a text editor.
+     Find the very last line (it ends mid-sentence after the LO2
+     Learner 2 AC 2.1 feedback label). Delete that incomplete line,
+     then paste everything below in its place.
+     The combined file is your finished unit2.html.
+     ================================================================ -->
+
         <textarea id="l2-lo2-ac1-feedback" class="min-160" placeholder="Write your feedback here."></textarea></div>
       </div></div>
+
+      <!-- AC 2.2 L2 LO2 -->
       <div class="ac-block"><div class="ac-title">AC 2.2 &bull; Make assessment decisions of occupational competence against specified criteria</div><div class="ac-body">
         <div class="ac-description">Show that your assessment decisions are clearly matched to the specified unit criteria.</div>
         <label>Evidence Type (select at least 2)</label>
@@ -375,6 +436,8 @@ textarea { resize: vertical; }
         <label for="l2-lo2-ac2-feedback">Feedback to Learner</label>
         <textarea id="l2-lo2-ac2-feedback" class="min-160" placeholder="Write your feedback here."></textarea></div>
       </div></div>
+
+      <!-- AC 2.3 L2 LO2 -->
       <div class="ac-block"><div class="ac-title">AC 2.3 &bull; Follow standardisation procedures when making assessment decisions</div><div class="ac-body">
         <div class="ac-description">Demonstrate that your assessment decisions are consistent with your organisation's standardisation procedures.</div>
         <label>Evidence Type (select at least 2)</label>
@@ -387,6 +450,8 @@ textarea { resize: vertical; }
         <label for="l2-lo2-ac3-feedback">Feedback to Learner</label>
         <textarea id="l2-lo2-ac3-feedback" class="min-160" placeholder="Write your feedback here."></textarea></div>
       </div></div>
+
+      <!-- AC 2.4 L2 LO2 -->
       <div class="ac-block"><div class="ac-title">AC 2.4 &bull; Provide feedback to learners that affirms achievement and identifies any further implications for learning, assessment and progression</div><div class="ac-body">
         <div class="ac-description">Show that you have provided feedback that confirms achievements, highlights areas for further attention, and identifies next steps.</div>
         <label>Evidence Type (select at least 2)</label>
@@ -399,10 +464,11 @@ textarea { resize: vertical; }
         <label for="l2-lo2-ac4-feedback">Feedback to Learner</label>
         <textarea id="l2-lo2-ac4-feedback" class="min-160" placeholder="Write your feedback here."></textarea></div>
       </div></div>
+
       <div class="summary-block"><h3>Summary &bull; Learner 2 &bull; LO2</h3><div>Overall Outcome for this Learning Outcome</div>
         <div class="summary-toggle-row"><button class="summary-toggle" onclick="toggleSummary(this)">Pass</button><button class="summary-toggle" onclick="toggleSummary(this)">Refer</button></div>
-        <div class="summary-grid"><div><label>Date of Assessment</label><input type="date"></div><div><label>Assessor Signature</label><input type="text" placeholder="Type full name as signature"></div><div><label>Learner Signature</label><input type="text" placeholder="Type full name as signature"></div></div>
-        <label>Additional Notes</label><textarea style="min-height:100px;background:#222;color:#c9a84c;border-color:#c9a84c;"></textarea>
+        <div class="summary-grid"><div><label>Date of Assessment</label><input type="date" id="l2-lo2-date"></div><div><label>Assessor Signature</label><input type="text" id="l2-lo2-assessor-sig" placeholder="Type full name as signature"></div><div><label>Learner Signature</label><input type="text" id="l2-lo2-learner-sig" placeholder="Type full name as signature"></div></div>
+        <label>Additional Notes</label><textarea id="l2-lo2-notes" style="min-height:100px;background:#222;color:#c9a84c;border-color:#c9a84c;"></textarea>
       </div>
     </div>
   </div>
@@ -416,6 +482,7 @@ textarea { resize: vertical; }
     <div class="lo-description"><strong>What this Learning Outcome is about:</strong> This outcome requires you to show that you can apply the correct qualification criteria to judge whether learner evidence is sufficient, valid, authentic, current and reliable (VACSR). You must demonstrate that your assessment decisions are well reasoned, that you provide meaningful feedback, and that you maintain accurate records of assessment outcomes. Evidence must relate to <strong style="color:#a8e063;">Learner 1 (Level 2 Gym Instructor)</strong> and <strong style="color:#d4aaff;">Learner 2 (Level 3 Personal Training)</strong>.</div>
   </div>
 
+  <!-- LO3 Learner 1 -->
   <div class="learner-block green">
     <div class="learner-header green">Learner 1 &bull; Level 2 Gym Instructor</div>
     <div class="learner-body">
@@ -483,12 +550,13 @@ textarea { resize: vertical; }
       </div></div>
       <div class="summary-block"><h3>Summary &bull; Learner 1 &bull; LO3</h3><div>Overall Outcome for this Learning Outcome</div>
         <div class="summary-toggle-row"><button class="summary-toggle" onclick="toggleSummary(this)">Pass</button><button class="summary-toggle" onclick="toggleSummary(this)">Refer</button></div>
-        <div class="summary-grid"><div><label>Date of Assessment</label><input type="date"></div><div><label>Assessor Signature</label><input type="text" placeholder="Type full name as signature"></div><div><label>Learner Signature</label><input type="text" placeholder="Type full name as signature"></div></div>
-        <label>Additional Notes</label><textarea style="min-height:100px;background:#222;color:#c9a84c;border-color:#c9a84c;"></textarea>
+        <div class="summary-grid"><div><label>Date of Assessment</label><input type="date" id="l1-lo3-date"></div><div><label>Assessor Signature</label><input type="text" id="l1-lo3-assessor-sig" placeholder="Type full name as signature"></div><div><label>Learner Signature</label><input type="text" id="l1-lo3-learner-sig" placeholder="Type full name as signature"></div></div>
+        <label>Additional Notes</label><textarea id="l1-lo3-notes" style="min-height:100px;background:#222;color:#c9a84c;border-color:#c9a84c;"></textarea>
       </div>
     </div>
   </div>
 
+  <!-- LO3 Learner 2 -->
   <div class="learner-block purple">
     <div class="learner-header purple">Learner 2 &bull; Level 3 Personal Training</div>
     <div class="learner-body">
@@ -556,8 +624,8 @@ textarea { resize: vertical; }
       </div></div>
       <div class="summary-block"><h3>Summary &bull; Learner 2 &bull; LO3</h3><div>Overall Outcome for this Learning Outcome</div>
         <div class="summary-toggle-row"><button class="summary-toggle" onclick="toggleSummary(this)">Pass</button><button class="summary-toggle" onclick="toggleSummary(this)">Refer</button></div>
-        <div class="summary-grid"><div><label>Date of Assessment</label><input type="date"></div><div><label>Assessor Signature</label><input type="text" placeholder="Type full name as signature"></div><div><label>Learner Signature</label><input type="text" placeholder="Type full name as signature"></div></div>
-        <label>Additional Notes</label><textarea style="min-height:100px;background:#222;color:#c9a84c;border-color:#c9a84c;"></textarea>
+        <div class="summary-grid"><div><label>Date of Assessment</label><input type="date" id="l2-lo3-date"></div><div><label>Assessor Signature</label><input type="text" id="l2-lo3-assessor-sig" placeholder="Type full name as signature"></div><div><label>Learner Signature</label><input type="text" id="l2-lo3-learner-sig" placeholder="Type full name as signature"></div></div>
+        <label>Additional Notes</label><textarea id="l2-lo3-notes" style="min-height:100px;background:#222;color:#c9a84c;border-color:#c9a84c;"></textarea>
       </div>
     </div>
   </div>
@@ -571,6 +639,7 @@ textarea { resize: vertical; }
     <div class="lo-description"><strong>What this Learning Outcome is about:</strong> This outcome requires you to demonstrate that you understand and apply relevant legislation, policies and good practice when assessing occupational competence. You must show awareness of equality and diversity, evaluate your own assessment practice, and maintain your continuing professional development. Evidence must relate to <strong style="color:#a8e063;">Learner 1 (Level 2 Gym Instructor)</strong> and <strong style="color:#d4aaff;">Learner 2 (Level 3 Personal Training)</strong>.</div>
   </div>
 
+  <!-- LO4 Learner 1 -->
   <div class="learner-block green">
     <div class="learner-header green">Learner 1 &bull; Level 2 Gym Instructor</div>
     <div class="learner-body">
@@ -624,12 +693,13 @@ textarea { resize: vertical; }
       </div></div>
       <div class="summary-block"><h3>Summary &bull; Learner 1 &bull; LO4</h3><div>Overall Outcome for this Learning Outcome</div>
         <div class="summary-toggle-row"><button class="summary-toggle" onclick="toggleSummary(this)">Pass</button><button class="summary-toggle" onclick="toggleSummary(this)">Refer</button></div>
-        <div class="summary-grid"><div><label>Date of Assessment</label><input type="date"></div><div><label>Assessor Signature</label><input type="text" placeholder="Type full name as signature"></div><div><label>Learner Signature</label><input type="text" placeholder="Type full name as signature"></div></div>
-        <label>Additional Notes</label><textarea style="min-height:100px;background:#222;color:#c9a84c;border-color:#c9a84c;"></textarea>
+        <div class="summary-grid"><div><label>Date of Assessment</label><input type="date" id="l1-lo4-date"></div><div><label>Assessor Signature</label><input type="text" id="l1-lo4-assessor-sig" placeholder="Type full name as signature"></div><div><label>Learner Signature</label><input type="text" id="l1-lo4-learner-sig" placeholder="Type full name as signature"></div></div>
+        <label>Additional Notes</label><textarea id="l1-lo4-notes" style="min-height:100px;background:#222;color:#c9a84c;border-color:#c9a84c;"></textarea>
       </div>
     </div>
   </div>
 
+  <!-- LO4 Learner 2 -->
   <div class="learner-block purple">
     <div class="learner-header purple">Learner 2 &bull; Level 3 Personal Training</div>
     <div class="learner-body">
@@ -683,365 +753,90 @@ textarea { resize: vertical; }
       </div></div>
       <div class="summary-block"><h3>Summary &bull; Learner 2 &bull; LO4</h3><div>Overall Outcome for this Learning Outcome</div>
         <div class="summary-toggle-row"><button class="summary-toggle" onclick="toggleSummary(this)">Pass</button><button class="summary-toggle" onclick="toggleSummary(this)">Refer</button></div>
-        <div class="summary-grid"><div><label>Date of Assessment</label><input type="date"></div><div><label>Assessor Signature</label><input type="text" placeholder="Type full name as signature"></div><div><label>Learner Signature</label><input type="text" placeholder="Type full name as signature"></div></div>
-        <label>Additional Notes</label><textarea style="min-height:100px;background:#222;color:#c9a84c;border-color:#c9a84c;"></textarea>
+        <div class="summary-grid"><div><label>Date of Assessment</label><input type="date" id="l2-lo4-date"></div><div><label>Assessor Signature</label><input type="text" id="l2-lo4-assessor-sig" placeholder="Type full name as signature"></div><div><label>Learner Signature</label><input type="text" id="l2-lo4-learner-sig" placeholder="Type full name as signature"></div></div>
+        <label>Additional Notes</label><textarea id="l2-lo4-notes" style="min-height:100px;background:#222;color:#c9a84c;border-color:#c9a84c;"></textarea>
       </div>
     </div>
   </div>
 </div><!-- end lo4 -->
 
-<footer class="site-footer">PT Academy | Focus Awards Level 3 CAVA | Unit 2 Evidence Worksheet | QRN: 601/6104/8</footer>
+<!-- ==================== FOOTER ==================== -->
+<footer class="site-footer">PT Academy &bull; Focus Awards Level 3 CAVA &bull; Unit 2 Evidence Worksheet &bull; QRN: 601/6104/8</footer>
 
+<!-- ==================== SAVE BAR ==================== -->
+<div id="save-bar">
+  <div id="save-bar-user"></div>
+  <span id="save-status"></span>
+  <button id="logout-btn" onclick="authSignOut()">Sign Out</button>
+</div>
+<div style="height:70px;"></div>
+
+<!-- ==================== CORE JS ==================== -->
 <script>
-function showLO(n) {
-  document.querySelectorAll('.lo-section').forEach(function(s) { s.classList.remove('active'); });
-  document.querySelectorAll('.nav-tab').forEach(function(t) { t.classList.remove('active-tab'); });
-  document.getElementById('lo' + n).classList.add('active');
-  document.querySelectorAll('.nav-tab')[n - 1].classList.add('active-tab');
-  window.scrollTo(0, 0);
+function showLO(n){
+  document.querySelectorAll('.lo-section').forEach(function(s){s.classList.remove('active');});
+  document.querySelectorAll('.nav-tab').forEach(function(t){t.classList.remove('active-tab');});
+  document.getElementById('lo'+n).classList.add('active');
+  document.querySelectorAll('.nav-tab')[n-1].classList.add('active-tab');
+  window.scrollTo(0,0);
 }
-function toggleOutcome(btn) {
-  var row = btn.closest('.toggle-row');
-  row.querySelectorAll('.toggle-btn').forEach(function(b) { b.classList.remove('active'); });
+function toggleOutcome(btn){
+  var row=btn.closest('.toggle-row');
+  row.querySelectorAll('.toggle-btn').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
 }
-function toggleSummary(btn) {
-  var row = btn.closest('.summary-toggle-row');
-  row.querySelectorAll('.summary-toggle').forEach(function(b) { b.classList.remove('active'); });
+function toggleSummary(btn){
+  var row=btn.closest('.summary-toggle-row');
+  row.querySelectorAll('.summary-toggle').forEach(function(b){b.classList.remove('active');});
   btn.classList.add('active');
 }
-function checkMinTwo(sel, warnId) {
-  var warn = document.getElementById(warnId);
-  if (warn) warn.style.display = sel.selectedOptions.length < 2 ? 'block' : 'none';
+function checkMinTwo(sel,warnId){
+  var warn=document.getElementById(warnId);
+  if(warn) warn.style.display=sel.selectedOptions.length<2?'block':'none';
 }
-function showFilename(input, targetId) {
-  var target = document.getElementById(targetId);
-  if (target && input.files && input.files[0]) target.textContent = 'Attached: ' + input.files[0].name;
+function showFilename(input,targetId){
+  var t=document.getElementById(targetId);
+  if(t&&input.files&&input.files[0]) t.textContent='Attached: '+input.files[0].name;
 }
 </script>
-  <!-- ==================== SAVE BAR ==================== -->
-<!-- Paste this immediately BEFORE the closing </body> tag in unit2.html -->
 
-<div id="save-bar" style="
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  background: #111;
-  border-top: 3px solid #c9a84c;
-  padding: 10px 24px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  z-index: 2000;
-  font-family: Arial, sans-serif;
-">
-  <div style="flex:1;">
-    <label style="font-size:12px; font-weight:600; color:#c9a84c; display:block; margin-bottom:4px;">Trainee Assessor Name (used to save and load your work)</label>
-    <input
-      type="text"
-      id="save-learner-name"
-      placeholder="Type your full name to save"
-      oninput="scheduleSave()"
-      style="
-        width:100%; max-width:320px;
-        padding:7px 10px;
-        background:#222;
-        color:#c9a84c;
-        border:1px solid #c9a84c;
-        border-radius:4px;
-        font-size:13px;
-        font-family:Arial,sans-serif;
-      "
-    >
-  </div>
-  <div style="display:flex; align-items:center; gap:12px;">
-    <span id="save-status" style="font-size:13px; color:#c9a84c; min-width:160px; text-align:right;"></span>
-    <button
-      onclick="saveNow()"
-      style="
-        background:#c9a84c;
-        color:#111;
-        border:none;
-        padding:9px 22px;
-        font-size:14px;
-        font-weight:bold;
-        border-radius:4px;
-        cursor:pointer;
-      "
-    >Save Now</button>
-  </div>
-</div>
-
-<!-- Spacer so page content isn't hidden behind the save bar -->
-<div style="height:70px;"></div>
-<!--
-  ==================== STEP 3: SUPABASE SAVE/LOAD JAVASCRIPT ====================
-  Paste this block immediately AFTER the existing <script>...</script> block
-  and BEFORE </body> in unit2.html.
-  Replace YOUR_SUPABASE_URL and YOUR_SUPABASE_ANON_KEY with your actual values.
--->
-
+<!-- ==================== SUPABASE AUTH + AUTOSAVE ==================== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
-(function () {
+(function(){
+  var SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
+  var SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3amVqcXFna3Zrcm9xaG1mZ2xnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0MjA4NDIsImV4cCI6MjA5ODk5Njg0Mn0.BKvPDF3heQZ-sLgIa8hwx6kRhRam5tZgCMGvgAYXXmU';
+  var TABLE        = 'unit2_submissions';
+  var DEBOUNCE_MS  = 1500;
 
-  // ── CONFIG ──────────────────────────────────────────────────────────────────
-  const SUPABASE_URL  = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
-  const SUPABASE_KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3amVqcXFna3Zrcm9xaG1mZ2xnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0MjA4NDIsImV4cCI6MjA5ODk5Njg0Mn0.BKvPDF3heQZ-sLgIa8hwx6kRhRam5tZgCMGvgAYXXmU';
-  const TABLE         = 'unit2_submissions';
-  const DEBOUNCE_MS   = 3000;
+  var db        = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  var saveTimer = null;
+  var authMode  = 'signin';
+  var currentUser = null;
 
-  // ── INIT ────────────────────────────────────────────────────────────────────
-const { createClient } = window.supabase;
-  const db = createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  let saveTimer = null;
-
-  // ── FIELD COLLECTION ────────────────────────────────────────────────────────
-  // Collects every saveable field into a plain object.
-  // Keys are element IDs (or generated stable keys for anonymous elements).
-  function collectData() {
-    const data = {};
-
-    // Text inputs, date inputs, textareas — all have IDs in this form
-    document.querySelectorAll('textarea[id], input[type="text"][id], input[type="date"][id]')
-      .forEach(function (el) {
-        data[el.id] = el.value;
-      });
-
-    // Named selects (plan-type selects, evidence multi-selects, unit selects)
-    document.querySelectorAll('select[id]').forEach(function (el) {
-      data[el.id] = Array.from(el.selectedOptions).map(function (o) { return o.value || o.text; });
-    });
-
-    // Anonymous selects (evidence + unit selects without IDs — keyed by stable index)
-    document.querySelectorAll('select:not([id])').forEach(function (el, i) {
-      data['__select_' + i] = Array.from(el.selectedOptions).map(function (o) { return o.value || o.text; });
-    });
-
-    // Anonymous date inputs (summary blocks — no IDs)
-    document.querySelectorAll('input[type="date"]:not([id])').forEach(function (el, i) {
-      data['__date_' + i] = el.value;
-    });
-
-    // Anonymous text inputs (signature fields in summary blocks — no IDs)
-    document.querySelectorAll('input[type="text"]:not([id])').forEach(function (el, i) {
-      data['__text_' + i] = el.value;
-    });
-
-    // Anonymous textareas (Additional Notes in summary blocks — no IDs)
-    document.querySelectorAll('textarea:not([id])').forEach(function (el, i) {
-      data['__textarea_' + i] = el.value;
-    });
-
-    // Toggle buttons (Pass/Refer in judgement panels)
-    data['__toggles'] = collectToggles();
-
-    // Summary toggles (Pass/Refer in summary blocks)
-    data['__summary_toggles'] = collectSummaryToggles();
-
-    return data;
+  // ── AUTH UI ─────────────────────────────────────────────────────────────────
+  function setAuthMsg(msg, col){
+    var el=document.getElementById('auth-message');
+    if(el){el.textContent=msg; el.style.color=col||'#e0c97a';}
   }
 
-  function collectToggles() {
-    const state = [];
-    document.querySelectorAll('.toggle-row').forEach(function (row) {
-      var active = row.querySelector('.toggle-btn.active');
-      state.push(active ? active.textContent.trim() : null);
-    });
-    return state;
-  }
+  window.toggleAuthMode = function(){
+    authMode = authMode==='signin'?'register':'signin';
+    document.getElementById('auth-submit').textContent       = authMode==='signin'?'Sign In':'Create Account';
+    document.getElementById('auth-toggle-link').textContent  = authMode==='signin'?'No account yet? Register here':'Already have an account? Sign in';
+    document.getElementById('auth-subtitle').textContent     = authMode==='signin'?'Sign in to access and save your work.':'Create an account to get started.';
+    setAuthMsg('');
+  };
 
-  function collectSummaryToggles() {
-    const state = [];
-    document.querySelectorAll('.summary-toggle-row').forEach(function (row) {
-      var active = row.querySelector('.summary-toggle.active');
-      state.push(active ? active.textContent.trim() : null);
-    });
-    return state;
-  }
-
-  // ── FIELD RESTORATION ───────────────────────────────────────────────────────
-  function restoreData(data) {
-    if (!data) return;
-
-    // Named textareas, text inputs, date inputs
-    document.querySelectorAll('textarea[id], input[type="text"][id], input[type="date"][id]')
-      .forEach(function (el) {
-        if (data[el.id] !== undefined) el.value = data[el.id];
-      });
-
-    // Named selects
-    document.querySelectorAll('select[id]').forEach(function (el) {
-      var saved = data[el.id];
-      if (!saved) return;
-      Array.from(el.options).forEach(function (opt) {
-        opt.selected = saved.indexOf(opt.value || opt.text) !== -1;
-      });
-    });
-
-    // Anonymous selects
-    document.querySelectorAll('select:not([id])').forEach(function (el, i) {
-      var saved = data['__select_' + i];
-      if (!saved) return;
-      Array.from(el.options).forEach(function (opt) {
-        opt.selected = saved.indexOf(opt.value || opt.text) !== -1;
-      });
-    });
-
-    // Anonymous date inputs
-    document.querySelectorAll('input[type="date"]:not([id])').forEach(function (el, i) {
-      if (data['__date_' + i] !== undefined) el.value = data['__date_' + i];
-    });
-
-    // Anonymous text inputs
-    document.querySelectorAll('input[type="text"]:not([id])').forEach(function (el, i) {
-      if (data['__text_' + i] !== undefined) el.value = data['__text_' + i];
-    });
-
-    // Anonymous textareas
-    document.querySelectorAll('textarea:not([id])').forEach(function (el, i) {
-      if (data['__textarea_' + i] !== undefined) el.value = data['__textarea_' + i];
-    });
-
-    // Toggle buttons
-    if (Array.isArray(data['__toggles'])) {
-      document.querySelectorAll('.toggle-row').forEach(function (row, i) {
-        var saved = data['__toggles'][i];
-        if (!saved) return;
-        row.querySelectorAll('.toggle-btn').forEach(function (btn) {
-          btn.classList.toggle('active', btn.textContent.trim() === saved);
-        });
-      });
-    }
-
-    // Summary toggles
-    if (Array.isArray(data['__summary_toggles'])) {
-      document.querySelectorAll('.summary-toggle-row').forEach(function (row, i) {
-        var saved = data['__summary_toggles'][i];
-        if (!saved) return;
-        row.querySelectorAll('.summary-toggle').forEach(function (btn) {
-          btn.classList.toggle('active', btn.textContent.trim() === saved);
-        });
-      });
-    }
-  }
-
-  // ── STATUS HELPER ───────────────────────────────────────────────────────────
-  function setStatus(msg, colour) {
-    var el = document.getElementById('save-status');
-    if (el) {
-      el.textContent = msg;
-      el.style.color = colour || '#c9a84c';
-    }
-  }
-
-  // ── GET LEARNER NAME ────────────────────────────────────────────────────────
-  function getLearnerName() {
-    var el = document.getElementById('save-learner-name');
-    return el ? el.value.trim() : '';
-  }
-
-  // ── SAVE ────────────────────────────────────────────────────────────────────
-  async function saveNow() {
-    var name = getLearnerName();
-    if (!name) {
-      setStatus('Enter your name to save.', '#e0c97a');
-      return;
-    }
-    setStatus('Saving\u2026', '#e0c97a');
-    try {
-      var payload = {
-trainee_assessor_name: name,
-        form_data: collectData(),
-        updated_at: new Date().toISOString()
-      };
-      var { error } = await db
-        .from(TABLE)
-        .upsert(payload, { onConflict: 'trainee_assessor_name'});
-
-      if (error) throw error;
-      setStatus('Saved ' + new Date().toLocaleTimeString('en-GB'), '#a8e063');
-    } catch (err) {
-      console.error('Save error:', err);
-      setStatus('Save failed \u2014 check connection.', '#e05555');
-    }
-  }
-
-  // ── AUTO-SAVE SCHEDULER ─────────────────────────────────────────────────────
-  function scheduleSave() {
-    clearTimeout(saveTimer);
-    var name = getLearnerName();
-    if (!name) return;
-    setStatus('Unsaved changes\u2026', '#e0c97a');
-    saveTimer = setTimeout(saveNow, DEBOUNCE_MS);
-  }
-
-  // ── LOAD ────────────────────────────────────────────────────────────────────
-  async function loadData(name) {
-    if (!name) return;
-    setStatus('Loading\u2026', '#e0c97a');
-    try {
-      var { data, error } = await db
-        .from(TABLE)
-        .select('form_data')
-        .eq('trainee_assessor_name', name)
-        .maybeSingle();
-
-      if (error) throw error;
-      if (data && data.form_data) {
-        restoreData(data.form_data);
-        setStatus('Loaded ' + new Date().toLocaleTimeString('en-GB'), '#a8e063');
-      } else {
-        setStatus('No saved data found.', '#e0c97a');
-      }
-    } catch (err) {
-      console.error('Load error:', err);
-      setStatus('Load failed \u2014 check connection.', '#e05555');
-    }
-  }
-
-  // ── ATTACH CHANGE LISTENERS ─────────────────────────────────────────────────
-  // Fires scheduleSave on any field change (except the name input, which
-  // already calls scheduleSave via oninput in the HTML).
-  function attachListeners() {
-    document.querySelectorAll(
-      'textarea, input[type="text"], input[type="date"], select'
-    ).forEach(function (el) {
-      if (el.id === 'save-learner-name') return; // handled separately
-      el.addEventListener('change', scheduleSave);
-      el.addEventListener('input', scheduleSave);
-    });
-
-    // Toggle buttons — observe via click delegation
-    document.addEventListener('click', function (e) {
-      if (e.target.classList.contains('toggle-btn') ||
-          e.target.classList.contains('summary-toggle')) {
-        scheduleSave();
-      }
-    });
-  }
-
-  // ── LOAD ON NAME BLUR ───────────────────────────────────────────────────────
-  // When the user finishes typing their name and moves away, attempt to load.
-  var nameInput = document.getElementById('save-learner-name');
-  if (nameInput) {
-    nameInput.addEventListener('blur', function () {
-      var name = getLearnerName();
-      if (name) loadData(name);
-    });
-  }
-
-  // ── EXPOSE GLOBALS ──────────────────────────────────────────────────────────
-  // saveNow() is called by the Save Now button onclick in the HTML.
-  // scheduleSave() is called by oninput on the name field in the HTML.
-  window.saveNow      = saveNow;
-  window.scheduleSave = scheduleSave;
-
-  // ── INIT ────────────────────────────────────────────────────────────────────
-  attachListeners();
-
-})();
-</script>
-
-</body>
-</html>
+  window.authAction = async function(){
+    var email    = document.getElementById('auth-email').value.trim();
+    var password = document.getElementById('auth-password').value;
+    if(!email||!password){setAuthMsg('Please enter your email and password.');return;}
+    document.getElementById('auth-submit').textContent = authMode==='signin'?'Signing in\u2026':'Creating account\u2026';
+    try{
+      var result = authMode==='signin'
+        ? await db.auth.signInWithPassword({email,password})
+        : await db.auth.signUp({email,password});
+      if(result.error) throw result.error;
+      if(authMode==='register'){
+        setAuth          
