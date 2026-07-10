@@ -406,7 +406,8 @@
     }
 
 window.addEventListener('load', function() {
-  if (window.location.hash === '#assessment-documents') {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('tab') === 'documents') {
     showTabByName('documents');
   }
 });
