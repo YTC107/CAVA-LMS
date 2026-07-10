@@ -684,43 +684,17 @@ textarea { resize: vertical; }
     });
   }
 
-  // On load: wait for Supabase to restore session from storage before deciding to redirect.
-  // getSession() alone can fire before the token has been refreshed from localStorage.
-  let sessionInitialised = false;
-
-  db.auth.onAuthStateChange(function(event, session) {
-    if (!sessionInitialised) {
-      sessionInitialised = true;
-      if (!session) {
-        window.location.href = 'index.html';
-        return;
-      }
+  // Get session if available — no redirect if not found, page works openly.
+  db.auth.getSession().then(function(result) {
+    const session = result.data && result.data.session;
+    if (session) {
       currentUserId = session.user.id;
-      attachListeners();
       loadData();
     } else {
-      // Subsequent changes — handle sign-out
-      if (event === 'SIGNED_OUT' || !session) {
-        window.location.href = 'index.html';
-      }
+      setStatus('Not signed in — changes will not be saved.', '#e0c97a');
     }
+    attachListeners();
   });
-
-  // Fallback: if onAuthStateChange hasn't fired within 3 seconds, check manually
-  setTimeout(function() {
-    if (sessionInitialised) return;
-    db.auth.getSession().then(function(result) {
-      sessionInitialised = true;
-      const session = result.data && result.data.session;
-      if (!session) {
-        window.location.href = 'index.html';
-        return;
-      }
-      currentUserId = session.user.id;
-      attachListeners();
-      loadData();
-    });
-  }, 3000);
 
 })();
 
