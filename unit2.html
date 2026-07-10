@@ -635,37 +635,10 @@ textarea { resize: vertical; }
     if (Array.isArray(data['__summary_toggles'])) { document.querySelectorAll('.summary-toggle-row').forEach(function(row, i){ var s = data['__summary_toggles'][i]; if (!s) return; row.querySelectorAll('.summary-toggle').forEach(function(b){ b.classList.toggle('active', b.textContent.trim() === s); }); }); }
   }
 
-  async function saveNow() {
-    if (!currentUserId) return;
-    setStatus('Saving…', '#e0c97a');
-    try {
-      const { error } = await db.from(TABLE).upsert({ user_id: currentUserId, form_data: collectData(), updated_at: new Date().toISOString() }, { onConflict: 'user_id' });
-      if (error) throw error;
-      setStatus('Saved ✓ ' + new Date().toLocaleTimeString('en-GB'), '#a8e063');
-    } catch(err) {
-      console.error(err);
-      setStatus('Save failed — check connection.', '#e05555');
-    }
-  }
-
   function scheduleSave() {
     clearTimeout(saveTimer);
     setStatus('Unsaved changes…', '#e0c97a');
     saveTimer = setTimeout(saveNow, DEBOUNCE_MS);
-  }
-
-  async function loadData() {
-    if (!currentUserId) return;
-    setStatus('Loading…', '#e0c97a');
-    try {
-      const { data, error } = await db.from(TABLE).select('form_data').eq('user_id', currentUserId).maybeSingle();
-      if (error) throw error;
-      if (data && data.form_data) { restoreData(data.form_data); setStatus('Loaded ✓ ' + new Date().toLocaleTimeString('en-GB'), '#a8e063'); }
-      else setStatus('Ready', '#c9a84c');
-    } catch(err) {
-      console.error(err);
-      setStatus('Could not load data.', '#e05555');
-    }
   }
 
   async function signOut() {
@@ -684,16 +657,65 @@ textarea { resize: vertical; }
     });
   }
 
-  // Get session if available — no redirect if not found, page works openly.
+  function getSaveKey() {
+    // Use Supabase user_id if available, otherwise fall back to Trainee Assessor Name
+    if (currentUserId) return { field: 'user_id', value: currentUserId };
+    const nameInputs = document.querySelectorAll('input[type="text"]:not([id])');
+    // Trainee Assessor Name is the first anonymous text input in Candidate Details
+    const name = nameInputs.length > 0 ? nameInputs[0].value.trim() : '';
+    return name ? { field: 'trainee_assessor_name', value: name } : null;
+  }
+
+  async function saveNow() {
+    const key = getSaveKey();
+    if (!key) { setStatus('Enter your name in Candidate Details to save.', '#e0c97a'); return; }
+    setStatus('Saving\u2026', '#e0c97a');
+    try {
+      const payload = { form_data: collectData(), updated_at: new Date().toISOString() };
+      payload[key.field] = key.value;
+      const { error } = await db.from(TABLE).upsert(payload, { onConflict: key.field });
+      if (error) throw error;
+      setStatus('Saved \u2713 ' + new Date().toLocaleTimeString('en-GB'), '#a8e063');
+    } catch(err) {
+      console.error(err);
+      setStatus('Save failed \u2014 check connection.', '#e05555');
+    }
+  }
+
+  async function loadData() {
+    const key = getSaveKey();
+    if (!key) return;
+    setStatus('Loading\u2026', '#e0c97a');
+    try {
+      const { data, error } = await db.from(TABLE).select('form_data').eq(key.field, key.value).maybeSingle();
+      if (error) throw error;
+      if (data && data.form_data) { restoreData(data.form_data); setStatus('Loaded \u2713 ' + new Date().toLocaleTimeString('en-GB'), '#a8e063'); }
+      else setStatus('Ready', '#c9a84c');
+    } catch(err) {
+      console.error(err);
+      setStatus('Could not load data.', '#e05555');
+    }
+  }
+
+  // Watch Trainee Assessor Name field (first anonymous text input) for blur to trigger load
+  function watchNameField() {
+    const nameInputs = document.querySelectorAll('input[type="text"]:not([id])');
+    if (nameInputs.length > 0) {
+      nameInputs[0].addEventListener('blur', function() {
+        if (this.value.trim()) loadData();
+      });
+    }
+  }
+
+  // Get session if available — no redirect, page works openly
   db.auth.getSession().then(function(result) {
     const session = result.data && result.data.session;
-    if (session) {
-      currentUserId = session.user.id;
-      loadData();
-    } else {
-      setStatus('Not signed in — changes will not be saved.', '#e0c97a');
-    }
+    if (session) { currentUserId = session.user.id; }
+    setStatus('Ready', '#c9a84c');
     attachListeners();
+    watchNameField();
+    // Attempt load if session available
+    if (currentUserId) loadData();
   });
 
 })();
