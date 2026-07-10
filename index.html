@@ -405,9 +405,11 @@
       chevron.classList.toggle('open', !isOpen);
     }
 
-if (window.location.hash === '#assessment-documents') {
-  showTabByName('documents');
-        }
+window.addEventListener('load', function() {
+  if (window.location.hash === '#assessment-documents') {
+    showTabByName('documents');
+  }
+});
   </script>
 
 </body>
