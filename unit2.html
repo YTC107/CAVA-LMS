@@ -351,7 +351,7 @@ async function saveData() {
   statusEl.style.color = '#c9a84c';
   const payload = { trainee_assessor_name: name, form_data: collectData(), updated_at: new Date().toISOString() };
   try {
-    const res = await fetch(SUPABASE_URL + '/rest/v1/unit2_submissions', {
+    const res = await fetch(SUPABASE_URL + '/rest/v1/unit2_submissions?on_conflict=trainee_assessor_name', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
