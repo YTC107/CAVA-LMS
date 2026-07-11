@@ -8,7 +8,7 @@
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
   body { font-family: 'Inter', sans-serif; background: #f1f5f9; }
-  .brand-header { background: #1a1a2e; border-bottom: 6px solid #c9a84c; }
+  .brand-header { background: linear-gradient(135deg, #111111 0%, #2a2a2a 100%); border-bottom: 6px solid #c9a84c; }
   .gold { color: #c9a84c; }
   .week-card { border-left: 5px solid; }
   .w1 { border-color: #3b82f6; } .w1-bg { background: #eff6ff; } .w1-head { background: #3b82f6; }
@@ -34,7 +34,7 @@
   }
   table { border-collapse: collapse; width: 100%; }
   th, td { border: 1px solid #cbd5e1; padding: 8px 10px; font-size: 0.85rem; }
-  th { background: #1a1a2e; color: #c9a84c; font-weight: 600; }
+  th { background: #111111; color: #c9a84c; font-weight: 600; }
   tr:nth-child(even) td { background: #f8fafc; }
 </style>
 </head>
@@ -46,12 +46,8 @@
     <div class="flex items-start justify-between flex-wrap gap-6">
       <div class="flex flex-col items-start gap-3">
         <div id="logoWrap">
-          <img id="logoImg" src="" alt="PT Academy Logo" style="max-height: 80px; display: none;" />
+          <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy Logo" style="max-height: 90px;" onerror="this.style.display='none'" />
         </div>
-        <label class="no-print cursor-pointer bg-yellow-700 hover:bg-yellow-600 text-white text-xs font-semibold px-3 py-1.5 rounded">
-          Upload Logo
-          <input type="file" accept="image/*" class="hidden" onchange="loadLogo(event)" />
-        </label>
         <div>
           <p class="text-xs font-semibold uppercase tracking-widest mb-1" style="color:#c9a84c;">PT Academy</p>
           <h1 class="text-2xl font-bold leading-snug">Focus Awards Level 3 Certificate in Assessing Vocational Achievement (RQF)</h1>
@@ -77,11 +73,11 @@
 
 <!-- NAV -->
 <div class="no-print flex flex-wrap gap-3 mb-2">
-  <button onclick="navTo('rationale')" class="text-white text-sm font-medium px-4 py-2 rounded-lg" style="background:#1a1a2e;">Delivery Rationale</button>
-  <button onclick="navTo('sow')" class="text-white text-sm font-medium px-4 py-2 rounded-lg" style="background:#1a1a2e;">Scheme of Work</button>
-  <button onclick="navTo('timetable')" class="text-white text-sm font-medium px-4 py-2 rounded-lg" style="background:#1a1a2e;">Timetable</button>
-  <button onclick="navTo('lessonplans')" class="text-white text-sm font-medium px-4 py-2 rounded-lg" style="background:#1a1a2e;">Lesson Plans</button>
-  <button onclick="window.print()" class="text-white text-sm font-medium px-4 py-2 rounded-lg ml-auto" style="background:#c9a84c; color:#1a1a2e;">Print / Save as PDF</button>
+  <button onclick="navTo('rationale')" class="text-white text-sm font-medium px-4 py-2 rounded-lg" style="background:#111111;">Delivery Rationale</button>
+  <button onclick="navTo('sow')" class="text-white text-sm font-medium px-4 py-2 rounded-lg" style="background:#111111;">Scheme of Work</button>
+  <button onclick="navTo('timetable')" class="text-white text-sm font-medium px-4 py-2 rounded-lg" style="background:#111111;">Timetable</button>
+  <button onclick="navTo('lessonplans')" class="text-white text-sm font-medium px-4 py-2 rounded-lg" style="background:#111111;">Lesson Plans</button>
+  <button onclick="window.print()" class="text-white text-sm font-medium px-4 py-2 rounded-lg ml-auto" style="background:#c9a84c; color:#111111;">Print / Save as PDF</button>
 </div>
 
 <!-- ===== SECTION 0: DELIVERY RATIONALE ===== -->
