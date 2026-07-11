@@ -14,26 +14,31 @@
   .nav-link { cursor: pointer; padding: 6px 14px; font-size: 13px; color: #ccc; border-bottom: 2px solid transparent; transition: all 0.2s; text-decoration: none; display: inline-block; }
   .nav-link:hover { color: #fff; }
 
-  /* Plan type selector — larger/more prominent */
-  .plan-type-wrap { display: flex; gap: 14px; margin-bottom: 24px; }
+  /* Plan type selector */
+  .plan-type-wrap { display: flex; gap: 12px; margin-bottom: 0; }
   .plan-type-btn {
     flex: 1;
-    padding: 20px 16px;
-    border: 2.5px solid #d1d5db;
+    padding: 18px 20px;
+    border: 2px solid #e5e7eb;
     border-radius: 10px;
     background: #fff;
     cursor: pointer;
-    text-align: center;
-    font-size: 16px;
+    text-align: left;
+    font-size: 15px;
     font-weight: 700;
     color: #374151;
     transition: all 0.2s;
-    line-height: 1.4;
+    line-height: 1.3;
+    display: flex;
+    align-items: center;
+    gap: 14px;
   }
-  .plan-type-btn:hover { border-color: #c9a84c; background: #fffbf0; }
-  .plan-type-btn.active { border-color: #c9a84c; background: #c9a84c; color: #111; }
-  .plan-type-btn .btn-icon { font-size: 26px; display: block; margin-bottom: 8px; }
-  .plan-type-btn .btn-sub { font-size: 12px; font-weight: 400; margin-top: 5px; opacity: 0.75; }
+  .plan-type-btn:hover { border-color: #c9a84c; box-shadow: 0 2px 8px rgba(201,168,76,0.15); }
+  .plan-type-btn.active { border-color: #c9a84c; background: #1a1a2e; color: #c9a84c; box-shadow: 0 2px 12px rgba(26,26,46,0.18); }
+  .plan-type-btn.active .btn-sub { color: #e5c97a; }
+  .plan-type-btn .btn-icon { font-size: 28px; flex-shrink: 0; }
+  .plan-type-btn .btn-text { display: flex; flex-direction: column; }
+  .plan-type-btn .btn-sub { font-size: 12px; font-weight: 400; margin-top: 3px; color: #6b7280; }
 
   /* Programme buttons */
   .prog-wrap { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
@@ -106,18 +111,22 @@
 <div class="max-w-4xl mx-auto px-4 py-6">
 
   <!-- PLAN TYPE SELECTOR -->
-  <div style="background:#fff;border-radius:8px;padding:20px;margin-bottom:16px;box-shadow:0 1px 3px rgba(0,0,0,0.07);">
-    <div class="section-title" style="border-radius:0;border-bottom:2px solid #c9a84c;">Select Plan Type</div>
+  <div style="margin-bottom:16px;">
+    <div style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px;">Select Plan Type</div>
     <div class="plan-type-wrap">
       <button class="plan-type-btn active" onclick="setPlanType(1, this)">
         <span class="btn-icon">📋</span>
-        Initial Action Plan
-        <div class="btn-sub">First assessment planning meeting</div>
+        <span class="btn-text">
+          Initial Action Plan
+          <span class="btn-sub">First assessment planning meeting</span>
+        </span>
       </button>
       <button class="plan-type-btn" onclick="setPlanType(2, this)">
         <span class="btn-icon">🔄</span>
-        Session Review &amp; Action Plan
-        <div class="btn-sub">Ongoing review and planning</div>
+        <span class="btn-text">
+          Session Review &amp; Action Plan
+          <span class="btn-sub">Ongoing review and planning</span>
+        </span>
       </button>
     </div>
   </div>
@@ -133,26 +142,26 @@
 
     <!-- LEARNER DETAILS -->
     <div class="section-card">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
+        <div style="grid-column:span 2;">
           <label class="form-label">Learner Name</label>
           <input type="text" id="learner-name" class="form-input" placeholder="Full name">
-        </div>
-        <div>
-          <label class="form-label">Learner Email</label>
-          <input type="email" id="learner-email" class="form-input" placeholder="learner@email.com">
-        </div>
-        <div>
-          <label class="form-label">Assessor Name</label>
-          <input type="text" id="assessor-name" class="form-input" placeholder="Assessor full name">
         </div>
         <div>
           <label class="form-label">Meeting Date</label>
           <input type="date" id="meeting-date" class="form-input">
         </div>
+        <div style="grid-column:span 2;">
+          <label class="form-label">Learner Email</label>
+          <input type="email" id="learner-email" class="form-input" placeholder="learner@email.com">
+        </div>
         <div>
           <label class="form-label">Next Meeting Date</label>
           <input type="date" id="next-meeting-date" class="form-input">
+        </div>
+        <div style="grid-column:span 2;">
+          <label class="form-label">Assessor Name</label>
+          <input type="text" id="assessor-name" class="form-input" placeholder="Assessor full name">
         </div>
         <div>
           <label class="form-label">Meeting Location / Method</label>
