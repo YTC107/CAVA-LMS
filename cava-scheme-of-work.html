@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PT Academy — Focus Awards Level 3 Certificate in Assessing Vocational Achievement (RQF)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  body { font-family: 'Inter', sans-serif; background: #f1f5f9; }
+  .brand-header { background: #1a1a2e; border-bottom: 6px solid #c9a84c; }
+  .gold { color: #c9a84c; }
+  .week-card { border-left: 5px solid; }
+  .w1 { border-color: #3b82f6; } .w1-bg { background: #eff6ff; } .w1-head { background: #3b82f6; }
+  .w2 { border-color: #8b5cf6; } .w2-bg { background: #f5f3ff; } .w2-head { background: #8b5cf6; }
+  .w3 { border-color: #10b981; } .w3-bg { background: #ecfdf5; } .w3-head { background: #10b981; }
+  .w4 { border-color: #f59e0b; } .w4-bg { background: #fffbeb; } .w4-head { background: #f59e0b; }
+  .w5 { border-color: #ef4444; } .w5-bg { background: #fef2f2; } .w5-head { background: #ef4444; }
+  .w6 { border-color: #06b6d4; } .w6-bg { background: #ecfeff; } .w6-head { background: #06b6d4; }
+  .w7 { border-color: #84cc16; } .w7-bg { background: #f7fee7; } .w7-head { background: #84cc16; }
+  .w8 { border-color: #f97316; } .w8-bg { background: #fff7ed; } .w8-head { background: #f97316; }
+  .section-tab { cursor: pointer; user-select: none; }
+  .lp-body { display: none; }
+  .lp-body.open { display: block; }
+  .phase-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 10px; border-radius: 999px; margin-bottom: 6px; }
+  .phase-orient { background: #dbeafe; color: #1d4ed8; }
+  .phase-consol { background: #d1fae5; color: #065f46; }
+  .phase-close { background: #fef3c7; color: #92400e; }
+  @media print {
+    .no-print { display: none; }
+    .lp-body { display: block !important; }
+    body { background: white; }
+    .brand-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid #cbd5e1; padding: 8px 10px; font-size: 0.85rem; }
+  th { background: #1a1a2e; color: #c9a84c; font-weight: 600; }
+  tr:nth-child(even) td { background: #f8fafc; }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- HEADER -->
+<div class="brand-header text-white px-8 py-8 mb-8 shadow-lg">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex items-start justify-between flex-wrap gap-6">
+      <div class="flex flex-col items-start gap-3">
+        <div id="logoWrap">
+          <img id="logoImg" src="" alt="PT Academy Logo" style="max-height: 80px; display: none;" />
+        </div>
+        <label class="no-print cursor-pointer bg-yellow-700 hover:bg-yellow-600 text-white text-xs font-semibold px-3 py-1.5 rounded">
+          Upload Logo
+          <input type="file" accept="image/*" class="hidden" onchange="loadLogo(event)" />
+        </label>
+        <div>
+          <p class="text-xs font-semibold uppercase tracking-widest mb-1" style="color:#c9a84c;">PT Academy</p>
+          <h1 class="text-2xl font-bold leading-snug">Focus Awards Level 3 Certificate in Assessing Vocational Achievement (RQF)</h1>
+          <p class="text-sm mt-1" style="color:#c9a84c;">Programme Scheme of Work · Timetable · Lesson Plans</p>
+          <p class="text-xs mt-1 text-slate-300">Internal Programme Document · For Assessors, Management and External Quality Assurance</p>
+        </div>
+      </div>
+      <div class="text-right text-sm text-slate-300 space-y-1">
+        <p><span class="font-semibold text-white">Awarding Organisation:</span> Focus Awards</p>
+        <p><span class="font-semibold text-white">Qualification Number:</span> 601/6104/8</p>
+        <p><span class="font-semibold text-white">Total Qualification Time:</span> 150 hours</p>
+        <p><span class="font-semibold text-white">Guided Learning Hours:</span> 84</p>
+        <p><span class="font-semibold text-white">Delivery:</span> Hybrid (Pre-recorded and Live Online)</p>
+        <p><span class="font-semibold text-white">Programme Duration:</span> 6 to 8 Weeks</p>
+        <p><span class="font-semibold text-white">Live Sessions:</span> 6 x 2 Hours</p>
+        <p><span class="font-semibold text-white">Provider:</span> PT Academy</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="max-w-6xl mx-auto px-4 pb-16 space-y-12">
+
+<!-- NAV -->
+<div class="no-print flex flex-wrap gap-3 mb-2">
+  <button onclick="navTo('rationale')" class="text-white text-sm font-medium px-4 py-2 rounded-lg" style="background:#1a1a2e;">Delivery Rationale</button>
+  <button onclick="navTo('sow')" class="text-white text-sm font-medium px-4 py-2 rounded-lg" style="background:#1a1a2e;">Scheme of Work</button>
+  <button onclick="navTo('timetable')" class="text-white text-sm font-medium px-4 py-2 rounded-lg" style="background:#1a1a2e;">Timetable</button>
+  <button onclick="navTo('lessonplans')" class="text-white text-sm font-medium px-4 py-2 rounded-lg" style="background:#1a1a2e;">Lesson Plans</button>
+  <button onclick="window.print()" class="text-white text-sm font-medium px-4 py-2 rounded-lg ml-auto" style="background:#c9a84c; color:#1a1a2e;">Print / Save as PDF</button>
+</div>
+
+<!-- ===== SECTION 0: DELIVERY RATIONALE ===== -->
+<section id="rationale">
+  <h2 class="text-2xl font-bold text-slate-800 mb-1">Delivery Rationale</h2>
+  <p class="text-slate-500 text-sm mb-6">Justification for the hybrid delivery model and programme structure for EQA and management reference.</p>
+  <div class="bg-white rounded-xl shadow p-6 space-y-5 text-sm text-slate-700 leading-relaxed">
+    <div>
+      <h3 class="font-semibold text-slate-800 mb-2">Hybrid Delivery Model</h3>
+      <p>The Focus Awards Level 3 Certificate in Assessing Vocational Achievement (RQF) is delivered by PT Academy using a hybrid model combining pre-recorded instructional content with live online group sessions. This approach is fully consistent with the RQF delivery requirements for this qualification. Pre-recorded content counts toward guided learning hours where it is curriculum-led, structured to the unit learning outcomes, and accessible via a managed learning environment. All pre-recorded sessions are mapped to specific units and criteria.</p>
+    </div>
+    <div>
+      <h3 class="font-semibold text-slate-800 mb-2">Live Group Sessions</h3>
+      <p>Six live group sessions of two hours each are scheduled across the programme. These sessions are tutor-led and serve as consolidation, calibration, evidence review, and action planning points rather than primary knowledge delivery. This reflects current best practice in vocational assessor training, where the majority of competence is demonstrated through practice and evidence gathering rather than classroom instruction.</p>
+    </div>
+    <div>
+      <h3 class="font-semibold text-slate-800 mb-2">Programme Duration</h3>
+      <p>The programme operates on a flexible 6 to 8 week timeline. The core taught and evidenced content is designed around six weeks. Additional weeks may be used where learners require additional time to complete evidence gathering cycles, obtain signatures, or finalise their portfolio. The flexible end point ensures all learners can meet the full assessment criteria without the programme being compressed unreasonably.</p>
+    </div>
+    <div>
+      <h3 class="font-semibold text-slate-800 mb-2">Programme Phases</h3>
+      <div class="flex flex-wrap gap-3 mt-2">
+        <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 flex-1 min-w-48">
+          <span class="phase-badge phase-orient">Phase 1</span>
+          <p class="font-semibold text-slate-700">Orientation</p>
+          <p class="text-xs text-slate-500 mt-1">Weeks 1 and 2. Programme induction, Unit 1 knowledge, learner allocation and Assessment Plan 1.</p>
+        </div>
+        <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-4 flex-1 min-w-48">
+          <span class="phase-badge phase-consol">Phase 2</span>
+          <p class="font-semibold text-slate-700">Consolidation</p>
+          <p class="text-xs text-slate-500 mt-1">Weeks 3 to 5. Evidence gathering cycles, observation records, Unit 2 and 3 completion, reflective commentary.</p>
+        </div>
+        <div class="bg-amber-50 border border-amber-200 rounded-lg p-4 flex-1 min-w-48">
+          <span class="phase-badge phase-close">Phase 3</span>
+          <p class="font-semibold text-slate-700">Review and Sign-Off</p>
+          <p class="text-xs text-slate-500 mt-1">Week 6 onwards. Portfolio audit, IQA preparation, submission and programme close.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== SECTION 1: SCHEME OF WORK ===== -->
+<section id="sow">
+  <h2 class="text-2xl font-bold text-slate-800 mb-1">Section 1: Scheme of Work</h2>
+  <p class="text-slate-500 text-sm mb-6">Programme overview and weekly learning journey across all three units.</p>
+
+  <div class="bg-white rounded-xl shadow p-6 mb-6">
+    <h3 class="text-lg font-semibold text-slate-700 mb-4">Programme Hour Breakdown</h3>
+    <table>
+      <thead><tr><th>Activity Type</th><th class="text-center">Hours</th></tr></thead>
+      <tbody>
+        <tr><td>Live group sessions (6 x 2 hours)</td><td class="text-center font-semibold">12</td></tr>
+        <tr><td>Pre-recorded taught content (across all weeks)</td><td class="text-center font-semibold">24</td></tr>
+        <tr><td>Independent evidence gathering and assessment activity</td><td class="text-center font-semibold">54</td></tr>
+        <tr><td>Reflective writing and portfolio compilation</td><td class="text-center font-semibold">24</td></tr>
+        <tr><td>Reading and self-directed study</td><td class="text-center font-semibold">36</td></tr>
+        <tr><td class="font-bold text-slate-800">Total Qualification Time</td><td class="text-center font-bold text-slate-800">150</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="bg-white rounded-xl shadow p-6">
+    <h3 class="text-lg font-semibold text-slate-700 mb-4">Overview at a Glance</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Week</th>
+          <th>Phase</th>
+          <th>Focus</th>
+          <th>Unit Coverage</th>
+          <th>Live Session Purpose</th>
+          <th>Independent Task</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="font-semibold text-blue-700">Week 1</td><td><span class="phase-badge phase-orient">Orientation</span></td><td>Assessment principles and knowledge</td><td>Unit 1</td><td>Introduction, orientation and knowledge check</td><td>Complete Unit 1 knowledge assignments</td></tr>
+        <tr><td class="font-semibold text-purple-700">Week 2</td><td><span class="phase-badge phase-orient">Orientation</span></td><td>Assessment planning and learner allocation</td><td>Unit 1 and Unit 2</td><td>Consolidate Unit 1 and launch evidence gathering</td><td>Complete Assessment Plan 1 with both learners</td></tr>
+        <tr><td class="font-semibold text-emerald-700">Week 3</td><td><span class="phase-badge phase-consol">Consolidation</span></td><td>First evidence gathering cycle</td><td>Unit 2</td><td>Review Assessment Plan 1 and collate first evidence</td><td>Upload evidence and write first reflections</td></tr>
+        <tr><td class="font-semibold text-amber-700">Week 4</td><td><span class="phase-badge phase-consol">Consolidation</span></td><td>Second evidence gathering cycle</td><td>Unit 2 and Unit 3</td><td>Review Assessment Plan 2 and collate second evidence</td><td>Continue evidence gathering, complete observation grids</td></tr>
+        <tr><td class="font-semibold text-red-700">Week 5</td><td><span class="phase-badge phase-consol">Consolidation</span></td><td>Finalising evidence and observation</td><td>Unit 2 and Unit 3</td><td>Review remaining evidence gaps and complete observation records</td><td>Finalise all remaining evidence and reflective commentary</td></tr>
+        <tr><td class="font-semibold text-cyan-700">Week 6</td><td><span class="phase-badge phase-close">Review and Sign-Off</span></td><td>Portfolio completion and sign-off</td><td>All units</td><td>Final portfolio review, IQA preparation and programme close</td><td>Submit completed portfolio for IQA sampling</td></tr>
+        <tr><td class="font-semibold text-lime-700">Week 7*</td><td><span class="phase-badge phase-close">Review and Sign-Off</span></td><td>Extended evidence gathering (if required)</td><td>All units</td><td>No additional live session scheduled</td><td>Address outstanding evidence or gaps identified at Week 6</td></tr>
+        <tr><td class="font-semibold text-orange-700">Week 8*</td><td><span class="phase-badge phase-close">Review and Sign-Off</span></td><td>Final submission window (if required)</td><td>All units</td><td>No additional live session scheduled</td><td>Final portfolio submission and IQA sign-off</td></tr>
+      </tbody>
+    </table>
+    <p class="text-xs text-slate-400 mt-3">* Weeks 7 and 8 are available where learners require additional time to complete evidence or obtain signatures. No additional live sessions are scheduled in these weeks.</p>
+  </div>
+</section>
+
+<!-- ===== SECTION 2: TIMETABLE ===== -->
+<section id="timetable">
+  <h2 class="text-2xl font-bold text-slate-800 mb-1">Section 2: Six-Week Timetable</h2>
+  <p class="text-slate-500 text-sm mb-6">At-a-glance weekly activity planner showing all three delivery streams per week.</p>
+
+  <div class="bg-white rounded-xl shadow overflow-hidden">
+    <table>
+      <thead>
+        <tr>
+          <th class="w-28">Week and Phase</th>
+          <th>Pre-Recorded Content</th>
+          <th>Live Session (2 hours)</th>
+          <th>Independent Work</th>
+          <th class="text-center w-20">Hours</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr class="align-top">
+          <td class="bg-blue-50"><span class="font-bold text-blue-700">Week 1</span><br/><span class="phase-badge phase-orient mt-1">Orientation</span><br/><span class="text-xs text-slate-400">Unit 1</span></td>
+          <td class="bg-blue-50">Function of assessment · VARCS · Assessor responsibilities · Regulations · Programme overview · Evidence record walkthrough</td>
+          <td class="bg-blue-50">Welcome and orientation · Q and A on Unit 1 concepts · Group discussion · Evidence records intro · Learner allocation · Action planning</td>
+          <td class="bg-blue-50">Complete Unit 1 evidence records 1.1 to 1.4 · Read CAVA specification · Review PT Academy assessment policy · Review both learners' workbooks</td>
+          <td class="text-center font-bold bg-blue-50">15</td>
+        </tr>
+        <tr class="align-top">
+          <td class="bg-purple-50"><span class="font-bold text-purple-700">Week 2</span><br/><span class="phase-badge phase-orient mt-1">Orientation</span><br/><span class="text-xs text-slate-400">Unit 1 and Unit 2</span></td>
+          <td class="bg-purple-50">Comparing assessment methods · Holistic planning · Seven methods of occupational competence · Learner involvement · Assessment Plan 1 walkthrough · Observation process</td>
+          <td class="bg-purple-50">Review Unit 1 work · Group calibration · Assessment Plan 1 walkthrough · Begin plan during session · Evidence gathering brief · Observation grid intro</td>
+          <td class="bg-purple-50">Complete and agree Assessment Plan 1 with both learners · Contact learners · Review existing evidence · Access observation videos · Complete Unit 1 records 2.1, 3.1 to 3.4</td>
+          <td class="text-center font-bold bg-purple-50">15</td>
+        </tr>
+        <tr class="align-top">
+          <td class="bg-emerald-50"><span class="font-bold text-emerald-700">Week 3</span><br/><span class="phase-badge phase-consol mt-1">Consolidation</span><br/><span class="text-xs text-slate-400">Unit 2</span></td>
+          <td class="bg-emerald-50">Valid, fair and reliable decisions · Judging evidence quality · Observation grid completion · Writing assessor feedback · Uploading evidence · Assessment Plan 2 intro</td>
+          <td class="bg-emerald-50">Bring completed Assessment Plan 1 and first evidence · Peer sharing · Map evidence to Unit 2 criteria · Discuss learner challenges · Introduce Assessment Plan 2 · Tutor feedback</td>
+          <td class="bg-emerald-50">Upload evidence to Unit 2 records · Write reflective commentary · Complete Assessment Plan 2 · Begin observation grids · Complete Unit 1 records 4.1 to 4.4</td>
+          <td class="text-center font-bold bg-emerald-50">15</td>
+        </tr>
+        <tr class="align-top">
+          <td class="bg-amber-50"><span class="font-bold text-amber-700">Week 4</span><br/><span class="phase-badge phase-consol mt-1">Consolidation</span><br/><span class="text-xs text-slate-400">Unit 2 and Unit 3</span></td>
+          <td class="bg-amber-50">Intro to Unit 3 · Unit 3 assessment methods · Preparing resources and conditions · Managing a caseload · Professional boundaries · Quality assurance and standardisation</td>
+          <td class="bg-amber-50">Review Assessment Plan 2 and Week 3 evidence · Peer review observation decisions · Managing Unit 2 and 3 together · Evidence mapping activity · Identify gaps · Agree next tasks</td>
+          <td class="bg-amber-50">Continue Unit 2 evidence records · Complete all observation grids · Begin Unit 3 records 1.1, 1.2, 2.1 · Complete Unit 1 records 5.1, 5.2, 6.1 to 6.3</td>
+          <td class="text-center font-bold bg-amber-50">15</td>
+        </tr>
+        <tr class="align-top">
+          <td class="bg-red-50"><span class="font-bold text-red-700">Week 5</span><br/><span class="phase-badge phase-consol mt-1">Consolidation</span><br/><span class="text-xs text-slate-400">Unit 2 and Unit 3</span></td>
+          <td class="bg-red-50">Equality, diversity and inclusion · Legislation in assessment · Technology in assessment · Reflective practice and CPD · High-quality reflective commentary · IQA portfolio preparation</td>
+          <td class="bg-red-50">Portfolio audit against full criterion index · Group gap analysis · Peer review of reflections · Unit 1 criteria 7.1 to 8.4 guidance · IQA sampling walkthrough · Final action list agreed</td>
+          <td class="bg-red-50">Complete all Unit 2 and 3 records · Complete Unit 1 records 7.1 to 8.4 · Finalise all reflective commentary · Complete learner reflections · Obtain all signatures · CPD log</td>
+          <td class="text-center font-bold bg-red-50">15</td>
+        </tr>
+        <tr class="align-top">
+          <td class="bg-cyan-50"><span class="font-bold text-cyan-700">Week 6</span><br/><span class="phase-badge phase-close mt-1">Review and Sign-Off</span><br/><span class="text-xs text-slate-400">All Units</span></td>
+          <td class="bg-cyan-50">IQA sampling process · What EQA looks for · Portfolio folder organisation · Programme close and progression pathways · Reflection on the programme journey</td>
+          <td class="bg-cyan-50">Celebration and reflection · Final gap resolution · Portfolio submission walkthrough · Q and A with IQA or programme lead · Progression pathways · Programme close</td>
+          <td class="bg-cyan-50">Final check of all records and signatures · Organise portfolio folder · Complete and submit IQA sampling record · EQA checklist · Submit to PT Academy · Final reflective summary</td>
+          <td class="text-center font-bold bg-cyan-50">15</td>
+        </tr>
+        <tr>
+          <td colspan="4" class="font-bold text-right text-slate-700 bg-slate-100">Total Programme Hours (Core 6 Weeks)</td>
+          <td class="text-center font-bold bg-slate-100">90</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="text-xs text-slate-400 px-4 py-3">The remaining 60 hours to reach 150 TQT are accounted for through reflective writing (24 hours) and self-directed reading and study (36 hours), distributed across all weeks. Weeks 7 and 8 are available as an extended window where required and do not attract additional live session hours.</p>
+  </div>
+</section>
+
+<!-- ===== SECTION 3: LESSON PLANS ===== -->
+<section id="lessonplans">
+  <h2 class="text-2xl font-bold text-slate-800 mb-1">Section 3: Lesson Plans</h2>
+  <p class="text-slate-500 text-sm mb-6">Click any week to expand the full lesson plan for that live session.</p>
+
+  <!-- WEEK 1 -->
+  <div class="week-card w1 bg-white rounded-xl shadow mb-4 overflow-hidden">
+    <div class="section-tab w1-head text-white px-6 py-4 flex items-center justify-between" onclick="toggle('lp1')">
+      <div>
+        <span class="phase-badge phase-orient">Orientation: Week 1</span>
+        <h3 class="text-lg font-bold mt-0.5">Understanding Assessment: Principles and Practice</h3>
+      </div>
+      <span id="lp1-icon" class="text-2xl font-light">+</span>
+    </div>
+    <div id="lp1" class="lp-body p-6 space-y-5">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Unit</p><p class="font-semibold text-slate-700 mt-1">Unit 1</p></div>
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Session Length</p><p class="font-semibold text-slate-700 mt-1">2 hours</p></div>
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Delivery Mode</p><p class="font-semibold text-slate-700 mt-1">Live Online</p></div>
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Pre-Session Study</p><p class="font-semibold text-slate-700 mt-1">4 hrs pre-recorded</p></div>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-2">Learning Objectives</h4>
+        <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+          <li>Articulate the function and purpose of assessment in a vocational context</li>
+          <li>Identify the key principles of assessment and the VARCS framework</li>
+          <li>Understand the responsibilities of a qualified assessor at PT Academy</li>
+          <li>Navigate the criterion evidence record documents confidently</li>
+          <li>Confirm their learner allocation and begin planning their caseload</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-3">Session Plan</h4>
+        <table>
+          <thead><tr><th class="w-24">Time</th><th>Activity</th><th>Method</th><th>Resources</th></tr></thead>
+          <tbody>
+            <tr><td>0:00 to 0:10</td><td>Welcome, introductions and programme overview</td><td>Tutor-led presentation</td><td>Slide deck</td></tr>
+            <tr><td>0:10 to 0:30</td><td>Q and A on pre-recorded content covering VARCS, assessor responsibilities and Unit 1 overview</td><td>Open discussion</td><td>Pre-recorded video notes</td></tr>
+            <tr><td>0:30 to 0:50</td><td>Guided group discussion: what does assessment mean in the context of PT Academy?</td><td>Facilitated discussion and breakout rooms</td><td>Discussion prompt sheet</td></tr>
+            <tr><td>0:50 to 1:10</td><td>Introduction and walkthrough of the criterion evidence record format</td><td>Screen share and guided demo</td><td>Evidence record template</td></tr>
+            <tr><td>1:10 to 1:30</td><td>Learner allocation confirmed. L2 and L3 PT learners assigned to each trainee assessor</td><td>Tutor announcement and individual confirmation</td><td>Learner allocation list</td></tr>
+            <tr><td>1:30 to 1:50</td><td>Action planning covering what learners need to complete before Week 2</td><td>Tutor-led and written task</td><td>Action plan template</td></tr>
+            <tr><td>1:50 to 2:00</td><td>Questions, housekeeping and close</td><td>Open Q and A</td><td></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-2">Independent Work Set This Week</h4>
+        <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+          <li>Complete Unit 1 criterion evidence records 1.1, 1.2, 1.3 and 1.4</li>
+          <li>Read and annotate the Focus Awards CAVA qualification specification</li>
+          <li>Review PT Academy assessment policy and relevant regulations</li>
+          <li>Review both assigned learners' workbooks and current programme stage</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-2">Resources Required</h4>
+        <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+          <li>Pre-recorded video content via PT Academy LMS</li>
+          <li>Unit 1 criterion evidence record templates (1.1 to 1.4)</li>
+          <li>Focus Awards CAVA qualification specification</li>
+          <li>PT Academy assessment policy</li>
+          <li>Programme overview and portfolio guidance document</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 2 -->
+  <div class="week-card w2 bg-white rounded-xl shadow mb-4 overflow-hidden">
+    <div class="section-tab w2-head text-white px-6 py-4 flex items-center justify-between" onclick="toggle('lp2')">
+      <div>
+        <span class="phase-badge phase-orient">Orientation: Week 2</span>
+        <h3 class="text-lg font-bold mt-0.5">Assessment Planning: Getting Started With Your Learners</h3>
+      </div>
+      <span id="lp2-icon" class="text-2xl font-light">+</span>
+    </div>
+    <div id="lp2" class="lp-body p-6 space-y-5">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Unit</p><p class="font-semibold text-slate-700 mt-1">Unit 1 and Unit 2</p></div>
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Session Length</p><p class="font-semibold text-slate-700 mt-1">2 hours</p></div>
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Delivery Mode</p><p class="font-semibold text-slate-700 mt-1">Live Online</p></div>
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Pre-Session Study</p><p class="font-semibold text-slate-700 mt-1">4 hrs pre-recorded</p></div>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-2">Learning Objectives</h4>
+        <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+          <li>Compare and select appropriate assessment methods for their learners</li>
+          <li>Understand how to plan a holistic approach across a caseload</li>
+          <li>Complete Assessment Plan 1 accurately for both the L2 and L3 learner</li>
+          <li>Initiate contact with learners and agree evidence to be gathered</li>
+          <li>Access and navigate the observation video folders for observation evidence</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-3">Session Plan</h4>
+        <table>
+          <thead><tr><th class="w-24">Time</th><th>Activity</th><th>Method</th><th>Resources</th></tr></thead>
+          <tbody>
+            <tr><td>0:00 to 0:20</td><td>Review and discussion of Unit 1 independent work including responses to criteria 1.1 to 1.4</td><td>Group discussion</td><td>Submitted evidence records</td></tr>
+            <tr><td>0:20 to 0:40</td><td>Group calibration activity comparing responses to Unit 1 criteria for consistency</td><td>Peer comparison and tutor facilitation</td><td>Calibration prompt sheet</td></tr>
+            <tr><td>0:40 to 1:00</td><td>Walkthrough of Assessment Plan 1 field by field with examples</td><td>Screen share and guided demo</td><td>Assessment Plan 1 template</td></tr>
+            <tr><td>1:00 to 1:30</td><td>Practical task: begin completing Assessment Plan 1 for both learners during the session</td><td>Individual task with tutor support</td><td>Assessment Plan 1 (blank)</td></tr>
+            <tr><td>1:30 to 1:45</td><td>Setting the evidence gathering brief covering what to bring to Week 3</td><td>Tutor-led briefing</td><td>Evidence gathering checklist</td></tr>
+            <tr><td>1:45 to 2:00</td><td>Introduction to the observation grid and how to access learner video footage</td><td>Screen share demo</td><td>Observation grid and access guide</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-2">Independent Work Set This Week</h4>
+        <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+          <li>Complete and agree Assessment Plan 1 with both the Level 2 and Level 3 learner</li>
+          <li>Contact both learners, explain the assessment process and agree evidence to be gathered</li>
+          <li>Review any existing learner work available in their PT Academy workbooks</li>
+          <li>Access the observation video folder for allocated learners and review available footage</li>
+          <li>Complete Unit 1 criterion evidence records 2.1, 3.1, 3.2, 3.3 and 3.4</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-2">Resources Required</h4>
+        <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+          <li>Assessment Plan 1 template (blank)</li>
+          <li>Pre-recorded walkthrough video: completing Assessment Plan 1</li>
+          <li>Observation grid template</li>
+          <li>Observation video folder access instructions</li>
+          <li>Unit 1 criterion evidence record templates (2.1 to 3.4)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 3 -->
+  <div class="week-card w3 bg-white rounded-xl shadow mb-4 overflow-hidden">
+    <div class="section-tab w3-head text-white px-6 py-4 flex items-center justify-between" onclick="toggle('lp3')">
+      <div>
+        <span class="phase-badge phase-consol">Consolidation: Week 3</span>
+        <h3 class="text-lg font-bold mt-0.5">First Evidence Gathering Cycle</h3>
+      </div>
+      <span id="lp3-icon" class="text-2xl font-light">+</span>
+    </div>
+    <div id="lp3" class="lp-body p-6 space-y-5">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Unit</p><p class="font-semibold text-slate-700 mt-1">Unit 2</p></div>
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Session Length</p><p class="font-semibold text-slate-700 mt-1">2 hours</p></div>
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Delivery Mode</p><p class="font-semibold text-slate-700 mt-1">Live Online</p></div>
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Pre-Session Study</p><p class="font-semibold text-slate-700 mt-1">4 hrs pre-recorded</p></div>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-2">Learning Objectives</h4>
+        <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+          <li>Evaluate the validity, fairness and reliability of gathered evidence</li>
+          <li>Map collected evidence accurately against Unit 2 criteria</li>
+          <li>Write effective assessor feedback for each piece of evidence reviewed</li>
+          <li>Identify gaps in evidence and agree next steps via Assessment Plan 2</li>
+          <li>Begin completing observation grids using learner video footage</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-3">Session Plan</h4>
+        <table>
+          <thead><tr><th class="w-24">Time</th><th>Activity</th><th>Method</th><th>Resources</th></tr></thead>
+          <tbody>
+            <tr><td>0:00 to 0:15</td><td>Trainee assessors present their completed Assessment Plan 1 and first gathered evidence</td><td>Individual sharing and tutor review</td><td>Completed Assessment Plan 1</td></tr>
+            <tr><td>0:15 to 0:40</td><td>Small group review: sharing what evidence has been gathered and discussing decisions made</td><td>Breakout rooms and peer discussion</td><td>Evidence records</td></tr>
+            <tr><td>0:40 to 1:00</td><td>Guided activity: mapping evidence to Unit 2 criteria using the evidence records</td><td>Tutor-facilitated mapping exercise</td><td>Unit 2 evidence records</td></tr>
+            <tr><td>1:00 to 1:20</td><td>Group discussion covering challenges encountered during first contact with learners</td><td>Open discussion</td><td></td></tr>
+            <tr><td>1:20 to 1:40</td><td>Introduction to Assessment Plan 2: reviewing what was done and planning next steps</td><td>Screen share and guided demo</td><td>Assessment Plan 2 template</td></tr>
+            <tr><td>1:40 to 2:00</td><td>Tutor feedback on assessment plans and early reflective commentary</td><td>Tutor-led with individual comments</td><td>Submitted plans</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-2">Independent Work Set This Week</h4>
+        <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+          <li>Upload all gathered evidence to the relevant Unit 2 criterion evidence records</li>
+          <li>Complete reflective assessor commentary for each criterion evidenced so far</li>
+          <li>Complete Assessment Plan 2: review what was done and plan the next piece of work</li>
+          <li>Begin completing observation grids using learner video footage</li>
+          <li>Complete Unit 1 criterion evidence records 4.1, 4.2, 4.3 and 4.4</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-2">Resources Required</h4>
+        <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+          <li>Assessment Plan 2 template (blank)</li>
+          <li>Observation grid template</li>
+          <li>Unit 2 criterion evidence record templates (1.1 to 2.4)</li>
+          <li>Unit 1 criterion evidence record templates (4.1 to 4.4)</li>
+          <li>Reflective writing guidance sheet</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 4 -->
+  <div class="week-card w4 bg-white rounded-xl shadow mb-4 overflow-hidden">
+    <div class="section-tab w4-head text-white px-6 py-4 flex items-center justify-between" onclick="toggle('lp4')">
+      <div>
+        <span class="phase-badge phase-consol">Consolidation: Week 4</span>
+        <h3 class="text-lg font-bold mt-0.5">Second Evidence Gathering Cycle and Observation Records</h3>
+      </div>
+      <span id="lp4-icon" class="text-2xl font-light">+</span>
+    </div>
+    <div id="lp4" class="lp-body p-6 space-y-5">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Unit</p><p class="font-semibold text-slate-700 mt-1">Unit 2 and Unit 3</p></div>
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Session Length</p><p class="font-semibold text-slate-700 mt-1">2 hours</p></div>
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Delivery Mode</p><p class="font-semibold text-slate-700 mt-1">Live Online</p></div>
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Pre-Session Study</p><p class="font-semibold text-slate-700 mt-1">4 hrs pre-recorded</p></div>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-2">Learning Objectives</h4>
+        <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+          <li>Calibrate observation grid judgements through peer review</li>
+          <li>Manage assessment activity across Unit 2 and Unit 3 simultaneously</li>
+          <li>Cross-reference gathered evidence against Unit 3 criteria</li>
+          <li>Identify remaining evidence gaps and plan to address them before Week 5</li>
+          <li>Understand quality assurance and standardisation expectations at PT Academy</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-3">Session Plan</h4>
+        <table>
+          <thead><tr><th class="w-24">Time</th><th>Activity</th><th>Method</th><th>Resources</th></tr></thead>
+          <tbody>
+            <tr><td>0:00 to 0:20</td><td>Review of Assessment Plan 2 and evidence gathered in Week 3</td><td>Individual sharing and tutor review</td><td>Completed Assessment Plan 2</td></tr>
+            <tr><td>0:20 to 0:40</td><td>Peer review activity: reviewing each other's observation grid decisions and calibrating judgements</td><td>Peer review and structured discussion</td><td>Completed observation grids</td></tr>
+            <tr><td>0:40 to 1:00</td><td>Discussion on how to manage assessment of Unit 3 alongside ongoing Unit 2 evidence</td><td>Tutor-led discussion</td><td>Unit 3 overview guide</td></tr>
+            <tr><td>1:00 to 1:20</td><td>Guided mapping activity: cross-referencing gathered evidence against Unit 3 criteria</td><td>Tutor-facilitated mapping exercise</td><td>Unit 3 evidence records</td></tr>
+            <tr><td>1:20 to 1:40</td><td>Identifying gaps: what still needs to be evidenced before Week 5</td><td>Individual audit with tutor support</td><td>Evidence gap tracking sheet</td></tr>
+            <tr><td>1:40 to 2:00</td><td>Agreeing further evidence gathering tasks and close</td><td>Tutor-led briefing</td><td>Action plan template</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-2">Independent Work Set This Week</h4>
+        <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+          <li>Continue uploading evidence to Unit 2 criterion evidence records</li>
+          <li>Complete all observation grids for both learners using video footage</li>
+          <li>Begin Unit 3 criterion evidence records 1.1, 1.2 and 2.1</li>
+          <li>Complete Unit 1 criterion evidence records 5.1, 5.2, 6.1, 6.2 and 6.3</li>
+          <li>Continue Assessment Plan 2 cycle: review and re-plan with both learners</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-2">Resources Required</h4>
+        <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+          <li>Unit 3 criterion evidence record templates (1.1 to 2.5)</li>
+          <li>Unit 1 criterion evidence record templates (5.1 to 6.3)</li>
+          <li>Observation grid templates (additional copies if required)</li>
+          <li>Caseload tracking spreadsheet template</li>
+          <li>PT Academy quality assurance overview document</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 5 -->
+  <div class="week-card w5 bg-white rounded-xl shadow mb-4 overflow-hidden">
+    <div class="section-tab w5-head text-white px-6 py-4 flex items-center justify-between" onclick="toggle('lp5')">
+      <div>
+        <span class="phase-badge phase-consol">Consolidation: Week 5</span>
+        <h3 class="text-lg font-bold mt-0.5">Finalising Evidence and Completing Reflections</h3>
+      </div>
+      <span id="lp5-icon" class="text-2xl font-light">+</span>
+    </div>
+    <div id="lp5" class="lp-body p-6 space-y-5">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Unit</p><p class="font-semibold text-slate-700 mt-1">Unit 2 and Unit 3</p></div>
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Session Length</p><p class="font-semibold text-slate-700 mt-1">2 hours</p></div>
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Delivery Mode</p><p class="font-semibold text-slate-700 mt-1">Live Online</p></div>
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Pre-Session Study</p><p class="font-semibold text-slate-700 mt-1">4 hrs pre-recorded</p></div>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-2">Learning Objectives</h4>
+        <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+          <li>Audit their own portfolio against the full criterion index and identify any gaps</li>
+          <li>Give and receive constructive peer feedback on reflective commentary</li>
+          <li>Complete the remaining Unit 1 criteria (7.1 to 8.4) with confidence</li>
+          <li>Understand the IQA sampling process and how to prepare a portfolio for review</li>
+          <li>Produce a clear action list of everything to be completed before Week 6</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-3">Session Plan</h4>
+        <table>
+          <thead><tr><th class="w-24">Time</th><th>Activity</th><th>Method</th><th>Resources</th></tr></thead>
+          <tbody>
+            <tr><td>0:00 to 0:20</td><td>Portfolio audit: each trainee assessor reviews their own evidence against the full criterion index</td><td>Individual self-audit task</td><td>Full criterion index checklist</td></tr>
+            <tr><td>0:20 to 0:40</td><td>Group discussion: identifying and resolving remaining evidence gaps together</td><td>Facilitated group discussion</td><td>Evidence gap tracking sheet</td></tr>
+            <tr><td>0:40 to 1:00</td><td>Peer feedback activity: reviewing each other's reflective commentaries for depth and quality</td><td>Paired peer review</td><td>Reflective commentary guidance</td></tr>
+            <tr><td>1:00 to 1:20</td><td>Guidance on completing Unit 1 criteria 7.1 to 8.4 covering information management and legal requirements</td><td>Tutor-led presentation</td><td>Unit 1 records (7.1 to 8.4)</td></tr>
+            <tr><td>1:20 to 1:40</td><td>Walkthrough of the IQA sampling record and EQA preparation checklist</td><td>Screen share and guided demo</td><td>IQA sampling record and EQA checklist</td></tr>
+            <tr><td>1:40 to 2:00</td><td>Action list agreed: everything to be completed and submitted before Week 6</td><td>Tutor-led and individual written plan</td><td>Action plan template</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-2">Independent Work Set This Week</h4>
+        <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+          <li>Complete all remaining Unit 2 and Unit 3 criterion evidence records</li>
+          <li>Complete Unit 1 criterion evidence records 7.1, 7.2, 8.1, 8.2, 8.3 and 8.4</li>
+          <li>Write and finalise all reflective assessor commentary sections</li>
+          <li>Ensure all learner reflection sections have been completed</li>
+          <li>Obtain all required signatures from the learner and countersigning assessor</li>
+          <li>Complete CPD log and currency of competence evidence</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-2">Resources Required</h4>
+        <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+          <li>Unit 1 criterion evidence record templates (7.1 to 8.4)</li>
+          <li>Unit 2 and Unit 3 remaining criterion evidence record templates</li>
+          <li>IQA sampling record template</li>
+          <li>EQA preparation checklist</li>
+          <li>CPD log template</li>
+          <li>Portfolio completion guidance and self-audit checklist</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEEK 6 -->
+  <div class="week-card w6 bg-white rounded-xl shadow mb-4 overflow-hidden">
+    <div class="section-tab w6-head text-white px-6 py-4 flex items-center justify-between" onclick="toggle('lp6')">
+      <div>
+        <span class="phase-badge phase-close">Review and Sign-Off: Week 6</span>
+        <h3 class="text-lg font-bold mt-0.5">Portfolio Completion, IQA Preparation and Programme Close</h3>
+      </div>
+      <span id="lp6-icon" class="text-2xl font-light">+</span>
+    </div>
+    <div id="lp6" class="lp-body p-6 space-y-5">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Unit</p><p class="font-semibold text-slate-700 mt-1">All Units</p></div>
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Session Length</p><p class="font-semibold text-slate-700 mt-1">2 hours</p></div>
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Delivery Mode</p><p class="font-semibold text-slate-700 mt-1">Live Online</p></div>
+        <div class="bg-slate-50 rounded-lg p-3"><p class="text-slate-400 text-xs font-medium uppercase">Pre-Session Study</p><p class="font-semibold text-slate-700 mt-1">4 hrs pre-recorded</p></div>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-2">Learning Objectives</h4>
+        <ul class="list-disc list-inside text-sm text-slate-600 space-y-1">
+          <li>Submit a complete, well-organised portfolio ready for IQA sampling</li>
+          <li>Understand the EQA process and what external review involves</li>
+          <li>Reflect meaningfully on their development as a trainee assessor across the programme</li>
+          <li>Understand next steps for progression including Level 4 IQA and CPD options</li>
+          <li>Leave the programme with confidence in their role as a qualified assessor</li>
+        </ul>
+      </div>
+      <div>
+        <h4 class="font-semibold text-slate-700 mb-3">Session Plan</h4>
+        <table>
+          <thead><tr><th class="w-24">Time</th><th>Activity</th><th>Method</th><th>Resources</th></tr></thead>
+          <tbody>
+            <tr><td>0:00 to 0:15</td><td>Welcome and celebration of programme completion</td><td>Tutor-led and open sharing</td><td></td></tr>
+            <tr><td>0:15 to 0:35</td><td>Final portfolio review: any last-minute gaps or queries resolved as a group</td><td>Group Q and A with tutor support</td><td>Portfolio completion checklist</td></tr>
+            <tr><td>0:35 to 0:55</td><td>Walkthrough of the submission process covering folder naming, document order and final sign-off</td><td>Screen share and guided demo</td><td>Portfolio naming convention guide</td></tr>
+            <tr><td>0:55 to 1:20</td><td>Q and A with IQA or programme lead covering EQA preparation and external review expectations</td><td>Panel Q and A</td><td>EQA preparation checklist</td></tr>
+            <tr><td>1:20 to 1:40</td><td>Introduction to next steps including Level 4 IQA and CPD options</td><td>Tutor presentation</td><td>Progression pathways information sheet</td></tr>
+            <tr><td>1:40 to 2:00</td><td>Programme close: final reflections, certificates and celebration</td><td>Open discussion and celebration</td><td></td></tr>
+          </tbody>
+        </table>
