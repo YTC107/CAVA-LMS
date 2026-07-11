@@ -181,13 +181,6 @@ const LO_LIST = [
   { id: 'lo8', label: 'LO8', title: 'Understand the legal and good practice requirements in relation to assessment' }
 ];
 
-// Map selector values to Supabase user IDs
-// These should match the actual user IDs in your auth table
-const LEARNER_USER_IDS = {
-  'anthony-bevan': 'anthony-bevan-user-id',
-  'michael-kplomedo': 'michael-kplomedo-user-id'
-};
-
 let selectedUserId = null;
 let outcomeSelections = {};
 
@@ -237,7 +230,6 @@ async function loadFeedback() {
 
   msg.textContent = 'Loading...';
 
-  // Fetch user_id from unit1_submissions by matching learner name
   const nameMap = { 'anthony-bevan': 'Anthony Bevan', 'michael-kplomedo': 'Michael Kplomedo' };
   const { data: subData } = await sb
     .from('unit1_submissions')
@@ -257,7 +249,6 @@ async function loadFeedback() {
   buildMarkingCards();
   panel.style.display = 'block';
 
-  // Load existing feedback if any
   const { data: rows } = await sb
     .from('unit1_feedback')
     .select('*')
