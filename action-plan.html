@@ -38,7 +38,8 @@
   /* Programme buttons */
   .prog-wrap { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
   .prog-btn { padding: 7px 20px; border: 2px solid #d1d5db; border-radius: 6px; background: #fff; cursor: pointer; font-size: 13px; font-weight: 600; color: #374151; transition: all 0.2s; }
-  .prog-btn.active { border-color: #c9a84c; background: #c9a84c; color: #111; }
+  .prog-btn.l2-active { border-color: #2d6a2d; background: #2d6a2d; color: #fff; }
+  .prog-btn.l3-active { border-color: #6b3fa0; background: #6b3fa0; color: #fff; }
 
   /* Units */
   .unit-check-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px; }
@@ -162,22 +163,79 @@
 
     <!-- PROGRAMME & UNITS -->
     <div class="section-card">
-      <div class="section-title">Programme &amp; Units Discussed</div>
+      <div class="section-title">Learner Programme &amp; Units Discussed</div>
       <div class="prog-wrap">
-        <button class="prog-btn active" onclick="setProgramme('l2', this)">Level 2 Award</button>
-        <button class="prog-btn" onclick="setProgramme('l3', this)">Level 3 Certificate (CAVA)</button>
+        <button class="prog-btn l2-active" id="prog-l2" onclick="setProgramme('l2', this)">Level 2 Gym Instructor</button>
+        <button class="prog-btn" id="prog-l3" onclick="setProgramme('l3', this)">Level 3 Personal Training</button>
       </div>
+      <p id="prog-label" style="font-size:12px;color:#6b7280;margin-bottom:10px;">Level 2 Gym Instructor tasks. Select all that apply to this assessment period.</p>
+
+      <!-- L2 Units -->
       <div id="units-l2" style="display:block;">
-        <div class="unit-check-grid">
-          <label class="unit-check"><input type="checkbox"> Unit 1 – Principles of Assessment</label>
-          <label class="unit-check"><input type="checkbox"> Unit 2 – Assessment Practice</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <label class="unit-check"><input type="checkbox"> Anatomy, Physiology and Kinesiology for Exercise and Health
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Multiple Choice Questions</div>
+          </label>
+          <label class="unit-check"><input type="checkbox"> Principles of Health and Wellbeing for Exercise, Fitness and Health
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Multiple Choice Questions</div>
+          </label>
+          <label class="unit-check"><input type="checkbox"> Principles of Professional Practice and Health and Safety in a Fitness Environment
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Short Answer Questions</div>
+          </label>
+          <label class="unit-check"><input type="checkbox"> Supporting Clients Lifestyle Management and Client Motivation
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Short Answer Questions</div>
+          </label>
+          <label class="unit-check"><input type="checkbox"> Planning Professional Practice with Effective Consultations and Assessments for Gym Based Exercise Sessions
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Short Answer Questions</div>
+          </label>
+          <label class="unit-check"><input type="checkbox"> Planning Professional Practice with Effective Consultations and Assessments for Gym Based Exercise Sessions
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Screening and Client Consultation</div>
+          </label>
+          <label class="unit-check"><input type="checkbox"> Planning Professional Practice with Effective Consultations and Assessments for Gym Based Exercise Sessions
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Programme and Session Cards</div>
+          </label>
+          <label class="unit-check"><input type="checkbox"> Instructing Professional Practice and Effective Exercise Supervision in Gym Based Exercise Sessions
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Formative Observation</div>
+          </label>
+          <label class="unit-check"><input type="checkbox"> Instructing Professional Practice and Effective Exercise Supervision in Gym Based Exercise Sessions
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Summative Practical Observation and Self Reflection Questions</div>
+          </label>
         </div>
       </div>
+
+      <!-- L3 Units -->
       <div id="units-l3" style="display:none;">
-        <div class="unit-check-grid">
-          <label class="unit-check"><input type="checkbox"> Unit 1 – Principles &amp; Requirements</label>
-          <label class="unit-check"><input type="checkbox"> Unit 2 – Assess Occupational Competence</label>
-          <label class="unit-check"><input type="checkbox"> Unit 3 – Assess Vocational Skills</label>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+          <label class="unit-check"><input type="checkbox"> Anatomy and Physiology for Exercise and Health
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">May be APLed from Level 2 Gym Instructor qualification</div>
+          </label>
+          <label class="unit-check"><input type="checkbox"> Applying Nutritional Principles to Personal Training
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Multiple Choice Questions</div>
+          </label>
+          <label class="unit-check"><input type="checkbox"> Applying Nutritional Principles to Personal Training
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Case Study: Client Consultation, Calculating Energy Needs and Food Diary Analysis</div>
+          </label>
+          <label class="unit-check"><input type="checkbox"> Planning Exercise Programme Design for Personal Training Clients
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Case Study: Client Consultations, Health and Fitness Assessment, SMART Goal Setting</div>
+          </label>
+          <label class="unit-check"><input type="checkbox"> Planning Exercise Programme Design for Personal Training Clients
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Case Study: Progressive Programme Overview</div>
+          </label>
+          <label class="unit-check"><input type="checkbox"> Planning Exercise Programme Design for Personal Training Clients
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Case Study: Single Programme Card</div>
+          </label>
+          <label class="unit-check"><input type="checkbox"> Planning Exercise Programme Design for Personal Training Clients
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Case Study: Case Study Review</div>
+          </label>
+          <label class="unit-check"><input type="checkbox"> Planning Exercise Programme Design for Personal Training Clients
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Case Study: Small Group PT Programme Card</div>
+          </label>
+          <label class="unit-check"><input type="checkbox"> Business Acumen and the Use of Information Technology for a Personal Trainer
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Business Plan and Short Answer Questions</div>
+          </label>
+          <label class="unit-check"><input type="checkbox"> Delivering Exercise Programmes for Personal Training Sessions
+            <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Practical Observation: Summative Assessment and Self Reflection Questions</div>
+          </label>
         </div>
       </div>
     </div>
@@ -284,6 +342,18 @@
 <script>
 let currentPlanType = 1;
 
+function setProgramme(prog, btn) {
+  document.getElementById('prog-l2').classList.remove('l2-active');
+  document.getElementById('prog-l3').classList.remove('l3-active');
+  const isL2 = prog === 'l2';
+  btn.classList.add(isL2 ? 'l2-active' : 'l3-active');
+  document.getElementById('units-l2').style.display = isL2 ? 'block' : 'none';
+  document.getElementById('units-l3').style.display = isL2 ? 'none' : 'block';
+  document.getElementById('prog-label').textContent = isL2
+    ? 'Level 2 Gym Instructor tasks. Select all that apply to this assessment period.'
+    : 'Level 3 Personal Training tasks. Select all that apply to this assessment period.';
+}
+
 function setPlanType(n, btn) {
   currentPlanType = n;
   document.querySelectorAll('.plan-type-btn').forEach(b => b.classList.remove('active'));
@@ -298,12 +368,7 @@ function setPlanType(n, btn) {
   }
 }
 
-function setProgramme(prog, btn) {
-  document.querySelectorAll('.prog-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById('units-l2').style.display = prog === 'l2' ? 'block' : 'none';
-  document.getElementById('units-l3').style.display = prog === 'l3' ? 'block' : 'none';
-}
+
 
 function addTask() {
   const list = document.getElementById('task-list');
