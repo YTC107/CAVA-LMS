@@ -243,7 +243,6 @@
     document.querySelectorAll('.date-assessed').forEach(d => { d.value = ''; });
     document.querySelectorAll('.assessor-initials').forEach(i => { i.value = ''; });
 
-    // Query using raw id value — Supabase handles type coercion correctly
     const { data } = await sb.from('unit_overrides')
       .select('unit, status, passed_date, lo_dates, set_by_assessor')
       .eq('user_id', id)
@@ -254,46 +253,86 @@
       return;
     }
 
-    // Deduplicate — most recent (first, descending order) row wins per unit
     const overrides = {};
     data.forEach(r => { if (!overrides[r.unit]) overrides[r.unit] = r; });
 
     ['unit1', 'unit2', 'unit3'].forEach(unitKey => {
       const override = overrides[unitKey];
       if (!override) return;
-      const outcomeVal = override.status === 'pre_passed' ? 'pass' : override.status === 'referred' ? 'refer' : null;
-      if (!outcomeVal) return;
       const unitNum = unitKey.replace('unit', '');
       const block = document.querySelector(`.unit-block[data-unit="${unitNum}"]`);
       if (!block) return;
 
-      // Parse per-LO dates if available
       let loDates = {};
       if (override.lo_dates) {
-        try { loDates = JSON.parse(override.lo_dates); } catch(e) {}
+        try {
+          const parsed = JSON.parse(override.lo_dates);
+          Object.entries(parsed).forEach(([key, val]) => {
+            if (typeof val === 'string') {
+              loDates[key] = { date: val, status: override.status === 'pre_passed' ? 'pass' : override.status === 'referred' ? 'refer' : '' };
+            } else {
+              loDates[key] = val;
+            }
+          });
+        } catch(e) {}
+      }
+      if (!Object.keys(loDates).length) {
+        const defaultStatus = override.status === 'pre_passed' ? 'pass' : override.status === 'referred' ? 'refer' : '';
+        ['LO1','LO2','LO3','LO4','LO5','LO6','LO7','LO8'].forEach(lo => {
+          loDates[lo] = { date: override.passed_date || '', status: defaultStatus };
+        });
       }
 
-      // Apply outcome and dates row by row
       const rows = block.querySelectorAll('tbody tr');
       const loKeys = ['LO1','LO2','LO3','LO4','LO5','LO6','LO7','LO8'];
       rows.forEach((row, i) => {
         const loKey = loKeys[i];
+        const loData = loDates[loKey] || { date: '', status: '' };
+        
         const outcomeSelect = row.querySelector('.outcome-select');
-        if (outcomeSelect) { outcomeSelect.value = outcomeVal; styleSelect(outcomeSelect); }
-        const dateInput = row.querySelector('.date-assessed');
-        if (dateInput) {
-          // Use per-LO date if available, otherwise fall back to unit-level date
-          dateInput.value = (loKey && loDates[loKey]) ? loDates[loKey] : (override.passed_date || '');
+        if (outcomeSelect && loData.status) { 
+          outcomeSelect.value = loData.status; 
+          styleSelect(outcomeSelect); 
         }
+        
+        const dateInput = row.querySelector('.date-assessed');
+        if (dateInput && loData.date) {
+          dateInput.value = loData.date;
+        }
+        
         const initialsInput = row.querySelector('.assessor-initials');
         if (initialsInput && override.set_by_assessor) initialsInput.value = override.set_by_assessor;
       });
     });
 
     const banner = document.getElementById('prepassBanner');
-    const lines = Object.values(overrides).map(r => {
-      const label = r.status === 'pre_passed' ? 'Passed' : 'Referred';
-      return `${r.unit.replace('unit', 'Unit ')}: <strong>${label}</strong>${r.passed_date ? ' (' + r.passed_date + ')' : ''}`;
+    const lines = Object.entries(overrides).map(([unitKey, r]) => {
+      if (!r.lo_dates) {
+        const label = r.status === 'pre_passed' ? 'Passed' : 'Referred';
+        return `${r.unit.replace('unit', 'Unit ')}: <strong>${label}</strong>${r.passed_date ? ' (' + r.passed_date + ')' : ''}`;
+      }
+      
+      let loDates = {};
+      try {
+        const parsed = JSON.parse(r.lo_dates);
+        Object.entries(parsed).forEach(([key, val]) => {
+          if (typeof val === 'string') {
+            loDates[key] = { status: r.status === 'pre_passed' ? 'pass' : 'refer' };
+          } else {
+            loDates[key] = val;
+          }
+        });
+      } catch(e) {}
+      
+      const statuses = Object.values(loDates).map(lo => lo.status || '').filter(s => s);
+      const allPass = statuses.length > 0 && statuses.every(s => s === 'pass');
+      const hasRefer = statuses.some(s => s === 'refer');
+      
+      let unitStatus = 'Pending';
+      if (allPass) unitStatus = 'Passed';
+      else if (hasRefer) unitStatus = 'Referred';
+      
+      return `${r.unit.replace('unit', 'Unit ')}: <strong>${unitStatus}</strong>`;
     }).join(' &nbsp;&nbsp;|&nbsp;&nbsp; ');
     banner.innerHTML = 'Pre-pass records loaded: ' + lines;
     banner.style.display = 'block';
