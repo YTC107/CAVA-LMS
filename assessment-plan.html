@@ -244,7 +244,8 @@
     document.querySelectorAll('.date-assessed').forEach(d => { d.value = ''; });
     document.querySelectorAll('.assessor-initials').forEach(i => { i.value = ''; });
 
-    const { data } = await sb.from('unit_overrides').select('unit, status, passed_date, set_by_assessor').eq('user_id', id);
+    const numericId = parseInt(id, 10);
+    const { data } = await sb.from('unit_overrides').select('unit, status, passed_date, set_by_assessor').eq('user_id', numericId);
     if (!data || !data.length) {
       document.getElementById('prepassBanner').style.display = 'none';
       return;
