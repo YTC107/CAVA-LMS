@@ -223,27 +223,31 @@
   }
 
   async function loadLog() {
-    const { data } = await sb.from('unit_overrides').select('*, users(full_name, username)').order('passed_date', { ascending: false }).limit(20);
-    const el = document.getElementById('logTable');
-    if (!data || !data.length) { el.innerHTML = '<div class="text-center text-gray-500 py-4">No pre-pass records yet</div>'; return; }
-    el.innerHTML = `
-      <table class="w-full">
-        <thead><tr class="text-gray-500 border-b border-white border-opacity-10">
-          <th class="text-left pb-2">Learner</th>
-          <th class="text-left pb-2">Unit</th>
-          <th class="text-left pb-2">Date Passed</th>
-          <th class="text-left pb-2">Set By</th>
-        </tr></thead>
-        <tbody class="divide-y divide-white divide-opacity-5">
-          ${data.map(r => `<tr class="py-1">
-            <td class="py-2 text-white">${r.users?.full_name || r.users?.username || r.user_id}</td>
-            <td class="py-2">${r.unit}</td>
-            <td class="py-2">${r.passed_date || 'Not recorded'}</td>
-            <td class="py-2">${r.set_by_assessor || ''}</td>
-          </tr>`).join('')}
-        </tbody>
-      </table>
-    `;
+    try {
+      const { data, error } = await sb.from('unit_overrides').select('*, learners(full_name, username)').order('passed_date', { ascending: false }).limit(20);
+      const el = document.getElementById('logTable');
+      if (error || !data || !data.length) { el.innerHTML = '<div class="text-center text-gray-500 py-4">No pre-pass records yet</div>'; return; }
+      el.innerHTML = `
+        <table class="w-full">
+          <thead><tr class="text-gray-500 border-b border-white border-opacity-10">
+            <th class="text-left pb-2">Learner</th>
+            <th class="text-left pb-2">Unit</th>
+            <th class="text-left pb-2">Date Passed</th>
+            <th class="text-left pb-2">Set By</th>
+          </tr></thead>
+          <tbody class="divide-y divide-white divide-opacity-5">
+            ${data.map(r => `<tr class="py-1">
+              <td class="py-2 text-white">${r.learners?.full_name || r.learners?.username || r.user_id}</td>
+              <td class="py-2">${r.unit}</td>
+              <td class="py-2">${r.passed_date || 'Not recorded'}</td>
+              <td class="py-2">${r.set_by_assessor || ''}</td>
+            </tr>`).join('')}
+          </tbody>
+        </table>
+      `;
+    } catch(e) {
+      document.getElementById('logTable').innerHTML = '<div class="text-center text-gray-500 py-4">No pre-pass records yet</div>';
+    }
   }
 
   init();
