@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pre-Pass Manager | PT Academy CAVA</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body { background: #1a1a2e; font-family: 'Segoe UI', sans-serif; }
+    .gold { background: #c9a84c; }
+    .gold-text { color: #c9a84c; }
+    .gold-border { border-color: #c9a84c; }
+    .nav-bar { background: #2d2d2d; }
+    .card { background: #ffffff08; border: 1px solid #ffffff15; }
+    .unit-row { background: #ffffff05; border: 1px solid #ffffff10; }
+    .unit-row.active { background: #1a3a1a; border-color: #2d6a2d; }
+    .toggle-on { background: #2d6a2d; }
+    .toggle-off { background: #444; }
+    .learner-item:hover { background: #ffffff10; cursor: pointer; }
+    .learner-item.selected { background: #c9a84c22; border-left: 3px solid #c9a84c; }
+    input, select { background: #ffffff10; border: 1px solid #ffffff20; color: white; }
+    input::placeholder { color: #999; }
+    input[type='date']::-webkit-calendar-picker-indicator { filter: invert(0.7); }
+    .step-label { color: #c9a84c; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
+    .badge-passed { background: #1a3a1a; color: #4caf50; border: 1px solid #2d6a2d; font-size: 0.7rem; padding: 2px 10px; border-radius: 999px; }
+  </style>
+</head>
+<body class="min-h-screen">
+
+  <!-- HEADER -->
+  <div style="background:#1a1a2e;" class="px-6 py-4 flex items-center justify-between border-b border-white border-opacity-10">
+    <div class="flex items-center gap-4">
+      <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy" class="h-10">
+      <div>
+        <div class="text-white font-bold text-lg leading-tight">Pre Pass Manager</div>
+        <div class="text-xs" style="color:#c9a84c;">Assessor Tools · Focus Awards Level 3 CAVA</div>
+      </div>
+    </div>
+    <button onclick="window.location.href='assessor.html'" class="gold text-black text-xs font-bold px-4 py-2 rounded-lg hover:opacity-90">← Back to Assessor Hub</button>
+  </div>
+
+  <!-- NAV -->
+  <div class="nav-bar px-6 py-2 text-xs text-gray-400">
+    Mark a learner's unit as pre-passed where they completed the PDF workbook version prior to joining the LMS.
+  </div>
+
+  <!-- MAIN -->
+  <div class="max-w-4xl mx-auto px-4 py-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+    <!-- LEFT: LEARNER SEARCH -->
+    <div class="card rounded-xl p-5">
+      <div class="step-label mb-1">Step 1</div>
+      <div class="text-white font-bold text-base mb-1">Select a Learner</div>
+      <div class="text-xs text-gray-400 mb-4">Search by name, username or email address</div>
+
+      <input id="searchInput" type="text" placeholder="Search learners..." class="w-full rounded-lg px-3 py-2 text-sm mb-3 focus:outline-none" oninput="filterLearners()" />
+
+      <div id="learnerList" class="space-y-1 max-h-80 overflow-y-auto pr-1">
+        <div class="text-xs text-gray-500 text-center py-6">Loading learners...</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: UNIT CONTROLS -->
+    <div class="card rounded-xl p-5">
+      <div class="step-label mb-1">Step 2</div>
+      <div class="text-white font-bold text-base mb-1">Manage Units</div>
+      <div id="selectedLearnerName" class="text-xs text-gray-400 mb-4">No learner selected yet</div>
+
+      <div id="unitControls" class="space-y-3">
+        <div class="text-xs text-gray-500 text-center py-8">Select a learner to manage their units</div>
+      </div>
+
+      <button id="saveBtn" onclick="saveChanges()" class="hidden w-full gold text-black font-bold py-3 rounded-lg text-sm mt-5 hover:opacity-90">Save Changes</button>
+      <div id="saveMsg" class="text-center text-xs mt-2"></div>
+    </div>
+
+  </div>
+
+  <!-- RECENT LOG -->
+  <div class="max-w-4xl mx-auto px-4 pb-10">
+    <div class="card rounded-xl p-5">
+      <div class="text-white font-bold text-sm mb-4">Recent Pre-Pass Records</div>
+      <div id="logTable" class="text-xs text-gray-400">Loading...</div>
+    </div>
+  </div>
+
+  <div class="text-center py-4 text-xs text-gray-600">Focus Awards Level 3 CAVA · Assessor Tools</div>
+
+<script>
+  const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+  const UNITS = [
+    { key: 'unit1', label: 'Unit 1', desc: 'Understanding the Principles and Practices of Assessment' },
+    { key: 'unit2', label: 'Unit 2', desc: 'Assess Occupational Competence in the Work Environment' },
+    { key: 'unit3', label: 'Unit 3', desc: 'Assess Vocational Skills, Knowledge and Understanding' },
+  ];
+
+  let allLearners = [];
+  let selectedLearner = null;
+  let unitStates = {};
+  let currentOverrides = {};
+  let assessorUser = null;
+
+  async function init() {
+    const userRaw = localStorage.getItem('cava_user');
+    if (!userRaw) { window.location.href = 'login.html'; return; }
+    assessorUser = JSON.parse(userRaw);
+    await loadLearners();
+    await loadLog();
+  }
+
+  async function loadLearners() {
+    const { data, error } = await sb.from('learners').select('id, username, full_name, email').order('full_name');
+    if (error || !data) {
+      document.getElementById('learnerList').innerHTML = '<div class="text-xs text-red-400 text-center py-4">Could not load learners</div>';
+      return;
+    }
+    allLearners = data;
+    renderLearners(data);
+  }
+
+  function renderLearners(list) {
+    const el = document.getElementById('learnerList');
+    if (!list.length) { el.innerHTML = '<div class="text-xs text-gray-500 text-center py-4">No learners found</div>'; return; }
+    el.innerHTML = list.map(l => `
+      <div class="learner-item rounded-lg px-3 py-2 ${selectedLearner?.id === l.id ? 'selected' : ''}" onclick="selectLearner('${l.id}')">
+        <div class="text-white text-sm font-medium">${l.full_name || l.username}</div>
+        <div class="text-gray-400 text-xs">${l.email || l.username}</div>
+      </div>
+    `).join('');
+  }
+
+  function filterLearners() {
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    renderLearners(allLearners.filter(l =>
+      (l.full_name || '').toLowerCase().includes(q) ||
+      (l.username || '').toLowerCase().includes(q) ||
+      (l.email || '').toLowerCase().includes(q)
+    ));
+  }
+
+  async function selectLearner(id) {
+    selectedLearner = allLearners.find(l => l.id === id);
+    renderLearners(allLearners.filter(l => {
+      const q = document.getElementById('searchInput').value.toLowerCase();
+      return !q || (l.full_name||'').toLowerCase().includes(q) || (l.username||'').toLowerCase().includes(q) || (l.email||'').toLowerCase().includes(q);
+    }));
+    document.getElementById('selectedLearnerName').textContent = selectedLearner.full_name || selectedLearner.username;
+
+    const { data } = await sb.from('unit_overrides').select('*').eq('user_id', id);
+    currentOverrides = {};
+    unitStates = {};
+    if (data) data.forEach(r => {
+      currentOverrides[r.unit] = r;
+      unitStates[r.unit] = { enabled: true, date: r.passed_date || '' };
+    });
+    UNITS.forEach(u => { if (!unitStates[u.key]) unitStates[u.key] = { enabled: false, date: '' }; });
+
+    renderUnits();
+    document.getElementById('saveBtn').classList.remove('hidden');
+  }
+
+  function renderUnits() {
+    const el = document.getElementById('unitControls');
+    el.innerHTML = UNITS.map(u => {
+      const state = unitStates[u.key];
+      return `
+        <div class="unit-row ${state.enabled ? 'active' : ''} rounded-lg px-4 py-3" id="row_${u.key}">
+          <div class="flex items-center justify-between mb-1">
+            <div>
+              <div class="text-white text-sm font-semibold">${u.label}</div>
+              <div class="text-gray-400 text-xs">${u.desc}</div>
+            </div>
+            <button onclick="toggleUnit('${u.key}')" class="${state.enabled ? 'toggle-on' : 'toggle-off'} text-white text-xs font-bold px-3 py-1 rounded-full transition-all" id="toggle_${u.key}">
+              ${state.enabled ? 'Passed' : 'Not Set'}
+            </button>
+          </div>
+          <div id="daterow_${u.key}" class="${state.enabled ? '' : 'hidden'} mt-2">
+            <label class="text-xs text-gray-400 block mb-1">Date passed</label>
+            <input type="date" id="date_${u.key}" value="${state.date}" class="rounded px-2 py-1 text-sm w-full focus:outline-none" oninput="unitStates['${u.key}'].date = this.value" />
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  function toggleUnit(key) {
+    unitStates[key].enabled = !unitStates[key].enabled;
+    renderUnits();
+  }
+
+  async function saveChanges() {
+    if (!selectedLearner) return;
+    const btn = document.getElementById('saveBtn');
+    btn.disabled = true; btn.textContent = 'Saving...';
+    const assessorName = assessorUser.full_name || assessorUser.username || 'Assessor';
+
+    for (const u of UNITS) {
+      const state = unitStates[u.key];
+      if (state.enabled) {
+        await sb.from('unit_overrides').upsert({
+          user_id: selectedLearner.id,
+          unit: u.key,
+          status: 'pre_passed',
+          passed_date: state.date || null,
+          set_by_assessor: assessorName
+        }, { onConflict: 'user_id,unit' });
+      } else {
+        await sb.from('unit_overrides').delete().eq('user_id', selectedLearner.id).eq('unit', u.key);
+      }
+    }
+
+    btn.disabled = false; btn.textContent = 'Save Changes';
+    const msg = document.getElementById('saveMsg');
+    msg.textContent = '✓ Saved successfully';
+    msg.className = 'text-center text-xs mt-2 text-green-400';
+    setTimeout(() => msg.textContent = '', 3000);
+    await loadLog();
+  }
+
+  async function loadLog() {
+    const { data } = await sb.from('unit_overrides').select('*, users(full_name, username)').order('passed_date', { ascending: false }).limit(20);
+    const el = document.getElementById('logTable');
+    if (!data || !data.length) { el.innerHTML = '<div class="text-center text-gray-500 py-4">No pre-pass records yet</div>'; return; }
+    el.innerHTML = `
+      <table class="w-full">
+        <thead><tr class="text-gray-500 border-b border-white border-opacity-10">
+          <th class="text-left pb-2">Learner</th>
+          <th class="text-left pb-2">Unit</th>
+          <th class="text-left pb-2">Date Passed</th>
+          <th class="text-left pb-2">Set By</th>
+        </tr></thead>
+        <tbody class="divide-y divide-white divide-opacity-5">
+          ${data.map(r => `<tr class="py-1">
+            <td class="py-2 text-white">${r.users?.full_name || r.users?.username || r.user_id}</td>
+            <td class="py-2">${r.unit}</td>
+            <td class="py-2">${r.passed_date || 'Not recorded'}</td>
+            <td class="py-2">${r.set_by_assessor || ''}</td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    `;
+  }
+
+  init();
+</script>
+</body>
+</html>
