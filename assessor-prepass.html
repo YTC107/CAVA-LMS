@@ -84,7 +84,10 @@
   <!-- RECENT LOG -->
   <div class="max-w-4xl mx-auto px-4 pb-10">
     <div class="card rounded-xl p-5">
-      <div class="text-white font-bold text-sm mb-4">Recent Pre-Pass Records</div>
+      <div class="flex items-center justify-between mb-4">
+        <div class="text-white font-bold text-sm" id="logHeading">Recent Pre-Pass Records</div>
+        <div id="logClearBtn" class="hidden text-xs text-gray-400 cursor-pointer hover:text-white" onclick="clearLogFilter()">Show all records</div>
+      </div>
       <div id="logTable" class="text-xs text-gray-400">Loading...</div>
     </div>
   </div>
@@ -114,7 +117,7 @@
     if (!userRaw) { window.location.href = 'login.html'; return; }
     assessorUser = JSON.parse(userRaw);
     await loadLearners();
-    await loadLog();
+    await loadLog(selectedLearner ? String(selectedLearner.id) : null);
   }
 
   async function loadLearners() {
@@ -166,6 +169,7 @@
 
     renderUnits();
     document.getElementById('saveBtn').classList.remove('hidden');
+    await loadLog(id);
   }
 
   function renderUnits() {
@@ -246,13 +250,26 @@
     await loadLog();
   }
 
-  async function loadLog() {
+  async function loadLog(filterUserId = null) {
     try {
-      const { data, error } = await sb.from('unit_overrides').select('user_id, unit, status, passed_date, set_by_assessor').order('id', { ascending: false }).limit(20);
+      let query = sb.from('unit_overrides').select('user_id, unit, status, passed_date, set_by_assessor').order('id', { ascending: false }).limit(50);
+      if (filterUserId) query = query.eq('user_id', filterUserId);
+      const { data, error } = await query;
       const el = document.getElementById('logTable');
+
+      const heading = document.getElementById('logHeading');
+      const clearBtn = document.getElementById('logClearBtn');
+
+      if (filterUserId && selectedLearner) {
+        heading.textContent = `Pre-Pass Records — ${selectedLearner.full_name || selectedLearner.username}`;
+        clearBtn.classList.remove('hidden');
+      } else {
+        heading.textContent = 'Recent Pre-Pass Records';
+        clearBtn.classList.add('hidden');
+      }
+
       if (error || !data || !data.length) { el.innerHTML = '<div class="text-center text-gray-500 py-4">No pre-pass records yet</div>'; return; }
 
-      // Fetch learner names separately to avoid relying on a foreign key join
       const userIds = [...new Set(data.map(r => r.user_id))];
       const { data: learnerData } = await sb.from('learners').select('id, full_name, username').in('id', userIds);
       const learnerMap = {};
@@ -261,7 +278,7 @@
       el.innerHTML = `
         <table class="w-full">
           <thead><tr class="text-gray-500 border-b border-white border-opacity-10">
-            <th class="text-left pb-2">Learner</th>
+            ${!filterUserId ? '<th class="text-left pb-2">Learner</th>' : ''}
             <th class="text-left pb-2">Unit</th>
             <th class="text-left pb-2">Status</th>
             <th class="text-left pb-2">Date</th>
@@ -273,7 +290,7 @@
                 ? '<span class="badge-referred">Referred</span>'
                 : '<span class="badge-passed">Passed</span>';
               return `<tr class="py-1">
-                <td class="py-2 text-white">${learnerMap[String(r.user_id)] || r.user_id}</td>
+                ${!filterUserId ? `<td class="py-2 text-white">${learnerMap[String(r.user_id)] || r.user_id}</td>` : ''}
                 <td class="py-2">${r.unit}</td>
                 <td class="py-2">${badge}</td>
                 <td class="py-2">${r.passed_date || 'Not recorded'}</td>
@@ -286,6 +303,10 @@
     } catch(e) {
       document.getElementById('logTable').innerHTML = '<div class="text-center text-gray-500 py-4">Could not load records</div>';
     }
+  }
+
+  function clearLogFilter() {
+    loadLog();
   }
 
   init();
