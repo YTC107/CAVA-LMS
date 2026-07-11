@@ -36,7 +36,24 @@
   th, td { border: 1px solid #cbd5e1; padding: 8px 10px; font-size: 0.85rem; }
   th { background: #111111; color: #c9a84c; font-weight: 600; }
   tr:nth-child(even) td { background: #f8fafc; }
-</style>
+style>
+<script>
+  function toggle(id) {
+    var body = document.getElementById(id);
+    var icon = document.getElementById(id + '-icon');
+    if (body.classList.contains('open')) {
+      body.classList.remove('open');
+      if (icon) icon.textContent = '+';
+    } else {
+      body.classList.add('open');
+      if (icon) icon.textContent = '−';
+    }
+  }
+  function navTo(id) {
+    var el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+</script>
 </head>
 <body class="min-h-screen">
 
