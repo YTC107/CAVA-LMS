@@ -29,6 +29,7 @@
     .lo-date-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
     .lo-date-label { color: #aaa; font-size: 0.7rem; min-width: 32px; }
     input[type="date"].lo-date { color: #fff !important; font-weight: 700 !important; background: #ffffff25; border: 1px solid #ffffff30; border-radius: 4px; padding: 3px 6px; font-size: 0.78rem; width: 160px; }
+    .lo-status-btn { border-radius: 4px; padding: 2px 8px; font-size: 0.7rem; font-weight: 700; cursor: pointer; min-width: 60px; border: 1px solid; transition: all 0.2s; }
   </style>
 </head>
 <body class="min-h-screen">
@@ -98,7 +99,6 @@
   const { createClient } = supabase;
   const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // Units with their learning outcomes
   const UNITS = [
     {
       key: 'unit1', label: 'Unit 1',
@@ -119,9 +119,8 @@
 
   let allLearners = [];
   let selectedLearner = null;
-  // unitStates: { unit1: { status: 'pre_passed'|'referred'|'not_set', date: '2026-05-19', loDates: { LO1: '2026-05-19', ... } } }
   let unitStates = {};
-  let currentOverrides = {}; // keyed by unit key, stores the existing DB row
+  let currentOverrides = {};
   let assessorUser = null;
 
   async function init() {
@@ -166,11 +165,9 @@
     selectedLearner = allLearners.find(l => String(l.id) === String(id));
     if (!selectedLearner) return;
 
-    // Re-render learner list to show selection highlight
     filterLearners();
     document.getElementById('selectedLearnerName').textContent = selectedLearner.full_name || selectedLearner.username;
 
-    // Load existing overrides for this learner — use the raw id value, not parseInt
     const { data, error } = await sb.from('unit_overrides')
       .select('*')
       .eq('user_id', selectedLearner.id)
@@ -180,7 +177,6 @@
     unitStates = {};
 
     if (data && data.length) {
-      // Deduplicate: only keep most recent row per unit (order desc means first seen wins)
       data.forEach(r => {
         if (!currentOverrides[r.unit]) {
           currentOverrides[r.unit] = r;
@@ -188,18 +184,25 @@
       });
     }
 
-    // Build unitStates from overrides
     UNITS.forEach(u => {
       const r = currentOverrides[u.key];
       if (r) {
-        // Parse per-LO dates if stored as JSON, otherwise use the single passed_date for all LOs
         let loDates = {};
         if (r.lo_dates) {
-          try { loDates = JSON.parse(r.lo_dates); } catch(e) {}
+          try {
+            const parsed = JSON.parse(r.lo_dates);
+            Object.entries(parsed).forEach(([key, val]) => {
+              if (typeof val === 'string') {
+                loDates[key] = { date: val, status: r.status === 'pre_passed' ? 'pass' : r.status === 'referred' ? 'refer' : '' };
+              } else {
+                loDates[key] = val;
+              }
+            });
+          } catch(e) {}
         }
-        // If no per-LO dates stored, pre-fill all LOs with the unit-level date
         if (!Object.keys(loDates).length && r.passed_date) {
-          u.los.forEach(lo => { loDates[lo] = r.passed_date; });
+          const defaultStatus = r.status === 'pre_passed' ? 'pass' : r.status === 'referred' ? 'refer' : '';
+          u.los.forEach(lo => { loDates[lo] = { date: r.passed_date, status: defaultStatus }; });
         }
         unitStates[u.key] = { status: r.status || 'pre_passed', date: r.passed_date || '', loDates };
       } else {
@@ -225,7 +228,6 @@
       const btnLabel = isPassed ? 'Passed' : isReferred ? 'Referred' : 'Not Set';
       const dateLabel = isPassed ? 'Date passed' : 'Date referred';
 
-      // Per-LO date rows
       const loRows = isSet ? `
         <div class="lo-date-row" style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #ffffff20;">
           <span class="lo-date-label" style="color:#c9a84c;font-weight:700;min-width:90px;">Fill all</span>
@@ -235,14 +237,22 @@
           <span style="color:#888;font-size:0.68rem;margin-left:6px;">Sets all LO dates at once</span>
         </div>
         ${u.los.map(lo => {
-          const val = state.loDates[lo] || '';
+          const val = state.loDates[lo]?.date || '';
+          const status = state.loDates[lo]?.status || '';
+          const statusBg = status === 'pass' ? '#2d6a2d' : status === 'refer' ? '#8b2020' : '#444';
+          const statusColor = status === 'pass' ? '#4caf50' : status === 'refer' ? '#f44336' : '#999';
+          const statusLabel = status === 'pass' ? 'Pass' : status === 'refer' ? 'Refer' : 'Select';
           return `
-            <div class="lo-date-row">
+            <div class="lo-date-row" style="align-items:center;gap:6px;">
               <span class="lo-date-label">${lo}</span>
               <input type="date" class="lo-date" value="${val}"
-                id="lo_${u.key}_${lo}"
+                id="lo_${u.key}_${lo}_date"
                 style="color:#fff!important;font-weight:700;"
-                oninput="setLoDate('${u.key}', '${lo}', this.value)" />
+                oninput="setLoDate('${u.key}', '${lo}', 'date', this.value)" />
+              <button class="lo-status-btn"
+                style="background:${statusBg};color:${statusColor};border-color:${statusColor};"
+                onclick="cycleLoStatus('${u.key}', '${lo}')"
+              >${statusLabel}</button>
             </div>
           `;
         }).join('')}
@@ -265,21 +275,44 @@
     }).join('');
   }
 
-  function setLoDate(unitKey, lo, value) {
-    unitStates[unitKey].loDates[lo] = value;
-    const dates = Object.values(unitStates[unitKey].loDates).filter(Boolean);
-    if (dates.length) unitStates[unitKey].date = dates.sort()[0];
+  function setLoDate(unitKey, lo, field, value) {
+    if (!unitStates[unitKey].loDates[lo]) unitStates[unitKey].loDates[lo] = {};
+    if (field === 'date') {
+      unitStates[unitKey].loDates[lo].date = value;
+    } else if (field === 'status') {
+      unitStates[unitKey].loDates[lo].status = value;
+    }
+    const loDateVals = Object.values(unitStates[unitKey].loDates)
+      .filter(lo => lo.date)
+      .map(lo => lo.date)
+      .sort();
+    if (loDateVals.length) unitStates[unitKey].date = loDateVals[0];
+  }
+
+  function cycleLoStatus(unitKey, lo) {
+    const current = unitStates[unitKey].loDates[lo]?.status || '';
+    let next = '';
+    if (current === '') {
+      next = 'pass';
+    } else if (current === 'pass') {
+      next = 'refer';
+    } else if (current === 'refer') {
+      next = '';
+    }
+    setLoDate(unitKey, lo, 'status', next);
+    renderUnits();
   }
 
   function fillAllLoDates(unitKey, value) {
     const unit = UNITS.find(u => u.key === unitKey);
     if (!unit) return;
+    const currentStatus = unitStates[unitKey].status;
+    const statusVal = currentStatus === 'pre_passed' ? 'pass' : currentStatus === 'referred' ? 'refer' : '';
     unit.los.forEach(lo => {
-      unitStates[unitKey].loDates[lo] = value;
-      const input = document.getElementById(`lo_${unitKey}_${lo}`);
-      if (input) input.value = value;
+      unitStates[unitKey].loDates[lo] = { date: value, status: statusVal };
     });
     if (value) unitStates[unitKey].date = value;
+    renderUnits();
   }
 
   function cycleUnit(key) {
@@ -303,15 +336,25 @@
     for (const u of UNITS) {
       const state = unitStates[u.key];
       if (state.status !== 'not_set') {
-        // Determine overall unit date (earliest LO date or fallback)
-        const loDateVals = Object.values(state.loDates).filter(Boolean);
-        const unitDate = loDateVals.length ? loDateVals.sort()[0] : (state.date || null);
-        const loJson = JSON.stringify(state.loDates);
+        const loDateVals = Object.values(state.loDates).filter(lo => lo.date).map(lo => lo.date).sort();
+        const unitDate = loDateVals.length ? loDateVals[0] : (state.date || null);
+        
+        const loWithStatus = {};
+        UNITS.find(uu => uu.key === u.key)?.los.forEach(lo => {
+          const loData = state.loDates[lo];
+          if (loData) {
+            loWithStatus[lo] = {
+              date: loData.date || null,
+              status: loData.status || ''
+            };
+          }
+        });
+        
         const savePayload = {
           status: state.status,
           passed_date: unitDate || null,
           set_by_assessor: assessorName,
-          lo_dates: loJson
+          lo_dates: JSON.stringify(loWithStatus)
         };
 
         const existing = currentOverrides[u.key];
@@ -329,7 +372,6 @@
           if (inserted) currentOverrides[u.key] = inserted;
         }
       } else {
-        // Status set to not_set — delete existing record if any
         const existing = currentOverrides[u.key];
         if (existing) {
           await sb.from('unit_overrides').delete().eq('id', existing.id);
@@ -340,7 +382,7 @@
 
     btn.disabled = false; btn.textContent = 'Save Changes';
     const msg = document.getElementById('saveMsg');
-    msg.textContent = '\u2713 Saved successfully';
+    msg.textContent = '✓ Saved successfully';
     msg.className = 'text-center text-xs mt-2 text-green-400';
     setTimeout(() => msg.textContent = '', 4000);
     await loadLog(selectedLearner.id);
@@ -351,13 +393,11 @@
     msg.textContent = 'Running diagnostics...';
     msg.className = 'text-center text-xs mt-2 text-yellow-400';
 
-    // Check auth
     const userRaw = localStorage.getItem('cava_user');
     if (!userRaw) { msg.textContent = 'ERROR: Not logged in (no cava_user in localStorage)'; msg.className = 'text-center text-xs mt-2 text-red-400'; return; }
     const u = JSON.parse(userRaw);
     msg.textContent = `Auth OK: ${u.full_name || u.username || u.id}. Testing DB write...`;
 
-    // Try a minimal insert with only known-safe columns
     const testPayload = {
       user_id: selectedLearner ? String(selectedLearner.id) : '999',
       unit: 'unit1',
@@ -371,18 +411,15 @@
       msg.className = 'text-center text-xs mt-2 text-red-400';
       return;
     }
-    // Clean up test row
     await sb.from('unit_overrides').delete().eq('id', d1.id);
 
-    // Now try with lo_dates column
-    const testPayload2 = { ...testPayload, lo_dates: '{"LO1":"2026-05-19"}' };
+    const testPayload2 = { ...testPayload, lo_dates: JSON.stringify({LO1: {date: '2026-05-19', status: 'pass'}}) };
     const { error: e2 } = await sb.from('unit_overrides').insert(testPayload2);
     if (e2) {
       msg.textContent = `lo_dates column missing or wrong type: ${e2.message}`;
       msg.className = 'text-center text-xs mt-2 text-red-400';
       return;
     }
-    // Clean up
     await sb.from('unit_overrides').delete().eq('user_id', testPayload2.user_id).eq('unit', 'unit1');
 
     msg.textContent = 'All checks passed. DB is writable and lo_dates column exists.';
