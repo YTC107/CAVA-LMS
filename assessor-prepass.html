@@ -248,9 +248,16 @@
 
   async function loadLog() {
     try {
-      const { data, error } = await sb.from('unit_overrides').select('*, learners(full_name, username)').order('passed_date', { ascending: false }).limit(20);
+      const { data, error } = await sb.from('unit_overrides').select('user_id, unit, status, passed_date, set_by_assessor').order('id', { ascending: false }).limit(20);
       const el = document.getElementById('logTable');
       if (error || !data || !data.length) { el.innerHTML = '<div class="text-center text-gray-500 py-4">No pre-pass records yet</div>'; return; }
+
+      // Fetch learner names separately to avoid relying on a foreign key join
+      const userIds = [...new Set(data.map(r => r.user_id))];
+      const { data: learnerData } = await sb.from('learners').select('id, full_name, username').in('id', userIds);
+      const learnerMap = {};
+      if (learnerData) learnerData.forEach(l => { learnerMap[String(l.id)] = l.full_name || l.username || l.id; });
+
       el.innerHTML = `
         <table class="w-full">
           <thead><tr class="text-gray-500 border-b border-white border-opacity-10">
@@ -266,7 +273,7 @@
                 ? '<span class="badge-referred">Referred</span>'
                 : '<span class="badge-passed">Passed</span>';
               return `<tr class="py-1">
-                <td class="py-2 text-white">${r.learners?.full_name || r.learners?.username || r.user_id}</td>
+                <td class="py-2 text-white">${learnerMap[String(r.user_id)] || r.user_id}</td>
                 <td class="py-2">${r.unit}</td>
                 <td class="py-2">${badge}</td>
                 <td class="py-2">${r.passed_date || 'Not recorded'}</td>
@@ -277,7 +284,7 @@
         </table>
       `;
     } catch(e) {
-      document.getElementById('logTable').innerHTML = '<div class="text-center text-gray-500 py-4">No pre-pass records yet</div>';
+      document.getElementById('logTable').innerHTML = '<div class="text-center text-gray-500 py-4">Could not load records</div>';
     }
   }
 
