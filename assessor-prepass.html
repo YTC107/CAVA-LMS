@@ -144,7 +144,7 @@
   }
 
   async function selectLearner(id) {
-    selectedLearner = allLearners.find(l => l.id === id);
+    selectedLearner = allLearners.find(l => String(l.id) === String(id));
     renderLearners(allLearners.filter(l => {
       const q = document.getElementById('searchInput').value.toLowerCase();
       return !q || (l.full_name||'').toLowerCase().includes(q) || (l.username||'').toLowerCase().includes(q) || (l.email||'').toLowerCase().includes(q);
