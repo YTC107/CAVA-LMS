@@ -285,24 +285,25 @@
         const loDateVals = Object.values(state.loDates).filter(Boolean);
         const unitDate = loDateVals.length ? loDateVals.sort()[0] : (state.date || null);
         const loJson = JSON.stringify(state.loDates);
+        const savePayload = {
+          status: state.status,
+          passed_date: unitDate || null,
+          set_by_assessor: assessorName,
+          lo_dates: loJson
+        };
 
         const existing = currentOverrides[u.key];
         if (existing) {
-          await sb.from('unit_overrides').update({
-            status: state.status,
-            passed_date: unitDate,
-            lo_dates: loJson,
-            set_by_assessor: assessorName
-          }).eq('id', existing.id);
+          const { error: updErr } = await sb.from('unit_overrides')
+            .update(savePayload)
+            .eq('id', existing.id);
+          if (updErr) console.error('Update error:', updErr.message);
         } else {
-          const { data: inserted } = await sb.from('unit_overrides').insert({
-            user_id: selectedLearner.id,
-            unit: u.key,
-            status: state.status,
-            passed_date: unitDate,
-            lo_dates: loJson,
-            set_by_assessor: assessorName
-          }).select().single();
+          const { data: inserted, error: insErr } = await sb.from('unit_overrides')
+            .insert({ user_id: selectedLearner.id, unit: u.key, ...savePayload })
+            .select()
+            .single();
+          if (insErr) console.error('Insert error:', insErr.message);
           if (inserted) currentOverrides[u.key] = inserted;
         }
       } else {
