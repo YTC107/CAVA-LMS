@@ -245,14 +245,14 @@
     document.querySelectorAll('.assessor-initials').forEach(i => { i.value = ''; });
 
     const numericId = parseInt(id, 10);
-    const { data } = await sb.from('unit_overrides').select('unit, status, passed_date, set_by_assessor').eq('user_id', numericId);
+    const { data } = await sb.from('unit_overrides').select('unit, status, passed_date, set_by_assessor').eq('user_id', numericId).order('id', { ascending: false });
     if (!data || !data.length) {
       document.getElementById('prepassBanner').style.display = 'none';
       return;
     }
 
     const overrides = {};
-    data.forEach(r => { overrides[String(r.unit)] = r; });
+    data.forEach(r => { if (!overrides[r.unit]) overrides[r.unit] = r; });
 
     ['unit1', 'unit2', 'unit3'].forEach(unitKey => {
       const override = overrides[unitKey];
