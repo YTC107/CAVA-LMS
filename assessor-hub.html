@@ -1,282 +1,344 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PT Academy | Level 3 CAVA | Assessment Plan</title>
+  <title>CAVA – Assessor Hub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f4f4f4; color: #222; font-size: 0.9rem; }
-    .site-header { background: #111; padding: 20px 40px; display: flex; align-items: center; gap: 20px; }
-    .site-header img { height: 60px; width: auto; }
-    .header-text h1 { color: #c9a84c; font-size: 1.3rem; font-weight: 700; letter-spacing: 1px; }
-    .header-text p { color: #ccc; font-size: 0.82rem; margin-top: 3px; }
-    .back-bar { background: #1a1a1a; padding: 10px 30px; border-bottom: 3px solid #c9a84c; }
-    .back-bar a { color: #c9a84c; text-decoration: none; font-size: 0.82rem; font-weight: 600; letter-spacing: 0.5px; }
-    .back-bar a:hover { text-decoration: underline; }
-    .page-wrap { max-width: 1200px; margin: 30px auto; padding: 0 20px 60px; }
-    .page-title { font-size: 1.5rem; font-weight: 700; color: #111; border-left: 5px solid #c9a84c; padding-left: 14px; margin-bottom: 24px; }
-    .details-card { background: #fff; border-radius: 8px; padding: 24px 28px; margin-bottom: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    .details-card h3 { font-size: 1rem; font-weight: 700; color: #111; margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-    .details-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; }
-    .field label { display: block; font-size: 0.78rem; font-weight: 700; color: #555; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
-    .field input[type="text"], .field input[type="date"], .field select { width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.88rem; color: #222; background: #fff; }
-    .unit-block { background: #fff; border-radius: 8px; margin-bottom: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); overflow: hidden; }
-    .unit-header { background: #111; color: #c9a84c; padding: 14px 20px; font-size: 1rem; font-weight: 700; letter-spacing: 0.5px; }
-    .track-table { width: 100%; border-collapse: collapse; min-width: 900px; }
-    .table-scroll { overflow-x: auto; width: 100%; }
-    .track-table th { background: #222; color: #c9a84c; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.4px; padding: 10px 12px; text-align: left; white-space: nowrap; }
-    .track-table td { padding: 10px 12px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
-    .track-table tr:last-child td { border-bottom: none; }
-    .track-table tr:nth-child(even) td { background: #fafafa; }
-    .lo-label { font-weight: 700; color: #111; font-size: 0.82rem; white-space: nowrap; }
-    .lo-desc { font-size: 0.8rem; color: #555; margin-top: 2px; }
-    .track-table input[type="date"] { padding: 5px 7px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.82rem; color: #222; width: 140px; }
-    .track-table input[type="text"] { padding: 5px 7px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.82rem; color: #222; width: 80px; }
-    .outcome-select { padding: 5px 8px; border: 1px solid #ccc; border-radius: 4px; font-size: 0.82rem; font-weight: 700; width: 90px; cursor: pointer; }
-    .outcome-select.pass { background: #d4edda; color: #155724; border-color: #c3e6cb; }
-    .outcome-select.refer { background: #f8d7da; color: #721c24; border-color: #f5c6cb; }
-    .outcome-select.pending { background: #fff; color: #555; }
-    .signoff-card { background: #fff; border-radius: 8px; padding: 28px; margin-bottom: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
-    .signoff-card h3 { font-size: 1rem; font-weight: 700; color: #111; margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
-    .signoff-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 16px; }
-    .sig-line-wrap label { display: block; font-size: 0.78rem; font-weight: 700; color: #555; margin-bottom: 6px; text-transform: uppercase; }
-    .sig-line { display: block; width: 100%; border: none; border-bottom: 1px solid #aaa; height: 32px; }
-    .sig-note { font-size: 0.75rem; color: #888; margin-top: 3px; }
-    .pdf-bar { background: #fff; border-radius: 8px; padding: 20px 28px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
-    .pdf-bar p { font-size: 0.88rem; color: #555; }
-    .pdf-btn { background: #c9a84c; color: #111; font-weight: 700; font-size: 0.85rem; padding: 10px 22px; border: none; border-radius: 4px; cursor: pointer; letter-spacing: 0.5px; transition: background 0.2s; }
-    .pdf-btn:hover { background: #b8933e; }
-    .site-footer { background: #111; color: #c9a84c; text-align: center; padding: 18px; font-size: 0.82rem; letter-spacing: 0.5px; margin-top: 40px; }
-    .prepass-banner { display: none; margin-top: 12px; background: #d4edda; color: #155724; border: 1px solid #c3e6cb; border-radius: 4px; padding: 8px 12px; font-size: 0.8rem; }
-    @media (max-width: 600px) { .site-header { flex-direction: column; text-align: center; } }
-    @media print { .back-bar, .pdf-bar, .learner-selector-card { display: none; } body { background: #fff; } .unit-block, .details-card, .signoff-card { box-shadow: none; border: 1px solid #ddd; } }
+    :root { --gold: #C9A84C; }
+    .gold-text { color: #C9A84C; }
+    .gold-bg { background-color: #C9A84C; }
+    .card-hover:hover { border-color: #C9A84C; box-shadow: 0 4px 16px rgba(201,168,76,0.15); }
+    .judgement-btn { border: 2px solid; padding: 4px 18px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s; background: white; }
+    .judgement-btn.pass-btn { border-color: #16a34a; color: #16a34a; }
+    .judgement-btn.pass-btn.selected { background: #16a34a; color: white; }
+    .judgement-btn.refer-btn { border-color: #dc2626; color: #dc2626; }
+    .judgement-btn.refer-btn.selected { background: #dc2626; color: white; }
+    .feedback-card { background: #fefdf5; border: 1.5px solid #C9A84C; border-radius: 10px; padding: 20px; margin-bottom: 16px; }
+    .save-indicator { font-size: 11px; color: #6b7280; height: 16px; margin-top: 4px; }
+    .lo-label { background: #1a1a2e; color: #C9A84C; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+    details > summary { list-style: none; cursor: pointer; }
+    details > summary::-webkit-details-marker { display: none; }
   </style>
 </head>
-<body>
+<body class="min-h-screen bg-gray-50 text-gray-900 px-4 py-8">
 
-<header class="site-header">
-  <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy" onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='block'"/>
-  <span id="logo-fallback" style="display:none; color:#c9a84c; font-size:1.6rem; font-weight:900; letter-spacing:2px;">PT ACADEMY</span>
-  <div class="header-text">
-    <h1>Level 3 Certificate in Assessing Vocational Achievement</h1>
-    <p>Focus Awards | QRN: 601/6104/8 | Assessment Plan &amp; Tracking Document</p>
-  </div>
-</header>
+  <div class="max-w-5xl mx-auto">
 
-<div class="back-bar">
-  <a href="assessor-hub.html">&larr; Back to Assessor Hub</a>
-</div>
-
-<div class="page-wrap">
-
-  <h2 class="page-title">Assessment Plan &amp; Tracking Document</h2>
-
-  <!-- LEARNER SELECTOR -->
-  <div class="details-card learner-selector-card">
-    <h3>Load Learner Data</h3>
-    <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-      <div class="field" style="flex:1;min-width:220px;">
-        <label>Select Learner</label>
-        <select id="planLearnerSelect" onchange="onLearnerChange()">
-          <option value="">&mdash; Choose a learner &mdash;</option>
-        </select>
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8 px-6 py-5 rounded-2xl" style="background-color:#0a0a0a;">
+      <div class="flex items-center gap-4">
+        <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy Logo" class="h-14 w-auto" />
+        <div>
+          <h1 class="text-2xl font-bold gold-text">Assessor Hub</h1>
+          <p class="text-gray-400 text-sm">Level 3 Certificate in Assessing Vocational Achievement</p>
+        </div>
       </div>
-      <div style="font-size:0.8rem;color:#888;">Selecting a learner will pull through any pre-pass or referral records automatically.</div>
+      <div class="text-right">
+        <p class="text-gray-300 text-sm">Michael Kplomedo</p>
+        <p class="gold-text text-xs">Assessor</p>
+      </div>
     </div>
-    <div id="prepassBanner" class="prepass-banner"></div>
-  </div>
 
-  <!-- LEARNER & ASSESSOR DETAILS -->
-  <div class="details-card">
-    <h3>Learner &amp; Assessor Details</h3>
-    <div class="details-grid">
-      <div class="field"><label>Learner Name</label><input type="text" id="planLearnerName" placeholder="Full name" /></div>
-      <div class="field"><label>Learner ID / Cohort</label><input type="text" placeholder="e.g. PTA-2024-001" /></div>
-      <div class="field"><label>Assessor Name</label><input type="text" placeholder="Full name" /></div>
-      <div class="field"><label>IQA Name</label><input type="text" placeholder="Full name" /></div>
-      <div class="field"><label>Registration Date</label><input type="date" /></div>
-      <div class="field"><label>Target Completion Date</label><input type="date" /></div>
+    <!-- Welcome Banner -->
+    <div class="rounded-2xl p-6 mb-8 border-l-4 bg-white shadow-sm" style="border-left-color:#C9A84C;">
+      <h2 class="text-xl font-semibold text-gray-900 mb-1">Welcome, Michael</h2>
+      <p class="text-gray-500 text-sm">Manage learner progress, complete observation records, and mark submitted unit work below.</p>
     </div>
-  </div>
 
-  <!-- PDF DOWNLOAD -->
-  <div class="pdf-bar">
-    <p>When all tracking is complete, use this button to save a PDF copy for your records.</p>
-    <button class="pdf-btn" onclick="window.print()">&#11015; Download as PDF</button>
-  </div>
+    <!-- Assessor Documents -->
+    <h3 class="text-gray-400 text-xs uppercase tracking-widest mb-4">Assessor Documents</h3>
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
 
-  <!-- UNIT 1 -->
-  <div class="unit-block" data-unit="1">
-    <div class="unit-header">Unit 1 &mdash; Understanding the Principles and Practices of Assessment</div>
-    <div class="table-scroll">
-      <table class="track-table">
-        <thead><tr>
-          <th style="min-width:260px;">Learning Outcome</th>
-          <th>Planned Date</th>
-          <th>Date Assessed</th>
-          <th>Outcome</th>
-          <th>Resub Date</th>
-          <th>Resub Outcome</th>
-          <th>Assessor Sign-off Date</th>
-          <th>Assessor Initials</th>
-        </tr></thead>
-        <tbody>
-          <tr><td><div class="lo-label">LO1</div><div class="lo-desc">Understand the principles and requirements of assessment</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
-          <tr><td><div class="lo-label">LO2</div><div class="lo-desc">Understand different types of assessment method</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
-          <tr><td><div class="lo-label">LO3</div><div class="lo-desc">Understand how to plan assessment</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
-          <tr><td><div class="lo-label">LO4</div><div class="lo-desc">Understand how to involve learners and others in assessment</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
-          <tr><td><div class="lo-label">LO5</div><div class="lo-desc">Understand how to make assessment decisions</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
-          <tr><td><div class="lo-label">LO6</div><div class="lo-desc">Understand quality assurance of the assessment process</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
-          <tr><td><div class="lo-label">LO7</div><div class="lo-desc">Understand how to manage information relating to assessment</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
-          <tr><td><div class="lo-label">LO8</div><div class="lo-desc">Understand the legal and good practice requirements in relation to assessment</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
-        </tbody>
-      </table>
+      <a href="assessment-plan.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group sm:col-span-2">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs text-black px-2 py-1 rounded-full font-semibold gold-bg">Start Here</span>
+          <span class="text-xs text-gray-400 group-hover:text-yellow-600 transition">Open →</span>
+        </div>
+        <h4 class="font-semibold text-gray-900 mb-1">Assessment Plan</h4>
+        <p class="text-gray-500 text-sm">Review and agree assessment schedules and methods with each learner. Complete this first.</p>
+      </a>
+
+      <a href="observation.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs text-black px-2 py-1 rounded-full font-semibold gold-bg">Observation</span>
+          <span class="text-xs text-gray-400 group-hover:text-yellow-600 transition">Open →</span>
+        </div>
+        <h4 class="font-semibold text-gray-900 mb-1">Observation Record</h4>
+        <p class="text-gray-500 text-sm">Record observed practice for learners in the workplace environment.</p>
+      </a>
+
+      <a href="action-plan.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs text-black px-2 py-1 rounded-full font-semibold gold-bg">Document</span>
+          <span class="text-xs text-gray-400 group-hover:text-yellow-600 transition">Open →</span>
+        </div>
+        <h4 class="font-semibold text-gray-900 mb-1">Action Plan</h4>
+        <p class="text-gray-500 text-sm">Set and review targets and actions with learners.</p>
+      </a>
+
+      <a href="assessor-prepass.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group">
+        <div class="flex items-center justify-between mb-3">
+          <span class="text-xs text-black px-2 py-1 rounded-full font-semibold gold-bg">Admin</span>
+          <span class="text-xs text-gray-400 group-hover:text-yellow-600 transition">Open →</span>
+        </div>
+        <h4 class="font-semibold text-gray-900 mb-1">Manage Pre-Passed Units</h4>
+        <p class="text-gray-500 text-sm">Mark learner units as pre-passed or referred, and record the date awarded.</p>
+      </a>
+
     </div>
-  </div>
 
-  <!-- UNIT 2 -->
-  <div class="unit-block" data-unit="2">
-    <div class="unit-header">Unit 2 &mdash; Assess Occupational Competence in the Work Environment</div>
-    <div class="table-scroll">
-      <table class="track-table">
-        <thead><tr>
-          <th style="min-width:260px;">Learning Outcome</th>
-          <th>Planned Date</th>
-          <th>Date Assessed</th>
-          <th>Outcome</th>
-          <th>Resub Date</th>
-          <th>Resub Outcome</th>
-          <th>Assessor Sign-off Date</th>
-          <th>Assessor Initials</th>
-        </tr></thead>
-        <tbody>
-          <tr><td><div class="lo-label">LO1</div><div class="lo-desc">Understand the principles and requirements of assessment in the work environment</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
-          <tr><td><div class="lo-label">LO2</div><div class="lo-desc">Plan the assessment of occupational competence</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
-          <tr><td><div class="lo-label">LO3</div><div class="lo-desc">Assess occupational competence in the work environment</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
-          <tr><td><div class="lo-label">LO4</div><div class="lo-desc">Review assessment decisions</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
-        </tbody>
-      </table>
+    <!-- Learner Progress Dashboard -->
+    <h3 class="text-gray-400 text-xs uppercase tracking-widest mb-4">Learner Progress</h3>
+    <div class="bg-white rounded-2xl border overflow-hidden mb-10 shadow-sm" style="border-color:#C9A84C;">
+      <div class="grid grid-cols-6 text-xs uppercase tracking-widest px-4 py-3 font-semibold" style="background-color:#0a0a0a; color:#C9A84C; border-bottom:1px solid #C9A84C;">
+        <div class="col-span-2">Learner</div>
+        <div class="text-center">Assessment Plan</div>
+        <div class="text-center">Unit 1</div>
+        <div class="text-center">Unit 2</div>
+        <div class="text-center">Unit 3</div>
+      </div>
+      <div id="learner-table">
+        <div class="px-4 py-6 text-center text-sm text-gray-400">Loading learners...</div>
+      </div>
+      <div class="flex gap-6 px-4 py-3 text-xs text-gray-400 bg-gray-50">
+        <span>✅ Complete</span>
+        <span>🔄 In Progress</span>
+        <span>⬜ Not Started</span>
+      </div>
     </div>
-  </div>
 
-  <!-- UNIT 3 -->
-  <div class="unit-block" data-unit="3">
-    <div class="unit-header">Unit 3 &mdash; Assess Vocational Skills, Knowledge and Understanding</div>
-    <div class="table-scroll">
-      <table class="track-table">
-        <thead><tr>
-          <th style="min-width:260px;">Learning Outcome</th>
-          <th>Planned Date</th>
-          <th>Date Assessed</th>
-          <th>Outcome</th>
-          <th>Resub Date</th>
-          <th>Resub Outcome</th>
-          <th>Assessor Sign-off Date</th>
-          <th>Assessor Initials</th>
-        </tr></thead>
-        <tbody>
-          <tr><td><div class="lo-label">LO1</div><div class="lo-desc">Understand the principles and requirements of assessing vocational skills, knowledge and understanding</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
-          <tr><td><div class="lo-label">LO2</div><div class="lo-desc">Plan the assessment of vocational skills, knowledge and understanding</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
-          <tr><td><div class="lo-label">LO3</div><div class="lo-desc">Assess vocational skills, knowledge and understanding</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
-          <tr><td><div class="lo-label">LO4</div><div class="lo-desc">Review assessment decisions</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
-        </tbody>
-      </table>
+    <!-- Learner Marking Section -->
+    <h3 class="text-gray-400 text-xs uppercase tracking-widest mb-4">Mark Unit Work — Select Learner</h3>
+
+    <div class="bg-white rounded-2xl border border-gray-200 p-5 mb-6 shadow-sm">
+      <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Learner</label>
+      <select id="markingLearner" onchange="loadFeedback()" class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-2 text-sm">
+        <option value="">— Select a learner —</option>
+      </select>
+      <div id="learnerLoadMsg" class="text-xs text-gray-400 mt-2"></div>
     </div>
-  </div>
 
-  <!-- FINAL SIGN-OFF -->
-  <div class="signoff-card">
-    <h3>Final Qualification Sign-Off</h3>
-    <div class="signoff-grid">
-      <div class="field"><label>All Units Completed</label><input type="date" /></div>
-      <div class="field"><label>IQA Sampling Date</label><input type="date" /></div>
-      <div class="field"><label>IQA Sign-off Date</label><input type="date" /></div>
-      <div class="field"><label>Certificate Claim Date</label><input type="date" /></div>
+    <!-- Per-LO Feedback Cards -->
+    <div id="markingPanel" style="display:none;">
+      <div class="bg-blue-50 border border-blue-200 rounded-xl px-5 py-3 mb-6 text-sm text-blue-700">
+        Select <strong>Pass</strong> or <strong>Refer</strong> for each learning outcome, write your feedback, then click <strong>Save Feedback</strong>. The learner will see this immediately when they next open their worksheet.
+      </div>
+      <div id="loFeedbackCards"></div>
     </div>
-    <div class="signoff-grid" style="margin-top:16px;">
-      <div class="sig-line-wrap"><label>Assessor Signature</label><span class="sig-line"></span><p class="sig-note">Sign above</p></div>
-      <div class="sig-line-wrap"><label>IQA Signature</label><span class="sig-line"></span><p class="sig-note">Sign above</p></div>
-    </div>
+
+    <p class="text-center text-gray-400 text-xs mt-10">CAVA LMS &middot; Focus Awards &middot; PT Academy</p>
+
   </div>
-
-</div>
-
-<footer class="site-footer">
-  PT Academy | Focus Awards Level 3 CAVA | QRN: 601/6104/8 | Assessment Plan &amp; Tracking Document
-</footer>
 
 <script>
-  function styleSelect(sel) {
-    sel.classList.remove('pass', 'refer', 'pending');
-    if (sel.value === 'pass') sel.classList.add('pass');
-    else if (sel.value === 'refer') sel.classList.add('refer');
-    else sel.classList.add('pending');
+const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const LO_LIST = [
+  { id: 'lo1', label: 'LO1', title: 'Understand the principles and requirements of assessment' },
+  { id: 'lo2', label: 'LO2', title: 'Understand different types of assessment method' },
+  { id: 'lo3', label: 'LO3', title: 'Understand how to plan assessment' },
+  { id: 'lo4', label: 'LO4', title: 'Understand how to involve learners and others in assessment' },
+  { id: 'lo5', label: 'LO5', title: 'Understand how to make assessment decisions' },
+  { id: 'lo6', label: 'LO6', title: 'Understand quality assurance of the assessment process' },
+  { id: 'lo7', label: 'LO7', title: 'Understand how to manage information relating to assessment' },
+  { id: 'lo8', label: 'LO8', title: 'Understand the legal and good practice requirements in relation to assessment' }
+];
+
+let selectedUserId = null;
+let outcomeSelections = {};
+let allLearners = [];
+
+async function init() {
+  await loadLearnerProgress();
+}
+
+async function loadLearnerProgress() {
+  const { data: learners, error } = await sb
+    .from('learners')
+    .select('id, full_name, username, email')
+    .order('full_name');
+
+  if (error || !learners) {
+    document.getElementById('learner-table').innerHTML = '<div class="px-4 py-4 text-sm text-red-400">Could not load learners.</div>';
+    return;
   }
 
-  const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
-  const sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  allLearners = learners;
 
-  async function loadLearnersForPlan() {
-    const sel = document.getElementById('planLearnerSelect');
-    const { data } = await sb.from('learners').select('id, full_name, username').order('full_name');
-    if (!data) return;
-    data.forEach(l => {
-      const opt = document.createElement('option');
-      opt.value = l.id;
-      opt.textContent = l.full_name || l.username;
-      sel.appendChild(opt);
+  // Populate marking dropdown
+  const sel = document.getElementById('markingLearner');
+  learners.forEach(l => {
+    const opt = document.createElement('option');
+    opt.value = l.id;
+    opt.textContent = l.full_name || l.username;
+    sel.appendChild(opt);
+  });
+
+  // Load unit_overrides to determine progress per learner
+  // Fetch with id ordering so latest row wins when deduplicating
+  const { data: overrides } = await sb.from('unit_overrides').select('id, user_id, unit, status').order('id', { ascending: true });
+  const overrideMap = {};
+  if (overrides) {
+    overrides.forEach(o => {
+      const uid = parseInt(o.user_id, 10);
+      if (!overrideMap[uid]) overrideMap[uid] = {};
+      // Always overwrite so the last (highest id) row wins
+      overrideMap[uid][o.unit] = o.status;
     });
   }
 
-  async function onLearnerChange() {
-    const sel = document.getElementById('planLearnerSelect');
-    const id = sel.value;
-    if (!id) return;
+  // Load unit1_submissions to check who has submitted work
+  const { data: subs } = await sb.from('unit1_submissions').select('user_id');
+  const submittedIds = new Set((subs || []).map(s => parseInt(s.user_id, 10)));
 
-    // Populate learner name field
-    document.getElementById('planLearnerName').value = sel.options[sel.selectedIndex].textContent;
+  const table = document.getElementById('learner-table');
+  if (!learners.length) {
+    table.innerHTML = '<div class="px-4 py-4 text-sm text-gray-400">No learners found.</div>';
+    return;
+  }
 
-    // Reset all outcome selects and date-assessed inputs
-    document.querySelectorAll('.outcome-select').forEach(s => { s.value = ''; styleSelect(s); });
-    document.querySelectorAll('.date-assessed').forEach(d => { d.value = ''; });
-    document.querySelectorAll('.assessor-initials').forEach(i => { i.value = ''; });
+  table.innerHTML = learners.map(l => {
+    const uid = parseInt(l.id, 10);
+    const lo = overrideMap[uid] || {};
 
-    const numericId = parseInt(id, 10);
-    const { data } = await sb.from('unit_overrides').select('unit, status, passed_date, set_by_assessor').eq('user_id', numericId);
-    if (!data || !data.length) {
-      document.getElementById('prepassBanner').style.display = 'none';
-      return;
+    function unitIcon(key) {
+      const s = lo[key];
+      if (s === 'pre_passed') return '✅';
+      if (s === 'referred') return '🔴';
+      if (submittedIds.has(uid)) return '🔄';
+      return '⬜';
     }
 
-    const overrides = {};
-    data.forEach(r => { overrides[String(r.unit)] = r; });
+    // Assessment Plan column: show ✅ if any unit has an override record, 🔄 if submitted, else ⬜
+    const hasAnyOverride = Object.keys(lo).length > 0;
+    const planIcon = hasAnyOverride ? '✅' : submittedIds.has(uid) ? '🔄' : '⬜';
 
-    ['unit1', 'unit2', 'unit3'].forEach(unitKey => {
-      const override = overrides[unitKey];
-      if (!override) return;
-      const outcomeVal = override.status === 'pre_passed' ? 'pass' : override.status === 'referred' ? 'refer' : null;
-      if (!outcomeVal) return;
-      const unitNum = unitKey.replace('unit', '');
-      const block = document.querySelector(`.unit-block[data-unit="${unitNum}"]`);
-      if (!block) return;
-      block.querySelectorAll('.outcome-select').forEach(s => { s.value = outcomeVal; styleSelect(s); });
-      if (override.passed_date) block.querySelectorAll('.date-assessed').forEach(d => { d.value = override.passed_date; });
-      if (override.set_by_assessor) block.querySelectorAll('.assessor-initials').forEach(i => { i.value = override.set_by_assessor; });
-    });
+    return `
+      <div class="grid grid-cols-6 items-center px-4 py-4 border-b border-gray-100">
+        <div class="col-span-2">
+          <p class="text-gray-900 font-medium text-sm">${l.full_name || l.username}</p>
+          <p class="text-gray-400 text-xs">${l.email || l.username}</p>
+        </div>
+        <a href="assessment-plan.html" class="text-center text-lg block hover:scale-110 transition" title="Open Assessment Plan">${planIcon}</a>
+        <span class="text-center text-lg block" title="Unit 1">${unitIcon('unit1')}</span>
+        <span class="text-center text-lg block" title="Unit 2">${unitIcon('unit2')}</span>
+        <span class="text-center text-lg block" title="Unit 3">${unitIcon('unit3')}</span>
+      </div>
+    `;
+  }).join('');
+}
 
-    const banner = document.getElementById('prepassBanner');
-    const lines = data.map(r => {
-      const label = r.status === 'pre_passed' ? 'Passed' : 'Referred';
-      return `${r.unit.replace('unit', 'Unit ')}: <strong>${label}</strong>${r.passed_date ? ' (' + r.passed_date + ')' : ''}`;
-    }).join(' &nbsp;&nbsp;|&nbsp;&nbsp; ');
-    banner.innerHTML = 'Pre-pass records loaded: ' + lines;
-    banner.style.display = 'block';
+function buildMarkingCards() {
+  const container = document.getElementById('loFeedbackCards');
+  container.innerHTML = '';
+  LO_LIST.forEach(lo => {
+    outcomeSelections[lo.id] = null;
+    container.innerHTML += `
+      <div class="feedback-card" id="card-${lo.id}">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <span class="lo-label">${lo.label}</span>
+            <div class="text-sm font-semibold text-gray-800 mt-1">${lo.title}</div>
+          </div>
+        </div>
+        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
+        <div class="flex gap-3 mb-4">
+          <button class="judgement-btn pass-btn" id="pass-${lo.id}" onclick="selectOutcome('${lo.id}', 'Pass')">Pass</button>
+          <button class="judgement-btn refer-btn" id="refer-${lo.id}" onclick="selectOutcome('${lo.id}', 'Refer')">Refer</button>
+        </div>
+        <div class="text-xs font-semibold text-gray-500 mb-1">Feedback to Learner</div>
+        <textarea id="fb-${lo.id}" rows="4" placeholder="Write your feedback here..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm resize-y"></textarea>
+        <div class="flex items-center justify-between mt-3">
+          <div class="save-indicator" id="si-${lo.id}"></div>
+          <button onclick="saveFeedback('${lo.id}')" class="gold-bg text-black text-xs font-bold px-5 py-2 rounded-lg hover:opacity-90 transition">Save Feedback</button>
+        </div>
+      </div>
+    `;
+  });
+}
+
+function selectOutcome(loId, outcome) {
+  outcomeSelections[loId] = outcome;
+  document.getElementById('pass-' + loId).classList.toggle('selected', outcome === 'Pass');
+  document.getElementById('refer-' + loId).classList.toggle('selected', outcome === 'Refer');
+}
+
+async function loadFeedback() {
+  const sel = document.getElementById('markingLearner').value;
+  const panel = document.getElementById('markingPanel');
+  const msg = document.getElementById('learnerLoadMsg');
+
+  if (!sel) { panel.style.display = 'none'; msg.textContent = ''; return; }
+
+  msg.textContent = 'Loading...';
+  selectedUserId = sel;
+
+  const { data: rows } = await sb
+    .from('unit1_submissions')
+    .select('user_id')
+    .eq('user_id', sel)
+    .maybeSingle();
+
+  if (!rows) {
+    msg.textContent = 'No submitted worksheet found for this learner yet.';
+    panel.style.display = 'none';
+    return;
   }
 
-  document.addEventListener('DOMContentLoaded', loadLearnersForPlan);
+  msg.textContent = '';
+  buildMarkingCards();
+  panel.style.display = 'block';
+
+  const { data: feedback } = await sb
+    .from('unit1_feedback')
+    .select('*')
+    .eq('user_id', selectedUserId);
+
+  if (feedback && feedback.length > 0) {
+    feedback.forEach(row => {
+      const fbEl = document.getElementById('fb-' + row.lo);
+      if (fbEl) fbEl.value = row.feedback_text || '';
+      if (row.outcome) selectOutcome(row.lo, row.outcome);
+      const si = document.getElementById('si-' + row.lo);
+      if (si) si.textContent = '✓ Previously saved';
+    });
+  }
+}
+
+async function saveFeedback(loId) {
+  if (!selectedUserId) return;
+  const outcome = outcomeSelections[loId];
+  const text = document.getElementById('fb-' + loId)?.value.trim();
+  const si = document.getElementById('si-' + loId);
+
+  if (!outcome) { si.textContent = '⚠ Please select Pass or Refer'; si.style.color = '#dc2626'; return; }
+  if (!text) { si.textContent = '⚠ Please write feedback before saving'; si.style.color = '#dc2626'; return; }
+
+  si.textContent = 'Saving...';
+  si.style.color = '#6b7280';
+
+  const { error } = await sb
+    .from('unit1_feedback')
+    .upsert({ user_id: selectedUserId, lo: loId, outcome, feedback_text: text, saved_at: new Date().toISOString() }, { onConflict: 'user_id,lo' });
+
+  if (error) {
+    si.textContent = '⚠ Save failed — ' + error.message;
+    si.style.color = '#dc2626';
+  } else {
+    si.textContent = '✓ Feedback saved';
+    si.style.color = '#16a34a';
+    loadLearnerProgress();
+  }
+}
+
+init();
 </script>
+
 </body>
 </html>
