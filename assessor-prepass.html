@@ -224,17 +224,27 @@
       const dateLabel = isPassed ? 'Date passed' : 'Date referred';
 
       // Per-LO date rows
-      const loRows = isSet ? u.los.map(lo => {
-        const val = state.loDates[lo] || '';
-        return `
-          <div class="lo-date-row">
-            <span class="lo-date-label">${lo}</span>
-            <input type="date" class="lo-date" value="${val}"
-              style="color:#fff!important;font-weight:700;"
-              oninput="setLoDate('${u.key}', '${lo}', this.value)" />
-          </div>
-        `;
-      }).join('') : '';
+      const loRows = isSet ? `
+        <div class="lo-date-row" style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #ffffff20;">
+          <span class="lo-date-label" style="color:#c9a84c;font-weight:700;min-width:90px;">Fill all</span>
+          <input type="date" class="lo-date" style="color:#fff!important;font-weight:700;"
+            placeholder="Set date for all LOs"
+            oninput="fillAllLoDates('${u.key}', this.value)" />
+          <span style="color:#888;font-size:0.68rem;margin-left:6px;">Sets all LO dates at once</span>
+        </div>
+        ${u.los.map(lo => {
+          const val = state.loDates[lo] || '';
+          return `
+            <div class="lo-date-row">
+              <span class="lo-date-label">${lo}</span>
+              <input type="date" class="lo-date" value="${val}"
+                id="lo_${u.key}_${lo}"
+                style="color:#fff!important;font-weight:700;"
+                oninput="setLoDate('${u.key}', '${lo}', this.value)" />
+            </div>
+          `;
+        }).join('')}
+      ` : '';
 
       return `
         <div class="unit-row ${rowClass} rounded-lg px-4 py-3" id="row_${u.key}">
@@ -255,9 +265,19 @@
 
   function setLoDate(unitKey, lo, value) {
     unitStates[unitKey].loDates[lo] = value;
-    // Also set the unit-level date as the earliest LO date for reference
     const dates = Object.values(unitStates[unitKey].loDates).filter(Boolean);
     if (dates.length) unitStates[unitKey].date = dates.sort()[0];
+  }
+
+  function fillAllLoDates(unitKey, value) {
+    const unit = UNITS.find(u => u.key === unitKey);
+    if (!unit) return;
+    unit.los.forEach(lo => {
+      unitStates[unitKey].loDates[lo] = value;
+      const input = document.getElementById(`lo_${unitKey}_${lo}`);
+      if (input) input.value = value;
+    });
+    if (value) unitStates[unitKey].date = value;
   }
 
   function cycleUnit(key) {
