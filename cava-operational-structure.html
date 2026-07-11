@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>PT Academy CAVA Operational Structure</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  body { font-family: 'Inter', sans-serif; background: #f1f5f9; }
+  .brand-header { background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%); border-bottom: 4px solid #c9a84c; }
+  .gold { color: #c9a84c; }
+  .gold-bg { background: #c9a84c; }
+  .role-card { border-top: 4px solid #c9a84c; }
+  .flow-step { border: 2px solid #c9a84c; }
+  .flow-arrow { color: #c9a84c; font-size: 1.5rem; line-height: 1; }
+  .gate-box { background: #1a1a1a; border: 2px solid #c9a84c; }
+  .section-head { border-left: 5px solid #c9a84c; }
+  table { border-collapse: collapse; width: 100%; }
+  th { background: #1a1a1a; color: #c9a84c; padding: 8px 12px; font-size: 0.8rem; font-weight: 600; text-align: left; }
+  td { padding: 8px 12px; font-size: 0.82rem; border-bottom: 1px solid #e2e8f0; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  @media print {
+    body { background: white; }
+    .brand-header { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .gate-box { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body class="min-h-screen">
+
+<!-- HEADER -->
+<div class="brand-header text-white px-8 py-6 mb-8 shadow-xl">
+  <div class="max-w-6xl mx-auto flex items-center justify-between flex-wrap gap-6">
+    <div class="flex items-center gap-5">
+      <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy" class="h-20 w-auto" onerror="this.style.display='none'" />
+      <div>
+        <p class="text-xs font-semibold uppercase tracking-widest mb-1" style="color:#c9a84c">PT Academy</p>
+        <h1 class="text-2xl font-bold text-white">CAVA Operational Structure</h1>
+        <p class="text-sm mt-0.5" style="color:#c9a84c">Focus Awards Level 3 Certificate in Assessing Vocational Achievement (RQF)</p>
+      </div>
+    </div>
+    <div class="text-right text-sm space-y-1">
+      <p><span class="font-semibold" style="color:#c9a84c">Reference:</span> <span class="text-gray-300">601/6104/8</span></p>
+      <p><span class="font-semibold" style="color:#c9a84c">Version:</span> <span class="text-gray-300">1.0 2026</span></p>
+      <p><span class="font-semibold" style="color:#c9a84c">Classification:</span> <span class="text-gray-300">Internal Management Use</span></p>
+    </div>
+  </div>
+</div>
+
+<div class="max-w-6xl mx-auto px-4 pb-16 space-y-10">
+
+<!-- ROLE CARDS -->
+<section>
+  <div class="section-head pl-4 mb-5">
+    <h2 class="text-xl font-bold text-slate-800">Role Responsibilities</h2>
+    <p class="text-slate-500 text-sm">How responsibilities are divided across the delivery team.</p>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+
+    <div class="role-card bg-white rounded-xl shadow p-5">
+      <p class="text-xs font-bold uppercase tracking-widest mb-1" style="color:#c9a84c">Mikey</p>
+      <p class="font-semibold text-slate-800 mb-3 text-sm">Lead Tutor</p>
+      <ul class="text-xs text-slate-600 space-y-1.5 list-disc list-inside">
+        <li>Delivers 6 live qualification sessions (2 hrs each)</li>
+        <li>Produces all pre-recorded content</li>
+        <li>Oversees programme quality and structure</li>
+        <li>Presents programme to management and EQA</li>
+        <li>No involvement in standardisation or learner allocation</li>
+      </ul>
+    </div>
+
+    <div class="role-card bg-white rounded-xl shadow p-5">
+      <p class="text-xs font-bold uppercase tracking-widest mb-1" style="color:#c9a84c">Katja</p>
+      <p class="font-semibold text-slate-800 mb-3 text-sm">Assessments Manager</p>
+      <ul class="text-xs text-slate-600 space-y-1.5 list-disc list-inside">
+        <li>Allocates two learners per trainee assessor (one Level 2, one Level 3)</li>
+        <li>Runs monthly standardisation sessions (90 minutes)</li>
+        <li>Countersigns all trainee assessor decisions</li>
+        <li>Maintains the trainee assessor tracking log</li>
+        <li>Acts as gatekeeper before any learner work is touched</li>
+      </ul>
+    </div>
+
+    <div class="role-card bg-white rounded-xl shadow p-5">
+      <p class="text-xs font-bold uppercase tracking-widest mb-1" style="color:#c9a84c">Simi and Enrolment Team</p>
+      <p class="font-semibold text-slate-800 mb-3 text-sm">Management and Intake</p>
+      <ul class="text-xs text-slate-600 space-y-1.5 list-disc list-inside">
+        <li>Manages CAVA programme enrolment and sales</li>
+        <li>Issues learner consent and upgrade form</li>
+        <li>Shares learner name and email address only (GDPR compliant)</li>
+        <li>Passes confirmed consenting learners to Katja for allocation</li>
+      </ul>
+    </div>
+
+    <div class="role-card bg-white rounded-xl shadow p-5">
+      <p class="text-xs font-bold uppercase tracking-widest mb-1" style="color:#c9a84c">Trainee Assessor</p>
+      <p class="font-semibold text-slate-800 mb-3 text-sm">Programme Participant</p>
+      <ul class="text-xs text-slate-600 space-y-1.5 list-disc list-inside">
+        <li>Completes Unit 1 written questions before standardisation</li>
+        <li>Attends standardisation before accessing any learner work</li>
+        <li>Assesses two allocated learners under countersignature</li>
+        <li>Builds a portfolio of evidence across all three units</li>
+        <li>Submits completed portfolio for IQA sampling</li>
+      </ul>
+    </div>
+
+  </div>
+</section>
+
+<!-- LEARNER UPGRADE MODEL -->
+<section>
+  <div class="section-head pl-4 mb-5">
+    <h2 class="text-xl font-bold text-slate-800">Learner Upgrade Model</h2>
+    <p class="text-slate-500 text-sm">How PT Academy self-study learners become practice learners for trainee assessors.</p>
+  </div>
+  <div class="bg-white rounded-xl shadow p-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="text-center p-4 rounded-lg bg-slate-50">
+        <div class="text-2xl font-bold mb-2" style="color:#c9a84c">Step 1</div>
+        <p class="font-semibold text-slate-700 text-sm mb-1">Consent</p>
+        <p class="text-xs text-slate-500">Simi's team contacts eligible self-study learners and issues the consent and upgrade form. Only name and email shared.</p>
+      </div>
+      <div class="text-center p-4 rounded-lg bg-slate-50">
+        <div class="text-2xl font-bold mb-2" style="color:#c9a84c">Step 2</div>
+        <p class="font-semibold text-slate-700 text-sm mb-1">Allocation</p>
+        <p class="text-xs text-slate-500">Katja receives confirmed consenting learners and assigns one Level 2 and one Level 3 to each trainee assessor.</p>
+      </div>
+      <div class="text-center p-4 rounded-lg bg-slate-50">
+        <div class="text-2xl font-bold mb-2" style="color:#c9a84c">Step 3</div>
+        <p class="font-semibold text-slate-700 text-sm mb-1">Upgrade Benefit</p>
+        <p class="text-xs text-slate-500">Learner receives a trainee assessor as a goodwill gesture. All decisions are countersigned by Katja as the qualified assessor.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STANDARDISATION -->
+<section>
+  <div class="section-head pl-4 mb-5">
+    <h2 class="text-xl font-bold text-slate-800">Standardisation Model</h2>
+    <p class="text-slate-500 text-sm">Run by Katja monthly. Trainee assessors must complete this before touching any learner work.</p>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <div class="bg-white rounded-xl shadow p-6">
+      <h3 class="font-semibold text-slate-700 mb-4 text-sm">What the 90-Minute Session Covers</h3>
+      <table>
+        <thead><tr><th>Area</th><th>Detail</th></tr></thead>
+        <tbody>
+          <tr><td>Assessment standards</td><td>What a passing and failing response looks like at Level 2 and Level 3</td></tr>
+          <tr><td>Feedback quality</td><td>How to write clear, actionable written feedback using PT Academy standards</td></tr>
+          <tr><td>Observation grids</td><td>How to complete the observation grid using Dropbox video footage</td></tr>
+          <tr><td>Calibration activity</td><td>Marking a sample piece of work as a group and comparing decisions</td></tr>
+          <tr><td>Documentation</td><td>How to record the standardisation as evidence toward Units 2 and 3</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="bg-white rounded-xl shadow p-6">
+      <h3 class="font-semibold text-slate-700 mb-4 text-sm">How Latecomers Are Managed</h3>
+      <div class="gate-box rounded-lg p-4 mb-4">
+        <p class="text-xs font-bold uppercase tracking-widest mb-2" style="color:#c9a84c">The Gate Rule</p>
+        <p class="text-sm text-white">No trainee assessor may access or assess any learner work until they have completed a standardisation session with Katja.</p>
+      </div>
+      <ul class="text-xs text-slate-600 space-y-2 list-disc list-inside">
+        <li>Standardisation runs once per month</li>
+        <li>Trainee assessors who join between sessions complete Unit 1 written questions while they wait</li>
+        <li>A pre-recorded standardisation overview is available on the platform to watch in advance</li>
+        <li>The live session with Katja then serves as calibration and confirmation rather than a full delivery</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ONBOARDING FLOWCHART -->
+<section>
+  <div class="section-head pl-4 mb-5">
+    <h2 class="text-xl font-bold text-slate-800">Trainee Assessor Onboarding Flow</h2>
+    <p class="text-slate-500 text-sm">From enrolment to first learner contact.</p>
+  </div>
+  <div class="bg-white rounded-xl shadow p-6">
+    <div class="flex flex-col items-center gap-2">
+
+      <div class="flow-step rounded-lg px-6 py-3 text-center w-full max-w-lg bg-slate-50">
+        <p class="text-xs font-bold uppercase tracking-widest mb-0.5" style="color:#c9a84c">Enrolment Team</p>
+        <p class="text-sm font-semibold text-slate-700">Trainee assessor enrols on the CAVA programme</p>
+      </div>
+      <div class="flow-arrow">↓</div>
+
+      <div class="flow-step rounded-lg px-6 py-3 text-center w-full max-w-lg bg-slate-50">
+        <p class="text-xs font-bold uppercase tracking-widest mb-0.5" style="color:#c9a84c">Trainee Assessor</p>
+        <p class="text-sm font-semibold text-slate-700">Accesses pre-recorded content and begins Unit 1 written questions</p>
+      </div>
+      <div class="flow-arrow">↓</div>
+
+      <div class="flow-step rounded-lg px-6 py-3 text-center w-full max-w-lg bg-slate-50">
+        <p class="text-xs font-bold uppercase tracking-widest mb-0.5" style="color:#c9a84c">Trainee Assessor</p>
+        <p class="text-sm font-semibold text-slate-700">Watches pre-recorded standardisation overview on platform</p>
+      </div>
+      <div class="flow-arrow">↓</div>
+
+      <div class="gate-box rounded-lg px-6 py-3 text-center w-full max-w-lg">
+        <p class="text-xs font-bold uppercase tracking-widest mb-0.5" style="color:#c9a84c">Gate — Katja</p>
+        <p class="text-sm font-semibold text-white">Attends live monthly standardisation session (90 minutes)</p>
+        <p class="text-xs mt-1" style="color:#c9a84c">Must be completed before any learner work is accessed</p>
+      </div>
+      <div class="flow-arrow">↓</div>
+
+      <div class="flow-step rounded-lg px-6 py-3 text-center w-full max-w-lg bg-slate-50">
+        <p class="text-xs font-bold uppercase tracking-widest mb-0.5" style="color:#c9a84c">Katja</p>
+        <p class="text-sm font-semibold text-slate-700">Allocates two learners (one Level 2, one Level 3) and confirms in tracking log</p>
+      </div>
+      <div class="flow-arrow">↓</div>
+
+      <div class="flow-step rounded-lg px-6 py-3 text-center w-full max-w-lg bg-slate-50">
+        <p class="text-xs font-bold uppercase tracking-widest mb-0.5" style="color:#c9a84c">Trainee Assessor</p>
+        <p class="text-sm font-semibold text-slate-700">Contacts both learners and completes Assessment Plan 1</p>
+      </div>
+      <div class="flow-arrow">↓</div>
+
+      <div class="flow-step rounded-lg px-6 py-3 text-center w-full max-w-lg" style="border-color:#c9a84c; background:#fffbeb">
+        <p class="text-xs font-bold uppercase tracking-widest mb-0.5" style="color:#c9a84c">Programme Active</p>
+        <p class="text-sm font-semibold text-slate-700">Evidence gathering begins across Units 2 and 3. Mikey delivers live sessions. Katja countersigns.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TRACKING LOG -->
+<section>
+  <div class="section-head pl-4 mb-5">
+    <h2 class="text-xl font-bold text-slate-800">Trainee Assessor Tracking Log</h2>
+    <p class="text-slate-500 text-sm">Maintained by Katja. Updated when each stage is completed.</p>
+  </div>
+  <div class="bg-white rounded-xl shadow overflow-hidden">
+    <table>
+      <thead>
+        <tr>
+          <th>Trainee Assessor</th>
+          <th>Enrolment Date</th>
+          <th>Standardisation Date</th>
+          <th>Learner 1 (Level 2)</th>
+          <th>Learner 2 (Level 3)</th>
+          <th>Programme Start</th>
+          <th>Portfolio Submitted</th>
+          <th>IQA Sampled</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td class="text-slate-400 italic text-xs" colspan="8">Rows added by Katja as each trainee assessor joins the programme.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<div class="text-center text-xs text-slate-400 pt-6 pb-2 border-t border-slate-200 mt-4">
+  PT Academy | Focus Awards Level 3 Certificate in Assessing Vocational Achievement (RQF) 601/6104/8 | Operational Structure Document | Version 1.0 | 2026 | Internal Use Only
+</div>
+
+</div>
+</body>
+</html>
