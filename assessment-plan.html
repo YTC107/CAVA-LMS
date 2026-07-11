@@ -236,21 +236,25 @@
     const id = sel.value;
     if (!id) return;
 
-    // Populate learner name field
     document.getElementById('planLearnerName').value = sel.options[sel.selectedIndex].textContent;
 
-    // Reset all outcome selects and date-assessed inputs
+    // Reset all fields
     document.querySelectorAll('.outcome-select').forEach(s => { s.value = ''; styleSelect(s); });
     document.querySelectorAll('.date-assessed').forEach(d => { d.value = ''; });
     document.querySelectorAll('.assessor-initials').forEach(i => { i.value = ''; });
 
-    const numericId = parseInt(id, 10);
-    const { data } = await sb.from('unit_overrides').select('unit, status, passed_date, set_by_assessor').eq('user_id', numericId).order('id', { ascending: false });
+    // Query using raw id value — Supabase handles type coercion correctly
+    const { data } = await sb.from('unit_overrides')
+      .select('unit, status, passed_date, lo_dates, set_by_assessor')
+      .eq('user_id', id)
+      .order('id', { ascending: false });
+
     if (!data || !data.length) {
       document.getElementById('prepassBanner').style.display = 'none';
       return;
     }
 
+    // Deduplicate — most recent (first, descending order) row wins per unit
     const overrides = {};
     data.forEach(r => { if (!overrides[r.unit]) overrides[r.unit] = r; });
 
@@ -262,13 +266,32 @@
       const unitNum = unitKey.replace('unit', '');
       const block = document.querySelector(`.unit-block[data-unit="${unitNum}"]`);
       if (!block) return;
-      block.querySelectorAll('.outcome-select').forEach(s => { s.value = outcomeVal; styleSelect(s); });
-      if (override.passed_date) block.querySelectorAll('.date-assessed').forEach(d => { d.value = override.passed_date; });
-      if (override.set_by_assessor) block.querySelectorAll('.assessor-initials').forEach(i => { i.value = override.set_by_assessor; });
+
+      // Parse per-LO dates if available
+      let loDates = {};
+      if (override.lo_dates) {
+        try { loDates = JSON.parse(override.lo_dates); } catch(e) {}
+      }
+
+      // Apply outcome and dates row by row
+      const rows = block.querySelectorAll('tbody tr');
+      const loKeys = ['LO1','LO2','LO3','LO4','LO5','LO6','LO7','LO8'];
+      rows.forEach((row, i) => {
+        const loKey = loKeys[i];
+        const outcomeSelect = row.querySelector('.outcome-select');
+        if (outcomeSelect) { outcomeSelect.value = outcomeVal; styleSelect(outcomeSelect); }
+        const dateInput = row.querySelector('.date-assessed');
+        if (dateInput) {
+          // Use per-LO date if available, otherwise fall back to unit-level date
+          dateInput.value = (loKey && loDates[loKey]) ? loDates[loKey] : (override.passed_date || '');
+        }
+        const initialsInput = row.querySelector('.assessor-initials');
+        if (initialsInput && override.set_by_assessor) initialsInput.value = override.set_by_assessor;
+      });
     });
 
     const banner = document.getElementById('prepassBanner');
-    const lines = data.map(r => {
+    const lines = Object.values(overrides).map(r => {
       const label = r.status === 'pre_passed' ? 'Passed' : 'Referred';
       return `${r.unit.replace('unit', 'Unit ')}: <strong>${label}</strong>${r.passed_date ? ' (' + r.passed_date + ')' : ''}`;
     }).join(' &nbsp;&nbsp;|&nbsp;&nbsp; ');
