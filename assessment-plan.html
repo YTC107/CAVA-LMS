@@ -299,7 +299,17 @@
     banner.style.display = 'block';
   }
 
-  document.addEventListener('DOMContentLoaded', loadLearnersForPlan);
+  document.addEventListener('DOMContentLoaded', async () => {
+    await loadLearnersForPlan();
+    // Auto-select learner if passed via URL ?learner=ID
+    const params = new URLSearchParams(window.location.search);
+    const learnerId = params.get('learner');
+    if (learnerId) {
+      const sel = document.getElementById('planLearnerSelect');
+      sel.value = learnerId;
+      if (sel.value) onLearnerChange();
+    }
+  });
 </script>
 </body>
 </html>
