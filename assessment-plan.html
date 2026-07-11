@@ -251,7 +251,7 @@
     }
 
     const overrides = {};
-    data.forEach(r => { overrides[r.unit] = r; });
+    data.forEach(r => { overrides[String(r.unit)] = r; });
 
     ['unit1', 'unit2', 'unit3'].forEach(unitKey => {
       const override = overrides[unitKey];
