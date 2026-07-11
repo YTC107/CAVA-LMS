@@ -180,22 +180,21 @@ async function loadLearnerProgress() {
     sel.appendChild(opt);
   });
 
-  // Load unit_overrides to determine progress per learner
-  // Fetch with id ordering so latest row wins when deduplicating
-  const { data: overrides } = await sb.from('unit_overrides').select('id, user_id, unit, status').order('id', { ascending: true });
+  // Load unit_overrides — use String() for all id comparisons to avoid type mismatch
+  const { data: overrides } = await sb.from('unit_overrides').select('id, user_id, unit, status').order('id', { ascending: false });
   const overrideMap = {};
   if (overrides) {
     overrides.forEach(o => {
-      const uid = parseInt(o.user_id, 10);
+      const uid = String(o.user_id);
       if (!overrideMap[uid]) overrideMap[uid] = {};
-      // Always overwrite so the last (highest id) row wins
-      overrideMap[uid][o.unit] = o.status;
+      // Order is descending so first seen is most recent — don't overwrite
+      if (!overrideMap[uid][o.unit]) overrideMap[uid][o.unit] = o.status;
     });
   }
 
   // Load unit1_submissions to check who has submitted work
   const { data: subs } = await sb.from('unit1_submissions').select('user_id');
-  const submittedIds = new Set((subs || []).map(s => parseInt(s.user_id, 10)));
+  const submittedIds = new Set((subs || []).map(s => String(s.user_id)));
 
   const table = document.getElementById('learner-table');
   if (!learners.length) {
@@ -204,7 +203,7 @@ async function loadLearnerProgress() {
   }
 
   table.innerHTML = learners.map(l => {
-    const uid = parseInt(l.id, 10);
+    const uid = String(l.id);
     const lo = overrideMap[uid] || {};
 
     function unitIcon(key) {
