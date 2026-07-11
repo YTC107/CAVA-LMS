@@ -73,6 +73,7 @@
         <div class="text-xs text-gray-500 text-center py-8">Select a learner to manage their units</div>
       </div>
       <button id="saveBtn" onclick="saveChanges()" class="hidden w-full gold text-black font-bold py-3 rounded-lg text-sm mt-5 hover:opacity-90">Save Changes</button>
+      <button id="testBtn" onclick="testSave()" class="hidden w-full bg-blue-700 text-white font-bold py-2 rounded-lg text-xs mt-2 hover:opacity-90">Run Diagnostics</button>
       <div id="saveMsg" class="text-center text-xs mt-2"></div>
     </div>
 
@@ -208,6 +209,7 @@
 
     renderUnits();
     document.getElementById('saveBtn').classList.remove('hidden');
+    document.getElementById('testBtn').classList.remove('hidden');
     await loadLog(selectedLearner.id);
   }
 
@@ -340,8 +342,51 @@
     const msg = document.getElementById('saveMsg');
     msg.textContent = '\u2713 Saved successfully';
     msg.className = 'text-center text-xs mt-2 text-green-400';
-    setTimeout(() => msg.textContent = '', 3000);
+    setTimeout(() => msg.textContent = '', 4000);
     await loadLog(selectedLearner.id);
+  }
+
+  async function testSave() {
+    const msg = document.getElementById('saveMsg');
+    msg.textContent = 'Running diagnostics...';
+    msg.className = 'text-center text-xs mt-2 text-yellow-400';
+
+    // Check auth
+    const userRaw = localStorage.getItem('cava_user');
+    if (!userRaw) { msg.textContent = 'ERROR: Not logged in (no cava_user in localStorage)'; msg.className = 'text-center text-xs mt-2 text-red-400'; return; }
+    const u = JSON.parse(userRaw);
+    msg.textContent = `Auth OK: ${u.full_name || u.username || u.id}. Testing DB write...`;
+
+    // Try a minimal insert with only known-safe columns
+    const testPayload = {
+      user_id: selectedLearner ? String(selectedLearner.id) : '999',
+      unit: 'unit1',
+      status: 'pre_passed',
+      passed_date: '2026-05-19',
+      set_by_assessor: 'Test'
+    };
+    const { data: d1, error: e1 } = await sb.from('unit_overrides').insert(testPayload).select().single();
+    if (e1) {
+      msg.textContent = `DB INSERT FAILED: ${e1.message} (code: ${e1.code})`;
+      msg.className = 'text-center text-xs mt-2 text-red-400';
+      return;
+    }
+    // Clean up test row
+    await sb.from('unit_overrides').delete().eq('id', d1.id);
+
+    // Now try with lo_dates column
+    const testPayload2 = { ...testPayload, lo_dates: '{"LO1":"2026-05-19"}' };
+    const { error: e2 } = await sb.from('unit_overrides').insert(testPayload2);
+    if (e2) {
+      msg.textContent = `lo_dates column missing or wrong type: ${e2.message}`;
+      msg.className = 'text-center text-xs mt-2 text-red-400';
+      return;
+    }
+    // Clean up
+    await sb.from('unit_overrides').delete().eq('user_id', testPayload2.user_id).eq('unit', 'unit1');
+
+    msg.textContent = 'All checks passed. DB is writable and lo_dates column exists.';
+    msg.className = 'text-center text-xs mt-2 text-green-400';
   }
 
   async function loadLog(filterUserId = null) {
