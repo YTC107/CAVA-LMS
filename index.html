@@ -30,6 +30,9 @@
     .sub-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 0.75rem 1rem; margin-bottom: 1.5rem; }
     .sub-nav a { font-size: 0.75rem; font-weight: 600; color: #374151; background: #fff; border: 1px solid #d1d5db; border-radius: 9999px; padding: 0.3rem 0.85rem; text-decoration: none; transition: border-color 0.15s, color 0.15s; }
     .sub-nav a:hover { border-color: #c9a84c; color: #c9a84c; }
+    .pre-passed-card { border-left: 4px solid #16a34a !important; }
+    .pre-passed-badge { background-color: #dcfce7; color: #15803d; font-weight: 700; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 9999px; }
+    .pre-passed-btn { background-color: #16a34a; color: #fff; font-size: 0.75rem; padding: 0.35rem 0.85rem; border-radius: 0.5rem; cursor: not-allowed; opacity: 0.85; pointer-events: none; }
   </style>
 </head>
 <body class="bg-gray-100 min-h-screen" style="font-family: sans-serif;">
@@ -300,23 +303,29 @@
           <p class="text-sm text-gray-500">Agree your assessment schedule and methods with your assessor. Fill in your planned end dates and have this countersigned before you begin.</p>
         </a>
 
-        <a href="unit1.html" class="doc-card block">
+        <div id="unit1-card" class="doc-card block">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs border border-yellow-500 gold px-2 py-1 rounded-full">Unit 1</span>
-            <span class="text-xs text-gray-400">Open →</span>
+            <span id="unit1-status" class="text-xs text-gray-400">Open →</span>
           </div>
           <h4 class="font-semibold text-gray-800 mb-1">Understanding the Principles and Practices of Assessment</h4>
           <p class="text-sm text-gray-500">Written questions covering assessment theory, legislation, and ethics.</p>
-        </a>
+          <div id="unit1-action" class="mt-3">
+            <a href="unit1.html" class="text-xs gold font-semibold underline">Open Unit 1</a>
+          </div>
+        </div>
 
-        <a href="unit2.html" class="doc-card block">
+        <div id="unit2-card" class="doc-card block">
           <div class="flex items-center justify-between mb-2">
             <span class="text-xs border border-yellow-500 gold px-2 py-1 rounded-full">Unit 2</span>
-            <span class="text-xs text-gray-400">Open →</span>
+            <span id="unit2-status" class="text-xs text-gray-400">Open →</span>
           </div>
           <h4 class="font-semibold text-gray-800 mb-1">H/601/5314: Assess Occupational Competence in the Work Environment</h4>
           <p class="text-sm text-gray-500">Plan and carry out work-based assessments using observation, work products, and professional discussion to judge learner competence.</p>
-        </a>
+          <div id="unit2-action" class="mt-3">
+            <a href="unit2.html" class="text-xs gold font-semibold underline">Open Unit 2</a>
+          </div>
+        </div>
 
         <div class="doc-card block opacity-60 cursor-not-allowed">
           <div class="flex items-center justify-between mb-2">
@@ -346,6 +355,34 @@
   </footer>
 
   <script>
+    const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
+
+    async function loadUnitOverrides(userId) {
+      try {
+        const res = await fetch(
+          `${SUPABASE_URL}/rest/v1/unit_overrides?user_id=eq.${userId}&status=eq.pre_passed&select=unit,passed_date`,
+          { headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` } }
+        );
+        const data = await res.json();
+        if (!Array.isArray(data)) return;
+        data.forEach(row => {
+          const card = document.getElementById(row.unit + '-card');
+          const statusEl = document.getElementById(row.unit + '-status');
+          const actionEl = document.getElementById(row.unit + '-action');
+          if (!card) return;
+          card.classList.add('pre-passed-card');
+          if (statusEl) statusEl.innerHTML = '<span class="pre-passed-badge">&#10003; Pre-Passed</span>';
+          if (actionEl) {
+            const dateLabel = row.passed_date ? ` &middot; Passed ${row.passed_date}` : '';
+            actionEl.innerHTML = `<span class="pre-passed-btn">&#128274; Locked</span><span class="text-xs text-gray-400 ml-2">${dateLabel}</span>`;
+          }
+        });
+      } catch(e) {
+        // fail silently — cards remain in normal state
+      }
+    }
+
     const token = localStorage.getItem('cava_token');
     const userRaw = localStorage.getItem('cava_user');
 
@@ -359,6 +396,7 @@
       if (name) {
         document.getElementById('welcome-heading').textContent = 'Welcome, ' + name + '!';
       }
+      if (user.id) loadUnitOverrides(user.id);
     }
 
     function logout() {
@@ -404,13 +442,6 @@
       btn.classList.toggle('open', !isOpen);
       chevron.classList.toggle('open', !isOpen);
     }
-
-window.addEventListener('load', function() {
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('tab') === 'documents') {
-    showTabByName('documents');
-  }
-});
   </script>
 
 </body>
