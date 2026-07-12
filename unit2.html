@@ -201,17 +201,17 @@
       .eq('user_id', traineeId)
       .eq('unit', UNIT_CONFIG.unit)
       .order('id', { ascending: false })
-      .limit(1)
-      .single();
+      .limit(1);
 
-    if (data) {
-      currentRecord = data;
+    if (data && data.length > 0) {
+      const firstRecord = data[0];
+      currentRecord = firstRecord;
       
       // Parse lo_dates JSON
       let loDates = {};
-      if (data.lo_dates) {
+      if (firstRecord.lo_dates) {
         try {
-          loDates = JSON.parse(data.lo_dates);
+          loDates = JSON.parse(firstRecord.lo_dates);
         } catch(e) {}
       }
 
@@ -226,8 +226,8 @@
       });
 
       // Set overall status
-      overallStatus = data.status === 'referred' ? 'refer' : 'pass';
-      document.getElementById('overallFeedback').value = data.feedback || '';
+      overallStatus = firstRecord.status === 'referred' ? 'refer' : 'pass';
+      document.getElementById('overallFeedback').value = firstRecord.feedback || '';
       updateOverallButtons();
     } else {
       // Initialize empty outcomes
