@@ -442,6 +442,15 @@
       btn.classList.toggle('open', !isOpen);
       chevron.classList.toggle('open', !isOpen);
     }
+
+     // Auto-switch tab based on URL parameter
+    window.addEventListener('DOMContentLoaded', function() {
+      const params = new URLSearchParams(window.location.search);
+      const tabParam = params.get('tab');
+      if (tabParam) {
+        showTabByName(tabParam);
+      }
+    });
   </script>
 
 </body>
