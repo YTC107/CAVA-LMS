@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessor Control Hub - Manage Learner Access</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 8px;
+            margin-bottom: 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .assessor-info {
+            text-align: right;
+            font-size: 14px;
+        }
+
+        .assessor-info .role {
+            color: #d4af37;
+            font-weight: 600;
+        }
+
+        .intro-section {
+            background: white;
+            padding: 25px;
+            border-left: 4px solid #d4af37;
+            margin-bottom: 40px;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .intro-section h2 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .intro-section p {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.6;
+        }
+
+        .learners-grid {
+            display: grid;
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .learner-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        .learner-card:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .learner-header {
+            background: #f8f8f8;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .learner-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .learner-info p {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .expand-toggle {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #666;
+            transition: transform 0.3s ease;
+        }
+
+        .expand-toggle.expanded {
+            transform: rotate(180deg);
+        }
+
+        .units-container {
+            display: none;
+            padding: 20px;
+            background: #fafafa;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .units-container.expanded {
+            display: block;
+        }
+
+        .unit-row {
+            background: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #d4af37;
+        }
+
+        .unit-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .unit-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .unit-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .control-label {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 13px;
+            background-color: white;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: #d4af37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .mark-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .mark-btn {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            background: white;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mark-btn:hover {
+            border-color: #999;
+            background: #f0f0f0;
+        }
+
+        .mark-btn.pass {
+            border-color: #4caf50;
+            color: #4caf50;
+        }
+
+        .mark-btn.pass.active {
+            background: #4caf50;
+            color: white;
+        }
+
+        .mark-btn.refer {
+            border-color: #ff9800;
+            color: #ff9800;
+        }
+
+        .mark-btn.refer.active {
+            background: #ff9800;
+            color: white;
+        }
+
+        .mark-btn.unmarked {
+            border-color: #bbb;
+            color: #666;
+        }
+
+        .mark-btn.unmarked.active {
+            background: #bbb;
+            color: white;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            font-size: 16px;
+            color: #666;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .save-status {
+            font-size: 12px;
+            color: #4caf50;
+            margin-top: 8px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div>
+                <h1>Assessor Control Hub</h1>
+                <p>Manage learner progress, complete observation records, and mark unit work below.</p>
+            </div>
+            <div class="assessor-info">
+                <p id="assessor-name">Assessor</p>
+                <p class="role">Assessor</p>
+            </div>
+        </div>
+
+        <div class="intro-section">
+            <h2>Learner Unit Access & Marking</h2>
+            <p>Update learner access statuses for each unit, track progress, and mark submitted work. Changes save automatically.</p>
+        </div>
+
+        <div id="error-container"></div>
+        <div id="learners-container" class="learners-grid">
+            <div class="loading">Loading learner data...</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Initialize Supabase
+        const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co'; // Replace with your URL
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3amVqcXFna3Zrcm9xaG1mZ2xnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0MjA4NDIsImV4cCI6MjA5ODk5Njg0Mn0.BKvPDF3heQZ-sLgIa8hwx6kRhRam5tZgCMGvgAYXXmU'; // Replace with your key
+
+        const { createClient } = window.supabase;
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // Load and display learner data
+        async function loadLearners() {
+            try {
+                const container = document.getElementById('learners-container');
+                container.innerHTML = '<div class="loading">Loading learner data...</div>';
+
+                // Fetch learner unit access data
+                const { data, error } = await supabase
+                    .from('learner_unit_access')
+                    .select('*')
+                    .order('learner_id', { ascending: true })
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                // Group data by learner
+                const learnerMap = {};
+                data.forEach(record => {
+                    if (!learnerMap[record.learner_id]) {
+                        learnerMap[record.learner_id] = {
+                            learner_id: record.learner_id,
+                            units: []
+                        };
+                    }
+                    learnerMap[record.learner_id].units.push(record);
+                });
+
+                // Render learner cards
+                container.innerHTML = '';
+                Object.values(learnerMap).forEach(learner => {
+                    container.appendChild(createLearnerCard(learner));
+                });
+
+            } catch (error) {
+                console.error('Error loading learners:', error);
+                document.getElementById('error-container').innerHTML = 
+                    `<div class="error">Error loading data: ${error.message}</div>`;
+                document.getElementById('learners-container').innerHTML = '';
+            }
+        }
+
+        function createLearnerCard(learner) {
+            const card = document.createElement('div');
+            card.className = 'learner-card';
+
+            const header = document.createElement('div');
+            header.className = 'learner-header';
+            header.innerHTML = `
+                <div class="learner-info">
+                    <h3>Learner ID: ${learner.learner_id.substring(0, 8)}</h3>
+                    <p>${learner.learner_id}</p>
+                </div>
+                <button class="expand-toggle">▼</button>
+            `;
+
+            const unitsContainer = document.createElement('div');
+            unitsContainer.className = 'units-container';
+            unitsContainer.innerHTML = learner.units.map((unit, index) => 
+                createUnitRow(unit, index)
+            ).join('');
+
+            header.addEventListener('click', () => {
+                unitsContainer.classList.toggle('expanded');
+                header.querySelector('.expand-toggle').classList.toggle('expanded');
+            });
+
+            card.appendChild(header);
+            card.appendChild(unitsContainer);
+
+            return card;
+        }
+
+        function createUnitRow(unit, index) {
+            return `
+                <div class="unit-row">
+                    <div class="unit-name">${unit.unit_name}</div>
+                    <div class="unit-controls">
+                        <div class="control-group">
+                            <label class="control-label">Access</label>
+                            <select data-unit-id="${unit.id}" data-field="access_status" onchange="updateField(this)">
+                                <option value="locked" ${unit.access_status === 'locked' ? 'selected' : ''}>Locked</option>
+                                <option value="allowed" ${unit.access_status === 'allowed' ? 'selected' : ''}>Allowed</option>
+                                <option value="coming_soon" ${unit.access_status === 'coming_soon' ? 'selected' : ''}>Coming Soon</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Progress</label>
+                            <select data-unit-id="${unit.id}" data-field="unit_status" onchange="updateField(this)">
+                                <option value="not_started" ${unit.unit_status === 'not_started' ? 'selected' : ''}>Not Started</option>
+                                <option value="in_progress" ${unit.unit_status === 'in_progress' ? 'selected' : ''}>In Progress</option>
+                                <option value="complete" ${unit.unit_status === 'complete' ? 'selected' : ''}>Complete</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label class="control-label">Mark</label>
+                            <div class="mark-buttons">
+                                <button class="mark-btn pass ${unit.marked_as === 'pass' ? 'active' : ''}" onclick="markUnit(this, '${unit.id}', 'pass')">Pass</button>
+                                <button class="mark-btn refer ${unit.marked_as === 'refer' ? 'active' : ''}" onclick="markUnit(this, '${unit.id}', 'refer')">Refer</button>
+                                <button class="mark-btn unmarked ${unit.marked_as === null ? 'active' : ''}" onclick="markUnit(this, '${unit.id}', null)">None</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function updateField(selectElement) {
+            const unitId = selectElement.dataset.unitId;
+            const field = selectElement.dataset.field;
+            const value = selectElement.value;
+
+            try {
+                const { error } = await supabase
+                    .from('learner_unit_access')
+                    .update({ [field]: value })
+                    .eq('id', unitId);
+
+                if (error) throw error;
+                showSaveStatus(selectElement);
+            } catch (error) {
+                console.error('Error updating field:', error);
+                alert('Failed to save. Please try again.');
+            }
+        }
+
+        async function markUnit(button, unitId, mark) {
+            try {
+                // Update database
+                const { error } = await supabase
+                    .from('learner_unit_access')
+                    .update({ marked_as: mark })
+                    .eq('id', unitId);
+
+                if (error) throw error;
+
+                // Update UI
+                const container = button.parentElement;
+                container.querySelectorAll('.mark-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                });
+                if (mark !== null) {
+                    button.classList.add('active');
+                } else {
+                    container.querySelector('.mark-btn.unmarked').classList.add('active');
+                }
+
+                showSaveStatus(button);
+            } catch (error) {
+                console.error('Error marking unit:', error);
+                alert('Failed to save. Please try again.');
+            }
+        }
+
+        function showSaveStatus(element) {
+            const status = document.createElement('div');
+            status.className = 'save-status';
+            status.textContent = 'Saved ✓';
+            
+            const parent = element.closest('.unit-controls') || element.closest('.control-group');
+            const existingStatus = parent.querySelector('.save-status');
+            if (existingStatus) existingStatus.remove();
+            
+            parent.appendChild(status);
+            
+            setTimeout(() => {
+                status.remove();
+            }, 2000);
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', loadLearners);
+    </script>
+</body>
+</html>
