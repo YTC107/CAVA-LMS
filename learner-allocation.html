@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CAVA – Learner Allocation</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root { --gold: #C9A84C; }
+    .gold-text { color: #C9A84C; }
+    .gold-bg { background-color: #C9A84C; }
+    .card-hover:hover { border-color: #C9A84C; box-shadow: 0 4px 16px rgba(201,168,76,0.15); }
+    .tab-btn { padding: 12px 24px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; background: transparent; transition: all 0.2s; }
+    .tab-btn.active { color: #C9A84C; border-bottom: 3px solid #C9A84C; }
+    .tab-btn { color: #6b7280; border-bottom: 3px solid transparent; }
+    .input-field { width: 100%; border: 1px solid #d1d5db; border-radius: 8px; padding: 10px 14px; font-size: 14px; margin-bottom: 12px; }
+    .input-field:focus { outline: none; border-color: #C9A84C; box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1); }
+    .btn-primary { background-color: #C9A84C; color: black; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; border: none; transition: all 0.2s; }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-secondary { background-color: transparent; color: #C9A84C; border: 2px solid #C9A84C; padding: 10px 20px; border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.2s; }
+    .btn-secondary:hover { background-color: #C9A84C; color: black; }
+    .alert { padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; font-size: 14px; }
+    .alert-success { background: #f0fdf4; color: #16a34a; border: 1px solid #86efac; }
+    .alert-error { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+    .alert-info { background: #eff6ff; color: #0284c7; border: 1px solid #bfdbfe; }
+    .learner-item { background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; padding: 12px 16px; margin-bottom: 8px; display: flex; justify-content: space-between; align-items: center; }
+    .learner-item:hover { background: #f3f4f6; border-color: #C9A84C; }
+    .upload-zone { border: 2px dashed #d1d5db; border-radius: 8px; padding: 24px; text-align: center; cursor: pointer; transition: all 0.2s; }
+    .upload-zone:hover { border-color: #C9A84C; background-color: #fefdf5; }
+    .upload-zone.drag { border-color: #C9A84C; background-color: #fefdf5; }
+    .unit-tag { display: inline-block; background: #1a1a2e; color: #C9A84C; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 12px; margin-right: 4px; margin-top: 4px; }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-900 px-4 py-8">
+
+  <div class="max-w-4xl mx-auto">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8 px-6 py-5 rounded-2xl" style="background-color:#0a0a0a;">
+      <div class="flex items-center gap-4">
+        <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy Logo" class="h-14 w-auto" />
+        <div>
+          <h1 class="text-2xl font-bold gold-text">Learner Allocation</h1>
+          <p class="text-gray-400 text-sm">Add learners to the assessment programme</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <p class="text-gray-300 text-sm" id="userName">Michael Kplomedo</p>
+        <p class="gold-text text-xs">Assessor</p>
+      </div>
+    </div>
+
+    <!-- Welcome Banner -->
+    <div class="rounded-2xl p-6 mb-8 border-l-4 bg-white shadow-sm" style="border-left-color:#C9A84C;">
+      <h2 class="text-xl font-semibold text-gray-900 mb-1">Add Learners to the Programme</h2>
+      <p class="text-gray-500 text-sm">Learners will automatically be allocated all three units. You can manage individual unit assignments later.</p>
+    </div>
+
+    <!-- Alerts -->
+    <div id="alertContainer"></div>
+
+    <!-- Tabs -->
+    <div class="flex border-b border-gray-200 mb-6 bg-white rounded-t-2xl">
+      <button class="tab-btn active" onclick="switchTab('single')">Add Single Learner</button>
+      <button class="tab-btn" onclick="switchTab('bulk')">Bulk Upload (CSV)</button>
+    </div>
+
+    <!-- Single Learner Tab -->
+    <div id="singleTab" class="bg-white rounded-b-2xl p-8 mb-8 shadow-sm">
+      <h3 class="text-lg font-semibold text-gray-900 mb-6">Enter Learner Details</h3>
+      <div>
+        <label class="block text-xs font-semibold text-gray-600 uppercase mb-2">Full Name *</label>
+        <input type="text" id="fullName" class="input-field" placeholder="e.g. Sarah Thompson" />
+
+        <label class="block text-xs font-semibold text-gray-600 uppercase mb-2">Email Address *</label>
+        <input type="email" id="email" class="input-field" placeholder="e.g. sarah@example.com" />
+
+        <label class="block text-xs font-semibold text-gray-600 uppercase mb-2">Username *</label>
+        <input type="text" id="username" class="input-field" placeholder="e.g. sthompson" />
+
+        <div class="flex gap-3">
+          <button class="btn-primary" onclick="addSingleLearner()">Add Learner</button>
+          <button class="btn-secondary" onclick="clearSingleForm()">Clear</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bulk Upload Tab -->
+    <div id="bulkTab" style="display:none;" class="bg-white rounded-b-2xl p-8 mb-8 shadow-sm">
+      <h3 class="text-lg font-semibold text-gray-900 mb-2">Bulk Upload Learners</h3>
+      <p class="text-gray-500 text-sm mb-6">Upload a CSV file with columns: <code style="background:#f3f4f6; padding:2px 6px; border-radius:4px;">full_name, email, username</code></p>
+
+      <div class="upload-zone" id="uploadZone" onclick="document.getElementById('csvFile').click()">
+        <div class="text-gray-400 mb-2">📁 Drag and drop CSV file here, or click to select</div>
+        <div class="text-xs text-gray-400">Maximum 500 learners per upload</div>
+        <input type="file" id="csvFile" accept=".csv" style="display:none;" onchange="handleFileSelect(event)" />
+      </div>
+
+      <div id="uploadProgress" style="display:none;" class="mt-6">
+        <div class="text-sm font-semibold text-gray-600 mb-2">Processing...</div>
+        <div class="w-full bg-gray-200 rounded-full h-2">
+          <div id="progressBar" class="h-2 rounded-full" style="background-color:#C9A84C; width:0%;"></div>
+        </div>
+        <div id="progressText" class="text-xs text-gray-500 mt-2">0 of 0 learners processed</div>
+      </div>
+
+      <div id="uploadResults" style="display:none;" class="mt-6">
+        <div class="text-sm font-semibold text-gray-600 mb-3">Upload Results</div>
+        <div id="resultsList"></div>
+      </div>
+    </div>
+
+    <!-- Recently Added Learners -->
+    <h3 class="text-lg font-semibold text-gray-900 mb-4">Recently Added Learners</h3>
+    <div class="bg-white rounded-2xl p-6 shadow-sm">
+      <div id="recentLearners" class="text-gray-500 text-sm">Loading...</div>
+    </div>
+
+  </div>
+
+<script>
+const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const UNITS = ['unit1', 'unit2', 'unit3'];
+
+// Tab switching
+function switchTab(tab) {
+  document.getElementById('singleTab').style.display = tab === 'single' ? 'block' : 'none';
+  document.getElementById('bulkTab').style.display = tab === 'bulk' ? 'block' : 'none';
+  
+  document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+// Alert system
+function showAlert(message, type = 'info') {
+  const container = document.getElementById('alertContainer');
+  const alert = document.createElement('div');
+  alert.className = `alert alert-${type}`;
+  alert.textContent = message;
+  container.appendChild(alert);
+  setTimeout(() => alert.remove(), 5000);
+}
+
+// Single Learner
+async function addSingleLearner() {
+  const fullName = document.getElementById('fullName').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const username = document.getElementById('username').value.trim();
+
+  if (!fullName || !email || !username) {
+    showAlert('All fields are required.', 'error');
+    return;
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    showAlert('Please enter a valid email address.', 'error');
+    return;
+  }
+
+  await createLearner(fullName, email, username);
+  clearSingleForm();
+  loadRecentLearners();
+}
+
+function clearSingleForm() {
+  document.getElementById('fullName').value = '';
+  document.getElementById('email').value = '';
+  document.getElementById('username').value = '';
+}
+
+// Bulk Upload
+const uploadZone = document.getElementById('uploadZone');
+uploadZone.addEventListener('dragover', (e) => {
+  e.preventDefault();
+  uploadZone.classList.add('drag');
+});
+uploadZone.addEventListener('dragleave', () => uploadZone.classList.remove('drag'));
+uploadZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  uploadZone.classList.remove('drag');
+  const files = e.dataTransfer.files;
+  if (files.length > 0) handleFileSelect({ target: { files } });
+});
+
+async function handleFileSelect(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    const csv = e.target.result;
+    const lines = csv.split('\n').filter(line => line.trim());
+    
+    if (lines.length < 2) {
+      showAlert('CSV file must contain a header row and at least one learner.', 'error');
+      return;
+    }
+
+    const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+    const expectedHeaders = ['full_name', 'email', 'username'];
+    
+    if (!expectedHeaders.every(h => headers.includes(h))) {
+      showAlert(`CSV must contain columns: ${expectedHeaders.join(', ')}`, 'error');
+      return;
+    }
+
+    const fullNameIdx = headers.indexOf('full_name');
+    const emailIdx = headers.indexOf('email');
+    const usernameIdx = headers.indexOf('username');
+
+    const learners = [];
+    for (let i = 1; i < lines.length; i++) {
+      const cells = lines[i].split(',').map(c => c.trim());
+      if (cells.length >= Math.max(fullNameIdx, emailIdx, usernameIdx) + 1) {
+        learners.push({
+          full_name: cells[fullNameIdx],
+          email: cells[emailIdx],
+          username: cells[usernameIdx]
+        });
+      }
+    }
+
+    if (learners.length === 0) {
+      showAlert('No valid learner entries found in CSV.', 'error');
+      return;
+    }
+
+    await processBulkUpload(learners);
+  };
+  reader.readAsText(file);
+}
+
+async function processBulkUpload(learners) {
+  const progressContainer = document.getElementById('uploadProgress');
+  const progressBar = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+  const resultsContainer = document.getElementById('uploadResults');
+  const resultsList = document.getElementById('resultsList');
+
+  progressContainer.style.display = 'block';
+  resultsContainer.style.display = 'none';
+  resultsList.innerHTML = '';
+
+  let successCount = 0;
+  let errorCount = 0;
+
+  for (let i = 0; i < learners.length; i++) {
+    const learner = learners[i];
+    const success = await createLearner(learner.full_name, learner.email, learner.username);
+    
+    if (success) successCount++;
+    else errorCount++;
+
+    const progress = ((i + 1) / learners.length) * 100;
+    progressBar.style.width = progress + '%';
+    progressText.textContent = `${i + 1} of ${learners.length} learners processed`;
+  }
+
+  progressContainer.style.display = 'none';
+  resultsContainer.style.display = 'block';
+
+  let resultHTML = `
+    <div class="alert alert-success">✓ Successfully added ${successCount} learner${successCount !== 1 ? 's' : ''}</div>
+  `;
+  if (errorCount > 0) {
+    resultHTML += `<div class="alert alert-error">✗ ${errorCount} learner${errorCount !== 1 ? 's' : ''} could not be added (may already exist)</div>`;
+  }
+  resultsList.innerHTML = resultHTML;
+
+  loadRecentLearners();
+}
+
+// Create learner and allocate units
+async function createLearner(fullName, email, username) {
+  try {
+    // Create learner
+    const { data: learner, error: learnerError } = await sb
+      .from('learners')
+      .insert({ full_name: fullName, email: email, username: username })
+      .select()
+      .single();
+
+    if (learnerError) {
+      console.error('Learner creation error:', learnerError);
+      return false;
+    }
+
+    // Allocate all three units
+    const allocations = UNITS.map(unit => ({
+      user_id: learner.id,
+      unit: unit,
+      status: 'active'
+    }));
+
+    const { error: allocationError } = await sb
+      .from('unit_overrides')
+      .insert(allocations);
+
+    if (allocationError) {
+      console.error('Unit allocation error:', allocationError);
+      // Learner created but allocation failed
+      return true;
+    }
+
+    showAlert(`Learner "${fullName}" added and allocated to all units.`, 'success');
+    return true;
+
+  } catch (error) {
+    console.error('Error:', error);
+    return false;
+  }
+}
+
+// Load recent learners
+async function loadRecentLearners() {
+  const { data: learners, error } = await sb
+    .from('learners')
+    .select('id, full_name, email, username, created_at')
+    .order('created_at', { ascending: false })
+    .limit(10);
+
+  const container = document.getElementById('recentLearners');
+
+  if (error || !learners || learners.length === 0) {
+    container.innerHTML = '<div class="text-gray-400 text-sm">No learners added yet.</div>';
+    return;
+  }
+
+  const html = learners.map(l => `
+    <div class="learner-item">
+      <div>
+        <div class="font-medium text-gray-900">${l.full_name}</div>
+        <div class="text-xs text-gray-500">${l.email} • ${l.username}</div>
+        <div>
+          <span class="unit-tag">Unit 1</span>
+          <span class="unit-tag">Unit 2</span>
+          <span class="unit-tag">Unit 3</span>
+        </div>
+      </div>
+      <div class="text-xs text-gray-400">${new Date(l.created_at).toLocaleDateString('en-GB')}</div>
+    </div>
+  `).join('');
+
+  container.innerHTML = html;
+}
+
+// Initialize
+loadRecentLearners();
+</script>
+
+</body>
+</html>
