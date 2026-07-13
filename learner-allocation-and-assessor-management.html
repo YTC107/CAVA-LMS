@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CAVA – Learner-Assessor-Unit Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root { --gold: #C9A84C; }
+    .gold-text { color: #C9A84C; }
+    .gold-bg { background-color: #C9A84C; }
+    .card-section { background: #fefdf5; border: 1.5px solid #C9A84C; border-radius: 10px; padding: 20px; margin-bottom: 20px; }
+    .unit-card { background: white; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+    .unit-card.passed { background: #ecfdf5; border-color: #16a34a; }
+    .unit-card.referred { background: #fef2f2; border-color: #dc2626; }
+    .unit-card.locked { opacity: 0.7; }
+    .status-badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+    .status-passed { background: #16a34a; color: white; }
+    .status-referred { background: #dc2626; color: white; }
+    .status-inprogress { background: #3b82f6; color: white; }
+    .status-notstarted { background: #9ca3af; color: white; }
+    .toggle-switch { position: relative; display: inline-block; width: 50px; height: 24px; }
+    .toggle-switch input { opacity: 0; width: 0; height: 0; }
+    .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: 0.4s; border-radius: 24px; }
+    .toggle-slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: 0.4s; border-radius: 50%; }
+    input:checked + .toggle-slider { background-color: #C9A84C; }
+    input:checked + .toggle-slider:before { transform: translateX(26px); }
+    .lock-icon { font-size: 18px; }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-900 px-4 py-8">
+
+  <div class="max-w-6xl mx-auto">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8 px-6 py-5 rounded-2xl" style="background-color:#0a0a0a;">
+      <div class="flex items-center gap-4">
+        <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy Logo" class="h-14 w-auto" />
+        <div>
+          <h1 class="text-2xl font-bold gold-text">Learner-Assessor-Unit Management</h1>
+          <p class="text-gray-400 text-sm">Assign assessors, manage unit allocations and pass dates</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <p class="text-gray-300 text-sm" id="currentUser">Loading...</p>
+        <p class="gold-text text-xs">Admin</p>
+      </div>
+    </div>
+
+    <!-- Learner Selection -->
+    <div class="card-section">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">Select Learner</h2>
+      <select id="learnerSelect" onchange="loadLearnerData()" class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm">
+        <option value="">— Choose a learner —</option>
+      </select>
+      <div id="learnerLoadMsg" class="text-xs text-gray-400 mt-2"></div>
+    </div>
+
+    <!-- Assessor Assignment Panel -->
+    <div id="assessorPanel" style="display:none;" class="card-section">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">Assign Assessor</h2>
+      
+      <div class="flex items-center gap-4 mb-4">
+        <div class="flex-1">
+          <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Assignment Mode</label>
+          <div class="flex items-center gap-2 mt-2">
+            <span class="text-sm" id="modeLabel">Manual</span>
+            <label class="toggle-switch">
+              <input type="checkbox" id="autoAssignToggle" onchange="toggleAssignmentMode()">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div id="manualAssignmentMode">
+        <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Primary Assessor</label>
+        <div class="flex gap-2 mt-2">
+          <select id="primaryAssessor" class="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm">
+            <option value="">— Select assessor —</option>
+          </select>
+          <button onclick="assignAssessor()" class="gold-bg text-black text-sm font-bold px-6 py-2 rounded-lg hover:opacity-90 transition">Assign</button>
+        </div>
+      </div>
+
+      <div id="autoAssignmentMode" style="display:none;">
+        <p class="text-sm text-gray-600 mb-3">Auto-assign will select the assessor with the lowest current workload.</p>
+        <button onclick="autoAssignAssessor()" class="gold-bg text-black text-sm font-bold px-6 py-2 rounded-lg hover:opacity-90 transition">Auto-Assign</button>
+      </div>
+
+      <div id="assignmentStatus" class="text-xs text-gray-400 mt-3"></div>
+
+      <div id="currentAssessor" class="mt-4 p-3 bg-white border border-gray-200 rounded-lg" style="display:none;">
+        <p class="text-xs text-gray-500 mb-1">Current Primary Assessor</p>
+        <p class="text-sm font-bold text-gray-900" id="assessorName">—</p>
+      </div>
+    </div>
+
+    <!-- Unit Management Panel -->
+    <div id="unitPanel" style="display:none;" class="card-section">
+      <h2 class="text-lg font-bold text-gray-900 mb-4">Unit Allocations &amp; Status</h2>
+      <div id="unitsContainer"></div>
+    </div>
+
+    <p class="text-center text-gray-400 text-xs mt-10">CAVA LMS &middot; Focus Awards &middot; PT Academy</p>
+
+  </div>
+
+<script>
+const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+const UNITS = [
+  { id: 'unit1', title: 'Understanding the Principles and Practices of Assessment', obsDoc: 'observation-record.html' },
+  { id: 'unit2', title: 'Assess Occupational Competence in the Work Environment (Record ID: A45)', obsDoc: 'observation-record.html' },
+  { id: 'unit3', title: 'Assess Vocational Skills, Knowledge and Understanding', obsDoc: 'observation-record.html' }
+];
+
+let selectedLearner = null;
+let learnerAssessor = null;
+let autoAssignMode = false;
+let allAssessors = [];
+
+async function init() {
+  try {
+    await loadLearners();
+    await loadAssessors();
+    document.getElementById('currentUser').textContent = 'Michael Kplomedo';
+    console.log('Supabase connection successful');
+  } catch (err) {
+    console.error('Initialisation error:', err);
+  }
+}
+
+async function loadAssessors() {
+  const { data, error } = await sb.from('assessors').select('id, full_name, username');
+  if (error) console.error('Error loading assessors:', error);
+  else allAssessors = data || [];
+  populateAssessorDropdown();
+}
+
+async function loadLearners() {
+  const { data, error } = await sb.from('learners').select('id, full_name, username, email').order('full_name');
+  if (error) {
+    console.error('Error loading learners:', error);
+    return;
+  }
+  const select = document.getElementById('learnerSelect');
+  (data || []).forEach(l => {
+    const opt = document.createElement('option');
+    opt.value = l.id;
+    opt.textContent = `${l.full_name || l.username} (${l.email || l.username})`;
+    select.appendChild(opt);
+  });
+}
+
+function populateAssessorDropdown() {
+  const select = document.getElementById('primaryAssessor');
+  select.innerHTML = '<option value="">— Select assessor —</option>';
+  allAssessors.forEach(a => {
+    const opt = document.createElement('option');
+    opt.value = a.id;
+    opt.textContent = a.full_name || a.username;
+    select.appendChild(opt);
+  });
+}
+
+async function loadLearnerData() {
+  const learner_id = document.getElementById('learnerSelect').value;
+  if (!learner_id) {
+    document.getElementById('assessorPanel').style.display = 'none';
+    document.getElementById('unitPanel').style.display = 'none';
+    return;
+  }
+
+  selectedLearner = learner_id;
+  document.getElementById('assessorPanel').style.display = 'block';
+  document.getElementById('unitPanel').style.display = 'block';
+
+  // Load learner's current assessor
+  const { data: allocation } = await sb
+    .from('learner_assessor_allocations')
+    .select('assessor_id')
+    .eq('learner_id', learner_id)
+    .maybeSingle();
+
+  if (allocation && allocation.assessor_id) {
+    learnerAssessor = allocation.assessor_id;
+    const assessor = allAssessors.find(a => a.id === learnerAssessor);
+    document.getElementById('assessorName').textContent = assessor ? (assessor.full_name || assessor.username) : 'Unknown';
+    document.getElementById('currentAssessor').style.display = 'block';
+  } else {
+    document.getElementById('currentAssessor').style.display = 'none';
+  }
+
+  // Load unit statuses
+  await loadUnitStatuses();
+}
+
+async function loadUnitStatuses() {
+  const { data: statuses } = await sb
+    .from('learner_unit_allocations')
+    .select('*')
+    .eq('learner_id', selectedLearner);
+
+  const statusMap = {};
+  (statuses || []).forEach(s => {
+    statusMap[s.unit_id] = s;
+  });
+
+  const container = document.getElementById('unitsContainer');
+  container.innerHTML = UNITS.map(unit => {
+    const status = statusMap[unit.id] || {};
+    const unitStatus = status.status || 'not_started';
+    const passDate = status.pass_date ? new Date(status.pass_date).toLocaleDateString('en-GB') : '';
+    const isLocked = unitStatus === 'passed';
+
+    const statusBadgeClass = {
+      'passed': 'status-passed',
+      'referred': 'status-referred',
+      'in_progress': 'status-inprogress',
+      'not_started': 'status-notstarted'
+    }[unitStatus] || 'status-notstarted';
+
+    const statusText = {
+      'passed': 'Passed',
+      'referred': 'Referred',
+      'in_progress': 'In Progress',
+      'not_started': 'Not Started'
+    }[unitStatus] || 'Not Started';
+
+    return `
+      <div class="unit-card ${unitStatus === 'passed' ? 'passed' : unitStatus === 'referred' ? 'referred' : ''} ${isLocked ? 'locked' : ''}">
+        <div class="flex items-start justify-between mb-3">
+          <div class="flex-1">
+            <h3 class="font-semibold text-gray-900 text-sm mb-1">${unit.title}</h3>
+            <span class="status-badge ${statusBadgeClass}">${statusText}</span>
+            ${isLocked ? '<span class="lock-icon" style="margin-left:8px;">🔒</span>' : ''}
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+          <div>
+            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Status</label>
+            <select id="status-${unit.id}" onchange="updateUnitStatus('${unit.id}')" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mt-1" ${isLocked ? 'disabled' : ''}>
+              <option value="not_started" ${unitStatus === 'not_started' ? 'selected' : ''}>Not Started</option>
+              <option value="in_progress" ${unitStatus === 'in_progress' ? 'selected' : ''}>In Progress</option>
+              <option value="passed" ${unitStatus === 'passed' ? 'selected' : ''}>Passed</option>
+              <option value="referred" ${unitStatus === 'referred' ? 'selected' : ''}>Referred</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Pass Date</label>
+            <input type="date" id="date-${unit.id}" value="${passDate ? new Date(status.pass_date).toISOString().split('T')[0] : ''}" class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm mt-1" ${unitStatus !== 'passed' ? 'disabled' : ''} onchange="updatePassDate('${unit.id}')">
+          </div>
+
+          <div>
+            <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">&nbsp;</label>
+            <a href="${unit.obsDoc}?learner=${selectedLearner}&unit=${unit.id}" target="_blank" class="block text-center gold-bg text-black text-sm font-bold px-4 py-2 rounded-lg hover:opacity-90 transition mt-1">Obs. Doc →</a>
+          </div>
+        </div>
+
+        ${isLocked ? '<p class="text-xs text-gray-500 italic mt-3">🔒 This unit is locked. It cannot be edited until status is changed.</p>' : ''}
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleAssignmentMode() {
+  autoAssignMode = document.getElementById('autoAssignToggle').checked;
+  document.getElementById('modeLabel').textContent = autoAssignMode ? 'Auto' : 'Manual';
+  document.getElementById('manualAssignmentMode').style.display = autoAssignMode ? 'none' : 'block';
+  document.getElementById('autoAssignmentMode').style.display = autoAssignMode ? 'block' : 'none';
+}
+
+async function assignAssessor() {
+  const assessor_id = document.getElementById('primaryAssessor').value;
+  if (!assessor_id || !selectedLearner) return;
+
+  const { error } = await sb.from('learner_assessor_allocations').upsert(
+    { learner_id: selectedLearner, assessor_id },
+    { onConflict: 'learner_id' }
+  );
+
+  if (error) {
+    document.getElementById('assignmentStatus').textContent = '⚠ Assignment failed';
+  } else {
+    document.getElementById('assignmentStatus').textContent = '✓ Assessor assigned';
+    learnerAssessor = assessor_id;
+    await loadLearnerData();
+  }
+}
+
+async function autoAssignAssessor() {
+  if (!selectedLearner) return;
+  const { data: counts } = await sb.from('learner_assessor_allocations').select('assessor_id').not('learner_id', 'is', null);
+  const workload = {};
+  allAssessors.forEach(a => workload[a.id] = 0);
+  (counts || []).forEach(c => {
+    if (workload.hasOwnProperty(c.assessor_id)) workload[c.assessor_id]++;
+  });
+
+  const assessor_id = Object.keys(workload).reduce((a, b) => workload[a] < workload[b] ? a : b);
+  if (!assessor_id) return;
+
+  const { error } = await sb.from('learner_assessor_allocations').upsert(
+    { learner_id: selectedLearner, assessor_id },
+    { onConflict: 'learner_id' }
+  );
+
+  if (error) {
+    document.getElementById('assignmentStatus').textContent = '⚠ Auto-assignment failed';
+  } else {
+    document.getElementById('assignmentStatus').textContent = '✓ Assessor auto-assigned';
+    await loadLearnerData();
+  }
+}
+
+async function updateUnitStatus(unit_id) {
+  const status = document.getElementById(`status-${unit_id}`).value;
+  const dateInput = document.getElementById(`date-${unit_id}`);
+  
+  if (status === 'passed') {
+    dateInput.disabled = false;
+    if (!dateInput.value) dateInput.value = new Date().toISOString().split('T')[0];
+  } else {
+    dateInput.disabled = true;
+    dateInput.value = '';
+  }
+
+  const { error } = await sb.from('learner_unit_allocations').upsert(
+    { learner_id: selectedLearner, unit_id, status, pass_date: status === 'passed' ? dateInput.value : null },
+    { onConflict: 'learner_id,unit_id' }
+  );
+
+  if (!error) {
+    await loadUnitStatuses();
+  }
+}
+
+async function updatePassDate(unit_id) {
+  const passDate = document.getElementById(`date-${unit_id}`).value;
+  const { error } = await sb.from('learner_unit_allocations').update({ pass_date: passDate }).eq('learner_id', selectedLearner).eq('unit_id', unit_id);
+  if (!error) await loadUnitStatuses();
+}
+
+init();
+</script>
+
+</body>
+</html>
