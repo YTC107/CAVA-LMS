@@ -4,282 +4,293 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assessor Control Hub</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         * {
+            margin: 0;
+            padding: 0;
             box-sizing: border-box;
         }
         body {
-            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
             padding: 20px;
-            background-color: #f5f5f5;
-            color: #333333;
-            font-family: Arial, sans-serif;
-        }
-        .header {
-            background: linear-gradient(135deg, #d4af37 0%, #c9a227 100%);
-            color: #1a1a1a;
-            padding: 30px;
-            border-radius: 10px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-        .header h1 {
-            margin: 0 0 10px 0;
-            font-size: 28px;
-        }
-        .header p {
-            margin: 0;
-            font-size: 14px;
-            opacity: 0.9;
+            line-height: 1.6;
+            color: #333;
         }
         .container {
             max-width: 900px;
             margin: 0 auto;
         }
-        .learner-group {
-            background-color: #ffffff;
-            margin-bottom: 15px;
+        header {
+            background: #2c3e50;
+            color: white;
+            padding: 25px;
             border-radius: 8px;
-            border-left: 4px solid #d4af37;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+        header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        header p {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+        .learner-group {
+            background: white;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
             overflow: hidden;
         }
         .learner-header {
-            padding: 15px;
+            background: #ecf0f1;
+            padding: 15px 20px;
             cursor: pointer;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #f9f9f9;
-            border-radius: 8px 8px 0 0;
-            color: #333333;
-            border-bottom: 1px solid #eeeeee;
+            user-select: none;
+            font-weight: 600;
         }
         .learner-header:hover {
-            background-color: #f0f0f0;
+            background: #dfe6e9;
         }
-        .learner-header .toggle-arrow {
-            font-size: 18px;
-            transition: transform 0.3s ease;
+        .toggle-arrow {
+            display: inline-block;
+            transition: transform 0.3s;
         }
         .learner-header.expanded .toggle-arrow {
             transform: rotate(180deg);
         }
-        .units-container {
+        .learner-content {
             display: none;
-            padding: 0;
+            padding: 20px;
+            border-top: 1px solid #ecf0f1;
         }
-        .units-container.expanded {
+        .learner-content.show {
             display: block;
         }
-        .unit-item {
-            padding: 12px 15px;
-            border-bottom: 1px solid #eeeeee;
+        .unit-row {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #ffffff;
-            color: #333333;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
         }
-        .unit-item:last-child {
+        .unit-row:last-child {
             border-bottom: none;
         }
-        .unit-name {
+        .unit-label {
             font-weight: 500;
-            flex: 1;
+            color: #2c3e50;
         }
         .unit-status {
             font-size: 12px;
-            margin-right: 15px;
             padding: 4px 8px;
             border-radius: 4px;
-            background-color: #eeeeee;
-            color: #666666;
+            margin-right: 10px;
         }
-        .unit-status.enabled {
-            background-color: #d4af37;
-            color: #1a1a1a;
+        .status-enabled {
+            background: #d5f4e6;
+            color: #27ae60;
+        }
+        .status-locked {
+            background: #fadbd8;
+            color: #c0392b;
         }
         .toggle-btn {
-            padding: 6px 12px;
+            padding: 6px 14px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 12px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-            background-color: #d4af37;
-            color: #1a1a1a;
+            font-size: 13px;
+            font-weight: 600;
+            transition: all 0.2s;
         }
-        .toggle-btn:hover {
-            background-color: #c9a227;
-            transform: scale(1.05);
+        .toggle-btn.enable {
+            background: #27ae60;
+            color: white;
         }
-        .toggle-btn.disable {
-            background-color: #cccccc;
-            color: #666666;
+        .toggle-btn.enable:hover {
+            background: #229954;
+        }
+        .toggle-btn.lock {
+            background: #c0392b;
+            color: white;
+        }
+        .toggle-btn.lock:hover {
+            background: #a93226;
         }
         .loading {
             text-align: center;
             padding: 40px;
-            color: #666666;
+            color: #7f8c8d;
         }
-        .spinner {
-            border: 3px solid #eeeeee;
-            border-top: 3px solid #d4af37;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto 20px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        .error-message {
-            background-color: #fff3cd;
-            color: #856404;
+        .error {
+            background: #fadbd8;
+            color: #c0392b;
             padding: 15px;
             border-radius: 4px;
-            margin-bottom: 20px;
-            border-left: 4px solid #ffc107;
+            margin: 20px 0;
+        }
+        .success-feedback {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #27ae60;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 4px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
+        <header>
             <h1>Assessor Control Hub</h1>
             <p>Manage learner unit access and enable assessments</p>
+        </header>
+        <div id="hub-content">
+            <div class="loading">Loading learner data...</div>
         </div>
-        <div id="content"></div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
         const SUPABASE_URL = 'https://qwjejqqgkvroqhmfglg.supabase.co';
-        const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_D9A-jP6vvE6ohTm8cpxhPA_hR25r8tj';
-        const contentDiv = document.getElementById('content');
+        const SUPABASE_KEY = 'sb_publishable_D9A-jP6vvE6ohTm8cpxhPA_hR25r8tj';
+
         let supabaseClient;
 
-        // Wait for Supabase library to load
         async function initSupabase() {
-            return new Promise((resolve) => {
-                const checkSupabase = setInterval(() => {
-                    if (window.supabase && window.supabase.createClient) {
-                        clearInterval(checkSupabase);
-                        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-                        console.log('Supabase client initialised');
-                        resolve();
-                    }
-                }, 50);
-            });
+            const { createClient } = window.supabase;
+            supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
+            console.log('Supabase client initialised');
+            loadLearners();
         }
 
-        // Fetch and display learner data
-        async function loadLearnerData() {
-            contentDiv.innerHTML = '<div class="loading"><div class="spinner"></div>Loading learner data...</div>';
-            
+        async function loadLearners() {
             try {
                 const { data, error } = await supabaseClient
                     .from('learner_unit_access')
-                    .select('*');
-                
-                console.log('Fetch response:', data, error);
-                
-                if (error) {
-                    console.error('Supabase error:', error);
-                    contentDiv.innerHTML = `<div class="error-message">Error loading data: ${error.message}</div>`;
-                    return;
-                }
-                
-                if (!data || data.length === 0) {
-                    contentDiv.innerHTML = '<div class="error-message">No learner data available</div>';
-                    return;
-                }
+                    .select('*')
+                    .order('learner_id', { ascending: true });
 
-                // Group data by learner_id
-                const groupedByLearner = {};
-                data.forEach(record => {
-                    if (!groupedByLearner[record.learner_id]) {
-                        groupedByLearner[record.learner_id] = [];
-                    }
-                    groupedByLearner[record.learner_id].push(record);
-                });
+                if (error) throw error;
 
-                // Build HTML for each learner group
-                let html = '';
-                for (const learner_id in groupedByLearner) {
-                    const records = groupedByLearner[learner_id];
-                    html += `
-                        <div class="learner-group">
-                            <div class="learner-header" onclick="toggleLearner(this)">
-                                <span>Learner ID: ${learner_id}</span>
-                                <span class="toggle-arrow">▼</span>
-                            </div>
-                            <div class="units-container">
-                    `;
-                    
-                    records.forEach(record => {
-                        const isEnabled = record.access_status === 'enabled';
-                        const statusClass = isEnabled ? 'enabled' : '';
-                        const btnText = isEnabled ? 'Lock Unit' : 'Enable Unit';
-                        const btnClass = isEnabled ? '' : 'disable';
-                        
-                        html += `
-                            <div class="unit-item">
-                                <span class="unit-name">${record.unit_name}</span>
-                                <span class="unit-status ${statusClass}">${record.access_status}</span>
-                                <button class="toggle-btn ${btnClass}" onclick="toggleUnit(${record.id}, '${learner_id}', '${record.unit_name}', '${record.access_status}')">
-                                    ${btnText}
-                                </button>
-                            </div>
-                        `;
-                    });
-                    
-                    html += `
-                            </div>
-                        </div>
-                    `;
-                }
-                
-                contentDiv.innerHTML = html;
-            } catch (error) {
-                console.error('Error:', error);
-                contentDiv.innerHTML = `<div class="error-message">Error: ${error.message}</div>`;
+                console.log(`Loaded ${data.length} records`);
+                renderLearners(data);
+            } catch (err) {
+                console.error('Error loading learners:', err);
+                document.getElementById('hub-content').innerHTML = 
+                    `<div class="error">Failed to load learner data: ${err.message}</div>`;
             }
         }
 
-        // Toggle learner group expansion
-        function toggleLearner(header) {
-            header.classList.toggle('expanded');
-            const container = header.nextElementSibling;
-            container.classList.toggle('expanded');
+        function renderLearners(records) {
+            const grouped = {};
+            records.forEach(record => {
+                if (!grouped[record.learner_id]) {
+                    grouped[record.learner_id] = {
+                        learner_name: record.learner_name,
+                        units: []
+                    };
+                }
+                grouped[record.learner_id].units.push(record);
+            });
+
+            const html = Object.entries(grouped)
+                .map(([id, data]) => renderLearnerGroup(id, data))
+                .join('');
+
+            document.getElementById('hub-content').innerHTML = html;
+
+            Object.keys(grouped).forEach(id => {
+                document.getElementById(`toggle-${id}`)
+                    .addEventListener('click', () => toggleLearner(id));
+                grouped[id].units.forEach(unit => {
+                    document.getElementById(`btn-${unit.id}`)
+                        .addEventListener('click', () => toggleUnit(unit.id, unit.access_status));
+                });
+            });
         }
 
-        // Toggle unit access
-        async function toggleUnit(recordId, learnerId, unitName, currentStatus) {
+        function renderLearnerGroup(id, data) {
+            const unitsHtml = data.units
+                .map(unit => `
+                    <div class="unit-row">
+                        <span class="unit-label">${unit.unit_title || 'Unit ' + unit.unit_number}</span>
+                        <span>
+                            <span class="unit-status ${unit.access_status === 'enabled' ? 'status-enabled' : 'status-locked'}">
+                                ${unit.access_status === 'enabled' ? '✓ Enabled' : '✗ Locked'}
+                            </span>
+                            <button class="toggle-btn ${unit.access_status === 'enabled' ? 'lock' : 'enable'}" id="btn-${unit.id}">
+                                ${unit.access_status === 'enabled' ? 'Lock' : 'Enable'}
+                            </button>
+                        </span>
+                    </div>
+                `)
+                .join('');
+
+            return `
+                <div class="learner-group">
+                    <div class="learner-header" id="toggle-${id}">
+                        <span>${data.learner_name}</span>
+                        <span class="toggle-arrow">▼</span>
+                    </div>
+                    <div class="learner-content" id="content-${id}">
+                        ${unitsHtml}
+                    </div>
+                </div>
+            `;
+        }
+
+        function toggleLearner(id) {
+            const header = document.getElementById(`toggle-${id}`);
+            const content = document.getElementById(`content-${id}`);
+            header.classList.toggle('expanded');
+            content.classList.toggle('show');
+        }
+
+        async function toggleUnit(unitId, currentStatus) {
             const newStatus = currentStatus === 'enabled' ? 'locked' : 'enabled';
-            
             try {
                 const { error } = await supabaseClient
                     .from('learner_unit_access')
                     .update({ access_status: newStatus })
-                    .eq('id', recordId);
-                
-                if (error) {
-                    alert(`Error updating unit: ${error.message}`);
-                } else {
-                    loadLearnerData();
-                }
-            } catch (error) {
-                alert(`Error: ${error.message}`);
+                    .eq('id', unitId);
+
+                if (error) throw error;
+
+                showFeedback(`Unit ${newStatus === 'enabled' ? 'enabled' : 'locked'}`);
+                loadLearners();
+            } catch (err) {
+                console.error('Error updating unit:', err);
             }
         }
 
-        // Initialise and load data
-        initSupabase().then(() => loadLearnerData());
+        function showFeedback(message) {
+            const feedback = document.createElement('div');
+            feedback.className = 'success-feedback';
+            feedback.textContent = message;
+            document.body.appendChild(feedback);
+            setTimeout(() => feedback.remove(), 2000);
+        }
+
+        initSupabase();
     </script>
 </body>
 </html>
