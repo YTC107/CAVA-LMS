@@ -301,10 +301,9 @@
         const SUPABASE_URL = 'https:u002fu002fqwjejqqgkvkroqhmfglg.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InF3amVqcXFna3Zrcm9xaG1mZ2xnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM0MjA4NDIsImV4cCI6MjA5ODk5Njg0Mn0.BKvPDF3heQZ-sLgIa8hwx6kRhRam5tZgCMGvgAYXXmU';
 
-        // Delay initialisation to ensure library is loaded
-        setTimeout(() => {
-                window.supabase_instance = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-        }, 100);
+        // Initialize Supabase immediately
+        const { createClient } = window.supabase;
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // Load and display learner data
         async function loadLearners() {
@@ -313,13 +312,21 @@
                 container.innerHTML = '<div class="loading">Loading learner data...</div>';
 
                 // Fetch learner unit access data
-                const { data, error } = await window.supabase_instance
+                const { data, error } = await supabase
                     .from('learner_unit_access')
                     .select('*')
                     .order('learner_id', { ascending: true })
                     .order('created_at', { ascending: true });
 
+                console.log('Supabase query result:', { data, error });
+
                 if (error) throw error;
+
+                if (!data || data.length === 0) {
+                    console.warn('No learner data returned from Supabase');
+                    document.getElementById('learners-container').innerHTML = '<div class="error">No learners found in database.</div>';
+                    return;
+                }
 
                 // Group data by learner
                 const learnerMap = {};
@@ -418,7 +425,7 @@
             const value = selectElement.value;
 
             try {
-                const { error } = await window.supabase_instance
+                const { error } = await supabase
                     .from('learner_unit_access')
                     .update({ [field]: value })
                     .eq('id', unitId);
@@ -434,7 +441,7 @@
         async function markUnit(button, unitId, mark) {
             try {
                 // Update database
-                const { error } = await window.supabase_instance
+                const { error } = await supabase
                     .from('learner_unit_access')
                     .update({ marked_as: mark })
                     .eq('id', unitId);
