@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CAVA – Assessor Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    :root { --gold: #C9A84C; }
+    .gold-text { color: #C9A84C; }
+    .gold-bg { background-color: #C9A84C; }
+    .card-hover:hover { border-color: #C9A84C; box-shadow: 0 4px 16px rgba(201,168,76,0.15); }
+    .input-field { border: 1px solid #e5e7eb; border-radius: 8px; padding: 10px 12px; font-size: 14px; }
+    .input-field:focus { outline: none; border-color: #C9A84C; box-shadow: 0 0 0 3px rgba(201,168,76,0.1); }
+    .btn-primary { background-color: #C9A84C; color: #000; font-weight: 700; padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: all 0.15s; }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-secondary { border: 2px solid #e5e7eb; background: white; color: #374151; font-weight: 600; padding: 10px 20px; border-radius: 8px; cursor: pointer; transition: all 0.15s; }
+    .btn-secondary:hover { border-color: #C9A84C; color: #C9A84C; }
+    .success-msg { background: #ecfdf5; border: 1px solid #6ee7b7; color: #047857; padding: 12px 16px; border-radius: 8px; font-size: 14px; }
+    .error-msg { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 12px 16px; border-radius: 8px; font-size: 14px; }
+    .assessor-badge { display: inline-block; background: #f3f4f6; border: 1px solid #d1d5db; border-radius: 20px; padding: 6px 12px; font-size: 13px; font-weight: 500; }
+    .tab-btn { padding: 10px 20px; font-weight: 600; font-size: 14px; border: none; cursor: pointer; background: transparent; color: #6b7280; transition: all 0.2s; border-bottom: 2px solid transparent; }
+    .tab-btn.active { color: #C9A84C; border-bottom-color: #C9A84C; }
+  </style>
+</head>
+<body class="min-h-screen bg-gray-50 text-gray-900 px-4 py-8">
+
+  <div class="max-w-5xl mx-auto">
+
+    <!-- Header -->
+    <div class="flex items-center justify-between mb-8 px-6 py-5 rounded-2xl" style="background-color:#0a0a0a;">
+      <div class="flex items-center gap-4">
+        <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy Logo" class="h-14 w-auto" />
+        <div>
+          <h1 class="text-2xl font-bold gold-text">Assessor Management</h1>
+          <p class="text-gray-400 text-sm">Add and manage assessment staff</p>
+        </div>
+      </div>
+      <div class="text-right">
+        <p class="text-gray-300 text-sm">Michael Kplomedo</p>
+        <p class="gold-text text-xs">Administrator</p>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex gap-8 border-b border-gray-200 mb-8">
+      <button class="tab-btn active" onclick="switchTab('single')">Single Assessor</button>
+      <button class="tab-btn" onclick="switchTab('bulk')">Bulk Upload</button>
+      <button class="tab-btn" onclick="switchTab('list')">All Assessors</button>
+    </div>
+
+    <!-- Single Assessor Tab -->
+    <div id="single-tab" class="tab-content">
+      <div class="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm mb-8">
+        <h2 class="text-lg font-semibold text-gray-900 mb-6">Add Single Assessor</h2>
+        
+        <div class="grid grid-cols-1 gap-6">
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Full Name</label>
+            <input type="text" id="singleName" placeholder="e.g., Sarah Johnson" class="w-full input-field" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
+            <input type="email" id="singleEmail" placeholder="e.g., sarah.johnson@academy.uk" class="w-full input-field" />
+          </div>
+
+          <div>
+            <label class="block text-sm font-semibold text-gray-700 mb-2">Assessor ID (Optional)</label>
+            <input type="text" id="singleId" placeholder="e.g., ASS-001" class="w-full input-field" />
+          </div>
+
+          <div id="singleMsg"></div>
+
+          <button onclick="addSingleAssessor()" class="btn-primary w-full text-sm">Add Assessor</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bulk Upload Tab -->
+    <div id="bulk-tab" class="tab-content hidden">
+      <div class="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm mb-8">
+        <h2 class="text-lg font-semibold text-gray-900 mb-2">Bulk Upload Assessors</h2>
+        <p class="text-sm text-gray-500 mb-6">Upload a CSV file with columns: <code class="bg-gray-100 px-2 py-1 rounded">full_name</code>, <code class="bg-gray-100 px-2 py-1 rounded">email</code>, <code class="bg-gray-100 px-2 py-1 rounded">assessor_id</code> (optional)</p>
+
+        <div class="border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center mb-6">
+          <input type="file" id="csvFile" accept=".csv" onchange="handleCSVUpload(event)" class="hidden" />
+          <button onclick="document.getElementById('csvFile').click()" class="btn-secondary text-sm">Select CSV File</button>
+          <p id="fileName" class="text-sm text-gray-400 mt-3"></p>
+        </div>
+
+        <div id="bulkMsg"></div>
+        <button onclick="processBulkUpload()" id="bulkBtn" class="btn-primary w-full text-sm" disabled>Upload Assessors</button>
+      </div>
+    </div>
+
+    <!-- All Assessors Tab -->
+    <div id="list-tab" class="tab-content hidden">
+      <div class="bg-white rounded-2xl border overflow-hidden shadow-sm">
+        <div class="grid grid-cols-3 text-xs uppercase tracking-widest px-6 py-4 font-semibold" style="background-color:#0a0a0a; color:#C9A84C; border-bottom:1px solid #C9A84C;">
+          <div>Name</div>
+          <div>Email</div>
+          <div>ID</div>
+        </div>
+        <div id="assessorList">
+          <div class="px-6 py-8 text-center text-sm text-gray-400">Loading assessors...</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+<script>
+const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
+const { createClient } = supabase;
+const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let csvData = null;
+
+function switchTab(tab) {
+  document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+  document.getElementById(tab + '-tab').classList.remove('hidden');
+  document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+  event.target.classList.add('active');
+  if (tab === 'list') loadAllAssessors();
+}
+
+function showMessage(elementId, text, isError = false) {
+  const el = document.getElementById(elementId);
+  el.innerHTML = `<div class="${isError ? 'error-msg' : 'success-msg'}">${text}</div>`;
+}
+
+async function addSingleAssessor() {
+  const name = document.getElementById('singleName').value.trim();
+  const email = document.getElementById('singleEmail').value.trim();
+  const assessorId = document.getElementById('singleId').value.trim();
+
+  if (!name) { showMessage('singleMsg', 'Please enter a full name.', true); return; }
+  if (!email) { showMessage('singleMsg', 'Please enter an email address.', true); return; }
+  if (!email.includes('@')) { showMessage('singleMsg', 'Please enter a valid email address.', true); return; }
+
+  showMessage('singleMsg', 'Adding assessor...');
+
+  const { data, error } = await sb
+    .from('assessors')
+    .insert([{ full_name: name, email: email, assessor_id: assessorId || null }])
+    .select();
+
+  if (error) {
+    showMessage('singleMsg', `Error: ${error.message}`, true);
+  } else {
+    showMessage('singleMsg', `✓ Assessor "${name}" added successfully.`);
+    document.getElementById('singleName').value = '';
+    document.getElementById('singleEmail').value = '';
+    document.getElementById('singleId').value = '';
+  }
+}
+
+function handleCSVUpload(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+
+  document.getElementById('fileName').textContent = `Selected: ${file.name}`;
+  document.getElementById('bulkBtn').disabled = false;
+
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    const text = e.target.result;
+    const lines = text.trim().split('\n');
+    const headers = lines[0].split(',').map(h => h.trim().toLowerCase());
+    csvData = lines.slice(1).map(line => {
+      const values = line.split(',').map(v => v.trim());
+      return {
+        full_name: values[headers.indexOf('full_name')] || '',
+        email: values[headers.indexOf('email')] || '',
+        assessor_id: values[headers.indexOf('assessor_id')] || null
+      };
+    }).filter(row => row.full_name && row.email);
+  };
+  reader.readAsText(file);
+}
+
+async function processBulkUpload() {
+  if (!csvData || csvData.length === 0) {
+    showMessage('bulkMsg', 'No valid assessor data found in file.', true);
+    return;
+  }
+
+  document.getElementById('bulkBtn').disabled = true;
+  showMessage('bulkMsg', `Processing ${csvData.length} assessor(s)...`);
+
+  const { data, error } = await sb
+    .from('assessors')
+    .insert(csvData)
+    .select();
+
+  if (error) {
+    showMessage('bulkMsg', `Error: ${error.message}`, true);
+    document.getElementById('bulkBtn').disabled = false;
+  } else {
+    showMessage('bulkMsg', `✓ Successfully added ${csvData.length} assessor(s).`);
+    document.getElementById('csvFile').value = '';
+    document.getElementById('fileName').textContent = '';
+    csvData = null;
+    setTimeout(() => loadAllAssessors(), 1000);
+  }
+}
+
+async function loadAllAssessors() {
+  const { data: assessors, error } = await sb
+    .from('assessors')
+    .select('id, full_name, email, assessor_id, created_at')
+    .order('created_at', { ascending: false });
+
+  const list = document.getElementById('assessorList');
+
+  if (error || !assessors) {
+    list.innerHTML = '<div class="px-6 py-4 text-sm text-red-400">Could not load assessors.</div>';
+    return;
+  }
+
+  if (assessors.length === 0) {
+    list.innerHTML = '<div class="px-6 py-4 text-sm text-gray-400">No assessors added yet.</div>';
+    return;
+  }
+
+  list.innerHTML = assessors.map(assessor => `
+    <div class="grid grid-cols-3 items-center px-6 py-4 border-b border-gray-100">
+      <div>
+        <p class="font-medium text-gray-900">${assessor.full_name}</p>
+      </div>
+      <div class="text-gray-600 text-sm">${assessor.email}</div>
+      <div>
+        ${assessor.assessor_id ? `<span class="assessor-badge">${assessor.assessor_id}</span>` : '<span class="text-gray-400 text-sm">—</span>'}
+      </div>
+    </div>
+  `).join('');
+}
+
+</script>
+
+</body>
+</html>
