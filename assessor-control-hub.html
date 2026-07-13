@@ -158,32 +158,35 @@
     </div>
 
     <script>
-        // Supabase credentials from environment
         const SUPABASE_URL = 'https://qwjejqqgkvroqhmfglg.supabase.co';
         const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_D9A-jP6vvE6ohTm8cpxhPA_hR25r8tj';
-        
-        let supabase;
-        
-        // Initialise Supabase after library loads
-        if (window.supabase) {
-            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-        }
         const contentDiv = document.getElementById('content');
+        let supabaseClient;
+
+        // Wait for Supabase library to load
+        async function initSupabase() {
+            return new Promise((resolve) => {
+                const checkSupabase = setInterval(() => {
+                    if (window.supabase && window.supabase.createClient) {
+                        clearInterval(checkSupabase);
+                        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+                        console.log('Supabase client initialised');
+                        resolve();
+                    }
+                }, 50);
+            });
+        }
 
         // Fetch and display learner data
         async function loadLearnerData() {
             contentDiv.innerHTML = '<div class="loading"><div class="spinner"></div>Loading learner data...</div>';
             
             try {
-                console.log('Script loading Supabase Library...');
-                console.log('Supabase library loaded, creating client...');
-                console.log('Starting data fetch...');
-                
-                const { data, error } = await supabase
+                const { data, error } = await supabaseClient
                     .from('learner_unit_access')
                     .select('*');
                 
-                console.log('Fetch response:', data);
+                console.log('Fetch response:', data, error);
                 
                 if (error) {
                     console.error('Supabase error:', error);
@@ -228,7 +231,9 @@
                             <div class="unit-item">
                                 <span class="unit-name">${record.unit_name}</span>
                                 <span class="unit-status ${statusClass}">${record.access_status}</span>
-                                <button class="toggle-btn ${btnClass}" onclick="toggleUnit(${record.id}, '${learner_id}', '${record.unit_name}', '${record.access_status}')">\n                                    ${btnText}\n                                </button>
+                                <button class="toggle-btn ${btnClass}" onclick="toggleUnit(${record.id}, '${learner_id}', '${record.unit_name}', '${record.access_status}')">
+                                    ${btnText}
+                                </button>
                             </div>
                         `;
                     });
@@ -258,7 +263,7 @@
             const newStatus = currentStatus === 'enabled' ? 'locked' : 'enabled';
             
             try {
-                const { error } = await supabase
+                const { error } = await supabaseClient
                     .from('learner_unit_access')
                     .update({ access_status: newStatus })
                     .eq('id', recordId);
@@ -273,8 +278,8 @@
             }
         }
 
-        // Load data on page load
-        loadLearnerData();
+        // Initialise and load data
+        initSupabase().then(() => loadLearnerData());
     </script>
 </body>
 </html>
