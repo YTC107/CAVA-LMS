@@ -48,6 +48,27 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .error-message { color: #d32f2f; padding: 12px; background: #ffebee; border-radius: 4px; margin-bottom: 15px; font-size: 13px; }
         .success-message { color: #388e3c; padding: 12px; background: #e8f5e9; border-radius: 4px; margin-bottom: 15px; font-size: 13px; }
+        .learner-group { margin-bottom: 20px; background: white; border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden; }
+        .learner-header { background: #2d2d2d; color: white; padding: 14px 16px; font-weight: 600; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+        .learner-header:hover { background: #3d3d3d; }
+        .toggle-icon { font-size: 14px; margin-left: 8px; opacity: 0.7; }
+        .units-table { width: 100%; border-collapse: collapse; display: none; }
+        .units-table.expanded { display: table; }
+        .units-table th { background: #f9f9f9; padding: 12px; text-align: left; font-weight: 600; border-bottom: 1px solid #e0e0e0; font-size: 12px; }
+        .units-table td { padding: 12px; border-bottom: 1px solid #f0f0f0; }
+        .units-table tr:hover { background: #fafafa; }
+        .unit-name { font-weight: 600; color: #2d2d2d; }
+        .status-badge { display: inline-block; padding: 4px 10px; border-radius: 3px; font-size: 11px; font-weight: 600; }
+        .status-allowed { background: #c8e6c9; color: #2e7d32; }
+        .status-locked { background: #ffcdd2; color: #c62828; }
+        .toggle-btn { padding: 6px 12px; border: 1px solid #ccc; background: white; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+        .toggle-btn:hover:not(:disabled) { background: #e9ecef; border-color: #999; }
+        .toggle-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .toggle-btn.enable { color: #2e7d32; border-color: #c8e6c9; }
+        .toggle-btn.disable { color: #c62828; border-color: #ffcdd2; }
+        .btn-feedback { display: inline-block; margin-left: 8px; font-size: 11px; }
+        .btn-success { color: #2e7d32; }
+        .btn-error { color: #c62828; }
     </style>
 </head>
 <body>
@@ -69,6 +90,7 @@
             <div id="content">
                 <div class="loading"><span class="spinner"></span>Loading learner data...</div>
             </div>
+            <div id="learnersContainer" style="display: none;"></div>
         </div>
     </div>
 
@@ -96,26 +118,23 @@
             try {
                 console.log('Starting data fetch...');
                 
-                const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
-                
                 const { data, error } = await supabaseClient
                     .from('learner_unit_access')
                     .select('*');
-
-                clearTimeout(timeoutId);
                 
                 console.log('Fetch response:', { data, error });
 
                 if (error) {
                     console.error('Supabase error:', error);
                     document.getElementById('content').innerHTML = `<div class="error-message">Error loading data: ${error.message}</div>`;
+                    document.getElementById('learnersContainer').style.display = 'none';
                     return;
                 }
 
                 if (!data || data.length === 0) {
                     console.warn('No records returned');
                     document.getElementById('content').innerHTML = '<div class="loading">No learner data available.</div>';
+                    document.getElementById('learnersContainer').style.display = 'none';
                     return;
                 }
 
@@ -124,60 +143,127 @@
             } catch (err) {
                 console.error('Fetch error:', err);
                 document.getElementById('content').innerHTML = `<div class="error-message">Error: ${err.message}</div>`;
+                document.getElementById('learnersContainer').style.display = 'none';
             }
         }
 
         function renderTable(records) {
-            let html = '<div class="table-container"><table><thead><tr><th>Learner</th><th>Unit Name</th><th>Access Status</th><th>Unit Status</th><th>Marked As</th></tr></thead><tbody>';
-
+            // Group records by learner
+            const grouped = {};
             records.forEach(record => {
-                html += `
-                    <tr>
-                        <td>${record.learner_id || 'N/A'}</td>
-                        <td>${record.unit_name || 'N/A'}</td>
-                        <td>
-                            <select onchange="updateField('${record.id}', 'access_status', this.value)">
-                                <option value="active" ${record.access_status === 'active' ? 'selected' : ''}>Active</option>
-                                <option value="inactive" ${record.access_status === 'inactive' ? 'selected' : ''}>Inactive</option>
-                                <option value="suspended" ${record.access_status === 'suspended' ? 'selected' : ''}>Suspended</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select onchange="updateField('${record.id}', 'unit_status', this.value)">
-                                <option value="not_started" ${record.unit_status === 'not_started' ? 'selected' : ''}>Not Started</option>
-                                <option value="in_progress" ${record.unit_status === 'in_progress' ? 'selected' : ''}>In Progress</option>
-                                <option value="completed" ${record.unit_status === 'completed' ? 'selected' : ''}>Completed</option>
-                            </select>
-                        </td>
-                        <td>
-                            <select onchange="updateField('${record.id}', 'marked_as', this.value)">
-                                <option value="pending" ${record.marked_as === 'pending' ? 'selected' : ''}>Pending</option>
-                                <option value="passed" ${record.marked_as === 'passed' ? 'selected' : ''}>Passed</option>
-                                <option value="failed" ${record.marked_as === 'failed' ? 'selected' : ''}>Failed</option>
-                            </select>
-                        </td>
-                    </tr>
-                `;
+                if (!grouped[record.learner_id]) {
+                    grouped[record.learner_id] = [];
+                }
+                grouped[record.learner_id].push(record);
             });
 
-            html += '</tbody></table></div>';
-            document.getElementById('content').innerHTML = html;
+            const container = document.getElementById('learnersContainer');
+            container.innerHTML = '';
+            document.getElementById('content').style.display = 'none';
+
+            Object.keys(grouped).sort().forEach((learnerId, index) => {
+                const units = grouped[learnerId];
+                const groupEl = createLearnerGroup(learnerId, units, index === 0);
+                container.appendChild(groupEl);
+            });
+
+            container.style.display = 'block';
         }
 
-        async function updateField(id, field, value) {
+        function createLearnerGroup(learnerId, units, expandByDefault = false) {
+            const groupDiv = document.createElement('div');
+            groupDiv.className = 'learner-group';
+
+            const shortId = learnerId.substring(0, 12) + '...';
+            const header = document.createElement('div');
+            header.className = 'learner-header';
+            header.innerHTML = `
+                <span>Learner: ${shortId}</span>
+                <span class="toggle-icon">▼</span>
+            `;
+            groupDiv.appendChild(header);
+
+            const table = document.createElement('table');
+            table.className = 'units-table';
+            if (expandByDefault) table.classList.add('expanded');
+            table.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Unit</th>
+                        <th>Access Status</th>
+                        <th>Unit Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            `;
+
+            const tbody = table.querySelector('tbody');
+            units.forEach(unit => {
+                const isAllowed = unit.access_status === 'allowed';
+                const btnText = isAllowed ? 'Lock Unit' : 'Enable Unit';
+                const btnClass = isAllowed ? 'disable' : 'enable';
+
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="unit-name">${unit.unit_name}</td>
+                    <td><span class="status-badge status-${unit.access_status}">${unit.access_status}</span></td>
+                    <td>${unit.unit_status || '—'}</td>
+                    <td>
+                        <button class="toggle-btn ${btnClass}" onclick="toggleUnitAccess('${unit.id}', '${learnerId}', ${isAllowed})" data-unit-id="${unit.id}">${btnText}</button>
+                        <span class="btn-feedback" data-feedback-id="${unit.id}"></span>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            groupDiv.appendChild(table);
+
+            // Toggle expand/collapse
+            header.addEventListener('click', () => {
+                table.classList.toggle('expanded');
+                const icon = header.querySelector('.toggle-icon');
+                icon.textContent = table.classList.contains('expanded') ? '▲' : '▼';
+            });
+
+            // Set initial icon
+            header.querySelector('.toggle-icon').textContent = expandByDefault ? '▲' : '▼';
+
+            return groupDiv;
+        }
+
+        async function toggleUnitAccess(unitId, learnerId, isCurrentlyAllowed) {
+            const newStatus = isCurrentlyAllowed ? 'locked' : 'allowed';
+            const btn = document.querySelector(`button[data-unit-id="${unitId}"]`);
+            const feedback = document.querySelector(`span[data-feedback-id="${unitId}"]`);
+
+            btn.disabled = true;
+            btn.style.opacity = '0.5';
+
             try {
                 const { error } = await supabaseClient
                     .from('learner_unit_access')
-                    .update({ [field]: value })
-                    .eq('id', id);
+                    .update({ access_status: newStatus })
+                    .eq('id', unitId);
 
                 if (error) {
-                    alert(`Error updating: ${error.message}`);
+                    console.error('Update error:', error);
+                    feedback.className = 'btn-feedback btn-error';
+                    feedback.textContent = '✗ Error';
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    setTimeout(() => { feedback.textContent = ''; }, 3000);
                 } else {
-                    console.log(`Updated ${field} for record ${id}`);
+                    feedback.className = 'btn-feedback btn-success';
+                    feedback.textContent = '✓ Updated';
+                    setTimeout(() => loadLearnerData(), 800); // Reload to show changes
                 }
             } catch (err) {
-                alert(`Error: ${err.message}`);
+                console.error('Error:', err);
+                feedback.className = 'btn-feedback btn-error';
+                feedback.textContent = '✗ Error';
+                btn.disabled = false;
+                btn.style.opacity = '1';
             }
         }
 
