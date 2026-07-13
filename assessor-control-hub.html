@@ -101,8 +101,7 @@
                 
                 const { data, error } = await supabaseClient
                     .from('learner_unit_access')
-                    .select('*')
-                    .order('created_at', { ascending: false });
+                    .select('*');
 
                 clearTimeout(timeoutId);
                 
