@@ -161,8 +161,13 @@
         // Supabase credentials from environment
         const SUPABASE_URL = 'https://qwjejqqgkvroqhmfglg.supabase.co';
         const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_D9A-jP6vvE6ohTm8cpxhPA_hR25r8tj';
-
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+        
+        let supabase;
+        
+        // Initialise Supabase after library loads
+        if (window.supabase) {
+            supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+        }
         const contentDiv = document.getElementById('content');
 
         // Fetch and display learner data
