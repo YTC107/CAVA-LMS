@@ -77,27 +77,53 @@
         const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
         const SUPABASE_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
 
-        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        let supabaseClient;
+        console.log('Script loading Supabase library...');
+
+        // Ensure Supabase is available before creating client
+        function initSupabase() {
+            if (!window.supabase) {
+                console.log('Supabase not ready, retrying...');
+                setTimeout(initSupabase, 100);
+                return;
+            }
+            console.log('Supabase library loaded, creating client...');
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+            loadLearnerData();
+        }
 
         async function loadLearnerData() {
             try {
+                console.log('Starting data fetch...');
+                
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+                
                 const { data, error } = await supabaseClient
                     .from('learner_unit_access')
                     .select('*')
                     .order('created_at', { ascending: false });
 
+                clearTimeout(timeoutId);
+                
+                console.log('Fetch response:', { data, error });
+
                 if (error) {
+                    console.error('Supabase error:', error);
                     document.getElementById('content').innerHTML = `<div class="error-message">Error loading data: ${error.message}</div>`;
                     return;
                 }
 
                 if (!data || data.length === 0) {
+                    console.warn('No records returned');
                     document.getElementById('content').innerHTML = '<div class="loading">No learner data available.</div>';
                     return;
                 }
 
+                console.log(`Loaded ${data.length} records`);
                 renderTable(data);
             } catch (err) {
+                console.error('Fetch error:', err);
                 document.getElementById('content').innerHTML = `<div class="error-message">Error: ${err.message}</div>`;
             }
         }
@@ -156,7 +182,12 @@
             }
         }
 
-        loadLearnerData();
+        // Load data when both Supabase and DOM are ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initSupabase);
+        } else {
+            initSupabase();
+        }
     </script>
 </body>
 </html>
