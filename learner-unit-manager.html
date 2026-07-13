@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learner Unit Manager</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container { max-width: 900px; margin: 0 auto; }
+        h1 { margin-bottom: 10px; font-size: 24px; color: #333; }
+        .subtitle { color: #666; margin-bottom: 20px; font-size: 14px; }
+        .learner-item {
+            background: white;
+            border: 1px solid #ddd;
+            margin-bottom: 12px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .learner-header {
+            padding: 14px 16px;
+            background: #2c3e50;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 500;
+        }
+        .learner-header:hover { background: #34495e; }
+        .learner-name { font-size: 15px; }
+        .unit-count { font-size: 12px; opacity: 0.8; }
+        .units { display: none; padding: 0; }
+        .units.open { display: block; }
+        .unit-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 16px;
+            border-top: 1px solid #eee;
+        }
+        .unit-row:last-child { border-bottom: none; }
+        .unit-name { font-size: 14px; color: #333; flex: 1; }
+        .toggle-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .btn-enabled {
+            background: #27ae60;
+            color: white;
+        }
+        .btn-enabled:hover { background: #229954; }
+        .btn-disabled {
+            background: #e74c3c;
+            color: white;
+        }
+        .btn-disabled:hover { background: #c0392b; }
+        .loading { text-align: center; padding: 40px; color: #666; }
+        .error { background: #fadbd8; color: #c0392b; padding: 14px; border-radius: 4px; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Learner Unit Manager</h1>
+        <p class="subtitle">Select or deselect units for each learner</p>
+        <div id="error"></div>
+        <div id="content" class="loading">Loading learners...</div>
+    </div>
+
+    <script>
+        const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
+        
+        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        
+        async function loadLearners() {
+            try {
+                const { data, error } = await supabase
+                    .from('learner_unit_access')
+                    .select('*')
+                    .order('learner_name', { ascending: true });
+                
+                if (error) throw error;
+                if (!data || data.length === 0) {
+                    document.getElementById('content').innerHTML = '<p>No learners found.</p>';
+                    return;
+                }
+                
+                // Group by learner
+                const grouped = {};
+                data.forEach(record => {
+                    if (!grouped[record.learner_name]) {
+                        grouped[record.learner_name] = [];
+                    }
+                    grouped[record.learner_name].push(record);
+                });
+                
+                renderLearners(grouped);
+            } catch (err) {
+                document.getElementById('error').innerHTML = `Error: ${err.message}`;
+                document.getElementById('content').innerHTML = '';
+            }
+        }
+        
+        function renderLearners(grouped) {
+            const html = Object.entries(grouped).map(([learnerName, units]) => {
+                const unitsHtml = units.map(unit => {
+                    const isEnabled = unit.access_status === 'enabled';
+                    return `
+                        <div class="unit-row">
+                            <span class="unit-name">${unit.unit_name || 'Unit ' + unit.unit_id}</span>
+                            <button class="toggle-btn ${isEnabled ? 'btn-enabled' : 'btn-disabled'}"
+                                    onclick="toggleUnit(${unit.id}, '${unit.access_status}')">
+                                ${isEnabled ? 'Enabled' : 'Locked'}
+                            </button>
+                        </div>
+                    `;
+                }).join('');
+                
+                return `
+                    <div class="learner-item">
+                        <div class="learner-header" onclick="toggleLeaner(this)">
+                            <span class="learner-name">${learnerName}</span>
+                            <span class="unit-count">${units.length} units</span>
+                        </div>
+                        <div class="units">
+                            ${unitsHtml}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+            
+            document.getElementById('content').innerHTML = html;
+        }
+        
+        function toggleLeaner(header) {
+            const units = header.nextElementSibling;
+            units.classList.toggle('open');
+        }
+        
+        async function toggleUnit(id, currentStatus) {
+            const newStatus = currentStatus === 'enabled' ? 'locked' : 'enabled';
+            
+            try {
+                const { error } = await supabase
+                    .from('learner_unit_access')
+                    .update({ access_status: newStatus })
+                    .eq('id', id);
+                
+                if (error) throw error;
+                
+                // Reload to show changes
+                loadLearners();
+            } catch (err) {
+                alert('Failed to update: ' + err.message);
+            }
+        }
+        
+        loadLearners();
+    </script>
+</body>
+</html>
