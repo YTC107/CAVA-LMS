@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT Academy - Assessor Marking View</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+        header {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #d4af37;
+        }
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+        .header-logo {
+            width: 50px;
+            height: 50px;
+            background-color: #d4af37;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1a1a1a;
+            font-size: 24px;
+        }
+        .header-title {
+            display: flex;
+            flex-direction: column;
+        }
+        .header-title h1 {
+            font-size: 18px;
+            font-weight: bold;
+            margin: 0;
+        }
+        .header-title p {
+            font-size: 12px;
+            color: #d4af37;
+            margin: 2px 0 0 0;
+        }
+        .header-right {
+            text-align: right;
+            font-size: 11px;
+            line-height: 1.6;
+        }
+        .header-right p {
+            margin: 0;
+        }
+        .header-right .gold {
+            color: #d4af37;
+        }
+        main {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 30px;
+        }
+        .section {
+            background: white;
+            border-left: 4px solid #d4af37;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 3px;
+        }
+        .section h2 {
+            font-size: 18px;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+        }
+        .section-subtitle {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 20px;
+        }
+        .unit-container {
+            margin-bottom: 30px;
+        }
+        .unit-header {
+            background-color: #2a2a2a;
+            color: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 3px;
+        }
+        .unit-header h3 {
+            font-size: 14px;
+            margin: 0;
+        }
+        .outcome {
+            background: #fafafa;
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 3px;
+        }
+        .outcome-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+        .evidence-section {
+            margin-bottom: 15px;
+            padding: 10px;
+            background: white;
+            border-left: 2px solid #d4af37;
+        }
+        .evidence-label {
+            font-weight: bold;
+            font-size: 12px;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+        }
+        .evidence-content {
+            font-size: 12px;
+            color: #555;
+            margin-bottom: 8px;
+        }
+        .evidence-file {
+            display: inline-block;
+            background: #f0f0f0;
+            padding: 5px 10px;
+            border-radius: 3px;
+            margin: 2px;
+            font-size: 11px;
+            border: 1px solid #d4af37;
+        }
+        .marking-controls {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+        select, textarea {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 12px;
+        }
+        select {
+            cursor: pointer;
+        }
+        textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            justify-content: flex-end;
+        }
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        .btn-save {
+            background-color: #d4af37;
+            color: #1a1a1a;
+        }
+        .btn-save:hover {
+            background-color: #c99f2e;
+        }
+        .btn-complete {
+            background-color: #1a1a1a;
+            color: white;
+        }
+        .btn-complete:hover {
+            background-color: #333;
+        }
+        footer {
+            background-color: #1a1a1a;
+            color: white;
+            padding: 15px 30px;
+            text-align: right;
+            font-size: 11px;
+            border-top: 3px solid #d4af37;
+            margin-top: 40px;
+        }
+        footer button {
+            margin-left: 10px;
+            padding: 8px 16px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-left">
+            <div class="header-logo">PT</div>
+            <div class="header-title">
+                <h1>PT ACADEMY</h1>
+                <p>Focus Awards Level 3 Certificate in Assessing Vocational Achievement</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <p>Reference: 6016104/8</p>
+            <p>Version: 1.0 2026</p>
+            <p class="gold">Classification: Internal Management Use</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="section">
+            <h2>Assessor Marking View</h2>
+            <p class="section-subtitle">Review and mark learner evidence submissions</p>
+
+            <div class="unit-container">
+                <div class="unit-header">
+                    <h3>Unit 1: Understanding the Principles and Practices of Assessment</h3>
+                </div>
+                <!-- Unit 1 outcomes will be populated here -->
+                <div class="outcome">
+                    <div class="outcome-title">Learning Outcome 1.1</div>
+                    <div class="evidence-section">
+                        <div class="evidence-label">Learner Evidence:</div>
+                        <div class="evidence-content">No evidence submitted yet</div>
+                    </div>
+                    <div class="evidence-section">
+                        <div class="evidence-label">Learner Reflection:</div>
+                        <div class="evidence-content">No reflection submitted yet</div>
+                    </div>
+                    <div class="marking-controls">
+                        <select>
+                            <option value="">Select decision...</option>
+                            <option value="pass">Pass</option>
+                            <option value="refer">Refer</option>
+                        </select>
+                        <textarea placeholder="Enter assessment feedback..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="unit-container">
+                <div class="unit-header">
+                    <h3>Unit 2: Assess Occupational Competence in the Work Environment</h3>
+                </div>
+                <div class="outcome">
+                    <div class="outcome-title">Learning Outcome 2.1</div>
+                    <div class="evidence-section">
+                        <div class="evidence-label">Learner Evidence:</div>
+                        <div class="evidence-content">
+                            <span class="evidence-file">📄 Competence Assessment Form</span>
+                            <span class="evidence-file">📄 Work Log Entries</span>
+                        </div>
+                    </div>
+                    <div class="evidence-section">
+                        <div class="evidence-label">Learner Reflection:</div>
+                        <div class="evidence-content">"I demonstrated competence in workplace assessment by..."</div>
+                    </div>
+                    <div class="marking-controls">
+                        <select>
+                            <option value="">Select decision...</option>
+                            <option value="pass">Pass</option>
+                            <option value="refer">Refer</option>
+                        </select>
+                        <textarea placeholder="Enter assessment feedback..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="unit-container">
+                <div class="unit-header">
+                    <h3>Unit 3: Assess Vocational Skills, Knowledge and Understanding</h3>
+                </div>
+                <div class="outcome">
+                    <div class="outcome-title">Learning Outcome 3.1</div>
+                    <div class="evidence-section">
+                        <div class="evidence-label">Learner Evidence:</div>
+                        <div class="evidence-content">
+                            <span class="evidence-file">📄 Skills Assessment Portfolio</span>
+                            <span class="evidence-file">📄 Knowledge Test Results</span>
+                        </div>
+                    </div>
+                    <div class="evidence-section">
+                        <div class="evidence-label">Learner Reflection:</div>
+                        <div class="evidence-content">"This assessment covered my understanding of vocational concepts..."</div>
+                    </div>
+                    <div class="marking-controls">
+                        <select>
+                            <option value="">Select decision...</option>
+                            <option value="pass">Pass</option>
+                            <option value="refer">Refer</option>
+                        </select>
+                        <textarea placeholder="Enter assessment feedback..."></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-save">Save Marking</button>
+                <button class="btn-complete">Mark as Complete</button>
+            </div>
+        </div>
+    </main>
+
+    <footer style="display: flex; justify-content: space-between; align-items: center;">
+        <div style="display: flex; gap: 12px; align-items: center;">
+            <span style="color: #d4af37; font-size: 13px; font-weight: 500;">No unsaved changes</span>
+            <button class="btn-save" style="padding: 8px 16px; font-size: 12px;">Save</button>
+        </div>
+        <div style="color: #999; font-size: 11px; flex: 1; text-align: centre;">
+            PT Academy | Focus Awards Level 3 CAVA | Reference: 6016104/8
+        </div>
+        <button class="btn-complete" style="padding: 8px 16px; font-size: 12px;">Sign Out</button>
+    </footer>
+</body>
+</html>
