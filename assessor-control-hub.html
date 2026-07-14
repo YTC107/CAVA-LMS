@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Assessor Control Hub</title>
-    <script src="supabase-integration.js"></script> 
+    <script src="supabase-integration.js"></script>
     <style>
         * {
             margin: 0;
@@ -23,8 +23,8 @@
             margin: 0 auto;
         }
         header {
-            background: #2c3e50;
-            color: white;
+            background: #0a0a0a;
+            color: #C9A84C;
             padding: 25px;
             border-radius: 8px;
             margin-bottom: 30px;
@@ -45,7 +45,7 @@
             overflow: hidden;
         }
         .learner-header {
-            background: #ecf0f1;
+            background: #f8f8f8;
             padding: 15px 20px;
             cursor: pointer;
             display: flex;
@@ -53,9 +53,10 @@
             align-items: center;
             user-select: none;
             font-weight: 600;
+            border-left: 4px solid #C9A84C;
         }
         .learner-header:hover {
-            background: #dfe6e9;
+            background: #f0f0f0;
         }
         .toggle-arrow {
             display: inline-block;
@@ -84,7 +85,7 @@
         }
         .unit-label {
             font-weight: 500;
-            color: #2c3e50;
+            color: #0a0a0a;
         }
         .unit-status {
             font-size: 12px;
@@ -110,11 +111,11 @@
             transition: all 0.2s;
         }
         .toggle-btn.enable {
-            background: #27ae60;
-            color: white;
+            background: #C9A84C;
+            color: #0a0a0a;
         }
         .toggle-btn.enable:hover {
-            background: #229954;
+            background: #b8961e;
         }
         .toggle-btn.lock {
             background: #c0392b;
@@ -171,46 +172,65 @@
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script>
-        const SUPABASE_URL = 'https://qwjejqqgkvroqhmfglg.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_D9A-jP6vvE6ohTm8cpxhPA_hR25r8tj';
-
         let supabaseClient;
 
         async function initSupabase() {
-            const { createClient } = window.supabase;
-            supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
-            console.log('Supabase client initialised');
-            loadLearners();
+            // Supabase client initialized from supabase-integration.js
+            if (typeof window.supabaseClient !== 'undefined') {
+                supabaseClient = window.supabaseClient;
+                console.log('Supabase client loaded from integration');
+                loadLearners();
+            } else {
+                console.error('Supabase client not available');
+                document.getElementById('hub-content').innerHTML = 
+                    '<div class="error">Failed to initialise database connection</div>';
+            }
         }
 
         async function loadLearners() {
             try {
-                const { data, error } = await supabaseClient
-                    .from('learner_unit_access')
-                    .select('*')
+                // Query unit_overrides with learner information
+                const { data: overrides, error: overridesError } = await supabaseClient
+                    .from('unit_overrides')
+                    .select('id, learner_id, unit_id, status')
                     .order('learner_id', { ascending: true });
 
-                if (error) throw error;
+                if (overridesError) throw overridesError;
 
-                console.log(`Loaded ${data.length} records`);
-                renderLearners(data);
+                // Get learner details
+                const { data: learners, error: learnersError } = await supabaseClient
+                    .from('learners')
+                    .select('id, first_name, last_name');
+
+                if (learnersError) throw learnersError;
+
+                console.log(`Loaded ${overrides.length} unit overrides and ${learners.length} learners`);
+                processAndRender(overrides, learners);
             } catch (err) {
-                console.error('Error loading learners:', err);
+                console.error('Error loading data:', err);
                 document.getElementById('hub-content').innerHTML = 
                     `<div class="error">Failed to load learner data: ${err.message}</div>`;
             }
         }
 
-        function renderLearners(records) {
+        function processAndRender(overrides, learners) {
+            // Create learner map for quick lookup
+            const learnerMap = {};
+            learners.forEach(learner => {
+                learnerMap[learner.id] = `${learner.first_name} ${learner.last_name}`;
+            });
+
+            // Group overrides by learner
             const grouped = {};
-            records.forEach(record => {
-                if (!grouped[record.learner_id]) {
-                    grouped[record.learner_id] = {
-                        learner_name: record.learner_name,
+            overrides.forEach(override => {
+                const learnerId = override.learner_id;
+                if (!grouped[learnerId]) {
+                    grouped[learnerId] = {
+                        learner_name: learnerMap[learnerId] || `Learner ${learnerId}`,
                         units: []
                     };
                 }
-                grouped[record.learner_id].units.push(record);
+                grouped[learnerId].units.push(override);
             });
 
             const html = Object.entries(grouped)
@@ -219,31 +239,39 @@
 
             document.getElementById('hub-content').innerHTML = html;
 
+            // Attach event listeners
             Object.keys(grouped).forEach(id => {
-                document.getElementById(`toggle-${id}`)
-                    .addEventListener('click', () => toggleLearner(id));
+                const toggleBtn = document.getElementById(`toggle-${id}`);
+                if (toggleBtn) {
+                    toggleBtn.addEventListener('click', () => toggleLearner(id));
+                }
                 grouped[id].units.forEach(unit => {
-                    document.getElementById(`btn-${unit.id}`)
-                        .addEventListener('click', () => toggleUnit(unit.id, unit.access_status));
+                    const btn = document.getElementById(`btn-${unit.id}`);
+                    if (btn) {
+                        btn.addEventListener('click', () => toggleUnit(unit.id, unit.status));
+                    }
                 });
             });
         }
 
         function renderLearnerGroup(id, data) {
             const unitsHtml = data.units
-                .map(unit => `
-                    <div class="unit-row">
-                        <span class="unit-label">${unit.unit_title || 'Unit ' + unit.unit_number}</span>
-                        <span>
-                            <span class="unit-status ${unit.access_status === 'enabled' ? 'status-enabled' : 'status-locked'}">
-                                ${unit.access_status === 'enabled' ? '✓ Enabled' : '✗ Locked'}
+                .map(unit => {
+                    const isEnabled = unit.status === 'enabled';
+                    return `
+                        <div class="unit-row">
+                            <span class="unit-label">${unit.unit_id}</span>
+                            <span>
+                                <span class="unit-status ${isEnabled ? 'status-enabled' : 'status-locked'}">
+                                    ${isEnabled ? '✓ Enabled' : '✗ Locked'}
+                                </span>
+                                <button class="toggle-btn ${isEnabled ? 'lock' : 'enable'}" id="btn-${unit.id}">
+                                    ${isEnabled ? 'Lock' : 'Enable'}
+                                </button>
                             </span>
-                            <button class="toggle-btn ${unit.access_status === 'enabled' ? 'lock' : 'enable'}" id="btn-${unit.id}">
-                                ${unit.access_status === 'enabled' ? 'Lock' : 'Enable'}
-                            </button>
-                        </span>
-                    </div>
-                `)
+                        </div>
+                    `;
+                })
                 .join('');
 
             return `
@@ -262,17 +290,19 @@
         function toggleLearner(id) {
             const header = document.getElementById(`toggle-${id}`);
             const content = document.getElementById(`content-${id}`);
-            header.classList.toggle('expanded');
-            content.classList.toggle('show');
+            if (header && content) {
+                header.classList.toggle('expanded');
+                content.classList.toggle('show');
+            }
         }
 
-        async function toggleUnit(unitId, currentStatus) {
+        async function toggleUnit(overrideId, currentStatus) {
             const newStatus = currentStatus === 'enabled' ? 'locked' : 'enabled';
             try {
                 const { error } = await supabaseClient
-                    .from('learner_unit_access')
-                    .update({ access_status: newStatus })
-                    .eq('id', unitId);
+                    .from('unit_overrides')
+                    .update({ status: newStatus })
+                    .eq('id', overrideId);
 
                 if (error) throw error;
 
@@ -280,6 +310,7 @@
                 loadLearners();
             } catch (err) {
                 console.error('Error updating unit:', err);
+                alert('Failed to update unit: ' + err.message);
             }
         }
 
@@ -291,7 +322,8 @@
             setTimeout(() => feedback.remove(), 2000);
         }
 
-        initSupabase();
+        // Initialise when page loads
+        window.addEventListener('load', initSupabase);
     </script>
 </body>
 </html>
