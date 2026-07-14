@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PT Academy Learner Management</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #0f0f0f;
+      color: #ffffff;
+      padding: 20px;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      background-color: #2a2a2a;
+      border-bottom: 3px solid #daa520;
+      padding: 20px;
+      border-radius: 8px;
+    }
+    .logo {
+      width: 80px;
+      height: 80px;
+      margin: 0 auto 15px;
+      background-color: #daa520;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: #000000;
+      font-size: 20px;
+    }
+    .header h1 {
+      font-size: 28px;
+      color: #daa520;
+      margin-bottom: 5px;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background-color: #0f0f0f;
+    }
+    .tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      padding: 12px 24px;
+      background-color: #333333;
+      color: #ffffff;
+      border: 2px solid #daa520;
+      cursor: pointer;
+      font-size: 14px;
+      border-radius: 5px;
+      transition: all 0.3s ease;
+    }
+    .tab-btn.active {
+      background-color: #daa520;
+      color: #000000;
+    }
+    .tab-btn:hover {
+      background-color: #daa520;
+      color: #000000;
+    }
+    .tab-content {
+      background-color: #0f0f0f;
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .form-group {
+      margin-bottom: 20px;
+    }
+    label {
+      display: block;
+      margin-bottom: 8px;
+      color: #daa520;
+      font-weight: 600;
+    }
+    input[type="text"],
+    input[type="email"],
+    input[type="tel"],
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #daa520;
+      background-color: #1a1a1a;
+      color: #ffffff;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="tel"]:focus,
+    select:focus {
+      outline: none;
+      border-color: #f0d767;
+      box-shadow: 0 0 10px rgba(218, 165, 32, 0.3);
+    }
+    button {
+      padding: 12px 24px;
+      background-color: #daa520;
+      color: #000000;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+    button:hover {
+      background-color: #f0d767;
+      transform: scale(1.05);
+    }
+    button:active {
+      transform: scale(0.98);
+    }
+    .btn-secondary {
+      background-color: #555555;
+      color: #ffffff;
+    }
+    .btn-secondary:hover {
+      background-color: #777777;
+    }
+    .btn-danger {
+      background-color: #cc4444;
+      color: #ffffff;
+    }
+    .btn-danger:hover {
+      background-color: #ee5555;
+    }
+    .learner-card {
+      background-color: #1a1a1a;
+      border: 2px solid #daa520;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .learner-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #daa520;
+      padding-bottom: 10px;
+    }
+    .learner-name {
+      font-size: 18px;
+      font-weight: 600;
+      color: #daa520;
+    }
+    .learner-email {
+      font-size: 13px;
+      color: #aaaaaa;
+      margin-top: 5px;
+    }
+    .learner-units {
+      font-size: 13px;
+      color: #cccccc;
+      margin-top: 10px;
+    }
+    .unit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+    .unit-checkbox {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .unit-checkbox input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: #daa520;
+    }
+    .unit-checkbox label {
+      margin: 0;
+      color: #ffffff;
+      cursor: pointer;
+      font-weight: normal;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.6);
+      border: 2px solid #daa520;
+    }
+    .modal.show {
+      display: block;
+    }
+    .modal-content {
+      background-color: #1a1a1a;
+      margin: 5% auto;
+      padding: 30px;
+      border: 2px solid #daa520;
+      border-radius: 8px;
+      width: 90%;
+      max-width: 500px;
+    }
+    .modal-header {
+      font-size: 20px;
+      font-weight: 600;
+      color: #daa520;
+      margin-bottom: 20px;
+      border-bottom: 2px solid #daa520;
+      padding-bottom: 10px;
+    }
+    .close {
+      color: #daa520;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+    .close:hover {
+      color: #f0d767;
+    }
+    .credentials-display {
+      background-color: #0f0f0f;
+      border: 1px solid #daa520;
+      padding: 15px;
+      border-radius: 5px;
+      margin: 15px 0;
+      font-family: monospace;
+    }
+    .credentials-display p {
+      margin: 8px 0;
+      color: #cccccc;
+    }
+    .credentials-label {
+      color: #daa520;
+      font-weight: 600;
+    }
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+    }
+    .action-buttons button {
+      flex: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <div class="logo">PT</div>
+    <h1>PT Academy Learner Management</h1>
+    <p style="color: #daa520;">Focus Awards Level 3 Certificate in Assessing Vocational Achievement</p>
+  </div>
+
+  <div class="container">
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('enrol')">Enrol Learner</button>
+      <button class="tab-btn" onclick="switchTab('roster')">Learner Roster</button>
+      <button class="tab-btn" onclick="switchTab('assign')">Assign Units</button>
+    </div>
+
+    <!-- Enrol Learner Tab -->
+    <div id="enrol" class="tab-content active">
+      <h2 style="color: #daa520; margin-bottom: 20px;">Enrol New Learner</h2>
+      <form onsubmit="enrolLearner(event)" style="max-width: 500px;">
+        <div class="form-group">
+          <label for="learner-name">Full Name *</label>
+          <input type="text" id="learner-name" required>
+        </div>
+        <div class="form-group">
+          <label for="learner-email">Email Address *</label>
+          <input type="email" id="learner-email" required>
+        </div>
+        <div class="form-group">
+          <label for="learner-phone">Phone Number</label>
+          <input type="tel" id="learner-phone">
+        </div>
+        <button type="submit">Enrol Learner</button>
+      </form>
+    </div>
+
+    <!-- Learner Roster Tab -->
+    <div id="roster" class="tab-content">
+      <h2 style="color: #daa520; margin-bottom: 20px;">Learner Roster</h2>
+      <div id="learner-list"></div>
+    </div>
+
+    <!-- Assign Units Tab -->
+    <div id="assign" class="tab-content">
+      <h2 style="color: #daa520; margin-bottom: 20px;">Assign Units to Learner</h2>
+      <div class="form-group">
+        <label for="learner-select">Select Learner *</label>
+        <select id="learner-select" onchange="populateUnits()">
+          <option value="">Choose a learner...</option>
+        </select>
+      </div>
+      <div id="unit-assignment" style="display: none;">
+        <button onclick="batchAssignAll()" style="margin-bottom: 20px;">Assign All Units</button>
+        <button onclick="batchRemoveAll()" class="btn-secondary" style="margin-bottom: 20px; margin-left: 10px;">Remove All Units</button>
+        <div class="unit-grid" id="unit-checkboxes"></div>
+        <button onclick="saveAssignments()" style="margin-top: 20px;">Save Assignments</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Credentials Modal -->
+  <div id="credentialsModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">×</span>
+      <div class="modal-header">Learner Login Credentials</div>
+      <p style="color: #cccccc; margin-bottom: 15px;">Share these details with the learner via email:</p>
+      <div class="credentials-display" id="credentialsDisplay"></div>
+      <button onclick="copyCredentials()" style="margin-top: 20px; width: 100%;">Copy to Clipboard</button>
+      <button onclick="closeModal()" class="btn-secondary" style="margin-top: 10px; width: 100%;">Close</button>
+    </div>
+  </div>
+
+  <script>
+    // Unit definitions
+    const units = [
+      { id: 'L2-U1', name: 'Unit 1: Plan Assessment Activity' },
+      { id: 'L2-U2', name: 'Unit 2: Assess Vocational Achievement' },
+      { id: 'L2-U3', name: 'Unit 3: Provide Learner Feedback' },
+      { id: 'L2-U4', name: 'Unit 4: Maintain Assessment Records' },
+      { id: 'L2-U5', name: 'Unit 5: Conduct Internal Assessment Review' },
+      { id: 'L2-U6', name: 'Unit 6: Manage Learner Progress' }
+    ];
+
+    let learners = JSON.parse(localStorage.getItem('pt-academy-learners')) || [];
+    let currentLearner = null;
+
+    function generateCredentials() {
+      const adjectives = ['Bright', 'Quick', 'Swift', 'Smart', 'Keen', 'Active'];
+      const nouns = ['Learner', 'Scholar', 'Student', 'Achiever', 'Assessor'];
+      const randomAdj = adjectives[Math.floor(Math.random() * adjectives.length)];
+      const randomNoun = nouns[Math.floor(Math.random() * nouns.length)];
+      const username = `${randomAdj}${randomNoun}${Math.floor(Math.random() * 1000)}`;
+      const password = Math.random().toString(36).slice(-10).toUpperCase();
+      return { username, password };
+    }
+
+    function enrolLearner(event) {
+      event.preventDefault();
+      const name = document.getElementById('learner-name').value.trim();
+      const email = document.getElementById('learner-email').value.trim();
+      const phone = document.getElementById('learner-phone').value.trim();
+
+      if (!name || !email) return alert('Name and email are required.');
+
+      const { username, password } = generateCredentials();
+      const learner = {
+        id: Date.now(),
+        name,
+        email,
+        phone,
+        username,
+        password,
+        assignedUnits: [],
+        enrolledDate: new Date().toLocaleDateString()
+      };
+
+      learners.push(learner);
+      localStorage.setItem('pt-academy-learners', JSON.stringify(learners));
+      document.getElementById('learner-name').value = '';
+      document.getElementById('learner-email').value = '';
+      document.getElementById('learner-phone').value = '';
+      updateRoster();
+      updateLearnerSelect();
+      showCredentialsModal(learner);
+    }
+
+    function showCredentialsModal(learner) {
+      const credDisplay = document.getElementById('credentialsDisplay');
+      credDisplay.innerHTML = `
+        <p><span class="credentials-label">Learner Name:</span> ${learner.name}</p>
+        <p><span class="credentials-label">Username:</span> ${learner.username}</p>
+        <p><span class="credentials-label">Password:</span> ${learner.password}</p>
+        <p><span class="credentials-label">Platform URL:</span> [your-platform-url]</p>
+      `;
+      document.getElementById('credentialsModal').classList.add('show');
+    }
+
+    function closeModal() {
+      document.getElementById('credentialsModal').classList.remove('show');
+    }
+
+    function copyCredentials() {
+      const credDisplay = document.getElementById('credentialsDisplay').innerText;
+      navigator.clipboard.writeText(credDisplay).then(() => {
+        alert('Credentials copied to clipboard!');
+      });
+    }
+
+    function updateRoster() {
+      const rosterDiv = document.getElementById('learner-list');
+      rosterDiv.innerHTML = '';
+
+      if (learners.length === 0) {
+        rosterDiv.innerHTML = '<p style="color: #aaaaaa;">No learners enrolled yet.</p>';
+        return;
+      }
+
+      learners.forEach(learner => {
+        const unitsAssigned = learner.assignedUnits.length;
+        const card = document.createElement('div');
+        card.className = 'learner-card';
+        card.innerHTML = `
+          <div class="learner-header">
+            <div>
+              <div class="learner-name">${learner.name}</div>
+              <div class="learner-email">${learner.email}</div>
+              <div class="learner-units">Units assigned: ${unitsAssigned} / ${units.length}</div>
+            </div>
+            <button onclick="deleteLearner(${learner.id})" class="btn-danger">Delete</button>
+          </div>
+          <p style="color: #cccccc; margin-top: 10px;"><strong>Username:</strong> ${learner.username}</p>
+          <p style="color: #cccccc; margin-top: 5px;"><strong>Password:</strong> ${learner.password}</p>
+          <button onclick="showLearnerCredentials(${learner.id})" style="margin-top: 10px;">View Login Details</button>
+        `;
+        rosterDiv.appendChild(card);
+      });
+    }
+
+    function showLearnerCredentials(learner_id) {
+      const learner = learners.find(l => l.id === learner_id);
+      if (learner) showCredentialsModal(learner);
+    }
+
+    function updateLearnerSelect() {
+      const select = document.getElementById('learner-select');
+      select.innerHTML = '<option value="">Choose a learner...</option>';
+      learners.forEach(learner => {
+        const option = document.createElement('option');
+        option.value = learner.id;
+        option.textContent = learner.name;
+        select.appendChild(option);
+      });
+    }
+
+    function populateUnits() {
+      const learnerId = document.getElementById('learner-select').value;
+      const unitDiv = document.getElementById('unit-assignment');
+      if (!learnerId) {
+        unitDiv.style.display = 'none';
+        return;
+      }
+
+      currentLearner = learners.find(l => l.id === parseInt(learnerId));
+      unitDiv.style.display = 'block';
+      const checkboxDiv = document.getElementById('unit-checkboxes');
+      checkboxDiv.innerHTML = '';
+
+      units.forEach(unit => {
+        const isAssigned = currentLearner.assignedUnits.includes(unit.id);
+        const checkboxContainer = document.createElement('div');
+        checkboxContainer.className = 'unit-checkbox';
+        checkboxContainer.innerHTML = `
+          <input type="checkbox" id="unit-${unit.id}" ${isAssigned ? 'checked' : ''} data-unit-id="${unit.id}">
+          <label for="unit-${unit.id}">${unit.name}</label>
+        `;
+        checkboxDiv.appendChild(checkboxContainer);
+      });
+    }
+
+    function batchAssignAll() {
+      if (!currentLearner) return;
+      units.forEach(unit => {
+        document.getElementById(`unit-${unit.id}`).checked = true;
+      });
+    }
+
+    function batchRemoveAll() {
+      if (!currentLearner) return;
+      units.forEach(unit => {
+        document.getElementById(`unit-${unit.id}`).checked = false;
+      });
+    }
+
+    function saveAssignments() {
+      if (!currentLearner) return;
+      const checkboxes = document.querySelectorAll('#unit-checkboxes input[type="checkbox"]:checked');
+      const assignedUnits = Array.from(checkboxes).map(cb => cb.dataset.unitId);
+      const learner = learners.find(l => l.id === currentLearner.id);
+      learner.assignedUnits = assignedUnits;
+      localStorage.setItem('pt-academy-learners', JSON.stringify(learners));
+      updateRoster();
+      alert(`Units saved for ${learner.name}. ${assignedUnits.length} units assigned.`);
+    }
+
+    function deleteLearner(learnerId) {
+      if (confirm('Are you sure you want to delete this learner?')) {
+        learners = learners.filter(l => l.id !== learnerId);
+        localStorage.setItem('pt-academy-learners', JSON.stringify(learners));
+        updateRoster();
+        updateLearnerSelect();
+      }
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+
+      if (tabName === 'roster') updateRoster();
+      if (tabName === 'assign') updateLearnerSelect();
+    }
+
+    // Initialize
+    updateRoster();
+    updateLearnerSelect();
+  </script>
+</body>
+</html>
