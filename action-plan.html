@@ -13,8 +13,6 @@
   .nav-bar { background: #2d2d2d; }
   .nav-link { cursor: pointer; padding: 6px 14px; font-size: 13px; color: #ccc; border-bottom: 2px solid transparent; transition: all 0.2s; text-decoration: none; display: inline-block; }
   .nav-link:hover { color: #fff; }
-
-  /* Plan type selector */
   .plan-type-wrap { display: flex; gap: 12px; margin-bottom: 0; }
   .plan-type-btn {
     flex: 1;
@@ -39,40 +37,28 @@
   .plan-type-btn .btn-icon { font-size: 28px; flex-shrink: 0; }
   .plan-type-btn .btn-text { display: flex; flex-direction: column; }
   .plan-type-btn .btn-sub { font-size: 12px; font-weight: 400; margin-top: 3px; color: #6b7280; }
-
-  /* Programme buttons */
   .prog-wrap { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
   .prog-btn { padding: 7px 20px; border: 2px solid #d1d5db; border-radius: 6px; background: #fff; cursor: pointer; font-size: 13px; font-weight: 600; color: #374151; transition: all 0.2s; }
   .prog-btn.l2-active { border-color: #2d6a2d; background: #2d6a2d; color: #fff; }
   .prog-btn.l3-active { border-color: #6b3fa0; background: #6b3fa0; color: #fff; }
-
-  /* Units */
   .unit-check-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px; }
   .unit-check { display: flex; align-items: center; gap: 8px; font-size: 13px; padding: 7px 10px; background: #f9f9f9; border: 1px solid #e5e7eb; border-radius: 6px; }
   .unit-check input[type="checkbox"] { accent-color: #c9a84c; width: 15px; height: 15px; flex-shrink: 0; }
-
-  /* Assessment methods — halved footprint */
   .methods-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 5px; }
   .method-chip { display: flex; align-items: center; gap: 6px; font-size: 12px; padding: 5px 8px; background: #f9f9f9; border: 1px solid #e5e7eb; border-radius: 5px; }
   .method-chip input[type="checkbox"] { accent-color: #c9a84c; width: 13px; height: 13px; flex-shrink: 0; }
-
-  /* Task rows */
   .task-row { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; margin-bottom: 12px; position: relative; }
   .task-row label { display: block; font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
-  .task-row textarea { width: 100%; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 10px; font-size: 13px; resize: vertical; min-height: 80px; font-family: inherit; }
+  .task-row textarea { width: 100%; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 10px; font-size: 13px; resize: vertical; min-height: 180px; font-family: inherit; }
   .task-row input[type="date"] { border: 1px solid #d1d5db; border-radius: 6px; padding: 7px 10px; font-size: 13px; }
   .date-row { margin-bottom: 10px; }
   .remove-wrap { text-align: right; margin-top: 8px; }
   .remove-task { background: none; border: 1px solid #fca5a5; color: #ef4444; border-radius: 4px; padding: 3px 10px; font-size: 12px; cursor: pointer; }
   .remove-task:hover { background: #fef2f2; }
-
-  /* Review section */
   .review-section { display: none; }
   .review-section.visible { display: block; }
-
-  /* Form fields */
   .form-input { width: 100%; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 12px; font-size: 13px; font-family: inherit; }
-  .form-textarea { width: 100%; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 12px; font-size: 13px; font-family: inherit; resize: vertical; min-height: 90px; }
+  .form-textarea { width: 100%; border: 1px solid #d1d5db; border-radius: 6px; padding: 8px 12px; font-size: 13px; font-family: inherit; resize: vertical; min-height: 160px; }
   .form-label { display: block; font-size: 11px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
   .mt-3 { margin-top: 12px; }
   .section-card { background: #fff; border-radius: 0; padding: 20px; margin-bottom: 0; box-shadow: none; border-bottom: 1px solid #f3f4f6; }
@@ -80,37 +66,35 @@
   .section-title { font-size: 13px; font-weight: 700; color: #1a1a2e; margin-bottom: 14px; padding-bottom: 8px; border-bottom: 2px solid #c9a84c; }
   .add-task-btn { display: inline-flex; align-items: center; gap: 6px; background: #1a1a2e; color: #c9a84c; border: none; border-radius: 6px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; margin-top: 4px; }
   .add-task-btn:hover { background: #2d2d4e; }
+  .save-status { font-size: 11px; color: #9ca3af; }
+  .save-status.saving { color: #f59e0b; }
+  .save-status.saved { color: #10b981; }
 </style>
 </head>
 <body>
-
-<!-- TOP HEADER -->
 <div class="dark-header text-white px-6 py-3 flex items-center justify-between">
   <div class="flex items-center gap-3">
     <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy" class="h-10 w-auto">
     <div>
-      <div class="font-semibold text-sm">Focus Awards Level 3 Certificate in Assessing Vocational Achievement (CAVA)</div>
+      <div class="font-semibold text-sm">Focus Awards Level 3 Certificate in Assessing Vocational Achievement</div>
       <div class="text-xs text-gray-400">Assessment Action Plan</div>
     </div>
   </div>
   <div class="flex items-center gap-4">
     <a href="index.html" class="gold text-black text-xs font-semibold px-3 py-2 rounded hover:opacity-90 transition">&larr; Back to Hub</a>
     <div class="text-right text-xs text-gray-400">
-      <div>Qualification Ref: R/616/2834</div>
+      <div>Qualification Code: R/616/2834</div>
       <div>PT Academy</div>
     </div>
   </div>
 </div>
 
-<!-- NAV BAR -->
 <div class="nav-bar text-white flex gap-0 px-6 overflow-x-auto">
   <a href="index.html?tab=documents" class="nav-link" style="color:#c9a84c;font-weight:700;">Assessment Documents</a>
 </div>
 
-<!-- MAIN CONTENT -->
 <div class="max-w-4xl mx-auto px-4 py-6">
 
-  <!-- PLAN TYPE SELECTOR -->
   <div style="margin-bottom:16px;">
     <div style="font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:0.07em;margin-bottom:8px;">Select Plan Type</div>
     <div class="plan-type-wrap">
@@ -131,46 +115,45 @@
     </div>
   </div>
 
-  <!-- PLAN DOCUMENT -->
   <div id="plan-doc" style="border-radius:8px;overflow:hidden;box-shadow:0 1px 3px rgba(0,0,0,0.09);">
 
-    <!-- HEADER BAND -->
-    <div style="background:#1a1a2e;color:white;padding:16px 20px;">
-      <div style="color:#c9a84c;font-size:16px;font-weight:700;" id="plan-title-display">Initial Action Plan</div>
-      <div style="font-size:12px;color:#9ca3af;margin-top:2px;">Focus Awards Level 3 CAVA &mdash; PT Academy</div>
+    <div style="background:#1a1a2e;color:white;padding:16px 20px;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <div style="color:#c9a84c;font-size:16px;font-weight:700;" id="plan-title-display">Initial Action Plan</div>
+        <div style="font-size:12px;color:#9ca3af;margin-top:2px;">Focus Awards Level 3 Certificate in Assessing Vocational Achievement</div>
+      </div>
+      <div class="save-status" id="save-status">Draft</div>
     </div>
 
-    <!-- LEARNER DETAILS -->
     <div class="section-card">
       <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px;">
         <div style="grid-column:span 2;">
           <label class="form-label">Learner Name</label>
-          <input type="text" id="learner-name" class="form-input" placeholder="Full name">
+          <input type="text" id="learner-name" class="form-input" placeholder="Full name" onchange="autoSave()">
         </div>
         <div>
           <label class="form-label">Meeting Date</label>
-          <input type="date" id="meeting-date" class="form-input">
+          <input type="date" id="meeting-date" class="form-input" onchange="autoSave()">
         </div>
         <div style="grid-column:span 2;">
           <label class="form-label">Learner Email</label>
-          <input type="email" id="learner-email" class="form-input" placeholder="learner@email.com">
+          <input type="email" id="learner-email" class="form-input" placeholder="learner@email.com" onchange="autoSave()">
         </div>
         <div>
           <label class="form-label">Next Meeting Date</label>
-          <input type="date" id="next-meeting-date" class="form-input">
+          <input type="date" id="next-meeting-date" class="form-input" onchange="autoSave()">
         </div>
         <div style="grid-column:span 2;">
           <label class="form-label">Assessor Name</label>
-          <input type="text" id="assessor-name" class="form-input" placeholder="Assessor full name">
+          <input type="text" id="assessor-name" class="form-input" placeholder="Assessor full name" onchange="autoSave()">
         </div>
         <div>
           <label class="form-label">Meeting Location / Method</label>
-          <input type="text" id="meeting-location" class="form-input" placeholder="e.g. Teams, Workplace, Phone">
+          <input type="text" id="meeting-location" class="form-input" placeholder="e.g. Teams, Workplace, Phone" onchange="autoSave()">
         </div>
       </div>
     </div>
 
-    <!-- PROGRAMME & UNITS -->
     <div class="section-card">
       <div class="section-title">Learner Programme &amp; Units Discussed</div>
       <div class="prog-wrap">
@@ -179,177 +162,225 @@
       </div>
       <p id="prog-label" style="font-size:12px;color:#6b7280;margin-bottom:10px;">Level 2 Gym Instructor tasks. Select all that apply to this assessment period.</p>
 
-      <!-- L2 Units -->
       <div id="units-l2" style="display:block;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <label class="unit-check"><input type="checkbox"> Anatomy, Physiology and Kinesiology for Exercise and Health
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Anatomy, Physiology and Kinesiology for Exercise and Health
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Multiple Choice Questions</div>
           </label>
-          <label class="unit-check"><input type="checkbox"> Principles of Health and Wellbeing for Exercise, Fitness and Health
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Principles of Health and Wellbeing for Exercise, Fitness and Health
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Multiple Choice Questions</div>
           </label>
-          <label class="unit-check"><input type="checkbox"> Principles of Professional Practice and Health and Safety in a Fitness Environment
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Principles of Professional Practice and Health and Safety in a Fitness Environment
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Short Answer Questions</div>
           </label>
-          <label class="unit-check"><input type="checkbox"> Supporting Clients Lifestyle Management and Client Motivation
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Supporting Clients Lifestyle Management and Client Motivation
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Short Answer Questions</div>
           </label>
-          <label class="unit-check"><input type="checkbox"> Planning Professional Practice with Effective Consultations and Assessments for Gym Based Exercise Sessions
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Planning Professional Practice with Effective Consultations and Assessments for Gym Based Exercise Sessions
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Short Answer Questions</div>
           </label>
-          <label class="unit-check"><input type="checkbox"> Planning Professional Practice with Effective Consultations and Assessments for Gym Based Exercise Sessions
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Planning Professional Practice with Effective Consultations and Assessments for Gym Based Exercise Sessions
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Screening and Client Consultation</div>
           </label>
-          <label class="unit-check"><input type="checkbox"> Planning Professional Practice with Effective Consultations and Assessments for Gym Based Exercise Sessions
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Planning Professional Practice with Effective Consultations and Assessments for Gym Based Exercise Sessions
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Programme and Session Cards</div>
           </label>
-          <label class="unit-check"><input type="checkbox"> Instructing Professional Practice and Effective Exercise Supervision in Gym Based Exercise Sessions
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Instructing Professional Practice and Effective Exercise Supervision in Gym Based Exercise Sessions
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Formative Observation</div>
           </label>
-          <label class="unit-check"><input type="checkbox"> Instructing Professional Practice and Effective Exercise Supervision in Gym Based Exercise Sessions
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Instructing Professional Practice and Effective Exercise Supervision in Gym Based Exercise Sessions
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Summative Practical Observation and Self Reflection Questions</div>
           </label>
         </div>
       </div>
 
-      <!-- L3 Units -->
       <div id="units-l3" style="display:none;">
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
-          <label class="unit-check"><input type="checkbox"> Anatomy and Physiology for Exercise and Health
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Anatomy and Physiology for Exercise and Health
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">May be APLed from Level 2 Gym Instructor qualification</div>
           </label>
-          <label class="unit-check"><input type="checkbox"> Applying Nutritional Principles to Personal Training
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Applying Nutritional Principles to Personal Training
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Multiple Choice Questions</div>
           </label>
-          <label class="unit-check"><input type="checkbox"> Applying Nutritional Principles to Personal Training
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Applying Nutritional Principles to Personal Training
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Case Study: Client Consultation, Calculating Energy Needs and Food Diary Analysis</div>
           </label>
-          <label class="unit-check"><input type="checkbox"> Planning Exercise Programme Design for Personal Training Clients
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Planning Exercise Programme Design for Personal Training Clients
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Case Study: Client Consultations, Health and Fitness Assessment, SMART Goal Setting</div>
           </label>
-          <label class="unit-check"><input type="checkbox"> Planning Exercise Programme Design for Personal Training Clients
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Planning Exercise Programme Design for Personal Training Clients
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Case Study: Progressive Programme Overview</div>
           </label>
-          <label class="unit-check"><input type="checkbox"> Planning Exercise Programme Design for Personal Training Clients
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Planning Exercise Programme Design for Personal Training Clients
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Case Study: Single Programme Card</div>
           </label>
-          <label class="unit-check"><input type="checkbox"> Planning Exercise Programme Design for Personal Training Clients
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Planning Exercise Programme Design for Personal Training Clients
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Case Study: Case Study Review</div>
           </label>
-          <label class="unit-check"><input type="checkbox"> Planning Exercise Programme Design for Personal Training Clients
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Planning Exercise Programme Design for Personal Training Clients
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Case Study: Small Group PT Programme Card</div>
           </label>
-          <label class="unit-check"><input type="checkbox"> Business Acumen and the Use of Information Technology for a Personal Trainer
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Business Acumen and the Use of Information Technology for a Personal Trainer
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Business Plan and Short Answer Questions</div>
           </label>
-          <label class="unit-check"><input type="checkbox"> Delivering Exercise Programmes for Personal Training Sessions
+          <label class="unit-check"><input type="checkbox" onchange="autoSave()"> Delivering Exercise Programmes for Personal Training Sessions
             <div style="font-size:11px;color:#c9a84c;margin-top:2px;">Practical Observation: Summative Assessment and Self Reflection Questions</div>
           </label>
         </div>
       </div>
     </div>
 
-    <!-- ASSESSMENT METHODS — compact/halved -->
     <div class="section-card">
       <div class="section-title">Assessment Methods</div>
       <div class="methods-grid">
-        <label class="method-chip"><input type="checkbox"> Observation</label>
-        <label class="method-chip"><input type="checkbox"> Q &amp; A (verbal)</label>
-        <label class="method-chip"><input type="checkbox"> Written Q &amp; A</label>
-        <label class="method-chip"><input type="checkbox"> Professional Discussion</label>
-        <label class="method-chip"><input type="checkbox"> Witness Testimony</label>
-        <label class="method-chip"><input type="checkbox"> Work Product</label>
-        <label class="method-chip"><input type="checkbox"> Portfolio Evidence</label>
-        <label class="method-chip"><input type="checkbox"> RPL</label>
-        <label class="method-chip"><input type="checkbox"> Simulation</label>
-        <label class="method-chip"><input type="checkbox"> Case Study</label>
+        <label class="method-chip"><input type="checkbox" onchange="autoSave()"> Observation</label>
+        <label class="method-chip"><input type="checkbox" onchange="autoSave()"> Q &amp; A (verbal)</label>
+        <label class="method-chip"><input type="checkbox" onchange="autoSave()"> Written Q &amp; A</label>
+        <label class="method-chip"><input type="checkbox" onchange="autoSave()"> Professional Discussion</label>
+        <label class="method-chip"><input type="checkbox" onchange="autoSave()"> Witness Testimony</label>
+        <label class="method-chip"><input type="checkbox" onchange="autoSave()"> Work Product</label>
+        <label class="method-chip"><input type="checkbox" onchange="autoSave()"> Portfolio Evidence</label>
+        <label class="method-chip"><input type="checkbox" onchange="autoSave()"> RPL</label>
+        <label class="method-chip"><input type="checkbox" onchange="autoSave()"> Simulation</label>
+        <label class="method-chip"><input type="checkbox" onchange="autoSave()"> Case Study</label>
       </div>
     </div>
 
-    <!-- SESSION REVIEW (plan type 2 only) -->
     <div id="review-section" class="review-section section-card">
       <div class="section-title">Session Review</div>
       <div class="mb-4" style="margin-bottom:14px;">
         <label class="form-label">Progress since last meeting</label>
-        <textarea id="review-progress" class="form-textarea" placeholder="Summarise the learner's progress against previously agreed tasks..."></textarea>
+        <textarea id="review-progress" class="form-textarea" placeholder="Summarise the learner's progress against previously agreed tasks..." onchange="autoSave()"></textarea>
       </div>
       <div style="margin-bottom:14px;">
         <label class="form-label">Tasks completed</label>
         <div style="display:flex;gap:16px;flex-wrap:wrap;margin-top:4px;">
-          <label style="display:flex;align-items:center;gap:6px;font-size:13px;"><input type="radio" name="tasks-complete" value="all"> All tasks completed</label>
-          <label style="display:flex;align-items:center;gap:6px;font-size:13px;"><input type="radio" name="tasks-complete" value="some"> Some tasks completed</label>
-          <label style="display:flex;align-items:center;gap:6px;font-size:13px;"><input type="radio" name="tasks-complete" value="none"> No tasks completed</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;"><input type="radio" name="tasks-complete" value="all" onchange="autoSave()"> All tasks completed</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;"><input type="radio" name="tasks-complete" value="some" onchange="autoSave()"> Some tasks completed</label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;"><input type="radio" name="tasks-complete" value="none" onchange="autoSave()"> No tasks completed</label>
         </div>
       </div>
       <div>
         <label class="form-label">Barriers or concerns identified</label>
-        <textarea id="review-barriers" class="form-textarea" placeholder="Note any barriers to progress, concerns raised, or support needs identified..."></textarea>
+        <textarea id="review-barriers" class="form-textarea" placeholder="Note any barriers to progress, concerns raised, or support needs identified..." onchange="autoSave()"></textarea>
       </div>
     </div>
 
-    <!-- ACTION TASKS -->
     <div class="section-card">
       <div class="section-title">Action Tasks</div>
       <div id="task-list">
         <div class="task-row">
           <div class="date-row">
             <label>Target Completion Date</label>
-            <input type="date">
+            <input type="date" onchange="autoSave()">
           </div>
           <label>Task Description</label>
-          <textarea placeholder="Describe the task clearly, including what the learner needs to do and how they should record or submit their evidence."></textarea>
+          <textarea placeholder="Describe the task clearly, including what the learner needs to do and how they should record or submit their evidence." onchange="autoSave()"></textarea>
           <div class="remove-wrap">
-            <button class="remove-task" onclick="removeTask(this)">&#10005; Remove</button>
+            <button class="remove-task" onclick="removeTask(this)">✕ Remove</button>
           </div>
         </div>
       </div>
-      <button class="add-task-btn" onclick="addTask()">&#43; Add Another Task</button>
+      <button class="add-task-btn" onclick="addTask()">+ Add Another Task</button>
     </div>
 
-    <!-- ADDITIONAL NOTES -->
     <div class="section-card">
       <div class="section-title">Additional Notes</div>
-      <textarea id="additional-notes" class="form-textarea" placeholder="Any additional notes, agreed actions, or information to share with the learner..."></textarea>
+      <textarea id="additional-notes" class="form-textarea" placeholder="Any additional notes, agreed actions, or information to share with the learner..." onchange="autoSave()"></textarea>
     </div>
 
-    <!-- SIGNATURES -->
     <div class="section-card" style="border-radius:0 0 8px 8px;">
       <div class="section-title">Signatures</div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div>
           <label class="form-label">Learner Signature</label>
-          <input type="text" class="form-input" placeholder="Type full name as signature">
+          <input type="text" class="form-input" placeholder="Type full name as signature" onchange="autoSave()">
           <label class="form-label mt-3" style="margin-top:12px;">Date</label>
-          <input type="date" class="form-input">
+          <input type="date" class="form-input" onchange="autoSave()">
         </div>
         <div>
           <label class="form-label">Assessor Signature</label>
-          <input type="text" class="form-input" placeholder="Type full name as signature">
+          <input type="text" class="form-input" placeholder="Type full name as signature" onchange="autoSave()">
           <label class="form-label mt-3" style="margin-top:12px;">Date</label>
-          <input type="date" class="form-input">
+          <input type="date" class="form-input" onchange="autoSave()">
         </div>
       </div>
     </div>
+  </div>
 
-  </div><!-- /plan-doc -->
-
-  <!-- ACTION BUTTONS -->
   <div class="flex flex-wrap gap-3 mt-6">
     <button onclick="downloadPDF()" class="gold text-black font-bold px-6 py-3 rounded-lg text-sm hover:opacity-90 transition">
-      &#x2B07; Download PDF
+      ⬇ Download PDF
     </button>
     <button onclick="emailLearner()" class="text-white font-bold px-6 py-3 rounded-lg text-sm hover:opacity-90 transition" style="background:#1a1a2e;">
-      &#x2709; Email to Learner
+      ✉ Email to Learner
     </button>
   </div>
 
-</div><!-- /main -->
+</div>
 
-<!-- FOOTER -->
-<div class="text-center py-6 text-xs text-gray-400">Focus Awards Level 3 CAVA &mdash; Assessment Action Plan &mdash; PT Academy</div>
+<div class="text-center py-6 text-xs text-gray-400">Focus Awards Level 3 Certificate in Assessing Vocational Achievement | Assessment Action Plan | PT Academy</div>
 
 <script>
 let currentPlanType = 1;
+let saveTimer;
+
+function autoSave() {
+  const status = document.getElementById('save-status');
+  status.textContent = 'Saving...';
+  status.classList.add('saving');
+  status.classList.remove('saved');
+  
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => {
+    const formData = collectFormData();
+    localStorage.setItem('actionPlanData', JSON.stringify(formData));
+    status.textContent = 'Saved';
+    status.classList.remove('saving');
+    status.classList.add('saved');
+    setTimeout(() => {
+      status.textContent = 'Draft';
+      status.classList.remove('saved');
+    }, 2000);
+  }, 500);
+}
+
+function collectFormData() {
+  const data = {
+    planType: currentPlanType,
+    learnerName: document.getElementById('learner-name').value,
+    meetingDate: document.getElementById('meeting-date').value,
+    learnerEmail: document.getElementById('learner-email').value,
+    nextMeetingDate: document.getElementById('next-meeting-date').value,
+    assessorName: document.getElementById('assessor-name').value,
+    meetingLocation: document.getElementById('meeting-location').value,
+    reviewProgress: document.getElementById('review-progress').value,
+    reviewBarriers: document.getElementById('review-barriers').value,
+    additionalNotes: document.getElementById('additional-notes').value,
+    timestamp: new Date().toISOString()
+  };
+  return data;
+}
+
+function loadSavedData() {
+  const saved = localStorage.getItem('actionPlanData');
+  if (saved) {
+    try {
+      const data = JSON.parse(saved);
+      if (data.learnerName) document.getElementById('learner-name').value = data.learnerName;
+      if (data.meetingDate) document.getElementById('meeting-date').value = data.meetingDate;
+      if (data.learnerEmail) document.getElementById('learner-email').value = data.learnerEmail;
+      if (data.nextMeetingDate) document.getElementById('next-meeting-date').value = data.nextMeetingDate;
+      if (data.assessorName) document.getElementById('assessor-name').value = data.assessorName;
+      if (data.meetingLocation) document.getElementById('meeting-location').value = data.meetingLocation;
+      if (data.reviewProgress) document.getElementById('review-progress').value = data.reviewProgress;
+      if (data.reviewBarriers) document.getElementById('review-barriers').value = data.reviewBarriers;
+      if (data.additionalNotes) document.getElementById('additional-notes').value = data.additionalNotes;
+    } catch (e) {
+      console.log('Could not load saved data');
+    }
+  }
+}
 
 function setProgramme(prog, btn) {
   document.getElementById('prog-l2').classList.remove('l2-active');
@@ -361,6 +392,7 @@ function setProgramme(prog, btn) {
   document.getElementById('prog-label').textContent = isL2
     ? 'Level 2 Gym Instructor tasks. Select all that apply to this assessment period.'
     : 'Level 3 Personal Training tasks. Select all that apply to this assessment period.';
+  autoSave();
 }
 
 function setPlanType(n, btn) {
@@ -375,9 +407,8 @@ function setPlanType(n, btn) {
     review.classList.remove('visible');
     document.getElementById('plan-title-display').textContent = 'Initial Action Plan';
   }
+  autoSave();
 }
-
-
 
 function addTask() {
   const list = document.getElementById('task-list');
@@ -386,19 +417,23 @@ function addTask() {
   row.innerHTML = `
     <div class="date-row">
       <label>Target Completion Date</label>
-      <input type="date">
+      <input type="date" onchange="autoSave()">
     </div>
     <label>Task Description</label>
-    <textarea placeholder="Describe the task clearly, including what the learner needs to do and how they should record or submit their evidence."></textarea>
+    <textarea placeholder="Describe the task clearly, including what the learner needs to do and how they should record or submit their evidence." onchange="autoSave()"></textarea>
     <div class="remove-wrap">
-      <button class="remove-task" onclick="removeTask(this)">&#10005; Remove</button>
+      <button class="remove-task" onclick="removeTask(this)">✕ Remove</button>
     </div>`;
   list.appendChild(row);
+  autoSave();
 }
 
 function removeTask(btn) {
   const rows = document.querySelectorAll('.task-row');
-  if (rows.length > 1) btn.closest('.task-row').remove();
+  if (rows.length > 1) {
+    btn.closest('.task-row').remove();
+    autoSave();
+  }
 }
 
 function getTasks() {
@@ -418,7 +453,9 @@ function downloadPDF() {
   const filename = `PT Academy ${planLabel} ${learner}.pdf`;
   const el = document.getElementById('plan-doc');
   const btns = document.querySelectorAll('.add-task-btn, .remove-task');
+  const status = document.getElementById('save-status');
   btns.forEach(b => b.style.display = 'none');
+  status.style.display = 'none';
   html2pdf().set({
     margin: 12,
     filename: filename,
@@ -427,6 +464,7 @@ function downloadPDF() {
     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
   }).from(el).save().then(() => {
     btns.forEach(b => b.style.display = '');
+    status.style.display = '';
   });
 }
 
@@ -453,6 +491,8 @@ function emailLearner() {
   body += `If you have any questions before our next meeting, please get in touch.\n\nKind regards,\n${assessorName}\nPT Academy`;
   window.location.href = `mailto:${learnerEmail}?subject=${subject}&body=${encodeURIComponent(body)}`;
 }
+
+window.addEventListener('load', loadSavedData);
 </script>
 </body>
 </html>
