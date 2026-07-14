@@ -52,7 +52,8 @@
   <a href="index.html#intro" class="nav-link">Introduction</a>
   <a href="index.html#qual-structure" class="nav-link">Qualification Structure</a>
   <a href="index.html#requirements" class="nav-link">Requirements</a>
-<a href="index.html?tab=documents" style="display:inline-block;margin-top:8px;background:#c9a84c;color:#111;text-decoration:none;font-weight:bold;font-size:13px;padding:6px 14px;border-radius:4px;">&#8592; Assessment Documents</a></div>
+  <a href="index.html?tab=documents" style="display:inline-block;margin-top:8px;background:#c9a84c;color:#111;text-decoration:none;font-weight:bold;font-size:13px;padding:6px 14px;border-radius:4px;">&#8592; Assessment Documents</a>
+</div>
 
 <!-- MAIN CONTENT -->
 <div class="max-w-4xl mx-auto px-4 py-6">
@@ -199,7 +200,7 @@
         </div>
       </div>
 
-      <!-- DECLARATION & SIGN OFF — inline, below LO grid -->
+      <!-- DECLARATION & SIGN OFF -->
       <div id="declarationBlock" class="mt-8">
         <div class="dark-header text-white px-6 py-4 rounded-t-lg">
           <div class="font-semibold" style="color:#c9a84c;">Declaration &amp; Sign Off</div>
@@ -280,7 +281,6 @@
           <div class="saved-indicator" id="saved_q1_4"></div>
         </div>
       </div>
-      <!-- LO1 Feedback Panel -->
       <div id="feedback-lo1" class="feedback-panel">
         <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
         <div id="feedback-lo1-outcome" class="mb-3"></div>
@@ -304,7 +304,6 @@
           <div class="saved-indicator" id="saved_q2_1"></div>
         </div>
       </div>
-      <!-- LO2 Feedback Panel -->
       <div id="feedback-lo2" class="feedback-panel">
         <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
         <div id="feedback-lo2-outcome" class="mb-3"></div>
@@ -338,7 +337,6 @@
           <div class="saved-indicator" id="saved_q3_3"></div>
         </div>
       </div>
-      <!-- LO3 Feedback Panel -->
       <div id="feedback-lo3" class="feedback-panel">
         <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
         <div id="feedback-lo3-outcome" class="mb-3"></div>
@@ -377,7 +375,6 @@
           <div class="saved-indicator" id="saved_q4_4"></div>
         </div>
       </div>
-      <!-- LO4 Feedback Panel -->
       <div id="feedback-lo4" class="feedback-panel">
         <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
         <div id="feedback-lo4-outcome" class="mb-3"></div>
@@ -411,7 +408,6 @@
           <div class="saved-indicator" id="saved_q5_3"></div>
         </div>
       </div>
-      <!-- LO5 Feedback Panel -->
       <div id="feedback-lo5" class="feedback-panel">
         <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
         <div id="feedback-lo5-outcome" class="mb-3"></div>
@@ -440,7 +436,6 @@
           <div class="saved-indicator" id="saved_q6_2"></div>
         </div>
       </div>
-      <!-- LO6 Feedback Panel -->
       <div id="feedback-lo6" class="feedback-panel">
         <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
         <div id="feedback-lo6-outcome" class="mb-3"></div>
@@ -474,7 +469,6 @@
           <div class="saved-indicator" id="saved_q7_3"></div>
         </div>
       </div>
-      <!-- LO7 Feedback Panel -->
       <div id="feedback-lo7" class="feedback-panel">
         <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
         <div id="feedback-lo7-outcome" class="mb-3"></div>
@@ -513,7 +507,6 @@
           <div class="saved-indicator" id="saved_q8_4"></div>
         </div>
       </div>
-      <!-- LO8 Feedback Panel -->
       <div id="feedback-lo8" class="feedback-panel">
         <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
         <div id="feedback-lo8-outcome" class="mb-3"></div>
@@ -590,7 +583,6 @@ async function loadSavedData() {
     }
   }
 
-  // Load assessor feedback for each LO
   const { data: feedbackRows } = await sb
     .from('unit1_feedback')
     .select('*')
@@ -598,7 +590,7 @@ async function loadSavedData() {
 
   if (feedbackRows && feedbackRows.length > 0) {
     feedbackRows.forEach(row => {
-      const lo = row.lo; // e.g. 'lo1'
+      const lo = row.lo;
       const panel = document.getElementById('feedback-' + lo);
       const outcomeEl = document.getElementById('feedback-' + lo + '-outcome');
       const textEl = document.getElementById('feedback-' + lo + '-text');
