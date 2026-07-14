@@ -95,10 +95,6 @@
   <div class="text-center py-4 text-xs text-gray-600">Focus Awards Level 3 CAVA · Assessor Tools</div>
 
 <script>
-  const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
-  const SUPABASE_ANON_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
-  const { createClient } = supabase;
-  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const UNITS = [
     {
@@ -123,6 +119,7 @@
   let unitStates = {};
   let currentOverrides = {};
   let assessorUser = null;
+  let sb = null;
 
   // Date input handler for arrow key navigation
   document.addEventListener('keydown', (e) => {
@@ -166,6 +163,11 @@
     const userRaw = localStorage.getItem('cava_user');
     if (!userRaw) { window.location.href = 'login.html'; return; }
     assessorUser = JSON.parse(userRaw);
+    sb = window.sbClient;
+    if (!sb) {
+      document.getElementById('learnerList').innerHTML = '<div class="text-xs text-red-400 text-center py-4">Supabase client not initialised</div>';
+      return;
+    }
     await loadLearners();
     await loadLog(null);
   }
@@ -419,11 +421,11 @@
       }
     }
 
-    btn.disabled = false; btn.textContent = 'Save Changes';
     const msg = document.getElementById('saveMsg');
     msg.textContent = '✓ Saved successfully';
     msg.className = 'text-center text-xs mt-2 text-green-400';
     setTimeout(() => msg.textContent = '', 4000);
+    btn.disabled = false; btn.textContent = 'Save Changes';
     await loadLog(selectedLearner.id);
   }
 
