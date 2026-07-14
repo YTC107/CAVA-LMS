@@ -1,173 +1,178 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learner Unit Manager</title>
+    <title>CAVA – Learner Unit Manager</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="supabase-integration.js"></script>
+    <script src="supabase-integration.js"></script>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
-        }
-        .container { max-width: 900px; margin: 0 auto; }
-        h1 { margin-bottom: 10px; font-size: 24px; color: #333; }
-        .subtitle { color: #666; margin-bottom: 20px; font-size: 14px; }
-        .learner-item {
-            background: white;
-            border: 1px solid #ddd;
-            margin-bottom: 12px;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-        .learner-header {
-            padding: 14px 16px;
-            background: #2c3e50;
-            color: white;
-            cursor: pointer;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: 500;
-        }
-        .learner-header:hover { background: #34495e; }
-        .learner-name { font-size: 15px; }
-        .unit-count { font-size: 12px; opacity: 0.8; }
-        .units { display: none; padding: 0; }
-        .units.open { display: block; }
-        .unit-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 12px 16px;
-            border-top: 1px solid #eee;
-        }
-        .unit-row:last-child { border-bottom: none; }
-        .unit-name { font-size: 14px; color: #333; flex: 1; }
-        .toggle-btn {
-            padding: 6px 12px;
-            border: none;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 12px;
-            font-weight: 500;
-            transition: all 0.2s;
-        }
-        .btn-enabled {
-            background: #27ae60;
-            color: white;
-        }
-        .btn-enabled:hover { background: #229954; }
-        .btn-disabled {
-            background: #e74c3c;
-            color: white;
-        }
-        .btn-disabled:hover { background: #c0392b; }
-        .loading { text-align: center; padding: 40px; color: #666; }
-        .error { background: #fadbd8; color: #c0392b; padding: 14px; border-radius: 4px; margin-bottom: 20px; }
+        :root { --gold: #C9A84C; }
+        .gold-text { color: #C9A84C; }
+        .gold-bg { background-color: #C9A84C; }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Learner Unit Manager</h1>
-        <p class="subtitle">Select or deselect units for each learner</p>
-        <div id="error"></div>
-        <div id="content" class="loading">Loading learners...</div>
+<body class="min-h-screen bg-gray-50 text-gray-900 px-4 py-8">
+
+    <div class="max-w-4xl mx-auto">
+
+        <!-- Header -->
+        <div class="flex items-center justify-between mb-8 px-6 py-5 rounded-2xl" style="background-color:#0a0a0a;">
+            <div class="flex items-center gap-4">
+                <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy Logo" class="h-14 w-auto" />
+                <div>
+                    <h1 class="text-2xl font-bold gold-text">Learner Unit Manager</h1>
+                    <p class="text-gray-400 text-sm">Manage learner access to assessment units</p>
+                </div>
+            </div>
+            <div class="text-right">
+                <p class="text-gray-300 text-sm">Michael Kplomedo</p>
+                <p class="gold-text text-xs">Administrator</p>
+            </div>
+        </div>
+
+        <!-- Welcome Banner -->
+        <div class="rounded-2xl p-6 mb-8 border-l-4 bg-white shadow-sm" style="border-left-color:#C9A84C;">
+            <h2 class="text-lg font-semibold text-gray-900 mb-1">Unit Access Control</h2>
+            <p class="text-gray-500 text-sm">Toggle unit assignments for each learner. All three units are allocated by default upon registration.</p>
+        </div>
+
+        <!-- Error Alert -->
+        <div id="errorBox" class="hidden bg-red-50 border border-red-200 text-red-700 px-5 py-3 rounded-lg mb-6"></div>
+
+        <!-- Loading State -->
+        <div id="loadingState" class="bg-white rounded-2xl p-12 text-center shadow-sm">
+            <p class="text-gray-500">Loading learners...</p>
+        </div>
+
+        <!-- Content -->
+        <div id="content" class="hidden space-y-4"></div>
+
     </div>
 
     <script>
         const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
-        const SUPABASE_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
-        
-        const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-        
-        async function loadLearners() {
+        const SUPABASE_ANON_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
+        const { createClient } = supabase;
+        const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        const UNITS = [
+            { id: 'unit1', label: 'Unit 1', title: 'Understand the principles and requirements of assessment' },
+            { id: 'unit2', label: 'Unit 2', title: 'Understand different types of assessment method' },
+            { id: 'unit3', label: 'Unit 3', title: 'Understand how to plan assessment' }
+        ];
+
+        async function init() {
+            await loadLearnerUnits();
+        }
+
+        async function loadLearnerUnits() {
             try {
-                const { data, error } = await supabase
-                    .from('learner_unit_access')
-                    .select('*')
-                    .order('learner_name', { ascending: true });
-                
-                if (error) throw error;
-                if (!data || data.length === 0) {
-                    document.getElementById('content').innerHTML = '<p>No learners found.</p>';
+                // Load all learners
+                const { data: learners, error: learnerError } = await sb
+                    .from('learners')
+                    .select('id, full_name, email')
+                    .order('full_name');
+
+                if (learnerError) throw learnerError;
+                if (!learners || learners.length === 0) {
+                    document.getElementById('loadingState').innerHTML = '<p class="text-gray-400">No learners found.</p>';
                     return;
                 }
-                
-                // Group by learner
-                const grouped = {};
-                data.forEach(record => {
-                    if (!grouped[record.learner_name]) {
-                        grouped[record.learner_name] = [];
-                    }
-                    grouped[record.learner_name].push(record);
-                });
-                
-                renderLearners(grouped);
+
+                // Load all unit_overrides
+                const { data: overrides, error: overrideError } = await sb
+                    .from('unit_overrides')
+                    .select('user_id, unit, status');
+
+                if (overrideError) throw overrideError;
+
+                // Build lookup map: user_id -> { unit: status }
+                const unitMap = {};
+                if (overrides) {
+                    overrides.forEach(o => {
+                        const uid = String(o.user_id);
+                        if (!unitMap[uid]) unitMap[uid] = {};
+                        unitMap[uid][o.unit] = o.status;
+                    });
+                }
+
+                renderLearners(learners, unitMap);
+                document.getElementById('loadingState').classList.add('hidden');
+                document.getElementById('content').classList.remove('hidden');
+
             } catch (err) {
-                document.getElementById('error').innerHTML = `Error: ${err.message}`;
-                document.getElementById('content').innerHTML = '';
+                showError(`Error loading data: ${err.message}`);
+                document.getElementById('loadingState').classList.add('hidden');
             }
         }
-        
-        function renderLearners(grouped) {
-            const html = Object.entries(grouped).map(([learnerName, units]) => {
-                const unitsHtml = units.map(unit => {
-                    const isEnabled = unit.access_status === 'enabled';
+
+        function showError(message) {
+            const box = document.getElementById('errorBox');
+            box.textContent = message;
+            box.classList.remove('hidden');
+            setTimeout(() => box.classList.add('hidden'), 5000);
+        }
+
+        function renderLearners(learners, unitMap) {
+            const container = document.getElementById('content');
+            container.innerHTML = learners.map(learner => {
+                const uid = String(learner.id);
+                const units = unitMap[uid] || {};
+                
+                const unitsHtml = UNITS.map(unit => {
+                    const isActive = units[unit.id] === 'active';
                     return `
-                        <div class="unit-row">
-                            <span class="unit-name">${unit.unit_name || 'Unit ' + unit.unit_id}</span>
-                            <button class="toggle-btn ${isEnabled ? 'btn-enabled' : 'btn-disabled'}"
-                                    onclick="toggleUnit(${unit.id}, '${unit.access_status}')">
-                                ${isEnabled ? 'Enabled' : 'Locked'}
+                        <div class="flex items-center justify-between px-4 py-3 border-b border-gray-100">
+                            <div class="flex-1">
+                                <div class="text-sm font-medium text-gray-900">${unit.label}</div>
+                                <div class="text-xs text-gray-500">${unit.title}</div>
+                            </div>
+                            <button 
+                                onclick="toggleUnit('${uid}', '${unit.id}', ${isActive})"
+                                class="px-4 py-2 rounded-lg font-semibold text-sm transition ${isActive ? 'bg-green-100 text-green-700 hover:bg-green-200' : 'bg-red-100 text-red-700 hover:bg-red-200'}">
+                                ${isActive ? 'Active' : 'Locked'}
                             </button>
                         </div>
                     `;
                 }).join('');
-                
+
                 return `
-                    <div class="learner-item">
-                        <div class="learner-header" onclick="toggleLeaner(this)">
-                            <span class="learner-name">${learnerName}</span>
-                            <span class="unit-count">${units.length} units</span>
+                    <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm card-hover">
+                        <div class="px-4 py-4 border-b border-gray-200" style="background-color:#f9fafb;">
+                            <div class="font-semibold text-gray-900">${learner.full_name}</div>
+                            <div class="text-xs text-gray-500 mt-1">${learner.email}</div>
                         </div>
-                        <div class="units">
+                        <div>
                             ${unitsHtml}
                         </div>
                     </div>
                 `;
             }).join('');
-            
-            document.getElementById('content').innerHTML = html;
         }
-        
-        function toggleLeaner(header) {
-            const units = header.nextElementSibling;
-            units.classList.toggle('open');
-        }
-        
-        async function toggleUnit(id, currentStatus) {
-            const newStatus = currentStatus === 'enabled' ? 'locked' : 'enabled';
+
+        async function toggleUnit(userId, unit, isCurrentlyActive) {
+            const newStatus = isCurrentlyActive ? 'inactive' : 'active';
             
             try {
-                const { error } = await supabase
-                    .from('learner_unit_access')
-                    .update({ access_status: newStatus })
-                    .eq('id', id);
-                
+                const { error } = await sb
+                    .from('unit_overrides')
+                    .update({ status: newStatus })
+                    .eq('user_id', userId)
+                    .eq('unit', unit);
+
                 if (error) throw error;
-                
-                // Reload to show changes
-                loadLearners();
+
+                // Reload to reflect changes
+                await loadLearnerUnits();
             } catch (err) {
-                alert('Failed to update: ' + err.message);
+                showError(`Failed to update unit: ${err.message}`);
             }
         }
-        
-        loadLearners();
+
+        init();
     </script>
+
 </body>
 </html>
