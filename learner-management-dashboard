@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learner Management Dashboard - PT Academy</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background: #1a1a1a;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #d4af37;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .logo {
+            width: 50px;
+            height: 50px;
+            background: #d4af37;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1a1a1a;
+            font-size: 24px;
+        }
+
+        .header-title h1 {
+            color: #d4af37;
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .header-title p {
+            color: #999;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .user-info {
+            text-align: right;
+        }
+
+        .user-email {
+            color: #d4af37;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-role {
+            color: #d4af37;
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .logout-btn {
+            background: #d4af37;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 13px;
+            transition: background 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #e0c158;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .welcome-section {
+            background: white;
+            border-left: 5px solid #d4af37;
+            padding: 30px;
+            margin-bottom: 40px;
+            border-radius: 4px;
+        }
+
+        .welcome-section h2 {
+            color: #1a1a1a;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .welcome-section p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-button {
+            background: none;
+            border: none;
+            padding: 15px 20px;
+            font-size: 15px;
+            cursor: pointer;
+            color: #666;
+            font-weight: 600;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+        }
+
+        .tab-button.active {
+            color: #d4af37;
+            border-bottom-color: #d4af37;
+        }
+
+        .tab-button:hover {
+            color: #d4af37;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-section {
+            background: white;
+            padding: 30px;
+            border-radius: 4px;
+            margin-bottom: 30px;
+        }
+
+        .form-section h3 {
+            color: #1a1a1a;
+            font-size: 18px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: #d4af37;
+            color: #1a1a1a;
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group label .required {
+            color: #d4af37;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #d4af37;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .submit-btn {
+            background: #d4af37;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+
+        .submit-btn:hover {
+            background: #e0c158;
+        }
+
+        .table-wrapper {
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #1a1a1a;
+            color: #d4af37;
+            padding: 12px;
+            text-align: left;
+            font-size: 13px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+            font-size: 14px;
+        }
+
+        tr:hover {
+            background: #f9f9f9;
+        }
+
+        .action-btn {
+            background: #d4af37;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #1a1a1a;
+            font-size: 12px;
+            transition: background 0.3s;
+        }
+
+        .action-btn:hover {
+            background: #e0c158;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #999;
+        }
+
+        .empty-state p {
+            font-size: 14px;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .header {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+
+            .header-left, .header-right {
+                flex-direction: column;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Authentication Guard -->
+    <script>
+        const userEmail = localStorage.getItem('userEmail');
+        const userRole = localStorage.getItem('userRole');
+
+        if (!userEmail || !userRole) {
+            window.location.href = 'login.html';
+        }
+    </script>
+
+    <!-- Header -->
+    <div class="header">
+        <div class="header-left">
+            <div class="logo">PT</div>
+            <div class="header-title">
+                <h1>Learner Management Dashboard</h1>
+                <p>Level 3 Certificate in Assessing Vocational Achievement</p>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="user-info">
+                <div class="user-email" id="userEmail"></div>
+                <div class="user-role" id="userRole"></div>
+            </div>
+            <button class="logout-btn" onclick="logout()">Log Out</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container">
+        <div class="welcome-section">
+            <h2>Welcome, Michael</h2>
+            <p>Manage learner enrolments, allocate units, and monitor progress across all learners.</p>
+        </div>
+
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-button active" onclick="switchTab('enrol')">Enrol Learner</button>
+            <button class="tab-button" onclick="switchTab('roster')">Learner Roster</button>
+            <button class="tab-button" onclick="switchTab('units')">Assign Units</button>
+        </div>
+
+        <!-- Enrol Learner Tab -->
+        <div id="enrol" class="tab-content active">
+            <div class="form-section">
+                <h3><span class="badge">Manage</span>Add/Allocate Learners</h3>
+                <p style="color: #666; margin-bottom: 25px; font-size: 14px;">Register new learners and allocate them to assessors on the qualification.</p>
+
+                <form onsubmit="handleEnrolLearner(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Full Name <span class="required">*</span></label>
+                            <input type="text" id="fullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Email Address <span class="required">*</span></label>
+                            <input type="email" id="learnerEmail" required>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="tel" id="phoneNumber">
+                        </div>
+                        <div class="form-group">
+                            <label>Date of Birth</label>
+                            <input type="date" id="dateOfBirth">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Allocate to Assessor <span class="required">*</span></label>
+                        <select id="assessor" required>
+                            <option value="">— Select an assessor —</option>
+                            <option value="assessor1">Assessor 1</option>
+                            <option value="assessor2">Assessor 2</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Enrol Learner</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Learner Roster Tab -->
+        <div id="roster" class="tab-content">
+            <div class="form-section">
+                <h3><span class="badge">Manage</span>Learner Roster</h3>
+                <p style="color: #666; margin-bottom: 25px; font-size: 14px;">View, edit, and manage all enrolled learners.</p>
+
+                <div class="table-wrapper">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Learner Name</th>
+                                <th>Email</th>
+                                <th>Assigned Assessor</th>
+                                <th>Enrolment Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rosterTable">
+                            <tr>
+                                <td colspan="5" class="empty-state">
+                                    <p>No learners enrolled yet. Enrol a learner to get started.</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Assign Units Tab -->
+        <div id="units" class="tab-content">
+            <div class="form-section">
+                <h3><span class="badge">Manage</span>Assign Units</h3>
+                <p style="color: #666; margin-bottom: 25px; font-size: 14px;">Create, edit, and delete learning outcomes and evidence requirements for units.</p>
+
+                <div class="form-group">
+                    <label>Select Learner <span class="required">*</span></label>
+                    <select id="learnerSelect" onchange="loadLearnerUnits()">
+                        <option value="">— Select a learner —</option>
+                    </select>
+                </div>
+
+                <div id="unitsSection" style="display: none;">
+                    <div class="form-group">
+                        <label>Assign Unit <span class="required">*</span></label>
+                        <select id="unitSelect" required>
+                            <option value="">— Select a unit —</option>
+                            <option value="unit1">Unit 1: Plan Assessment Activities</option>
+                            <option value="unit2">Unit 2: Conduct Assessment Activities</option>
+                            <option value="unit3">Unit 3: Assess Learning Outcomes</option>
+                        </select>
+                    </div>
+
+                    <button type="button" class="submit-btn" onclick="assignUnit()">Assign Unit</button>
+                </div>
+
+                <div class="table-wrapper" style="margin-top: 30px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Unit Code</th>
+                                <th>Unit Title</th>
+                                <th>Assigned Date</th>
+                                <th>Status</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="unitsTable">
+                            <tr>
+                                <td colspan="5" class="empty-state">
+                                    <p>Select a learner to view assigned units.</p>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Display user information
+        document.getElementById('userEmail').textContent = localStorage.getItem('userEmail');
+        document.getElementById('userRole').textContent = localStorage.getItem('userRole');
+
+        // Tab switching
+        function switchTab(tabName) {
+            const contents = document.querySelectorAll('.tab-content');
+            const buttons = document.querySelectorAll('.tab-button');
+
+            contents.forEach(content => content.classList.remove('active'));
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('userEmail');
+            localStorage.removeItem('userRole');
+            window.location.href = 'login.html';
+        }
+
+        // Enrol learner form
+        function handleEnrolLearner(event) {
+            event.preventDefault();
+            alert('Learner enrolment functionality to be connected to Supabase.');
+            document.querySelector('form').reset();
+        }
+
+        // Load learner units
+        function loadLearnerUnits() {
+            const learner = document.getElementById('learnerSelect').value;
+            const unitsSection = document.getElementById('unitsSection');
+
+            if (learner) {
+                unitsSection.style.display = 'block';
+            } else {
+                unitsSection.style.display = 'none';
+            }
+        }
+
+        // Assign unit
+        function assignUnit() {
+            alert('Unit assignment functionality to be connected to Supabase.');
+        }
+    </script>
+</body>
+</html>
