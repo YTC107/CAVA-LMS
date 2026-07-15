@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PT Academy – Assessor Hub</title>
+  <title>CAVA – Assessor Hub</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
@@ -19,6 +19,8 @@
     .feedback-card { background: #fefdf5; border: 1.5px solid #C9A84C; border-radius: 10px; padding: 20px; margin-bottom: 16px; }
     .save-indicator { font-size: 11px; color: #6b7280; height: 16px; margin-top: 4px; }
     .lo-label { background: #1a1a2e; color: #C9A84C; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
+    details > summary { list-style: none; cursor: pointer; }
+    details > summary::-webkit-details-marker { display: none; }
   </style>
 </head>
 <body class="min-h-screen bg-gray-50 text-gray-900 px-4 py-8">
@@ -31,57 +33,20 @@
         <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy Logo" class="h-14 w-auto" />
         <div>
           <h1 class="text-2xl font-bold gold-text">Assessor Hub</h1>
-          <p class="text-gray-400 text-sm">Focus Awards Level 3 Certificate in Assessing Vocational Achievement</p>
+          <p class="text-gray-400 text-sm">Level 3 Certificate in Assessing Vocational Achievement</p>
         </div>
       </div>
       <div class="text-right">
         <p class="text-gray-300 text-sm">Michael Kplomedo</p>
         <p class="gold-text text-xs">Assessor</p>
+        <button onclick="logout()" class="mt-3 px-4 py-1.5 text-xs font-semibold text-black rounded-lg transition" style="background-color:#C9A84C;">Log Out</button>
       </div>
     </div>
 
-    <!-- Welcome Banner with Role Badge -->
-    <div class="rounded-2xl p-6 mb-8 border-l-4 bg-white shadow-sm flex items-center justify-between" style="border-left-color:#C9A84C;">
-      <div>
-        <h2 class="text-xl font-semibold text-gray-900 mb-1">Welcome, Michael</h2>
-        <p class="text-gray-500 text-sm">Manage learner progress, complete observation records, and mark submitted unit work below.</p>
-      </div>
-      <div class="inline-block px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap" id="roleBadge" style="background-color:#f0f0f0; color:#666;">Checking role...</div>
-    </div>
-
-    <!-- Admin Functions (Super Admin Only) -->
-    <div id="adminSection" style="display:none;">
-      <h3 class="text-gray-400 text-xs uppercase tracking-widest mb-4 mt-8">Admin Functions</h3>
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-
-        <a href="learner-allocation.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-xs text-white px-2 py-1 rounded-full font-semibold" style="background-color:#8b5cf6;">Setup</span>
-            <span class="text-xs text-gray-400 group-hover:gold-text transition">Open →</span>
-          </div>
-          <h4 class="font-semibold text-gray-900 mb-1">Add/Allocate Learners</h4>
-          <p class="text-gray-500 text-sm">Onboard new learners and assign them to assessment schedules.</p>
-        </a>
-
-        <a href="learner-unit-manager.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-xs text-white px-2 py-1 rounded-full font-semibold" style="background-color:#8b5cf6;">Setup</span>
-            <span class="text-xs text-gray-400 group-hover:gold-text transition">Open →</span>
-          </div>
-          <h4 class="font-semibold text-gray-900 mb-1">Manage Units</h4>
-          <p class="text-gray-500 text-sm">Configure unit settings, timelines, and assessment requirements for learners.</p>
-        </a>
-
-        <a href="pt-academy-learner-management-dashboard.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group sm:col-span-2">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-xs text-white px-2 py-1 rounded-full font-semibold" style="background-color:#8b5cf6;">Reports</span>
-            <span class="text-xs text-gray-400 group-hover:gold-text transition">Open →</span>
-          </div>
-          <h4 class="font-semibold text-gray-900 mb-1">Learner Management Dashboard</h4>
-          <p class="text-gray-500 text-sm">Overview of all learners, enrolment status, progress and compliance reporting.</p>
-        </a>
-
-      </div>
+    <!-- Welcome Banner -->
+    <div class="rounded-2xl p-6 mb-8 border-l-4 bg-white shadow-sm" style="border-left-color:#C9A84C;">
+      <h2 class="text-xl font-semibold text-gray-900 mb-1">Welcome, Michael</h2>
+      <p class="text-gray-500 text-sm">Manage learner progress, complete observation records, and mark submitted unit work below.</p>
     </div>
 
     <!-- Assessor Documents -->
@@ -91,7 +56,7 @@
       <a href="assessment-plan.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group sm:col-span-2">
         <div class="flex items-center justify-between mb-3">
           <span class="text-xs text-black px-2 py-1 rounded-full font-semibold gold-bg">Start Here</span>
-          <span class="text-xs text-gray-400 group-hover:gold-text transition">Open →</span>
+          <span class="text-xs text-gray-400 group-hover:text-yellow-600 transition">Open →</span>
         </div>
         <h4 class="font-semibold text-gray-900 mb-1">Assessment Plan</h4>
         <p class="text-gray-500 text-sm">Review and agree assessment schedules and methods with each learner. Complete this first.</p>
@@ -100,7 +65,7 @@
       <a href="observation.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group">
         <div class="flex items-center justify-between mb-3">
           <span class="text-xs text-black px-2 py-1 rounded-full font-semibold gold-bg">Observation</span>
-          <span class="text-xs text-gray-400 group-hover:gold-text transition">Open →</span>
+          <span class="text-xs text-gray-400 group-hover:text-yellow-600 transition">Open →</span>
         </div>
         <h4 class="font-semibold text-gray-900 mb-1">Observation Record</h4>
         <p class="text-gray-500 text-sm">Record observed practice for learners in the workplace environment.</p>
@@ -109,7 +74,7 @@
       <a href="action-plan.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group">
         <div class="flex items-center justify-between mb-3">
           <span class="text-xs text-black px-2 py-1 rounded-full font-semibold gold-bg">Document</span>
-          <span class="text-xs text-gray-400 group-hover:gold-text transition">Open →</span>
+          <span class="text-xs text-gray-400 group-hover:text-yellow-600 transition">Open →</span>
         </div>
         <h4 class="font-semibold text-gray-900 mb-1">Action Plan</h4>
         <p class="text-gray-500 text-sm">Set and review targets and actions with learners.</p>
@@ -118,7 +83,7 @@
       <a href="assessor-prepass.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group">
         <div class="flex items-center justify-between mb-3">
           <span class="text-xs text-black px-2 py-1 rounded-full font-semibold gold-bg">Admin</span>
-          <span class="text-xs text-gray-400 group-hover:gold-text transition">Open →</span>
+          <span class="text-xs text-gray-400 group-hover:text-yellow-600 transition">Open →</span>
         </div>
         <h4 class="font-semibold text-gray-900 mb-1">Manage Pre-Passed Units</h4>
         <p class="text-gray-500 text-sm">Mark learner units as pre-passed or referred, and record the date awarded.</p>
@@ -146,7 +111,26 @@
       </div>
     </div>
 
-    <p class="text-center text-gray-400 text-xs mt-10">PT Academy LMS • Focus Awards • CAVA</p>
+    <!-- Learner Marking Section -->
+    <h3 class="text-gray-400 text-xs uppercase tracking-widest mb-4">Mark Unit Work — Select Learner</h3>
+
+    <div class="bg-white rounded-2xl border border-gray-200 p-5 mb-6 shadow-sm">
+      <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Learner</label>
+      <select id="markingLearner" onchange="loadFeedback()" class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-2 text-sm">
+        <option value="">— Select a learner —</option>
+      </select>
+      <div id="learnerLoadMsg" class="text-xs text-gray-400 mt-2"></div>
+    </div>
+
+    <!-- Per-LO Feedback Cards -->
+    <div id="markingPanel" style="display:none;">
+      <div class="bg-blue-50 border border-blue-200 rounded-xl px-5 py-3 mb-6 text-sm text-blue-700">
+        Select <strong>Pass</strong> or <strong>Refer</strong> for each learning outcome, write your feedback, then click <strong>Save Feedback</strong>. The learner will see this immediately when they next open their worksheet.
+      </div>
+      <div id="loFeedbackCards"></div>
+    </div>
+
+    <p class="text-center text-gray-400 text-xs mt-10">CAVA LMS &middot; Focus Awards &middot; PT Academy</p>
 
   </div>
 
@@ -156,77 +140,62 @@ const SUPABASE_ANON_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-let currentUserRole = null;
+const LO_LIST = [
+  { id: 'lo1', label: 'LO1', title: 'Understand the principles and requirements of assessment' },
+  { id: 'lo2', label: 'LO2', title: 'Understand different types of assessment method' },
+  { id: 'lo3', label: 'LO3', title: 'Understand how to plan assessment' },
+  { id: 'lo4', label: 'LO4', title: 'Understand how to involve learners and others in assessment' },
+  { id: 'lo5', label: 'LO5', title: 'Understand how to make assessment decisions' },
+  { id: 'lo6', label: 'LO6', title: 'Understand quality assurance of the assessment process' },
+  { id: 'lo7', label: 'LO7', title: 'Understand how to manage information relating to assessment' },
+  { id: 'lo8', label: 'LO8', title: 'Understand the legal and good practice requirements in relation to assessment' }
+];
+
+let selectedUserId = null;
+let outcomeSelections = {};
+let allLearners = [];
 
 async function init() {
-  await checkUserRole();
   await loadLearnerProgress();
-}
-
-async function checkUserRole() {
-  try {
-    const { data: { user } } = await sb.auth.getUser();
-    if (!user) {
-      currentUserRole = 'general_assessor';
-      setRoleBadge('General Assessor', '#2563eb');
-      return;
-    }
-
-    const { data: adminCheck } = await sb
-      .from('super_admins')
-      .select('id')
-      .eq('user_id', user.id)
-      .maybeSingle();
-
-    if (adminCheck) {
-      currentUserRole = 'super_admin';
-      setRoleBadge('Super Admin', '#059669');
-      document.getElementById('adminSection').style.display = 'block';
-    } else {
-      currentUserRole = 'general_assessor';
-      setRoleBadge('General Assessor', '#2563eb');
-    }
-  } catch (err) {
-    console.error('Role check failed:', err);
-    currentUserRole = 'general_assessor';
-    setRoleBadge('General Assessor', '#2563eb');
-  }
-}
-
-function setRoleBadge(text, bgColor) {
-  const badge = document.getElementById('roleBadge');
-  badge.textContent = text;
-  badge.style.backgroundColor = bgColor;
-  badge.style.color = 'white';
 }
 
 async function loadLearnerProgress() {
   const { data: learners, error } = await sb
     .from('learners')
     .select('id, full_name, username, email')
-    .order('full_name', { ascending: true });
+    .order('full_name');
 
   if (error || !learners) {
     document.getElementById('learner-table').innerHTML = '<div class="px-4 py-4 text-sm text-red-400">Could not load learners.</div>';
     return;
   }
 
+  allLearners = learners;
+
+  // Populate marking dropdown
+  const sel = document.getElementById('markingLearner');
+  learners.forEach(l => {
+    const opt = document.createElement('option');
+    opt.value = l.id;
+    opt.textContent = l.full_name || l.username;
+    sel.appendChild(opt);
+  });
+
+  // Load unit_overrides — use String() for all id comparisons to avoid type mismatch
   const { data: overrides } = await sb.from('unit_overrides').select('id, user_id, unit, status').order('id', { ascending: false });
   const overrideMap = {};
   if (overrides) {
     overrides.forEach(o => {
       const uid = String(o.user_id);
       if (!overrideMap[uid]) overrideMap[uid] = {};
+      // Order is descending so first seen is most recent — don't overwrite
       if (!overrideMap[uid][o.unit]) overrideMap[uid][o.unit] = o.status;
     });
   }
 
-  const { data: subs1 } = await sb.from('unit1_submissions').select('user_id');
-  const { data: subs2 } = await sb.from('unit2_submissions').select('user_id');
-  const submittedIds = new Set([
-    ...(subs1 || []).map(s => String(s.user_id)),
-    ...(subs2 || []).map(s => String(s.user_id))
-  ]);
+  // Load unit1_submissions to check who has submitted work
+  const { data: subs } = await sb.from('unit1_submissions').select('user_id');
+  const submittedIds = new Set((subs || []).map(s => String(s.user_id)));
 
   const table = document.getElementById('learner-table');
   if (!learners.length) {
@@ -246,6 +215,7 @@ async function loadLearnerProgress() {
       return '⬜';
     }
 
+    // Assessment Plan column: show ✅ if any unit has an override record, 🔄 if submitted, else ⬜
     const hasAnyOverride = Object.keys(lo).length > 0;
     const planIcon = hasAnyOverride ? '✅' : submittedIds.has(uid) ? '🔄' : '⬜';
 
@@ -258,14 +228,121 @@ async function loadLearnerProgress() {
         <a href="assessment-plan.html?learner=${encodeURIComponent(String(l.id))}" class="text-center text-lg block hover:scale-110 transition" title="Open Assessment Plan">${planIcon}</a>
         <a href="unit1.html?learner=${encodeURIComponent(String(l.id))}" class="text-center text-lg block hover:scale-110 transition" title="Unit 1">${unitIcon('unit1')}</a>
         <a href="unit2.html?learner=${encodeURIComponent(String(l.id))}" class="text-center text-lg block hover:scale-110 transition" title="Unit 2">${unitIcon('unit2')}</a>
-        <a href="unit3.html?learner=${encodeURIComponent(String(l.id))}" class="text-center text-lg block hover:scale-110 transition" title="Unit 3">${unitIcon('unit3')}</a>
+        <a href="unit2.html?learner=${encodeURIComponent(String(l.id))}" class="text-center text-lg block hover:scale-110 transition" title="Unit 3">${unitIcon('unit3')}</a>
       </div>
     `;
   }).join('');
 }
 
-window.addEventListener('load', init);
+function buildMarkingCards() {
+  const container = document.getElementById('loFeedbackCards');
+  container.innerHTML = '';
+  LO_LIST.forEach(lo => {
+    outcomeSelections[lo.id] = null;
+    container.innerHTML += `
+      <div class="feedback-card" id="card-${lo.id}">
+        <div class="flex items-center justify-between mb-3">
+          <div>
+            <span class="lo-label">${lo.label}</span>
+            <div class="text-sm font-semibold text-gray-800 mt-1">${lo.title}</div>
+          </div>
+        </div>
+        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
+        <div class="flex gap-3 mb-4">
+          <button class="judgement-btn pass-btn" id="pass-${lo.id}" onclick="selectOutcome('${lo.id}', 'Pass')">Pass</button>
+          <button class="judgement-btn refer-btn" id="refer-${lo.id}" onclick="selectOutcome('${lo.id}', 'Refer')">Refer</button>
+        </div>
+        <div class="text-xs font-semibold text-gray-500 mb-1">Feedback to Learner</div>
+        <textarea id="fb-${lo.id}" rows="4" placeholder="Write your feedback here..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm resize-y"></textarea>
+        <div class="flex items-center justify-between mt-3">
+          <div class="save-indicator" id="si-${lo.id}"></div>
+          <button onclick="saveFeedback('${lo.id}')" class="gold-bg text-black text-xs font-bold px-5 py-2 rounded-lg hover:opacity-90 transition">Save Feedback</button>
+        </div>
+      </div>
+    `;
+  });
+}
 
+function selectOutcome(loId, outcome) {
+  outcomeSelections[loId] = outcome;
+  document.getElementById('pass-' + loId).classList.toggle('selected', outcome === 'Pass');
+  document.getElementById('refer-' + loId).classList.toggle('selected', outcome === 'Refer');
+}
+
+async function loadFeedback() {
+  const sel = document.getElementById('markingLearner').value;
+  const panel = document.getElementById('markingPanel');
+  const msg = document.getElementById('learnerLoadMsg');
+
+  if (!sel) { panel.style.display = 'none'; msg.textContent = ''; return; }
+
+  msg.textContent = 'Loading...';
+  selectedUserId = sel;
+
+  const { data: rows } = await sb
+    .from('unit1_submissions')
+    .select('user_id')
+    .eq('user_id', sel)
+    .maybeSingle();
+
+  if (!rows) {
+    msg.textContent = 'No submitted worksheet found for this learner yet.';
+    panel.style.display = 'none';
+    return;
+  }
+
+  msg.textContent = '';
+  buildMarkingCards();
+  panel.style.display = 'block';
+
+  const { data: feedback } = await sb
+    .from('unit1_feedback')
+    .select('*')
+    .eq('user_id', selectedUserId);
+
+  if (feedback && feedback.length > 0) {
+    feedback.forEach(row => {
+      const fbEl = document.getElementById('fb-' + row.lo);
+      if (fbEl) fbEl.value = row.feedback_text || '';
+      if (row.outcome) selectOutcome(row.lo, row.outcome);
+      const si = document.getElementById('si-' + row.lo);
+      if (si) si.textContent = '✓ Previously saved';
+    });
+  }
+}
+
+async function saveFeedback(loId) {
+  if (!selectedUserId) return;
+  const outcome = outcomeSelections[loId];
+  const text = document.getElementById('fb-' + loId)?.value.trim();
+  const si = document.getElementById('si-' + loId);
+
+  if (!outcome) { si.textContent = '⚠ Please select Pass or Refer'; si.style.color = '#dc2626'; return; }
+  if (!text) { si.textContent = '⚠ Please write feedback before saving'; si.style.color = '#dc2626'; return; }
+
+  si.textContent = 'Saving...';
+  si.style.color = '#6b7280';
+
+  const { error } = await sb
+    .from('unit1_feedback')
+    .upsert({ user_id: selectedUserId, lo: loId, outcome, feedback_text: text, saved_at: new Date().toISOString() }, { onConflict: 'user_id,lo' });
+
+  if (error) {
+    si.textContent = '⚠ Save failed — ' + error.message;
+    si.style.color = '#dc2626';
+  } else {
+    si.textContent = '✓ Feedback saved';
+    si.style.color = '#16a34a';
+    loadLearnerProgress();
+  }
+}
+
+async function logout() {
+  await sb.auth.signOut();
+  window.location.href = 'login.html';
+}
+
+init();
 </script>
 
 </body>
