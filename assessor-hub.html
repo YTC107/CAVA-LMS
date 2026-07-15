@@ -49,6 +49,41 @@
       <p class="text-gray-500 text-sm">Manage learner progress, complete observation records, and mark submitted unit work below.</p>
     </div>
 
+    <!-- Admin Functions (Super Admin Only) -->
+    <div id="admin-functions-section" style="display:none;">
+      <h3 class="text-gray-400 text-xs uppercase tracking-widest mb-4">Admin Functions</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+
+        <a href="learner-allocation.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs text-black px-2 py-1 rounded-full font-semibold gold-bg">Manage</span>
+            <span class="text-xs text-gray-400 group-hover:text-yellow-600 transition">Open →</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-1">Add/Allocate Learners</h4>
+          <p class="text-gray-500 text-sm">Register new learners and allocate them to assessors on the qualification.</p>
+        </a>
+
+        <a href="learner-unit-manager.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs text-black px-2 py-1 rounded-full font-semibold gold-bg">Manage</span>
+            <span class="text-xs text-gray-400 group-hover:text-yellow-600 transition">Open →</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-1">Manage Units</h4>
+          <p class="text-gray-500 text-sm">Create, edit, and delete learning outcomes and evidence requirements for units.</p>
+        </a>
+
+        <a href="pt-academy-learner-management-dashboard.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group">
+          <div class="flex items-center justify-between mb-3">
+            <span class="text-xs text-black px-2 py-1 rounded-full font-semibold gold-bg">Dashboard</span>
+            <span class="text-xs text-gray-400 group-hover:text-yellow-600 transition">Open →</span>
+          </div>
+          <h4 class="font-semibold text-gray-900 mb-1">Learner Management</h4>
+          <p class="text-gray-500 text-sm">View and manage all learner accounts, registrations, and assessor allocations.</p>
+        </a>
+
+      </div>
+    </div>
+
     <!-- Assessor Documents -->
     <h3 class="text-gray-400 text-xs uppercase tracking-widest mb-4">Assessor Documents</h3>
     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
@@ -165,6 +200,11 @@ async function init() {
     document.getElementById('display-name').textContent = user.email || 'User';
   }
   document.getElementById('display-role').textContent = role;
+
+  // Show admin functions section only for Super Admins
+  if (role === 'Super Admin') {
+    document.getElementById('admin-functions-section').style.display = 'block';
+  }
 
   await loadLearnerProgress();
 }
