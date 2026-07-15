@@ -3,31 +3,38 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CAVA – Learner Login</title>
+  <title>PT Academy – Learner Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="supabase-integration.js"></script>
+  <style>
+    body { background-color: #f5f5f5; }
+    .pt-btn { background-color: #d4af37; color: #2a2a2a; font-weight: 600; }
+    .pt-btn:hover { background-color: #c9a227; }
+    input:focus { outline: none; box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1); }
+  </style>
 </head>
-<body class="min-h-screen bg-gray-950 flex items-center justify-center px-4">
+<body class="min-h-screen flex items-center justify-center px-4">
 
-  <div class="w-full max-w-md bg-gray-900 rounded-2xl shadow-2xl p-8">
-    <h1 class="text-white text-2xl font-bold text-center mb-1">Focus Awards</h1>
-    <p class="text-gray-400 text-sm text-center mb-8">Level 3 Certificate in Assessing Vocational Achievement</p>
+  <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8 border-t-4" style="border-color: #d4af37;">
+    <div class="flex justify-center mb-6">
+      <img src="pt-academy-logo.png" alt="PT Academy" class="h-24" />
+    </div>
+    <h1 class="text-2xl font-bold text-center mb-1" style="color: #2a2a2a;">PT Academy</h1>
+    <p class="text-sm text-center mb-6" style="color: #666;">Level 3 Certificate in Assessing Vocational Achievement</p>
 
-    <div id="error-box" class="hidden bg-red-900 border border-red-600 text-red-200 text-sm rounded-lg px-4 py-3 mb-5"></div>
+    <div id="error-box" class="hidden bg-red-100 border border-red-400 text-red-700 text-sm rounded-lg px-4 py-3 mb-5"></div>
 
     <form id="login-form" class="space-y-5">
       <div>
-        <label class="block text-gray-300 text-sm mb-1" for="email">Email address</label>
+        <label class="block font-semibold text-sm mb-1" style="color: #2a2a2a;">Email address</label>
         <input id="email" type="email" required placeholder="you@example.com"
-          class="w-full bg-gray-800 text-white rounded-lg px-4 py-3 text-sm border border-gray-700 focus:outline-none focus:border-indigo-500"/>
+          class="w-full rounded-lg px-4 py-3 text-sm border border-gray-300" style="background-color: #f5f5f5;"/>
       </div>
       <div>
-        <label class="block text-gray-300 text-sm mb-1" for="password">Password</label>
+        <label class="block font-semibold text-sm mb-1" style="color: #2a2a2a;">Password</label>
         <input id="password" type="password" required placeholder="••••••••"
-          class="w-full bg-gray-800 text-white rounded-lg px-4 py-3 text-sm border border-gray-700 focus:outline-none focus:border-indigo-500"/>
+          class="w-full rounded-lg px-4 py-3 text-sm border border-gray-300" style="background-color: #f5f5f5;"/>
       </div>
-      <button type="submit"
-        class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded-lg py-3 text-sm transition">
+      <button type="submit" class="w-full rounded-lg py-3 text-sm transition pt-btn">
         Sign in
       </button>
     </form>
@@ -65,20 +72,10 @@
         return;
       }
 
-      // Extract full name from user_metadata, fall back to email if not set
-      const metadata = data.user?.user_metadata || {};
-      const fullName = metadata.full_name || metadata.name || '';
-      const firstName = fullName.split(' ')[0] || '';
-
-      // Store session and user info
       localStorage.setItem('cava_token', data.access_token);
-      localStorage.setItem('cava_user', JSON.stringify({
-        ...data.user,
-        full_name: fullName,
-        first_name: firstName
-      }));
+      localStorage.setItem('cava_user', JSON.stringify(data.user));
 
-      window.location.href = 'index.html';
+      window.location.href = 'assessor-hub.html';
     });
   </script>
 </body>
