@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PT Academy – Learner Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body { background-color: #f5f5f5; }
     .pt-btn { background-color: #d4af37; color: #2a2a2a; font-weight: 600; }
@@ -43,6 +44,8 @@
   <script>
     const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
     const SUPABASE_ANON_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
+    const { createClient } = supabase;
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const form = document.getElementById('login-form');
     const errorBox = document.getElementById('error-box');
@@ -74,6 +77,16 @@
 
       localStorage.setItem('cava_token', data.access_token);
       localStorage.setItem('cava_user', JSON.stringify(data.user));
+
+      // Check if user is a Super Admin
+      const { data: superAdminRecord } = await sb
+        .from('super_admins')
+        .select('id')
+        .eq('email', email)
+        .maybeSingle();
+
+      const role = superAdminRecord ? 'Super Admin' : 'Assessor';
+      localStorage.setItem('cava_role', role);
 
       window.location.href = 'assessor-hub.html';
     });
