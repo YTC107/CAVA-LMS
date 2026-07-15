@@ -349,10 +349,10 @@
     <script>
         // Check authentication on page load
         window.addEventListener('DOMContentLoaded', function() {
-            const userRole = localStorage.getItem('userRole');
-            const userEmail = localStorage.getItem('userEmail');
+            const userRole = localStorage.getItem('cava_role');
+            const userJson = localStorage.getItem('cava_user');
 
-            if (!userRole || !userEmail) {
+            if (!userRole || !userJson) {
                 window.location.href = 'login.html';
             }
         });
@@ -406,9 +406,13 @@
         }
 
         function logout() {
-            localStorage.clear();
-            window.location.href = 'login.html';
+            localStorage.removeItem('cava_token');
+            localStorage.removeItem('cava_user');
+            localStorage.removeItem('cava_role');
+            const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+            window.location.href = basePath + 'login.html';
         }
     </script>
+
 </body>
 </html>
