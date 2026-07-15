@@ -159,12 +159,13 @@ async function init() {
   // Load and display user role
   const userJson = localStorage.getItem('cava_user');
   const role = localStorage.getItem('cava_role') || 'Assessor';
+  
   if (userJson) {
     const user = JSON.parse(userJson);
     document.getElementById('display-name').textContent = user.email || 'User';
   }
   document.getElementById('display-role').textContent = role;
-  
+
   await loadLearnerProgress();
 }
 
@@ -349,14 +350,19 @@ async function saveFeedback(loId) {
 async function logout() {
   try {
     await sb.auth.signOut();
-    console.log('Sign out successful, redirecting...');
+    localStorage.removeItem('cava_token');
+    localStorage.removeItem('cava_user');
+    localStorage.removeItem('cava_role');
+    const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+    window.location.href = basePath + 'login.html';
   } catch (error) {
-    console.error('Sign out error:', error);
+    console.error('Logout error:', error);
+    localStorage.removeItem('cava_token');
+    localStorage.removeItem('cava_user');
+    localStorage.removeItem('cava_role');
+    const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
+    window.location.href = basePath + 'login.html';
   }
-  // Redirect to login page — use absolute path for GitHub Pages
-  setTimeout(() => {
-    window.location.href = window.location.origin + window.location.pathname.split('/assessor-hub')[0] + '/login.html';
-  }, 200);
 }
 
 init();
