@@ -338,8 +338,16 @@ async function saveFeedback(loId) {
 }
 
 async function logout() {
-  await sb.auth.signOut();
-  window.location.href = 'login.html';
+  try {
+    await sb.auth.signOut();
+    console.log('Sign out successful, redirecting...');
+  } catch (error) {
+    console.error('Sign out error:', error);
+  }
+  // Redirect to login page — use absolute path for GitHub Pages
+  setTimeout(() => {
+    window.location.href = window.location.origin + window.location.pathname.split('/assessor-hub')[0] + '/login.html';
+  }, 200);
 }
 
 init();
