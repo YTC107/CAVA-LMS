@@ -593,18 +593,23 @@
 
         // Enrol learner
         async function enrollLearner() {
-            const name = document.getElementById('fullName').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
-            const dob = document.getElementById('dob').value;
-            const startDate = document.getElementById('startDate').value;
+            console.log('Enrol button clicked');
+            const name = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const dob = document.getElementById('dob').value.trim();
+            const startDate = document.getElementById('startDate').value.trim();
+
+            console.log('Form values:', { name, email, phone, dob, startDate });
 
             if (!name || !email || !startDate) {
-                showMessage('enrolMessage', 'Please fill in all required fields', 'error');
+                showMessage('enrolMessage', 'Please fill in all required fields (Full Name, Email, Programme Start Date)', 'error');
+                console.warn('Missing required fields');
                 return;
             }
 
             try {
+                console.log('Attempting Supabase insert...');
                 const { data, error } = await supabase
                     .from('learners')
                     .insert([{
@@ -616,12 +621,16 @@
                     }])
                     .select();
 
+                console.log('Supabase response - Data:', data);
+                console.log('Supabase response - Error:', error);
+
                 if (error) {
-                    console.error('Supabase error:', error);
-                    throw error;
+                    console.error('Supabase insertion error:', error);
+                    throw new Error(`Database error: ${error.message}`);
                 }
 
                 showMessage('enrolMessage', `${name} has been enrolled successfully!`, 'success');
+                console.log('Enrolment successful, clearing form');
                 document.getElementById('fullName').value = '';
                 document.getElementById('email').value = '';
                 document.getElementById('phone').value = '';
@@ -629,7 +638,7 @@
                 document.getElementById('startDate').value = '';
             } catch (error) {
                 console.error('Enrolment error:', error);
-                showMessage('enrolMessage', `Error: ${error.message}`, 'error');
+                showMessage('enrolMessage', `Error: ${error.message}. Check browser console (F12) for details.`, 'error');
             }
         }
 
@@ -939,11 +948,27 @@
             const element = document.getElementById(elementId);
             element.className = type === 'error' ? 'error-message' : 'success-message';
             element.textContent = message;
+            console.log(`Message (${type}):`, message);
             setTimeout(() => {
                 element.textContent = '';
                 element.className = '';
-            }, 3000);
+            }, 5000);
         }
+
+        // Test Supabase connection on load
+        window.addEventListener('load', async function() {
+            try {
+                console.log('Testing Supabase connection...');
+                const { data, error } = await supabase.from('learners').select('count');
+                if (error) {
+                    console.error('Supabase connection test failed:', error);
+                } else {
+                    console.log('Supabase connection successful');
+                }
+            } catch (e) {
+                console.error('Connection test error:', e);
+            }
+        });
     </script>
 </body>
 </html>
