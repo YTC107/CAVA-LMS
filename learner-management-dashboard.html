@@ -455,19 +455,20 @@
       { id: 'unit-005', title: 'Data Management', outcomes: ['Organise data effectively', 'Ensure data security', 'Generate reports'] }
     ];
 
-    function showTab(tabName) {
+    function showTab(tabName, buttonElement) {
       const tabs = document.querySelectorAll('.tab-content');
       const buttons = document.querySelectorAll('.tab-btn');
       tabs.forEach(t => t.classList.remove('active'));
       buttons.forEach(b => b.classList.remove('active'));
       document.getElementById(tabName).classList.add('active');
-      event.target.classList.add('active');
+      if (buttonElement) buttonElement.classList.add('active');
     }
 
     document.querySelectorAll('.tab-btn').forEach(btn => {
-      btn.addEventListener('click', function() {
+      btn.addEventListener('click', function(e) {
+        e.preventDefault();
         const tabName = this.getAttribute('data-tab');
-        showTab(tabName);
+        showTab(tabName, this);
         if (tabName === 'roster') loadRoster();
         if (tabName === 'assign') loadAssignTab();
         if (tabName === 'progress') loadProgressTab();
