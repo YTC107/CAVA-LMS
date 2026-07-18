@@ -529,14 +529,35 @@
     </div>
 
     <script>
-        // Initialize Supabase
-        const supabaseUrl = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
-        const supabaseKey = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
-        const { createClient } = window.supabase;
-        const supabase = createClient(supabaseUrl, supabaseKey);
+        // Initialize Supabase - declare once at global scope
+        let supabase;
+        let units;
+        let selectedAssignment = null;
 
-        // Units with learning outcomes
-        const units = [
+        // Initialize on load
+        window.addEventListener('load', async function() {
+            try {
+                const supabaseUrl = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
+                const supabaseKey = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
+                const { createClient } = window.supabase;
+                supabase = createClient(supabaseUrl, supabaseKey);
+
+                console.log('Supabase client initialised');
+                
+                // Test connection
+                const { data, error } = await supabase.from('learners').select('count');
+                if (error) {
+                    console.error('Supabase connection test failed:', error);
+                } else {
+                    console.log('Supabase connection successful');
+                }
+            } catch (e) {
+                console.error('Initialisation error:', e);
+            }
+        });
+
+        // Units with learning outcomes - initialise at top level
+        units = [
             {
                 id: 'Unit_1',
                 name: 'Anatomy & Physiology',
@@ -572,9 +593,8 @@
             }
         ];
 
-        let selectedAssignment = null;
-
         function showTab(button, tabName) {
+            console.log('showTab called with:', tabName);
             const tabs = document.querySelectorAll('.tab-content');
             const buttons = document.querySelectorAll('.tab-btn');
 
@@ -591,6 +611,9 @@
                 if (tabName === 'progress') loadProgressUI();
             }
         }
+        
+        // Expose to global scope for onclick
+        window.showTab = showTab;
 
         // Enrol learner - declared globally for onclick access
         async function enrollLearner() {
