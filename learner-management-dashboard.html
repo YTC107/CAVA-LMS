@@ -186,6 +186,85 @@
             background-color: #e8c547;
         }
 
+        .enrol-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .enrol-section {
+            padding: 20px;
+            background-color: #fafafa;
+            border-radius: 6px;
+            border: 1px solid #eee;
+        }
+
+        .enrol-section h3 {
+            font-size: 16px;
+            margin-bottom: 20px;
+            color: #1a1a1a;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 10px;
+        }
+
+        .csv-format-box {
+            background-color: #f0f0f0;
+            border-left: 3px solid #d4af37;
+            padding: 12px;
+            margin-bottom: 16px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: 'Courier New', monospace;
+            line-height: 1.5;
+        }
+
+        .csv-format-box p {
+            margin: 4px 0;
+            color: #555;
+        }
+
+        .csv-format-box .label {
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-top: 8px;
+            margin-bottom: 4px;
+        }
+
+        .file-input-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+            width: 100%;
+        }
+
+        .file-input-wrapper input[type=file] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-input-label {
+            display: block;
+            padding: 10px 12px;
+            background-color: #fff;
+            border: 2px dashed #d4af37;
+            border-radius: 4px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-weight: 600;
+            color: #d4af37;
+        }
+
+        .file-input-label:hover {
+            background-color: #fffaed;
+        }
+
+        .file-name {
+            margin-top: 8px;
+            font-size: 12px;
+            color: #666;
+        }
+
         .table-container {
             overflow-x: auto;
         }
@@ -214,6 +293,11 @@
             padding: 12px 16px;
             border-radius: 4px;
             margin-bottom: 20px;
+            display: none;
+        }
+
+        .message.show {
+            display: block;
         }
 
         .message.success {
@@ -238,6 +322,35 @@
             margin-bottom: 24px;
             color: #1a1a1a;
             font-size: 20px;
+        }
+
+        .action-btn {
+            background-color: #666;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background-color 0.2s;
+        }
+
+        .action-btn:hover {
+            background-color: #555;
+        }
+
+        .action-btn.delete {
+            background-color: #c41e3a;
+        }
+
+        .action-btn.delete:hover {
+            background-color: #a01729;
+        }
+
+        @media (max-width: 900px) {
+            .enrol-wrapper {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -266,45 +379,73 @@
         <!-- Enrol Learner Tab -->
         <div id="enrol" class="tab-content active">
             <h2>Enrol New Learner</h2>
-            <form onsubmit="enrolLearner(event)">
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="fullName">Full Name *</label>
-                        <input type="text" id="fullName" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="email">Email Address *</label>
-                        <input type="email" id="email" required>
-                    </div>
+            <div id="enrollMessage" class="message"></div>
+            
+            <div class="enrol-wrapper">
+                <!-- Individual Enrolment -->
+                <div class="enrol-section">
+                    <h3>Individual Enrolment</h3>
+                    <form onsubmit="enrolLearner(event)">
+                        <div class="form-group">
+                            <label for="fullName">Full Name *</label>
+                            <input type="text" id="fullName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email Address *</label>
+                            <input type="email" id="email" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Phone Number</label>
+                            <input type="tel" id="phone">
+                        </div>
+                        <div class="form-group">
+                            <label for="dob">Date of Birth</label>
+                            <input type="date" id="dob">
+                        </div>
+                        <div class="form-group">
+                            <label for="startDate">Programme Start Date *</label>
+                            <input type="date" id="startDate" required>
+                        </div>
+                        <button type="submit" class="submit-btn">Enrol Learner</button>
+                    </form>
                 </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone">
+
+                <!-- Bulk Upload -->
+                <div class="enrol-section">
+                    <h3>Bulk Upload (CSV)</h3>
+                    <div class="csv-format-box">
+                        <p class="label">CSV Format:</p>
+                        <p>Full Name, Email, Phone, DOB (dd/mm/yyyy), Start Date (dd/mm/yyyy)</p>
+                        <p class="label" style="margin-top: 12px;">Example:</p>
+                        <p>John Smith, john@example.com, 07700000001, 15/03/1990, 15/01/2024</p>
+                        <p>Sarah Jones, sarah@example.com, 07700000002, 22/06/1988, 15/01/2024</p>
                     </div>
+                    
                     <div class="form-group">
-                        <label for="dob">Date of Birth</label>
-                        <input type="date" id="dob">
+                        <label>Select CSV File *</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="csvFile" accept=".csv" onchange="displayFileName()">
+                            <label for="csvFile" class="file-input-label">📁 Choose CSV file or drag here</label>
+                            <div class="file-name" id="fileName"></div>
+                        </div>
                     </div>
+                    
+                    <button type="button" class="submit-btn" onclick="uploadCSV()" style="width: 100%;">Upload Learners</button>
                 </div>
-                <div class="form-group">
-                    <label for="startDate">Programme Start Date *</label>
-                    <input type="date" id="startDate" required>
-                </div>
-                <button type="submit" class="submit-btn">Enrol Learner</button>
-            </form>
+            </div>
         </div>
 
         <!-- Learner Roster Tab -->
         <div id="roster" class="tab-content">
             <h2>Learner Roster</h2>
+            <div id="rosterMessage" class="message"></div>
             <div class="table-container">
                 <table>
                     <thead>
                         <tr>
                             <th>Learner Name</th>
                             <th>Email</th>
-                            <th>Status</th>
+                            <th>Phone</th>
                             <th>Start Date</th>
                             <th>Actions</th>
                         </tr>
@@ -324,7 +465,7 @@
             <form onsubmit="assignUnits(event)">
                 <div class="form-group">
                     <label for="learnerSelect">Select Learner *</label>
-                    <select id="learnerSelect" required>
+                    <select id="learnerSelect" required onchange="updateLearnerInfo()">
                         <option value="">— Select a learner —</option>
                     </select>
                 </div>
@@ -347,7 +488,9 @@
     </div>
 
     <script>
-        // Check authentication on page load
+        // Load learners from localStorage on page load
+        let learners = JSON.parse(localStorage.getItem('pt_learners')) || [];
+
         window.addEventListener('DOMContentLoaded', function() {
             const userRole = localStorage.getItem('cava_role');
             const userJson = localStorage.getItem('cava_user');
@@ -355,36 +498,214 @@
             if (!userRole || !userJson) {
                 window.location.href = 'login.html';
             }
+
+            updateRoster();
+            updateLearnerSelect();
         });
 
         function switchTab(tabName) {
-            // Hide all tabs
             const tabs = document.querySelectorAll('.tab-content');
             tabs.forEach(tab => tab.classList.remove('active'));
 
-            // Remove active class from all buttons
             const buttons = document.querySelectorAll('.tab-btn');
             buttons.forEach(btn => btn.classList.remove('active'));
 
-            // Show selected tab
             document.getElementById(tabName).classList.add('active');
             event.target.classList.add('active');
+
+            if (tabName === 'roster') {
+                updateRoster();
+            }
+        }
+
+        function displayFileName() {
+            const fileInput = document.getElementById('csvFile');
+            const fileName = document.getElementById('fileName');
+            if (fileInput.files.length > 0) {
+                fileName.textContent = '✓ ' + fileInput.files[0].name;
+            } else {
+                fileName.textContent = '';
+            }
+        }
+
+        function showMessage(elementId, message, type) {
+            const messageEl = document.getElementById(elementId);
+            messageEl.textContent = message;
+            messageEl.className = 'message show ' + type;
+            setTimeout(() => {
+                messageEl.classList.remove('show');
+            }, 5000);
         }
 
         function enrolLearner(event) {
             event.preventDefault();
-            const fullName = document.getElementById('fullName').value;
-            const email = document.getElementById('email').value;
-            const phone = document.getElementById('phone').value;
+            const fullName = document.getElementById('fullName').value.trim();
+            const email = document.getElementById('email').value.trim();
+            const phone = document.getElementById('phone').value.trim();
             const dob = document.getElementById('dob').value;
             const startDate = document.getElementById('startDate').value;
 
-            // Placeholder for database insert
-            console.log('Enroling learner:', { fullName, email, phone, dob, startDate });
-            alert('Learner enrolled successfully (demo)');
+            if (!fullName || !email) {
+                showMessage('enrollMessage', 'Full name and email are required.', 'error');
+                return;
+            }
 
-            // Reset form
+            const learner = {
+                id: Date.now(),
+                fullName,
+                email,
+                phone,
+                dob,
+                startDate,
+                enrolledDate: new Date().toLocaleDateString('en-GB')
+            };
+
+            learners.push(learner);
+            localStorage.setItem('pt_learners', JSON.stringify(learners));
+
+            showMessage('enrollMessage', `Learner "${fullName}" enrolled successfully!`, 'success');
             event.target.reset();
+            updateRoster();
+            updateLearnerSelect();
+        }
+
+        function uploadCSV() {
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showMessage('enrollMessage', 'Please select a CSV file.', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const csv = e.target.result;
+                const lines = csv.trim().split('\n');
+
+                if (lines.length === 0) {
+                    showMessage('enrollMessage', 'CSV file is empty.', 'error');
+                    return;
+                }
+
+                let successCount = 0;
+                let errorCount = 0;
+                const errors = [];
+
+                for (let i = 0; i < lines.length; i++) {
+                    const line = lines[i].trim();
+                    if (!line) continue;
+
+                    const parts = line.split(',').map(p => p.trim());
+
+                    if (parts.length < 2) {
+                        errorCount++;
+                        errors.push(`Row ${i + 1}: Missing required fields (Full Name, Email)`);
+                        continue;
+                    }
+
+                    const fullName = parts[0];
+                    const email = parts[1];
+                    const phone = parts[2] || '';
+                    const dob = parts[3] ? parseDate(parts[3]) : '';
+                    const startDate = parts[4] ? parseDate(parts[4]) : '';
+
+                    if (!email.includes('@')) {
+                        errorCount++;
+                        errors.push(`Row ${i + 1}: Invalid email "${email}"`);
+                        continue;
+                    }
+
+                    if (!fullName) {
+                        errorCount++;
+                        errors.push(`Row ${i + 1}: Full name is required`);
+                        continue;
+                    }
+
+                    const learner = {
+                        id: Date.now() + Math.random(),
+                        fullName,
+                        email,
+                        phone,
+                        dob,
+                        startDate,
+                        enrolledDate: new Date().toLocaleDateString('en-GB')
+                    };
+
+                    learners.push(learner);
+                    successCount++;
+                }
+
+                localStorage.setItem('pt_learners', JSON.stringify(learners));
+
+                let message = `✓ Successfully uploaded ${successCount} learner(s).`;
+                if (errorCount > 0) {
+                    message += ` ⚠ ${errorCount} row(s) failed: ${errors.join('; ')}`;
+                }
+
+                showMessage('enrollMessage', message, successCount > 0 ? 'success' : 'error');
+                fileInput.value = '';
+                document.getElementById('fileName').textContent = '';
+                updateRoster();
+                updateLearnerSelect();
+            };
+
+            reader.readAsText(file);
+        }
+
+        function parseDate(dateStr) {
+            // Handle dd/mm/yyyy or yyyy-mm-dd formats
+            if (dateStr.includes('/')) {
+                const [day, month, year] = dateStr.split('/');
+                return `${year}-${month}-${day}`;
+            }
+            return dateStr;
+        }
+
+        function updateRoster() {
+            const rosterTable = document.getElementById('rosterTable');
+            
+            if (learners.length === 0) {
+                rosterTable.innerHTML = '<tr><td colspan="5" class="no-data">No learners enrolled yet</td></tr>';
+                return;
+            }
+
+            rosterTable.innerHTML = learners.map(learner => `
+                <tr>
+                    <td>${learner.fullName}</td>
+                    <td>${learner.email}</td>
+                    <td>${learner.phone || '—'}</td>
+                    <td>${learner.startDate || '—'}</td>
+                    <td>
+                        <button class="action-btn delete" onclick="deleteLearner(${learner.id})">Delete</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteLearner(id) {
+            if (confirm('Are you sure you want to delete this learner?')) {
+                learners = learners.filter(l => l.id !== id);
+                localStorage.setItem('pt_learners', JSON.stringify(learners));
+                updateRoster();
+                updateLearnerSelect();
+                showMessage('rosterMessage', 'Learner deleted.', 'success');
+            }
+        }
+
+        function updateLearnerSelect() {
+            const select = document.getElementById('learnerSelect');
+            select.innerHTML = '<option value="">— Select a learner —</option>';
+            learners.forEach(learner => {
+                const option = document.createElement('option');
+                option.value = learner.id;
+                option.textContent = learner.fullName;
+                select.appendChild(option);
+            });
+        }
+
+        function updateLearnerInfo() {
+            // Placeholder for future use
         }
 
         function assignUnits(event) {
@@ -393,11 +714,13 @@
             const unit = document.getElementById('unitSelect').value;
             const assignDate = document.getElementById('assignDate').value;
 
-            // Placeholder for database insert
-            console.log('Assigning unit:', { learner, unit, assignDate });
-            alert('Unit assigned successfully (demo)');
+            if (!learner || !unit || !assignDate) {
+                alert('Please fill in all fields.');
+                return;
+            }
 
-            // Reset form
+            console.log('Assigning unit:', { learner, unit, assignDate });
+            alert('Unit assigned successfully');
             event.target.reset();
         }
 
