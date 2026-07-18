@@ -48,12 +48,12 @@
         .header-text h1 {
             font-size: 32px;
             margin: 0;
-            color: #d4af37;
+            color: #c9a961;
         }
 
         .header-text p {
             font-size: 14px;
-            color: #b8860b;
+            color: #a88b4e;
             margin-top: 4px;
         }
 
@@ -66,7 +66,7 @@
         .tabs {
             display: flex;
             gap: 10px;
-            border-bottom: 2px solid #d4af37;
+            border-bottom: 2px solid #c9a961;
             margin-bottom: 30px;
             background: white;
             padding: 15px 20px;
@@ -85,13 +85,13 @@
         }
 
         .tab-btn.active {
-            color: #d4af37;
-            border-bottom-color: #d4af37;
+            color: #c9a961;
+            border-bottom-color: #c9a961;
             font-weight: 600;
         }
 
         .tab-btn:hover {
-            color: #d4af37;
+            color: #c9a961;
         }
 
         .tab-content {
@@ -125,7 +125,7 @@
         }
 
         label .required {
-            color: #d4af37;
+            color: #c9a961;
         }
 
         input, textarea, select {
@@ -139,8 +139,8 @@
 
         input:focus, textarea:focus, select:focus {
             outline: none;
-            border-color: #d4af37;
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+            border-color: #c9a961;
+            box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.1);
         }
 
         .btn {
@@ -154,13 +154,13 @@
         }
 
         .btn-primary {
-            background: #d4af37;
+            background: #c9a961;
             color: #1a1a1a;
         }
 
         .btn-primary:hover {
-            background: #f0e68c;
-            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+            background: #dab876;
+            box-shadow: 0 4px 12px rgba(201, 169, 97, 0.3);
         }
 
         .btn-danger {
@@ -195,14 +195,14 @@
 
         thead {
             background: #1a1a1a;
-            color: #d4af37;
+            color: #c9a961;
         }
 
         th {
             padding: 15px;
             text-align: left;
             font-weight: 600;
-            border: 1px solid #d4af37;
+            border: 1px solid #c9a961;
         }
 
         td {
@@ -260,8 +260,8 @@
         }
 
         .csv-box {
-            background: #fdf8f3;
-            border: 2px dashed #d4af37;
+            background: #faf6f0;
+            border: 2px dashed #c9a961;
             padding: 20px;
             border-radius: 4px;
             text-align: center;
@@ -277,7 +277,7 @@
 
         .csv-info code {
             background: #1a1a1a;
-            color: #d4af37;
+            color: #c9a961;
             padding: 2px 6px;
             border-radius: 3px;
             font-family: 'Courier New', monospace;
@@ -292,7 +292,7 @@
             background: #f9f9f9;
             padding: 12px;
             margin-bottom: 10px;
-            border-left: 4px solid #d4af37;
+            border-left: 4px solid #c9a961;
             border-radius: 4px;
         }
 
@@ -306,7 +306,7 @@
             padding: 15px;
             border-radius: 4px;
             margin-bottom: 15px;
-            border-left: 4px solid #d4af37;
+            border-left: 4px solid #c9a961;
         }
 
         .unit-card h3 {
@@ -333,7 +333,7 @@
         }
 
         .section-header {
-            border-left: 4px solid #d4af37;
+            border-left: 4px solid #c9a961;
             padding-left: 15px;
             margin-bottom: 20px;
         }
@@ -389,14 +389,7 @@
                         <label>Email Address <span class="required">*</span></label>
                         <input type="email" id="email" placeholder="Enter email address">
                     </div>
-                    <div class="form-group">
-                        <label>Phone Number</label>
-                        <input type="tel" id="phone" placeholder="Enter phone number">
-                    </div>
-                    <div class="form-group">
-                        <label>Date of Birth</label>
-                        <input type="date" id="dob">
-                    </div>
+
                     <div class="form-group">
                         <label>Programme Start Date <span class="required">*</span></label>
                         <input type="date" id="startDate">
@@ -407,11 +400,11 @@
                     <h3>Bulk Upload (CSV)</h3>
                     <div class="csv-info">
                         <strong>CSV Format:</strong><br>
-                        Full Name, Email, Phone, DOB (dd/mm/yyyy), Start Date (dd/mm/yyyy)
+                        Full Name, Email, Start Date (dd/mm/yyyy)
                         <br><br>
                         <strong>Example:</strong><br>
-                        <code>John Smith, john@example.com, 07700000001, 15/03/1995, 18/01/2024</code><br>
-                        <code>Sarah Jones, sarah@example.com, 07700000002, 22/06/1999, 18/01/2024</code>
+                        <code>John Smith, john@example.com, 18/01/2024</code><br>
+                        <code>Sarah Jones, sarah@example.com, 18/01/2024</code>
                     </div>
                     <div class="csv-box">
                         <input type="file" id="csvFile" accept=".csv" style="display:none;" onchange="handleCSVUpload(event)">
@@ -434,7 +427,6 @@
                         <tr>
                             <th>Learner Name</th>
                             <th>Email</th>
-                            <th>Phone</th>
                             <th>Start Date</th>
                             <th>Assigned Units</th>
                             <th>Actions</th>
@@ -459,10 +451,10 @@
                         <select id="learnerSelect"></select>
                     </div>
                     <div class="form-group">
-                        <label>Select Unit <span class="required">*</span></label>
-                        <select id="unitSelect"></select>
+                        <label>Select Unit(s) <span class="required">*</span></label>
+                        <select id="unitSelect" multiple></select>
                     </div>
-                    <button class="btn btn-primary" onclick="assignUnit()">Assign Unit</button>
+                    <button class="btn btn-primary" onclick="assignUnit()">Assign Unit(s)</button>
                 </div>
             </div>
 
@@ -491,7 +483,6 @@
             <div id="progressForm" style="display: none;">
                 <div class="unit-card">
                     <h3 id="unitTitle"></h3>
-                    <p id="unitDescription"></p>
                 </div>
 
                 <div class="form-group">
@@ -529,12 +520,28 @@
     </div>
 
     <script>
-        // Initialize Supabase - declare once at global scope
         let supabase = null;
-        let units;
+        let allUnits = [];
         let selectedAssignment = null;
 
-        // Initialize Supabase with proper library loading detection
+        // Unit title mapping
+        const unitTitleMap = {
+            1: 'Understanding the Principles and Practices of Assessment',
+            2: 'Assess Occupational Competence in the Work Environment',
+            3: 'Assess Vocational Skills, Knowledge and Understanding'
+        };
+
+        // Format date to UK format DD/MM/YYYY
+        function formatUKDate(dateString) {
+            if (!dateString) return '—';
+            const date = new Date(dateString);
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+
+        // Initialize Supabase
         async function initializeSupabase() {
             return new Promise((resolve) => {
                 const checkSupabase = setInterval(() => {
@@ -544,82 +551,57 @@
                             const supabaseUrl = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
                             const supabaseKey = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
                             supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-                            console.log('Supabase client initialised successfully');
+                            console.log('Supabase initialised successfully');
                             resolve(true);
                         } catch (e) {
-                            console.error('Error creating Supabase client:', e);
+                            console.error('Error initialising Supabase:', e);
                             resolve(false);
                         }
                     }
                 }, 100);
 
-                // Timeout after 10 seconds
                 setTimeout(() => {
                     clearInterval(checkSupabase);
-                    console.error('Supabase library failed to load after 10 seconds');
+                    console.error('Supabase library failed to load');
                     resolve(false);
                 }, 10000);
             });
         }
 
-        // Initialize on load
+        // Fetch units from Supabase
+        async function fetchUnits() {
+            try {
+                const { data, error } = await supabase.from('units').select('*').order('created_at');
+                if (error) {
+                    console.error('Units fetch error:', error);
+                    return;
+                }
+                
+                // Map database units by their order with correct titles
+                allUnits = (data || []).map((unit, index) => {
+                    const unitNumber = index + 1;
+                    return {
+                        ...unit,
+                        unit_number: unitNumber,
+                        display_name: unitTitleMap[unitNumber] || `Unit ${unitNumber}`
+                    };
+                });
+                
+                console.log('Units fetched and mapped:', allUnits);
+            } catch (e) {
+                console.error('Exception fetching units:', e);
+            }
+        }
+
+        // Initialize on page load
         window.addEventListener('load', async function() {
             await initializeSupabase();
             if (supabase) {
-                try {
-                    const { data, error } = await supabase.from('learners').select('count');
-                    if (error) {
-                        console.error('Supabase connection test failed:', error);
-                    } else {
-                        console.log('Supabase connection test successful');
-                    }
-                } catch (e) {
-                    console.error('Connection test error:', e);
-                }
-            } else {
-                console.error('Supabase failed to initialise');
+                await fetchUnits();
             }
         });
 
-        // Units with learning outcomes - initialise at top level
-        units = [
-            {
-                id: 'Unit_1',
-                name: 'Anatomy & Physiology',
-                description: 'Understanding human body systems and their functions',
-                outcomes: [
-                    'Identify major body systems',
-                    'Explain cardiovascular function',
-                    'Understand respiratory mechanisms',
-                    'Analyse skeletal structure'
-                ]
-            },
-            {
-                id: 'Unit_2',
-                name: 'Exercise Science',
-                description: 'Principles of exercise physiology and training adaptations',
-                outcomes: [
-                    'Apply training principles',
-                    'Analyse energy systems',
-                    'Evaluate periodisation models',
-                    'Design personalised programmes'
-                ]
-            },
-            {
-                id: 'Unit_3',
-                name: 'Nutrition & Health',
-                description: 'Nutrition science and dietary management',
-                outcomes: [
-                    'Assess nutritional requirements',
-                    'Evaluate dietary intake',
-                    'Recommend appropriate nutrition plans',
-                    'Counsel on lifestyle changes'
-                ]
-            }
-        ];
-
         function showTab(button, tabName) {
-            console.log('showTab called with:', tabName);
             const tabs = document.querySelectorAll('.tab-content');
             const buttons = document.querySelectorAll('.tab-btn');
 
@@ -636,102 +618,56 @@
                 if (tabName === 'progress') loadProgressUI();
             }
         }
-        
-        // Expose to global scope for onclick
+
         window.showTab = showTab;
 
-        // Enrol learner - declared globally for onclick access
+        // Enrol learner
         async function enrollLearner() {
-            console.log('=== ENROL BUTTON CLICKED ===');
-            
             if (!supabase) {
-                showMessage('enrolMessage', 'System not ready. Please refresh the page and wait for initialisation to complete.', 'error');
-                console.error('Supabase not initialised when enrol button clicked');
+                showMessage('enrolMessage', 'System not ready. Please refresh the page.', 'error');
                 return;
             }
-            
-            showMessage('enrolMessage', 'Processing enrolment...', 'success');
-            
+
             const name = document.getElementById('fullName').value.trim();
             const email = document.getElementById('email').value.trim();
             const startDate = document.getElementById('startDate').value.trim();
 
-            console.log('Form values:', { name, email, startDate });
-
             if (!name || !email || !startDate) {
-                showMessage('enrolMessage', 'Please fill in all required fields (Full Name, Email, Programme Start Date)', 'error');
-                console.warn('Missing required fields');
+                showMessage('enrolMessage', 'Please fill in all required fields', 'error');
                 return;
             }
 
             try {
-                console.log('Attempting Supabase insert...');
-                
-                const learnerData = {
-                    full_name: name,
-                    email: email,
-                    programme_start_date: startDate
-                };
-
-                console.log('Learner data to insert:', learnerData);
-
-                // Set a timeout for the Supabase call
-                const insertPromise = supabase
+                const { data, error } = await supabase
                     .from('learners')
-                    .insert([learnerData])
+                    .insert([{
+                        full_name: name,
+                        email: email,
+                        programme_start_date: startDate
+                    }])
                     .select();
 
-                const timeoutPromise = new Promise((_, reject) =>
-                    setTimeout(() => reject(new Error('Supabase request timed out after 10 seconds')), 10000)
-                );
-
-                const { data, error } = await Promise.race([insertPromise, timeoutPromise]);
-
-                console.log('Supabase response - Data:', data);
-                console.log('Supabase response - Error:', error);
-
-                if (error) {
-                    console.error('Supabase insertion error:', error);
-                    throw new Error(`Database error: ${error.message || 'Unknown error'}`);
-                }
-
-                if (!data || data.length === 0) {
-                    throw new Error('No data returned from database');
-                }
+                if (error) throw error;
 
                 showMessage('enrolMessage', `✓ ${name} has been enrolled successfully!`, 'success');
-                console.log('Enrolment successful for:', name);
-                
-                // Clear form
                 document.getElementById('fullName').value = '';
                 document.getElementById('email').value = '';
-                document.getElementById('phone').value = '';
-                document.getElementById('dob').value = '';
                 document.getElementById('startDate').value = '';
-                document.getElementById('enrolMessage').textContent = '';
-                document.getElementById('enrolMessage').className = '';
             } catch (error) {
-                console.error('=== ENROLMENT ERROR ===');
-                console.error('Error object:', error);
-                console.error('Error message:', error.message);
-                console.error('Full error:', JSON.stringify(error, null, 2));
-                showMessage('enrolMessage', `❌ Error: ${error.message}`, 'error');
+                showMessage('enrolMessage', `Error: ${error.message}`, 'error');
             }
         }
-        
-        // Make enrollLearner globally accessible
+
         window.enrollLearner = enrollLearner;
 
         // Handle CSV upload
         function handleCSVUpload(event) {
             const file = event.target.files[0];
             const reader = new FileReader();
-
             reader.onload = function(e) {
                 window.csvData = e.target.result;
                 document.getElementById('csvFile').value = '';
             };
-
             reader.readAsText(file);
         }
 
@@ -748,13 +684,11 @@
             for (let i = 0; i < lines.length; i++) {
                 const parts = lines[i].split(',').map(part => part.trim());
                 if (parts.length >= 2) {
-                    const [name, email, phone, dob, startDate] = parts;
+                    const [name, email, startDate] = parts;
                     if (name && email) {
                         learners.push({
                             full_name: name,
                             email: email,
-                            phone: phone || null,
-                            date_of_birth: dob ? formatDateForDB(dob) : null,
                             programme_start_date: startDate ? formatDateForDB(startDate) : new Date().toISOString().split('T')[0]
                         });
                     }
@@ -767,12 +701,8 @@
             }
 
             try {
-                const { data, error } = await supabase
-                    .from('learners')
-                    .insert(learners);
-
+                const { error } = await supabase.from('learners').insert(learners);
                 if (error) throw error;
-
                 showMessage('enrolMessage', `${learners.length} learners uploaded successfully!`, 'success');
                 window.csvData = '';
             } catch (error) {
@@ -788,7 +718,7 @@
             return dateStr;
         }
 
-        // Load roster
+        // Load roster with UK date formatting
         async function loadRoster() {
             try {
                 const { data: learners, error } = await supabase
@@ -808,15 +738,18 @@
                         .eq('learner_id', learner.id);
 
                     const unitsHtml = assignments.length > 0
-                        ? assignments.map(a => `<span class="status-badge status-${a.status}">${a.unit_id}: ${a.status}</span>`).join(' ')
+                        ? assignments.map(a => {
+                            const unit = allUnits.find(u => u.id === a.unit_id);
+                            const unitNumber = unit ? unit.unit_number : '?';
+                            return `<span class="status-badge status-${a.status}">Unit ${unitNumber} ${a.status}</span>`;
+                        }).join(' ')
                         : '<span style="color: #999;">No units assigned</span>';
 
                     const row = `
                         <tr>
                             <td>${learner.full_name}</td>
                             <td>${learner.email}</td>
-                            <td>${learner.phone || '—'}</td>
-                            <td>${learner.programme_start_date || '—'}</td>
+                            <td>${formatUKDate(learner.programme_start_date)}</td>
                             <td>${unitsHtml}</td>
                             <td><button class="btn btn-danger" onclick="deleteLearner('${learner.id}')">Delete</button></td>
                         </tr>
@@ -844,18 +777,18 @@
                     learnerSelect.innerHTML += `<option value="${learner.id}">${learner.full_name}</option>`;
                 });
 
+                // Populate units dropdown with unit numbers
                 const unitSelect = document.getElementById('unitSelect');
-                unitSelect.innerHTML = '<option value="">-- Select Unit --</option>';
-                units.forEach(unit => {
-                    unitSelect.innerHTML += `<option value="${unit.id}">${unit.name}</option>`;
+                unitSelect.innerHTML = '<option value="">-- Select Unit(s) --</option>';
+                allUnits.forEach((unit) => {
+                    unitSelect.innerHTML += `<option value="${unit.id}">Unit ${unit.unit_number} ${unit.display_name}</option>`;
                 });
 
-                // Display units
+                // Display available units with unit numbers
                 const container = document.getElementById('unitsContainer');
-                container.innerHTML = units.map(unit => `
+                container.innerHTML = allUnits.map((unit) => `
                     <div class="unit-card">
-                        <h4>${unit.name}</h4>
-                        <p>${unit.description}</p>
+                        <h4>Unit ${unit.unit_number} ${unit.display_name}</h4>
                     </div>
                 `).join('');
             } catch (error) {
@@ -863,35 +796,57 @@
             }
         }
 
-        // Assign unit
+        // Assign units (supports multiple selection)
         async function assignUnit() {
             const learnerId = document.getElementById('learnerSelect').value;
-            const unitId = document.getElementById('unitSelect').value;
+            const unitSelect = document.getElementById('unitSelect');
+            const selectedUnits = Array.from(unitSelect.selectedOptions).map(option => option.value);
 
-            if (!learnerId || !unitId) {
-                showMessage('assignMessage', 'Please select both learner and unit', 'error');
+            if (!learnerId || selectedUnits.length === 0) {
+                showMessage('assignMessage', 'Please select a learner and at least one unit', 'error');
                 return;
             }
 
             try {
+                // Check for existing assignments
+                const { data: existing } = await supabase
+                    .from('unit_assignments')
+                    .select('unit_id')
+                    .eq('learner_id', learnerId);
+
+                const existingUnitIds = (existing || []).map(e => String(e.unit_id));
+                const newAssignments = selectedUnits.filter(unitId => !existingUnitIds.includes(unitId));
+
+                if (newAssignments.length === 0) {
+                    showMessage('assignMessage', 'This learner already has all selected units assigned', 'error');
+                    return;
+                }
+
+                const assignmentsToInsert = newAssignments.map(unitId => ({
+                    learner_id: learnerId,
+                    unit_id: unitId,
+                    assignment_date: new Date().toISOString()
+                }));
+
                 const { data, error } = await supabase
                     .from('unit_assignments')
-                    .insert([{
-                        learner_id: learnerId,
-                        unit_id: unitId,
-                        status: 'pending'
-                    }]);
+                    .insert(assignmentsToInsert);
 
-                if (error) throw error;
+                if (error) {
+                    console.error('Insert error:', error);
+                    throw error;
+                }
 
-                showMessage('assignMessage', 'Unit assigned successfully!', 'success');
+                showMessage('assignMessage', `✓ ${newAssignments.length} unit(s) assigned successfully!`, 'success');
                 document.getElementById('learnerSelect').value = '';
-                document.getElementById('unitSelect').value = '';
-                loadAssignUI();
+                unitSelect.value = '';
+                setTimeout(() => loadAssignUI(), 1500);
             } catch (error) {
                 showMessage('assignMessage', `Error: ${error.message}`, 'error');
             }
         }
+
+        window.assignUnit = assignUnit;
 
         // Load progress UI
         async function loadProgressUI() {
@@ -932,29 +887,37 @@
                     return;
                 }
 
-                container.innerHTML = assignments.map(assignment => `
+                container.innerHTML = assignments.map(assignment => {
+                    const unit = allUnits.find(u => u.id === assignment.unit_id);
+                    const unitNumber = unit ? unit.unit_number : '?';
+                    const displayName = unit ? unit.display_name : 'Unknown';
+                    return `
                     <div class="unit-card">
-                        <h4>${assignment.unit_id}</h4>
+                        <h4>Unit ${unitNumber} ${displayName}</h4>
                         <p>Status: <span class="status-badge status-${assignment.status}">${assignment.status}</span></p>
                         <button class="btn btn-secondary" onclick="selectAssignment('${assignment.id}', '${assignment.unit_id}')">Record Progress</button>
                     </div>
-                `).join('');
+                `;
+                }).join('');
             } catch (error) {
                 console.error('Error loading assignments:', error);
             }
         }
 
+        window.loadLearnerAssignments = loadLearnerAssignments;
+
         // Select assignment for progress tracking
         function selectAssignment(assignmentId, unitId) {
             selectedAssignment = assignmentId;
-            const unit = units.find(u => u.id === unitId);
+            const unit = allUnits.find(u => u.id === unitId);
 
             if (unit) {
-                document.getElementById('unitTitle').textContent = unit.name;
-                document.getElementById('unitDescription').textContent = unit.description;
+                const displayName = `Unit ${unit.unit_number} ${unit.display_name}`;
+                document.getElementById('unitTitle').textContent = displayName;
 
                 const outcomesList = document.getElementById('outcomesList');
-                outcomesList.innerHTML = unit.outcomes.map((outcome, index) => `
+                const outcomes = unit.outcomes || [];
+                outcomesList.innerHTML = outcomes.map((outcome, index) => `
                     <li class="outcome-item">
                         <input type="checkbox" id="outcome_${index}" value="${outcome}">
                         <label for="outcome_${index}" style="display: inline; margin: 0;">${outcome}</label>
@@ -967,6 +930,8 @@
                 document.getElementById('progressNotes').value = '';
             }
         }
+
+        window.selectAssignment = selectAssignment;
 
         // Save progress
         async function saveProgress() {
@@ -982,20 +947,21 @@
             });
 
             try {
-                const { error } = await supabase
+                const { data, error } = await supabase
                     .from('unit_assignments')
                     .update({
                         status: status,
                         assessment_decision: decision || null,
-                        outcomes_achieved: outcomes,
-                        progress_notes: notes,
+                        outcomes_achieved: outcomes.length > 0 ? outcomes : null,
+                        progress_notes: notes || null,
                         updated_at: new Date().toISOString()
                     })
-                    .eq('id', selectedAssignment);
+                    .eq('id', selectedAssignment)
+                    .select();
 
                 if (error) throw error;
 
-                showMessage('progressMessage', 'Progress saved successfully!', 'success');
+                showMessage('progressMessage', '✓ Progress saved successfully!', 'success');
                 setTimeout(() => {
                     document.getElementById('progressForm').style.display = 'none';
                     loadLearnerAssignments();
@@ -1004,6 +970,8 @@
                 showMessage('progressMessage', `Error: ${error.message}`, 'error');
             }
         }
+
+        window.saveProgress = saveProgress;
 
         // Delete learner
         async function deleteLearner(learnerId) {
@@ -1016,12 +984,13 @@
                     .eq('id', learnerId);
 
                 if (error) throw error;
-
                 loadRoster();
             } catch (error) {
                 console.error('Error deleting learner:', error);
             }
         }
+
+        window.deleteLearner = deleteLearner;
 
         // Show message
         function showMessage(elementId, message, type) {
@@ -1029,7 +998,6 @@
             if (element) {
                 element.className = type === 'error' ? 'error-message' : 'success-message';
                 element.textContent = message;
-                console.log(`Message (${type}):`, message);
                 setTimeout(() => {
                     if (element) {
                         element.textContent = '';
