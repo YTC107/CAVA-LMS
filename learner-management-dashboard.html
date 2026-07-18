@@ -654,11 +654,9 @@
             
             const name = document.getElementById('fullName').value.trim();
             const email = document.getElementById('email').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const dob = document.getElementById('dob').value.trim();
             const startDate = document.getElementById('startDate').value.trim();
 
-            console.log('Form values:', { name, email, phone, dob, startDate });
+            console.log('Form values:', { name, email, startDate });
 
             if (!name || !email || !startDate) {
                 showMessage('enrolMessage', 'Please fill in all required fields (Full Name, Email, Programme Start Date)', 'error');
@@ -666,15 +664,12 @@
                 return;
             }
 
-
-
             try {
                 console.log('Attempting Supabase insert...');
                 
                 const learnerData = {
                     full_name: name,
                     email: email,
-                    phone: phone || null,
                     programme_start_date: startDate
                 };
 
