@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PT Academy Learner Management</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f5f5f5; color: #333; }
@@ -111,9 +111,15 @@
             try {
                 const supabaseUrl = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
                 const supabaseKey = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
-                const { createClient } = window.supabase;
-                supabase = createClient(supabaseUrl, supabaseKey);
-                console.log('Supabase initialized:', supabase ? 'SUCCESS' : 'FAILED');
+                
+                // Wait for Supabase to be available
+                if (typeof window.supabase === 'undefined' || !window.supabase.createClient) {
+                    console.error('Supabase library not loaded');
+                    return;
+                }
+                
+                supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+                console.log('✓ Supabase initialized successfully');
             } catch (error) {
                 console.error('Error initializing Supabase:', error);
             }
@@ -156,8 +162,8 @@
             
             // Check if Supabase is ready
             if (!supabase) {
-                showMessage('enrolMessage', 'ERROR: Supabase not initialized yet', 'error');
-                console.error('Supabase is NULL');
+                showMessage('enrolMessage', 'ERROR: Supabase connection failed. Refresh the page.', 'error');
+                console.error('Supabase is not initialized');
                 return;
             }
             
