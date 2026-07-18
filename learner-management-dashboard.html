@@ -1,741 +1,792 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learner Management - PT Academy</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PT Academy Learner Management - Supabase</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
-        }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f5f5f5;
+      padding: 20px;
+    }
 
-        .header {
-            background-color: #1a1a1a;
-            color: white;
-            padding: 20px 40px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
 
-        .header-left {
-            display: flex;
-            align-items: center;
-            gap: 16px;
-        }
+    .header {
+      background: linear-gradient(135deg, #2c3e50, #34495e);
+      color: white;
+      padding: 30px;
+      text-align: center;
+    }
 
-        .header-logo {
-            width: 50px;
-            height: 50px;
-            background-color: #d4af37;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: #1a1a1a;
-            font-size: 18px;
-        }
+    .header h1 {
+      font-size: 28px;
+      margin-bottom: 5px;
+    }
 
-        .header-title h1 {
-            font-size: 24px;
-            margin-bottom: 4px;
-        }
+    .header p {
+      font-size: 14px;
+      opacity: 0.9;
+    }
 
-        .header-title p {
-            font-size: 12px;
-            color: #ccc;
-        }
+    .tabs {
+      display: flex;
+      background: #f8f9fa;
+      border-bottom: 2px solid #e0e0e0;
+      overflow-x: auto;
+    }
 
-        .header-right {
-            display: flex;
-            gap: 12px;
-            align-items: center;
-        }
+    .tab-btn {
+      flex: 1;
+      padding: 15px 20px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: #666;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
 
-        .back-btn {
-            background-color: #d4af37;
-            color: #1a1a1a;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 4px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
+    .tab-btn:hover {
+      background: #f0f0f0;
+      color: #333;
+    }
 
-        .back-btn:hover {
-            background-color: #e8c547;
-        }
+    .tab-btn.active {
+      color: #c9a961;
+      border-bottom: 3px solid #c9a961;
+      margin-bottom: -2px;
+    }
 
-        .logout-btn {
-            background-color: #d4af37;
-            color: #1a1a1a;
-            border: none;
-            padding: 10px 16px;
-            border-radius: 4px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
+    .tab-content {
+      display: none;
+      padding: 30px;
+    }
 
-        .logout-btn:hover {
-            background-color: #e8c547;
-        }
+    .tab-content.active {
+      display: block;
+    }
 
-        .container {
-            max-width: 1200px;
-            margin: 30px auto;
-            padding: 0 40px;
-        }
+    .tab-content h2 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+      font-size: 22px;
+    }
 
-        .tabs {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 30px;
-            border-bottom: 2px solid #ddd;
-        }
+    .form-group {
+      margin-bottom: 15px;
+    }
 
-        .tab-btn {
-            background: none;
-            border: none;
-            padding: 12px 20px;
-            font-size: 16px;
-            font-weight: 600;
-            color: #666;
-            cursor: pointer;
-            border-bottom: 3px solid transparent;
-            transition: all 0.2s;
-        }
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      color: #333;
+      font-weight: 500;
+    }
 
-        .tab-btn.active {
-            color: #d4af37;
-            border-bottom-color: #d4af37;
-        }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: inherit;
+    }
 
-        .tab-btn:hover {
-            color: #d4af37;
-        }
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: #c9a961;
+      box-shadow: 0 0 5px rgba(201, 169, 97, 0.3);
+    }
 
-        .tab-content {
-            display: none;
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-        }
+    button[type="submit"],
+    .btn {
+      background: #c9a961;
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.3s ease;
+    }
 
-        .tab-content.active {
-            display: block;
-        }
+    button[type="submit"]:hover,
+    .btn:hover {
+      background: #b8985a;
+    }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+    .btn-danger {
+      background: #e74c3c;
+    }
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #333;
-        }
+    .btn-danger:hover {
+      background: #c0392b;
+    }
 
-        input, select, textarea {
-            width: 100%;
-            padding: 10px 12px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-            font-family: inherit;
-        }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
 
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            border-color: #d4af37;
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
-        }
+    .table-container {
+      overflow-x: auto;
+      margin-top: 20px;
+    }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+    }
 
-        button.submit-btn {
-            background-color: #d4af37;
-            color: #1a1a1a;
-            border: none;
-            padding: 12px 24px;
-            border-radius: 4px;
-            font-weight: 600;
-            cursor: pointer;
-            font-size: 14px;
-            transition: background-color 0.2s;
-        }
+    th {
+      background: #2c3e50;
+      color: white;
+      padding: 12px;
+      text-align: left;
+      font-weight: 600;
+    }
 
-        button.submit-btn:hover {
-            background-color: #e8c547;
-        }
+    td {
+      padding: 12px;
+      border-bottom: 1px solid #eee;
+    }
 
-        .enrol-wrapper {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 40px;
-        }
+    tr:hover {
+      background: #f9f9f9;
+    }
 
-        .enrol-section {
-            padding: 20px;
-            background-color: #fafafa;
-            border-radius: 6px;
-            border: 1px solid #eee;
-        }
+    .status-badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+    }
 
-        .enrol-section h3 {
-            font-size: 16px;
-            margin-bottom: 20px;
-            color: #1a1a1a;
-            border-bottom: 2px solid #d4af37;
-            padding-bottom: 10px;
-        }
+    .status-active {
+      background: #d4edda;
+      color: #155724;
+    }
 
-        .csv-format-box {
-            background-color: #f0f0f0;
-            border-left: 3px solid #d4af37;
-            padding: 12px;
-            margin-bottom: 16px;
-            border-radius: 4px;
-            font-size: 12px;
-            font-family: 'Courier New', monospace;
-            line-height: 1.5;
-        }
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+    }
 
-        .csv-format-box p {
-            margin: 4px 0;
-            color: #555;
-        }
+    .status-completed {
+      background: #cfe2ff;
+      color: #084298;
+    }
 
-        .csv-format-box .label {
-            font-weight: 600;
-            color: #1a1a1a;
-            margin-top: 8px;
-            margin-bottom: 4px;
-        }
+    .csv-upload {
+      border: 2px dashed #c9a961;
+      border-radius: 8px;
+      padding: 20px;
+      text-align: center;
+      background: #fffbf7;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
 
-        .file-input-wrapper {
-            position: relative;
-            overflow: hidden;
-            display: inline-block;
-            width: 100%;
-        }
+    .csv-upload:hover {
+      background: #fff5ed;
+      border-color: #b8985a;
+    }
 
-        .file-input-wrapper input[type=file] {
-            position: absolute;
-            left: -9999px;
-        }
+    .csv-upload.dragover {
+      background: #f0e6d2;
+      border-color: #2c3e50;
+    }
 
-        .file-input-label {
-            display: block;
-            padding: 10px 12px;
-            background-color: #fff;
-            border: 2px dashed #d4af37;
-            border-radius: 4px;
-            text-align: center;
-            cursor: pointer;
-            transition: background-color 0.2s;
-            font-weight: 600;
-            color: #d4af37;
-        }
+    .error-message {
+      color: #e74c3c;
+      font-size: 12px;
+      margin-top: 5px;
+    }
 
-        .file-input-label:hover {
-            background-color: #fffaed;
-        }
+    .success-message {
+      background: #d4edda;
+      color: #155724;
+      padding: 12px;
+      border-radius: 4px;
+      margin-bottom: 15px;
+    }
 
-        .file-name {
-            margin-top: 8px;
-            font-size: 12px;
-            color: #666;
-        }
+    .unit-card {
+      background: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
 
-        .table-container {
-            overflow-x: auto;
-        }
+    .unit-card h4 {
+      color: #2c3e50;
+      margin-bottom: 10px;
+    }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+    .outcomes-list {
+      background: white;
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 10px;
+    }
 
-        thead {
-            background-color: #1a1a1a;
-            color: white;
-        }
+    .outcome-item {
+      padding: 8px 0;
+      border-bottom: 1px solid #eee;
+    }
 
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
+    .outcome-item:last-child {
+      border-bottom: none;
+    }
 
-        tbody tr:hover {
-            background-color: #f9f9f9;
-        }
-
-        .message {
-            padding: 12px 16px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            display: none;
-        }
-
-        .message.show {
-            display: block;
-        }
-
-        .message.success {
-            background-color: #d4f4dd;
-            color: #1b6e3d;
-            border: 1px solid #a8e6c1;
-        }
-
-        .message.error {
-            background-color: #ffe6e6;
-            color: #c41e3a;
-            border: 1px solid #ffb3b3;
-        }
-
-        .no-data {
-            padding: 40px;
-            text-align: center;
-            color: #999;
-        }
-
-        h2 {
-            margin-bottom: 24px;
-            color: #1a1a1a;
-            font-size: 20px;
-        }
-
-        .action-btn {
-            background-color: #666;
-            color: white;
-            border: none;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: background-color 0.2s;
-        }
-
-        .action-btn:hover {
-            background-color: #555;
-        }
-
-        .action-btn.delete {
-            background-color: #c41e3a;
-        }
-
-        .action-btn.delete:hover {
-            background-color: #a01729;
-        }
-
-        @media (max-width: 900px) {
-            .enrol-wrapper {
-                grid-template-columns: 1fr;
-            }
-        }
-    </style>
+    .progress-section {
+      background: #f9f9f9;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
     <div class="header">
-        <div class="header-left">
-            <div class="header-logo">PT</div>
-            <div class="header-title">
-                <h1>Learner Management</h1>
-                <p>Focus Awards Level 3 Certificate in Assessing Vocational Achievement</p>
-            </div>
-        </div>
-        <div class="header-right">
-            <button class="back-btn" onclick="goBack()">← Back to Hub</button>
-            <button class="logout-btn" onclick="logout()">Log Out</button>
-        </div>
+      <h1>PT Academy Learner Management System</h1>
+      <p>Manage enrollments, assignments, and track learner progress</p>
     </div>
 
-    <div class="container">
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('enrol')">Enrol Learner</button>
-            <button class="tab-btn" onclick="switchTab('roster')">Learner Roster</button>
-            <button class="tab-btn" onclick="switchTab('units')">Assign Units</button>
-        </div>
-
-        <!-- Enrol Learner Tab -->
-        <div id="enrol" class="tab-content active">
-            <h2>Enrol New Learner</h2>
-            <div id="enrollMessage" class="message"></div>
-            
-            <div class="enrol-wrapper">
-                <!-- Individual Enrolment -->
-                <div class="enrol-section">
-                    <h3>Individual Enrolment</h3>
-                    <form onsubmit="enrolLearner(event)">
-                        <div class="form-group">
-                            <label for="fullName">Full Name *</label>
-                            <input type="text" id="fullName" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email">Email Address *</label>
-                            <input type="email" id="email" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone">
-                        </div>
-                        <div class="form-group">
-                            <label for="dob">Date of Birth</label>
-                            <input type="date" id="dob">
-                        </div>
-                        <div class="form-group">
-                            <label for="startDate">Programme Start Date *</label>
-                            <input type="date" id="startDate" required>
-                        </div>
-                        <button type="submit" class="submit-btn">Enrol Learner</button>
-                    </form>
-                </div>
-
-                <!-- Bulk Upload -->
-                <div class="enrol-section">
-                    <h3>Bulk Upload (CSV)</h3>
-                    <div class="csv-format-box">
-                        <p class="label">CSV Format:</p>
-                        <p>Full Name, Email, Phone, DOB (dd/mm/yyyy), Start Date (dd/mm/yyyy)</p>
-                        <p class="label" style="margin-top: 12px;">Example:</p>
-                        <p>John Smith, john@example.com, 07700000001, 15/03/1990, 15/01/2024</p>
-                        <p>Sarah Jones, sarah@example.com, 07700000002, 22/06/1988, 15/01/2024</p>
-                    </div>
-                    
-                    <div class="form-group">
-                        <label>Select CSV File *</label>
-                        <div class="file-input-wrapper">
-                            <input type="file" id="csvFile" accept=".csv" onchange="displayFileName()">
-                            <label for="csvFile" class="file-input-label">📁 Choose CSV file or drag here</label>
-                            <div class="file-name" id="fileName"></div>
-                        </div>
-                    </div>
-                    
-                    <button type="button" class="submit-btn" onclick="uploadCSV()" style="width: 100%;">Upload Learners</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- Learner Roster Tab -->
-        <div id="roster" class="tab-content">
-            <h2>Learner Roster</h2>
-            <div id="rosterMessage" class="message"></div>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Learner Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Start Date</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="rosterTable">
-                        <tr>
-                            <td colspan="5" class="no-data">No learners enrolled yet</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Assign Units Tab -->
-        <div id="units" class="tab-content">
-            <h2>Assign Units to Learner</h2>
-            <form onsubmit="assignUnits(event)">
-                <div class="form-group">
-                    <label for="learnerSelect">Select Learner *</label>
-                    <select id="learnerSelect" required onchange="updateLearnerInfo()">
-                        <option value="">— Select a learner —</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="unitSelect">Select Unit *</label>
-                    <select id="unitSelect" required>
-                        <option value="">— Select a unit —</option>
-                        <option value="unit1">Unit 1: Plan and conduct assessments</option>
-                        <option value="unit2">Unit 2: Assess occupational competence</option>
-                        <option value="unit3">Unit 3: Assess knowledge and understanding</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="assignDate">Assignment Date *</label>
-                    <input type="date" id="assignDate" required>
-                </div>
-                <button type="submit" class="submit-btn">Assign Unit</button>
-            </form>
-        </div>
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="enrol">Enrol Learner</button>
+      <button class="tab-btn" data-tab="roster">Learner Roster</button>
+      <button class="tab-btn" data-tab="assign">Assign Units</button>
+      <button class="tab-btn" data-tab="progress">Track Progress</button>
     </div>
 
-    <script>
-        // Load learners from localStorage on page load
-        let learners = JSON.parse(localStorage.getItem('pt_learners')) || [];
+    <div id="enrol" class="tab-content active">
+      <h2>Enrol New Learner</h2>
+      <div class="form-row">
+        <div>
+          <h3>Individual Enrolment</h3>
+          <form id="enrollForm">
+            <div class="form-group">
+              <label for="fullName">Full Name <span style="color: red;">*</span></label>
+              <input type="text" id="fullName" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address <span style="color: red;">*</span></label>
+              <input type="email" id="email" required>
+            </div>
+            <div class="form-group">
+              <label for="phone">Phone Number</label>
+              <input type="tel" id="phone">
+            </div>
+            <div class="form-group">
+              <label for="dob">Date of Birth</label>
+              <input type="text" id="dob" placeholder="dd/mm/yyyy">
+            </div>
+            <div class="form-group">
+              <label for="programmeStart">Programme Start Date <span style="color: red;">*</span></label>
+              <input type="text" id="programmeStart" placeholder="dd/mm/yyyy" required>
+            </div>
+            <button type="submit">Enrol Learner</button>
+          </form>
+        </div>
 
-        window.addEventListener('DOMContentLoaded', function() {
-            const userRole = localStorage.getItem('cava_role');
-            const userJson = localStorage.getItem('cava_user');
+        <div>
+          <h3>Bulk Upload (CSV)</h3>
+          <div class="csv-upload" id="csvUpload">
+            <p style="font-weight: 600; margin-bottom: 10px;">📁 CSV Format:</p>
+            <p style="font-size: 12px; color: #666; margin-bottom: 10px;">Full Name, Email, Phone, DOB (dd/mm/yyyy), Start Date (dd/mm/yyyy)</p>
+            <p style="font-size: 12px; color: #666; margin-bottom: 15px;"><strong>Example:</strong></p>
+            <code style="background: white; padding: 10px; border-radius: 4px; display: block; text-align: left; font-size: 11px; margin-bottom: 15px;">John Smith, john@example.com, 07700000001, 18/03/1995, 18/01/2024<br>Sarah Jones, sarah@example.com, 07700000002, 22/06/1988, 18/01/2024</code>
+            <label for="csvFile" style="display: inline-block; margin-bottom: 0;">
+              <span style="background: #c9a961; color: white; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: 600;">Choose CSV file or drag here</span>
+              <input type="file" id="csvFile" accept=".csv" style="display: none;">
+            </label>
+          </div>
+          <button onclick="uploadCSV()" style="margin-top: 15px; width: 100%;">Upload Learners</button>
+        </div>
+      </div>
+    </div>
 
-            if (!userRole || !userJson) {
-                window.location.href = 'login.html';
-            }
+    <div id="roster" class="tab-content">
+      <h2>Learner Roster</h2>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Learner Name</th>
+              <th>Email</th>
+              <th>Phone</th>
+              <th>Start Date</th>
+              <th>Assigned Units</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="rosterBody">
+          </tbody>
+        </table>
+      </div>
+    </div>
 
-            updateRoster();
-            updateLearnerSelect();
-        });
+    <div id="assign" class="tab-content">
+      <h2>Assign Units to Learners</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="assignLearner">Select Learner</label>
+          <select id="assignLearner">
+            <option value="">Choose a learner...</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="assignUnit">Select Unit</label>
+          <select id="assignUnit">
+            <option value="">Choose a unit...</option>
+          </select>
+        </div>
+      </div>
+      <button onclick="assignUnit()">Assign Unit</button>
 
-        function switchTab(tabName) {
-            const tabs = document.querySelectorAll('.tab-content');
-            tabs.forEach(tab => tab.classList.remove('active'));
+      <div style="margin-top: 30px;">
+        <h3>Unit Definitions</h3>
+        <div id="unitsList"></div>
+      </div>
+    </div>
 
-            const buttons = document.querySelectorAll('.tab-btn');
-            buttons.forEach(btn => btn.classList.remove('active'));
+    <div id="progress" class="tab-content">
+      <h2>Track Learner Progress</h2>
+      <div class="progress-section">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="progressLearner">Select Learner</label>
+            <select id="progressLearner">
+              <option value="">Choose a learner...</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="progressUnit">Select Unit Assignment</label>
+            <select id="progressUnit">
+              <option value="">Choose a unit...</option>
+            </select>
+          </div>
+        </div>
+      </div>
 
-            document.getElementById(tabName).classList.add('active');
-            event.target.classList.add('active');
+      <div id="progressDetails" style="display: none; background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 20px;">
+        <h3 id="learnerUnitTitle"></h3>
+        <div style="margin: 15px 0;">
+          <p><strong>Learning Outcomes</strong></p>
+          <div id="outcomesDisplay" style="background: white; padding: 15px; border-radius: 5px; margin-top: 10px;"></div>
+        </div>
+      </div>
 
-            if (tabName === 'roster') {
-                updateRoster();
-            }
+      <div style="background: white; padding: 20px; border-radius: 8px; border: 1px solid #ddd;">
+        <h3>Record Assessment</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="progressStatus">Unit Status</label>
+            <select id="progressStatus">
+              <option value="pending">Pending</option>
+              <option value="in_progress">In Progress</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="assessmentDecision">Assessment Decision</label>
+            <select id="assessmentDecision">
+              <option value="">Select decision...</option>
+              <option value="pass">Pass - All Outcomes Met</option>
+              <option value="conditional">Conditional - Review Required</option>
+              <option value="not_yet">Not Yet Competent</option>
+            </select>
+          </div>
+        </div>
+
+        <div style="margin: 15px 0;">
+          <label><strong>Outcomes Achieved (select all that apply)</strong></label>
+          <div id="outcomeCheckboxes" style="margin-top: 10px;"></div>
+        </div>
+
+        <div class="form-group">
+          <label for="assessmentNotes">Assessment Notes</label>
+          <textarea id="assessmentNotes" style="height: 100px;"></textarea>
+        </div>
+
+        <button onclick="saveProgress()" style="margin-top: 20px;">Save Progress Record</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    const units = [
+      { id: 'unit-001', title: 'Professional Practice', outcomes: ['Demonstrate professional conduct', 'Apply ethical principles', 'Maintain confidentiality'] },
+      { id: 'unit-002', title: 'Health & Safety', outcomes: ['Identify hazards', 'Implement safety procedures', 'Report incidents correctly'] },
+      { id: 'unit-003', title: 'Customer Service', outcomes: ['Respond to enquiries', 'Handle complaints effectively', 'Maintain service standards'] },
+      { id: 'unit-004', title: 'Business Communication', outcomes: ['Write clear emails', 'Present information effectively', 'Communicate with diverse groups'] },
+      { id: 'unit-005', title: 'Data Management', outcomes: ['Organise data effectively', 'Ensure data security', 'Generate reports'] }
+    ];
+
+    function showTab(tabName) {
+      const tabs = document.querySelectorAll('.tab-content');
+      const buttons = document.querySelectorAll('.tab-btn');
+      tabs.forEach(t => t.classList.remove('active'));
+      buttons.forEach(b => b.classList.remove('active'));
+      document.getElementById(tabName).classList.add('active');
+      event.target.classList.add('active');
+    }
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const tabName = this.getAttribute('data-tab');
+        showTab(tabName);
+        if (tabName === 'roster') loadRoster();
+        if (tabName === 'assign') loadAssignTab();
+        if (tabName === 'progress') loadProgressTab();
+      });
+    });
+
+    document.getElementById('enrollForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await enrollLearner();
+    });
+
+    document.getElementById('progressLearner').addEventListener('change', loadLearnerUnits);
+    document.getElementById('progressUnit').addEventListener('change', loadUnitOutcomes);
+
+    const csvUpload = document.getElementById('csvUpload');
+    csvUpload.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      csvUpload.classList.add('dragover');
+    });
+    csvUpload.addEventListener('dragleave', () => csvUpload.classList.remove('dragover'));
+    csvUpload.addEventListener('drop', (e) => {
+      e.preventDefault();
+      csvUpload.classList.remove('dragover');
+      const file = e.dataTransfer.files[0];
+      document.getElementById('csvFile').files = e.dataTransfer.files;
+    });
+
+    async function enrollLearner() {
+      const fullName = document.getElementById('fullName').value;
+      const email = document.getElementById('email').value;
+      const phone = document.getElementById('phone').value || null;
+      const dob = document.getElementById('dob').value || null;
+      const programmeStart = document.getElementById('programmeStart').value;
+
+      const { data, error } = await supabase
+        .from('learners')
+        .insert([
+          {
+            full_name: fullName,
+            email: email,
+            phone: phone,
+            date_of_birth: dob,
+            programme_start_date: programmeStart,
+            status: 'active'
+          }
+        ]);
+
+      if (error) {
+        alert('Error enrolling learner: ' + error.message);
+        return;
+      }
+
+      alert('Learner enrolled successfully!');
+      document.getElementById('enrollForm').reset();
+    }
+
+    async function uploadCSV() {
+      const file = document.getElementById('csvFile').files[0];
+      if (!file) {
+        alert('Please select a CSV file');
+        return;
+      }
+
+      const text = await file.text();
+      const lines = text.trim().split('\n');
+      const learners = [];
+
+      for (let i = 0; i < lines.length; i++) {
+        const [fullName, email, phone, dob, programmeStart] = lines[i].split(',').map(v => v.trim());
+        if (fullName && email && programmeStart) {
+          learners.push({
+            full_name: fullName,
+            email: email,
+            phone: phone || null,
+            date_of_birth: dob || null,
+            programme_start_date: programmeStart,
+            status: 'active'
+          });
         }
+      }
 
-        function displayFileName() {
-            const fileInput = document.getElementById('csvFile');
-            const fileName = document.getElementById('fileName');
-            if (fileInput.files.length > 0) {
-                fileName.textContent = '✓ ' + fileInput.files[0].name;
-            } else {
-                fileName.textContent = '';
-            }
-        }
+      if (learners.length === 0) {
+        alert('No valid learners found in CSV');
+        return;
+      }
 
-        function showMessage(elementId, message, type) {
-            const messageEl = document.getElementById(elementId);
-            messageEl.textContent = message;
-            messageEl.className = 'message show ' + type;
-            setTimeout(() => {
-                messageEl.classList.remove('show');
-            }, 5000);
-        }
+      const { data, error } = await supabase
+        .from('learners')
+        .insert(learners);
 
-        function enrolLearner(event) {
-            event.preventDefault();
-            const fullName = document.getElementById('fullName').value.trim();
-            const email = document.getElementById('email').value.trim();
-            const phone = document.getElementById('phone').value.trim();
-            const dob = document.getElementById('dob').value;
-            const startDate = document.getElementById('startDate').value;
+      if (error) {
+        alert('Error uploading learners: ' + error.message);
+        return;
+      }
 
-            if (!fullName || !email) {
-                showMessage('enrollMessage', 'Full name and email are required.', 'error');
-                return;
-            }
+      alert(`Successfully uploaded ${learners.length} learners!`);
+      document.getElementById('csvFile').value = '';
+    }
 
-            const learner = {
-                id: Date.now(),
-                fullName,
-                email,
-                phone,
-                dob,
-                startDate,
-                enrolledDate: new Date().toLocaleDateString('en-GB')
-            };
+    async function loadRoster() {
+      const { data: learners, error } = await supabase
+        .from('learners')
+        .select('id, full_name, email, phone, programme_start_date')
+        .eq('status', 'active')
+        .order('full_name');
 
-            learners.push(learner);
-            localStorage.setItem('pt_learners', JSON.stringify(learners));
+      if (error) {
+        console.error('Error loading roster:', error);
+        return;
+      }
 
-            showMessage('enrollMessage', `Learner "${fullName}" enrolled successfully!`, 'success');
-            event.target.reset();
-            updateRoster();
-            updateLearnerSelect();
-        }
+      const { data: assignments } = await supabase
+        .from('unit_assignments')
+        .select('learner_id, unit_id')
+        .eq('status', 'completed');
 
-        function uploadCSV() {
-            const fileInput = document.getElementById('csvFile');
-            const file = fileInput.files[0];
+      const rosterBody = document.getElementById('rosterBody');
+      rosterBody.innerHTML = '';
 
-            if (!file) {
-                showMessage('enrollMessage', 'Please select a CSV file.', 'error');
-                return;
-            }
+      learners.forEach(learner => {
+        const learnerAssignments = assignments?.filter(a => a.learner_id === learner.id) || [];
+        const unitList = learnerAssignments.map(a => {
+          const unit = units.find(u => u.id === a.unit_id);
+          return unit?.title || a.unit_id;
+        }).join(', ') || 'None assigned';
 
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const csv = e.target.result;
-                const lines = csv.trim().split('\n');
+        const row = `
+          <tr>
+            <td>${learner.full_name}</td>
+            <td>${learner.email}</td>
+            <td>${learner.phone || '—'}</td>
+            <td>${learner.programme_start_date}</td>
+            <td>${unitList}</td>
+            <td><button class="btn btn-danger" onclick="deleteLearner('${learner.id}')">Delete</button></td>
+          </tr>
+        `;
+        rosterBody.innerHTML += row;
+      });
+    }
 
-                if (lines.length === 0) {
-                    showMessage('enrollMessage', 'CSV file is empty.', 'error');
-                    return;
-                }
+    async function deleteLearner(id) {
+      if (!confirm('Are you sure you want to delete this learner?')) return;
+      const { error } = await supabase.from('learners').update({ status: 'inactive' }).eq('id', id);
+      if (error) {
+        alert('Error: ' + error.message);
+        return;
+      }
+      loadRoster();
+    }
 
-                let successCount = 0;
-                let errorCount = 0;
-                const errors = [];
+    async function loadAssignTab() {
+      const { data: learners } = await supabase.from('learners').select('id, full_name').eq('status', 'active').order('full_name');
+      const select = document.getElementById('assignLearner');
+      select.innerHTML = '<option value="">Choose a learner...</option>';
+      learners.forEach(l => {
+        const opt = document.createElement('option');
+        opt.value = l.id;
+        opt.textContent = l.full_name;
+        select.appendChild(opt);
+      });
 
-                for (let i = 0; i < lines.length; i++) {
-                    const line = lines[i].trim();
-                    if (!line) continue;
+      const unitSelect = document.getElementById('assignUnit');
+      unitSelect.innerHTML = '<option value="">Choose a unit...</option>';
+      units.forEach(u => {
+        const opt = document.createElement('option');
+        opt.value = u.id;
+        opt.textContent = u.title;
+        unitSelect.appendChild(opt);
+      });
 
-                    const parts = line.split(',').map(p => p.trim());
+      const unitsList = document.getElementById('unitsList');
+      unitsList.innerHTML = units.map(u => `
+        <div class="unit-card">
+          <h4>${u.title}</h4>
+          <div class="outcomes-list">
+            ${u.outcomes.map(o => `<div class="outcome-item">• ${o}</div>`).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
 
-                    if (parts.length < 2) {
-                        errorCount++;
-                        errors.push(`Row ${i + 1}: Missing required fields (Full Name, Email)`);
-                        continue;
-                    }
+    async function assignUnit() {
+      const learnerId = document.getElementById('assignLearner').value;
+      const unitId = document.getElementById('assignUnit').value;
 
-                    const fullName = parts[0];
-                    const email = parts[1];
-                    const phone = parts[2] || '';
-                    const dob = parts[3] ? parseDate(parts[3]) : '';
-                    const startDate = parts[4] ? parseDate(parts[4]) : '';
+      if (!learnerId || !unitId) {
+        alert('Please select both a learner and a unit');
+        return;
+      }
 
-                    if (!email.includes('@')) {
-                        errorCount++;
-                        errors.push(`Row ${i + 1}: Invalid email "${email}"`);
-                        continue;
-                    }
+      const { error } = await supabase
+        .from('unit_assignments')
+        .insert([{ learner_id: learnerId, unit_id: unitId, status: 'pending' }]);
 
-                    if (!fullName) {
-                        errorCount++;
-                        errors.push(`Row ${i + 1}: Full name is required`);
-                        continue;
-                    }
+      if (error) {
+        alert('Error assigning unit: ' + error.message);
+        return;
+      }
 
-                    const learner = {
-                        id: Date.now() + Math.random(),
-                        fullName,
-                        email,
-                        phone,
-                        dob,
-                        startDate,
-                        enrolledDate: new Date().toLocaleDateString('en-GB')
-                    };
+      alert('Unit assigned successfully!');
+      document.getElementById('assignLearner').value = '';
+      document.getElementById('assignUnit').value = '';
+    }
 
-                    learners.push(learner);
-                    successCount++;
-                }
+    async function loadProgressTab() {
+      const { data: learners, error } = await supabase
+        .from('learners')
+        .select('id, full_name')
+        .eq('status', 'active')
+        .order('full_name');
 
-                localStorage.setItem('pt_learners', JSON.stringify(learners));
+      if (error) {
+        console.error('Error loading learners:', error);
+        return;
+      }
 
-                let message = `✓ Successfully uploaded ${successCount} learner(s).`;
-                if (errorCount > 0) {
-                    message += ` ⚠ ${errorCount} row(s) failed: ${errors.join('; ')}`;
-                }
+      const select = document.getElementById('progressLearner');
+      select.innerHTML = '<option value="">Choose a learner...</option>';
+      learners.forEach(learner => {
+        const option = document.createElement('option');
+        option.value = learner.id;
+        option.textContent = learner.full_name;
+        select.appendChild(option);
+      });
+    }
 
-                showMessage('enrollMessage', message, successCount > 0 ? 'success' : 'error');
-                fileInput.value = '';
-                document.getElementById('fileName').textContent = '';
-                updateRoster();
-                updateLearnerSelect();
-            };
+    async function loadLearnerUnits() {
+      const learnerId = document.getElementById('progressLearner').value;
+      if (!learnerId) {
+        document.getElementById('progressUnit').innerHTML = '<option value="">Choose a unit...</option>';
+        document.getElementById('progressDetails').style.display = 'none';
+        return;
+      }
 
-            reader.readAsText(file);
-        }
+      const { data: assignments, error } = await supabase
+        .from('unit_assignments')
+        .select('id, unit_id, assignment_date, status')
+        .eq('learner_id', learnerId)
+        .order('assignment_date', { ascending: false });
 
-        function parseDate(dateStr) {
-            // Handle dd/mm/yyyy or yyyy-mm-dd formats
-            if (dateStr.includes('/')) {
-                const [day, month, year] = dateStr.split('/');
-                return `${year}-${month}-${day}`;
-            }
-            return dateStr;
-        }
+      if (error) {
+        console.error('Error loading assignments:', error);
+        return;
+      }
 
-        function updateRoster() {
-            const rosterTable = document.getElementById('rosterTable');
-            
-            if (learners.length === 0) {
-                rosterTable.innerHTML = '<tr><td colspan="5" class="no-data">No learners enrolled yet</td></tr>';
-                return;
-            }
+      const select = document.getElementById('progressUnit');
+      select.innerHTML = '<option value="">Choose a unit...</option>';
+      assignments.forEach(assignment => {
+        const unit = units.find(u => u.id === assignment.unit_id);
+        const option = document.createElement('option');
+        option.value = assignment.id;
+        option.textContent = `${unit?.title || assignment.unit_id} (${assignment.status})`;
+        option.dataset.unitId = assignment.unit_id;
+        select.appendChild(option);
+      });
+    }
 
-            rosterTable.innerHTML = learners.map(learner => `
-                <tr>
-                    <td>${learner.fullName}</td>
-                    <td>${learner.email}</td>
-                    <td>${learner.phone || '—'}</td>
-                    <td>${learner.startDate || '—'}</td>
-                    <td>
-                        <button class="action-btn delete" onclick="deleteLearner(${learner.id})">Delete</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
+    async function loadUnitOutcomes() {
+      const assignmentId = document.getElementById('progressUnit').value;
+      const unitSelect = document.getElementById('progressUnit');
+      const unitId = unitSelect.options[unitSelect.selectedIndex]?.dataset?.unitId;
 
-        function deleteLearner(id) {
-            if (confirm('Are you sure you want to delete this learner?')) {
-                learners = learners.filter(l => l.id !== id);
-                localStorage.setItem('pt_learners', JSON.stringify(learners));
-                updateRoster();
-                updateLearnerSelect();
-                showMessage('rosterMessage', 'Learner deleted.', 'success');
-            }
-        }
+      if (!assignmentId || !unitId) {
+        document.getElementById('progressDetails').style.display = 'none';
+        document.getElementById('outcomeCheckboxes').innerHTML = '';
+        return;
+      }
 
-        function updateLearnerSelect() {
-            const select = document.getElementById('learnerSelect');
-            select.innerHTML = '<option value="">— Select a learner —</option>';
-            learners.forEach(learner => {
-                const option = document.createElement('option');
-                option.value = learner.id;
-                option.textContent = learner.fullName;
-                select.appendChild(option);
-            });
-        }
+      const unit = units.find(u => u.id === unitId);
+      document.getElementById('learnerUnitTitle').textContent = unit?.title || unitId;
+      document.getElementById('outcomesDisplay').innerHTML = (unit?.outcomes || []).map((o) => 
+        `<div style="margin: 8px 0;">• ${o}</div>`
+      ).join('');
 
-        function updateLearnerInfo() {
-            // Placeholder for future use
-        }
+      document.getElementById('outcomeCheckboxes').innerHTML = (unit?.outcomes || []).map((outcome, i) => `
+        <label style="display: block; margin: 8px 0;">
+          <input type="checkbox" class="outcomeCheck" value="${i}">
+          ${outcome}
+        </label>
+      `).join('');
 
-        function assignUnits(event) {
-            event.preventDefault();
-            const learner = document.getElementById('learnerSelect').value;
-            const unit = document.getElementById('unitSelect').value;
-            const assignDate = document.getElementById('assignDate').value;
+      document.getElementById('progressDetails').style.display = 'block';
+    }
 
-            if (!learner || !unit || !assignDate) {
-                alert('Please fill in all fields.');
-                return;
-            }
+    async function saveProgress() {
+      const learnerId = document.getElementById('progressLearner').value;
+      const assignmentId = document.getElementById('progressUnit').value;
+      const status = document.getElementById('progressStatus').value;
+      const decision = document.getElementById('assessmentDecision').value;
+      const notes = document.getElementById('assessmentNotes').value;
+      const outcomeChecks = Array.from(document.querySelectorAll('.outcomeCheck:checked')).map(cb => cb.value);
 
-            console.log('Assigning unit:', { learner, unit, assignDate });
-            alert('Unit assigned successfully');
-            event.target.reset();
-        }
+      if (!learnerId || !assignmentId) {
+        alert('Please select a learner and unit assignment');
+        return;
+      }
 
-        function goBack() {
-            window.location.href = 'assessor-hub.html';
-        }
+      if (!decision) {
+        alert('Please select an assessment decision');
+        return;
+      }
 
-        function logout() {
-            localStorage.removeItem('cava_token');
-            localStorage.removeItem('cava_user');
-            localStorage.removeItem('cava_role');
-            const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-            window.location.href = basePath + 'login.html';
-        }
-    </script>
+      const { error } = await supabase
+        .from('unit_assignments')
+        .update({ status: status })
+        .eq('id', assignmentId);
 
+      if (error) {
+        alert('Error saving progress: ' + error.message);
+        return;
+      }
+
+      alert('Progress recorded successfully!');
+      document.getElementById('assessmentNotes').value = '';
+      document.querySelectorAll('.outcomeCheck').forEach(cb => cb.checked = false);
+      document.getElementById('progressStatus').value = 'pending';
+      document.getElementById('assessmentDecision').value = '';
+      loadProgressTab();
+    }
+  </script>
 </body>
 </html>
