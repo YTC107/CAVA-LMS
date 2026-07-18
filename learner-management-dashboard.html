@@ -529,15 +529,11 @@
     </div>
 
     <script>
-        let supabase;
-        
         // Initialize Supabase
-        (function() {
-            const supabaseUrl = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
-            const supabaseKey = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
-            const { createClient } = window.supabase;
-            supabase = createClient(supabaseUrl, supabaseKey);
-        })();
+        const supabaseUrl = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
+        const supabaseKey = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
+        const { createClient } = window.supabase;
+        const supabase = createClient(supabaseUrl, supabaseKey);
 
         // Units with learning outcomes
         const units = [
@@ -597,7 +593,7 @@
         }
 
         // Enrol learner - declared globally for onclick access
-        window.enrollLearner = async function enrollLearner() {
+        async function enrollLearner() {
             console.log('=== ENROL BUTTON CLICKED ===');
             showMessage('enrolMessage', 'Processing enrolment...', 'success');
             
@@ -670,6 +666,8 @@
                 document.getElementById('phone').value = '';
                 document.getElementById('dob').value = '';
                 document.getElementById('startDate').value = '';
+                document.getElementById('enrolMessage').textContent = '';
+                document.getElementById('enrolMessage').className = '';
             } catch (error) {
                 console.error('=== ENROLMENT ERROR ===');
                 console.error('Error object:', error);
@@ -678,6 +676,9 @@
                 showMessage('enrolMessage', `❌ Error: ${error.message}`, 'error');
             }
         }
+        
+        // Make enrollLearner globally accessible
+        window.enrollLearner = enrollLearner;
 
         // Handle CSV upload
         function handleCSVUpload(event) {
@@ -983,13 +984,17 @@
         // Show message
         function showMessage(elementId, message, type) {
             const element = document.getElementById(elementId);
-            element.className = type === 'error' ? 'error-message' : 'success-message';
-            element.textContent = message;
-            console.log(`Message (${type}):`, message);
-            setTimeout(() => {
-                element.textContent = '';
-                element.className = '';
-            }, 5000);
+            if (element) {
+                element.className = type === 'error' ? 'error-message' : 'success-message';
+                element.textContent = message;
+                console.log(`Message (${type}):`, message);
+                setTimeout(() => {
+                    if (element) {
+                        element.textContent = '';
+                        element.className = '';
+                    }
+                }, 5000);
+            }
         }
 
         // Test Supabase connection on load
