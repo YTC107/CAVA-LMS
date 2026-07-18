@@ -598,7 +598,9 @@
 
         // Enrol learner - declared globally for onclick access
         window.enrollLearner = async function enrollLearner() {
-            console.log('Enrol button clicked');
+            console.log('=== ENROL BUTTON CLICKED ===');
+            showMessage('enrolMessage', 'Processing enrolment...', 'success');
+            
             const name = document.getElementById('fullName').value.trim();
             const email = document.getElementById('email').value.trim();
             const phone = document.getElementById('phone').value.trim();
@@ -613,37 +615,67 @@
                 return;
             }
 
+            if (!supabase) {
+                showMessage('enrolMessage', 'Supabase client not initialised. Page may not have loaded correctly.', 'error');
+                console.error('Supabase client is undefined');
+                return;
+            }
+
             try {
                 console.log('Attempting Supabase insert...');
-                const { data, error } = await supabase
+                
+                // Convert HTML5 date format (YYYY-MM-DD) to database format if needed
+                const startDateFormatted = startDate; // Already in correct format from HTML5 date input
+                
+                const learnerData = {
+                    full_name: name,
+                    email: email,
+                    phone: phone || null,
+                    date_of_birth: dob || null,
+                    programme_start_date: startDateFormatted
+                };
+
+                console.log('Learner data to insert:', learnerData);
+
+                // Set a timeout for the Supabase call
+                const insertPromise = supabase
                     .from('learners')
-                    .insert([{
-                        full_name: name,
-                        email: email,
-                        phone: phone || null,
-                        date_of_birth: dob || null,
-                        programme_start_date: startDate
-                    }])
+                    .insert([learnerData])
                     .select();
+
+                const timeoutPromise = new Promise((_, reject) =>
+                    setTimeout(() => reject(new Error('Supabase request timed out after 10 seconds')), 10000)
+                );
+
+                const { data, error } = await Promise.race([insertPromise, timeoutPromise]);
 
                 console.log('Supabase response - Data:', data);
                 console.log('Supabase response - Error:', error);
 
                 if (error) {
                     console.error('Supabase insertion error:', error);
-                    throw new Error(`Database error: ${error.message}`);
+                    throw new Error(`Database error: ${error.message || 'Unknown error'}`);
                 }
 
-                showMessage('enrolMessage', `${name} has been enrolled successfully!`, 'success');
-                console.log('Enrolment successful, clearing form');
+                if (!data || data.length === 0) {
+                    throw new Error('No data returned from database');
+                }
+
+                showMessage('enrolMessage', `✓ ${name} has been enrolled successfully!`, 'success');
+                console.log('Enrolment successful for:', name);
+                
+                // Clear form
                 document.getElementById('fullName').value = '';
                 document.getElementById('email').value = '';
                 document.getElementById('phone').value = '';
                 document.getElementById('dob').value = '';
                 document.getElementById('startDate').value = '';
             } catch (error) {
-                console.error('Enrolment error:', error);
-                showMessage('enrolMessage', `Error: ${error.message}. Check browser console (F12) for details.`, 'error');
+                console.error('=== ENROLMENT ERROR ===');
+                console.error('Error object:', error);
+                console.error('Error message:', error.message);
+                console.error('Full error:', JSON.stringify(error, null, 2));
+                showMessage('enrolMessage', `❌ Error: ${error.message}`, 'error');
             }
         }
 
