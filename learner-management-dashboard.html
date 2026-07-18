@@ -529,10 +529,15 @@
     </div>
 
     <script>
-        const supabaseUrl = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
-        const supabaseKey = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
-        const { createClient } = window.supabase;
-        const supabase = createClient(supabaseUrl, supabaseKey);
+        let supabase;
+        
+        // Initialize Supabase
+        (function() {
+            const supabaseUrl = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
+            const supabaseKey = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
+            const { createClient } = window.supabase;
+            supabase = createClient(supabaseUrl, supabaseKey);
+        })();
 
         // Units with learning outcomes
         const units = [
@@ -591,8 +596,8 @@
             }
         }
 
-        // Enrol learner
-        async function enrollLearner() {
+        // Enrol learner - declared globally for onclick access
+        window.enrollLearner = async function enrollLearner() {
             console.log('Enrol button clicked');
             const name = document.getElementById('fullName').value.trim();
             const email = document.getElementById('email').value.trim();
