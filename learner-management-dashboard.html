@@ -580,12 +580,15 @@
             tabs.forEach(tab => tab.classList.remove('active'));
             buttons.forEach(btn => btn.classList.remove('active'));
 
-            document.getElementById(tabName).classList.add('active');
-            button.classList.add('active');
+            const selectedTab = document.getElementById(tabName);
+            if (selectedTab) {
+                selectedTab.classList.add('active');
+                button.classList.add('active');
 
-            if (tabName === 'roster') loadRoster();
-            if (tabName === 'assign') loadAssignUI();
-            if (tabName === 'progress') loadProgressUI();
+                if (tabName === 'roster') loadRoster();
+                if (tabName === 'assign') loadAssignUI();
+                if (tabName === 'progress') loadProgressUI();
+            }
         }
 
         // Enrol learner
