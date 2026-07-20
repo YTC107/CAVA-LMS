@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PT Academy Learner Management</title>
-    <script async src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.39.0"></script>
+    <title>Learner Management Dashboard</title>
     <style>
         * {
             margin: 0;
@@ -14,997 +13,680 @@
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            min-height: 100vh;
             color: #333;
         }
 
-        .header {
-            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
-            color: #d4af37;
-            padding: 30px 20px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        }
-
-        .header-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .logo-shield {
-            height: 60px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .logo-shield img {
-            height: 60px;
-            width: auto;
-            object-fit: contain;
-        }
-
-        .header-text h1 {
-            font-size: 32px;
-            margin: 0;
-            color: #c9a961;
-        }
-
-        .header-text p {
-            font-size: 14px;
-            color: #a88b4e;
-            margin-top: 4px;
-        }
-
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 20px;
         }
 
-        .tabs {
-            display: flex;
-            gap: 10px;
-            border-bottom: 2px solid #c9a961;
+        header {
+            background: #1a1a1a;
+            color: #d4af37;
+            padding: 20px;
+            border-radius: 8px;
             margin-bottom: 30px;
-            background: white;
-            padding: 15px 20px;
-            border-radius: 4px 4px 0 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
         }
 
-        .tab-btn {
+        header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .back-btn, .logout-btn {
             padding: 10px 20px;
+            background: #d4af37;
+            color: #1a1a1a;
             border: none;
-            background: transparent;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 16px;
-            color: #666;
-            border-bottom: 3px solid transparent;
+            font-weight: 600;
             transition: all 0.3s ease;
         }
 
-        .tab-btn.active {
-            color: #c9a961;
-            border-bottom-color: #c9a961;
-            font-weight: 600;
+        .back-btn:hover, .logout-btn:hover {
+            background: #e8c547;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
         }
 
-        .tab-btn:hover {
-            color: #c9a961;
-        }
-
-        .tab-content {
-            display: none;
-            background: white;
-            padding: 30px;
-            border-radius: 4px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .form-section {
+        .main-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            gap: 25px;
             margin-bottom: 30px;
         }
 
-        .form-group {
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .card h2 {
+            color: #1a1a1a;
             margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: 600;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
         }
 
         label {
             display: block;
             margin-bottom: 8px;
+            color: #1a1a1a;
             font-weight: 600;
-            color: #333;
+            font-size: 14px;
         }
 
-        label .required {
-            color: #c9a961;
-        }
-
-        input, textarea, select {
+        input[type="text"],
+        input[type="email"],
+        input[type="date"],
+        select,
+        textarea {
             width: 100%;
             padding: 12px;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 14px;
             font-family: inherit;
+            font-size: 14px;
+            transition: border-color 0.3s ease;
         }
 
-        input:focus, textarea:focus, select:focus {
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="date"]:focus,
+        select:focus,
+        textarea:focus {
             outline: none;
-            border-color: #c9a961;
-            box-shadow: 0 0 0 3px rgba(201, 169, 97, 0.1);
+            border-color: #d4af37;
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
         }
 
         .btn {
             padding: 12px 24px;
+            background: #d4af37;
+            color: #1a1a1a;
             border: none;
             border-radius: 4px;
-            font-size: 16px;
             cursor: pointer;
-            transition: all 0.3s ease;
             font-weight: 600;
+            transition: all 0.3s ease;
+            font-size: 14px;
         }
 
-        .btn-primary {
-            background: #c9a961;
-            color: #1a1a1a;
+        .btn:hover {
+            background: #e8c547;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(212, 175, 55, 0.3);
         }
 
-        .btn-primary:hover {
-            background: #dab876;
-            box-shadow: 0 4px 12px rgba(201, 169, 97, 0.3);
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            background: #666;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #777;
         }
 
         .btn-danger {
             background: #dc3545;
             color: white;
             padding: 8px 16px;
-            font-size: 14px;
+            font-size: 12px;
         }
 
         .btn-danger:hover {
-            background: #c82333;
+            background: #e74c3c;
         }
 
-        .btn-secondary {
-            background: #6c757d;
-            color: white;
+        .roster-section {
+            grid-column: 1 / -1;
         }
 
-        .btn-secondary:hover {
-            background: #5a6268;
+        .roster-list {
+            max-height: 500px;
+            overflow-y: auto;
         }
 
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        thead {
-            background: #1a1a1a;
-            color: #c9a961;
-        }
-
-        th {
+        .learner-item {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
             padding: 15px;
-            text-align: left;
-            font-weight: 600;
-            border: 1px solid #c9a961;
-        }
-
-        td {
-            padding: 12px 15px;
-            border: 1px solid #ddd;
-        }
-
-        tbody tr:nth-child(even) {
-            background: #f9f9f9;
-        }
-
-        tbody tr:hover {
-            background: #f0e68c;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
-
-        .status-pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .status-in-progress {
-            background: #cfe2ff;
-            color: #084298;
-        }
-
-        .status-completed {
-            background: #d1e7dd;
-            color: #0f5132;
-        }
-
-        .success-message {
-            background: #d1e7dd;
-            color: #0f5132;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            border-left: 4px solid #198754;
-        }
-
-        .error-message {
-            background: #f8d7da;
-            color: #842029;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            border-left: 4px solid #dc3545;
-        }
-
-        .csv-box {
-            background: #faf6f0;
-            border: 2px dashed #c9a961;
-            padding: 20px;
-            border-radius: 4px;
-            text-align: center;
-        }
-
-        .csv-info {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 20px;
-            font-size: 14px;
-        }
-
-        .csv-info code {
-            background: #1a1a1a;
-            color: #c9a961;
-            padding: 2px 6px;
-            border-radius: 3px;
-            font-family: 'Courier New', monospace;
-        }
-
-        .outcome-list {
-            list-style: none;
-            margin-top: 15px;
-        }
-
-        .outcome-item {
-            background: #f9f9f9;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-left: 4px solid #c9a961;
-            border-radius: 4px;
-        }
-
-        .outcome-item input[type="checkbox"] {
-            width: auto;
-            margin-right: 10px;
-        }
-
-        .unit-card {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            border-left: 4px solid #c9a961;
-        }
-
-        .unit-card h3 {
-            margin-bottom: 8px;
-            color: #1a1a1a;
-        }
-
-        .select-unit-form {
-            background: #f0f0f0;
-            padding: 20px;
-            border-radius: 4px;
-            margin-bottom: 30px;
-        }
-
-        .inline-group {
-            display: flex;
+            margin-bottom: 12px;
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
             gap: 15px;
-            align-items: flex-end;
+            align-items: center;
+            transition: all 0.3s ease;
         }
 
-        .inline-group .form-group {
-            flex: 1;
-            margin-bottom: 0;
+        .learner-item:hover {
+            background: #f0f0f0;
+            border-color: #d4af37;
         }
 
-        .section-header {
-            border-left: 4px solid #c9a961;
-            padding-left: 15px;
-            margin-bottom: 20px;
-        }
-
-        .section-header h2 {
+        .learner-info h3 {
             color: #1a1a1a;
-            font-size: 24px;
+            font-size: 16px;
             margin-bottom: 5px;
         }
 
-        .section-header p {
+        .learner-info p {
             color: #666;
+            font-size: 13px;
+            margin: 3px 0;
+        }
+
+        .learner-units {
+            color: #666;
+            font-size: 13px;
+        }
+
+        .unit-badge {
+            display: inline-block;
+            background: #d4af37;
+            color: #1a1a1a;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-right: 5px;
+            margin-bottom: 5px;
+        }
+
+        .message {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 4px;
             font-size: 14px;
+        }
+
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-btn {
+            padding: 12px 20px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+            font-size: 14px;
+        }
+
+        .tab-btn.active {
+            color: #d4af37;
+            border-bottom-color: #d4af37;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @media (max-width: 1024px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .learner-item {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+        }
+
+        .loading {
+            text-align: center;
+            padding: 30px;
+            color: #666;
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <div class="header-content">
-            <div class="logo-shield">
-                <img src="pt-academy-logo.png" alt="PT Academy Logo">
-            </div>
-            <div class="header-text">
-                <h1>PT Academy Learner Management</h1>
-                <p>Manage enrolment, unit assignments, and track learner progress</p>
-            </div>
-        </div>
-    </div>
-
     <div class="container">
-        <div class="tabs">
-            <button class="tab-btn active" onclick="showTab(this, 'enrol')">Enrol Learner</button>
-            <button class="tab-btn" onclick="showTab(this, 'roster')">Learner Roster</button>
-            <button class="tab-btn" onclick="showTab(this, 'assign')">Assign Units</button>
-            <button class="tab-btn" onclick="showTab(this, 'progress')">Track Progress</button>
-        </div>
-
-        <!-- Enrol Learner Tab -->
-        <div id="enrol" class="tab-content active">
-            <div class="section-header">
-                <h2>Enrol New Learner</h2>
-                <p>Add learners individually or upload multiple records via CSV</p>
+        <header>
+            <h1>PT Academy CAVA Learner Management</h1>
+            <div class="header-buttons">
+                <button class="back-btn" onclick="goBackToHub()">Back to Hub</button>
+                <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
-            <div id="enrolMessage"></div>
-            <div class="form-section">
-                <div>
-                    <h3>Individual Enrolment</h3>
+        </header>
+
+        <div class="main-grid">
+            <!-- Enrolment Card -->
+            <div class="card">
+                <h2>Enrol New Learner</h2>
+                <div id="enrolMessage"></div>
+                
+                <div class="tabs">
+                    <button class="tab-btn active" onclick="switchTab(event, 'individual')">Individual</button>
+                    <button class="tab-btn" onclick="switchTab(event, 'bulk')">Bulk Upload</button>
+                </div>
+
+                <!-- Individual Enrolment Tab -->
+                <div id="individual" class="tab-content active">
                     <div class="form-group">
-                        <label>Full Name <span class="required">*</span></label>
-                        <input type="text" id="fullName" placeholder="Enter full name">
+                        <label for="firstName">First Name</label>
+                        <input type="text" id="firstName" placeholder="Enter first name">
                     </div>
                     <div class="form-group">
-                        <label>Email Address <span class="required">*</span></label>
+                        <label for="lastName">Last Name</label>
+                        <input type="text" id="lastName" placeholder="Enter last name">
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
                         <input type="email" id="email" placeholder="Enter email address">
                     </div>
-
                     <div class="form-group">
-                        <label>Programme Start Date <span class="required">*</span></label>
-                        <input type="date" id="startDate">
+                        <label for="enrolDate">Enrolment Date</label>
+                        <input type="date" id="enrolDate">
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="enrollLearner(); return false;">Enrol Learner</button>
+                    <button class="btn" onclick="enrolLearner()">Enrol Learner</button>
                 </div>
-                <div>
-                    <h3>Bulk Upload (CSV)</h3>
-                    <div class="csv-info">
-                        <strong>CSV Format:</strong><br>
-                        Full Name, Email, Start Date (dd/mm/yyyy)
-                        <br><br>
-                        <strong>Example:</strong><br>
-                        <code>John Smith, john@example.com, 18/01/2024</code><br>
-                        <code>Sarah Jones, sarah@example.com, 18/01/2024</code>
+
+                <!-- Bulk Upload Tab -->
+                <div id="bulk" class="tab-content">
+                    <div class="form-group">
+                        <label for="csvFile">Upload CSV File</label>
+                        <input type="file" id="csvFile" accept=".csv" onchange="handleCSVUpload(event)">
                     </div>
-                    <div class="csv-box">
-                        <input type="file" id="csvFile" accept=".csv" style="display:none;" onchange="handleCSVUpload(event)">
-                        <button class="btn btn-primary" onclick="document.getElementById('csvFile').click()">Choose CSV file or drag here</button>
-                    </div>
-                    <button class="btn btn-primary" onclick="uploadLearners()" style="width: 100%; margin-top: 15px;">Upload Learners</button>
+                    <p style="font-size: 12px; color: #666; margin-top: 10px;">
+                        CSV format: First Name, Last Name, Email, Enrolment Date (DD/MM/YYYY)
+                    </p>
                 </div>
             </div>
-        </div>
 
-        <!-- Learner Roster Tab -->
-        <div id="roster" class="tab-content">
-            <div class="section-header">
-                <h2>Learner Roster</h2>
-                <p>View all enrolled learners and their assigned units</p>
-            </div>
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Learner Name</th>
-                            <th>Email</th>
-                            <th>Start Date</th>
-                            <th>Assigned Units</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="rosterTableBody"></tbody>
-                </table>
-            </div>
-        </div>
-
-        <!-- Assign Units Tab -->
-        <div id="assign" class="tab-content">
-            <div class="section-header">
+            <!-- Unit Assignment Card -->
+            <div class="card">
                 <h2>Assign Units</h2>
-                <p>Allocate units to learners</p>
-            </div>
-            <div id="assignMessage"></div>
-            <div class="select-unit-form">
-                <div class="inline-group">
-                    <div class="form-group">
-                        <label>Select Learner <span class="required">*</span></label>
-                        <select id="learnerSelect"></select>
-                    </div>
-                    <div class="form-group">
-                        <label>Select Unit(s) <span class="required">*</span></label>
-                        <select id="unitSelect" multiple></select>
-                    </div>
-                    <button class="btn btn-primary" onclick="assignUnit()">Assign Unit(s)</button>
-                </div>
-            </div>
-
-            <div>
-                <h3>Available Units</h3>
-                <div id="unitsContainer"></div>
-            </div>
-        </div>
-
-        <!-- Track Progress Tab -->
-        <div id="progress" class="tab-content">
-            <div class="section-header">
-                <h2>Track Progress</h2>
-                <p>Record unit completion and learning outcome achievement</p>
-            </div>
-            <div id="progressMessage"></div>
-            <div class="select-unit-form">
+                <div id="assignMessage"></div>
+                
                 <div class="form-group">
-                    <label>Select Learner <span class="required">*</span></label>
-                    <select id="progressLearnerSelect" onchange="loadLearnerAssignments()"></select>
-                </div>
-            </div>
-
-            <div id="assignmentsList"></div>
-
-            <div id="progressForm" style="display: none;">
-                <div class="unit-card">
-                    <h3 id="unitTitle"></h3>
-                </div>
-
-                <div class="form-group">
-                    <label>Unit Status</label>
-                    <select id="unitStatus">
-                        <option value="pending">Pending</option>
-                        <option value="in_progress">In Progress</option>
-                        <option value="completed">Completed</option>
+                    <label for="learnerSelect">Select Learner</label>
+                    <select id="learnerSelect" onchange="loadLearnerUnits()">
+                        <option value="">Choose a learner...</option>
                     </select>
                 </div>
-
+                
                 <div class="form-group">
-                    <label>Assessment Decision</label>
-                    <select id="assessmentDecision">
-                        <option value="">-- Select --</option>
-                        <option value="pass">Pass</option>
-                        <option value="conditional">Conditional Pass</option>
-                        <option value="not_yet">Not Yet Competent</option>
+                    <label for="unitSelect">Select Unit</label>
+                    <select id="unitSelect">
+                        <option value="">Choose a unit...</option>
+                        <option value="Unit 2">Unit 2</option>
+                        <option value="Unit 3">Unit 3</option>
                     </select>
                 </div>
-
+                
                 <div class="form-group">
-                    <label>Learning Outcomes Achieved</label>
-                    <ul id="outcomesList" class="outcome-list"></ul>
+                    <label for="assignDate">Assignment Date</label>
+                    <input type="date" id="assignDate">
                 </div>
-
-                <div class="form-group">
-                    <label>Progress Notes</label>
-                    <textarea id="progressNotes" placeholder="Add notes about learner progress..." rows="4"></textarea>
+                
+                <button class="btn" onclick="assignUnit()">Assign Unit</button>
+                
+                <div id="currentUnits" style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #e0e0e0;">
+                    <h3 style="color: #1a1a1a; margin-bottom: 10px; font-size: 14px;">Assigned Units</h3>
+                    <div id="unitsList" style="font-size: 13px; color: #666;">Select a learner to view units</div>
                 </div>
+            </div>
 
-                <button class="btn btn-primary" onclick="saveProgress()">Save Progress</button>
+            <!-- Learner Roster Card -->
+            <div class="card roster-section">
+                <h2>Learner Roster</h2>
+                <div id="rosterMessage"></div>
+                
+                <div class="roster-list" id="rosterList">
+                    <div class="loading">Loading learners...</div>
+                </div>
             </div>
         </div>
     </div>
 
     <script>
-        let supabase = null;
-        let allUnits = [];
-        let selectedAssignment = null;
-
-        // Unit title mapping
-        const unitTitleMap = {
-            1: 'Understanding the Principles and Practices of Assessment',
-            2: 'Assess Occupational Competence in the Work Environment',
-            3: 'Assess Vocational Skills, Knowledge and Understanding'
-        };
-
-        // Format date to UK format DD/MM/YYYY
-        function formatUKDate(dateString) {
-            if (!dateString) return '—';
-            const date = new Date(dateString);
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const year = date.getFullYear();
-            return `${day}/${month}/${year}`;
-        }
-
-        // Initialize Supabase
-        async function initializeSupabase() {
-            return new Promise((resolve) => {
-                const checkSupabase = setInterval(() => {
-                    if (window.supabase && window.supabase.createClient) {
-                        clearInterval(checkSupabase);
-                        try {
-                            const supabaseUrl = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
-                            const supabaseKey = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
-                            supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-                            console.log('Supabase initialised successfully');
-                            resolve(true);
-                        } catch (e) {
-                            console.error('Error initialising Supabase:', e);
-                            resolve(false);
-                        }
-                    }
-                }, 100);
-
-                setTimeout(() => {
-                    clearInterval(checkSupabase);
-                    console.error('Supabase library failed to load');
-                    resolve(false);
-                }, 10000);
-            });
-        }
-
-        // Fetch units from Supabase
-        async function fetchUnits() {
-            try {
-                const { data, error } = await supabase.from('units').select('*').order('created_at');
-                if (error) {
-                    console.error('Units fetch error:', error);
-                    return;
-                }
-                
-                // Map database units by their order with correct titles
-                allUnits = (data || []).map((unit, index) => {
-                    const unitNumber = index + 1;
-                    return {
-                        ...unit,
-                        unit_number: unitNumber,
-                        display_name: unitTitleMap[unitNumber] || `Unit ${unitNumber}`
-                    };
-                });
-                
-                console.log('Units fetched and mapped:', allUnits);
-            } catch (e) {
-                console.error('Exception fetching units:', e);
+        // Mock data
+        let learners = [
+            {
+                id: 1,
+                firstName: 'Sarah',
+                lastName: 'Johnson',
+                email: 'sarah.johnson@example.com',
+                enrolDate: '15/01/2024',
+                units: ['Unit 2', 'Unit 3']
+            },
+            {
+                id: 2,
+                firstName: 'Marcus',
+                lastName: 'Chen',
+                email: 'marcus.chen@example.com',
+                enrolDate: '20/01/2024',
+                units: ['Unit 2']
+            },
+            {
+                id: 3,
+                firstName: 'Emma',
+                lastName: 'Williams',
+                email: 'emma.williams@example.com',
+                enrolDate: '22/01/2024',
+                units: ['Unit 3']
             }
-        }
+        ];
 
-        // Initialize on page load
-        window.addEventListener('load', async function() {
-            await initializeSupabase();
-            if (supabase) {
-                await fetchUnits();
-            }
+        let nextId = 4;
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthentication();
+            setTodayDate();
+            loadRoster();
+            populateLearnerSelect();
         });
 
-        function showTab(button, tabName) {
-            const tabs = document.querySelectorAll('.tab-content');
-            const buttons = document.querySelectorAll('.tab-btn');
-
-            tabs.forEach(tab => tab.classList.remove('active'));
-            buttons.forEach(btn => btn.classList.remove('active'));
-
-            const selectedTab = document.getElementById(tabName);
-            if (selectedTab) {
-                selectedTab.classList.add('active');
-                button.classList.add('active');
-
-                if (tabName === 'roster') loadRoster();
-                if (tabName === 'assign') loadAssignUI();
-                if (tabName === 'progress') loadProgressUI();
+        function checkAuthentication() {
+            const user = localStorage.getItem('cava_user');
+            if (!user) {
+                window.location.href = 'login.html';
             }
         }
 
-        window.showTab = showTab;
+        function setTodayDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('enrolDate').value = today;
+            document.getElementById('assignDate').value = today;
+        }
 
-        // Enrol learner
-        async function enrollLearner() {
-            if (!supabase) {
-                showMessage('enrolMessage', 'System not ready. Please refresh the page.', 'error');
-                return;
-            }
+        function switchTab(event, tabName) {
+            // Hide all tabs
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            // Show selected tab
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+        }
 
-            const name = document.getElementById('fullName').value.trim();
+        function enrolLearner() {
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
             const email = document.getElementById('email').value.trim();
-            const startDate = document.getElementById('startDate').value.trim();
+            const enrolDate = document.getElementById('enrolDate').value;
 
-            if (!name || !email || !startDate) {
-                showMessage('enrolMessage', 'Please fill in all required fields', 'error');
+            if (!firstName || !lastName || !email || !enrolDate) {
+                showMessage('enrolMessage', 'Please fill in all fields', 'error');
                 return;
             }
 
-            try {
-                const { data, error } = await supabase
-                    .from('learners')
-                    .insert([{
-                        full_name: name,
-                        email: email,
-                        programme_start_date: startDate
-                    }])
-                    .select();
-
-                if (error) throw error;
-
-                showMessage('enrolMessage', `✓ ${name} has been enrolled successfully!`, 'success');
-                document.getElementById('fullName').value = '';
-                document.getElementById('email').value = '';
-                document.getElementById('startDate').value = '';
-            } catch (error) {
-                showMessage('enrolMessage', `Error: ${error.message}`, 'error');
+            if (!validateEmail(email)) {
+                showMessage('enrolMessage', 'Please enter a valid email address', 'error');
+                return;
             }
+
+            // Convert date to DD/MM/YYYY
+            const dateObj = new Date(enrolDate);
+            const formattedDate = dateObj.toLocaleDateString('en-GB');
+
+            const newLearner = {
+                id: nextId++,
+                firstName: firstName,
+                lastName: lastName,
+                email: email,
+                enrolDate: formattedDate,
+                units: []
+            };
+
+            learners.push(newLearner);
+            
+            // Clear form
+            document.getElementById('firstName').value = '';
+            document.getElementById('lastName').value = '';
+            document.getElementById('email').value = '';
+            setTodayDate();
+            
+            showMessage('enrolMessage', firstName + ' ' + lastName + ' has been successfully enroled', 'success');
+            loadRoster();
+            populateLearnerSelect();
         }
 
-        window.enrollLearner = enrollLearner;
-
-        // Handle CSV upload
         function handleCSVUpload(event) {
             const file = event.target.files[0];
+            if (!file) return;
+
             const reader = new FileReader();
             reader.onload = function(e) {
-                window.csvData = e.target.result;
+                const csv = e.target.result;
+                const lines = csv.split('\n').filter(line => line.trim());
+                let successCount = 0;
+                let errorCount = 0;
+
+                lines.forEach((line, index) => {
+                    if (index === 0) return; // Skip header
+
+                    const [firstName, lastName, email, enrolDate] = line.split(',').map(field => field.trim());
+
+                    if (!firstName || !lastName || !email || !enrolDate) {
+                        errorCount++;
+                        return;
+                    }
+
+                    if (!validateEmail(email)) {
+                        errorCount++;
+                        return;
+                    }
+
+                    const newLearner = {
+                        id: nextId++,
+                        firstName: firstName,
+                        lastName: lastName,
+                        email: email,
+                        enrolDate: enrolDate,
+                        units: []
+                    };
+
+                    learners.push(newLearner);
+                    successCount++;
+                });
+
+                if (successCount > 0) {
+                    showMessage('enrolMessage', successCount + ' learner(s) successfully enroled', 'success');
+                    loadRoster();
+                    populateLearnerSelect();
+                }
+
+                if (errorCount > 0) {
+                    showMessage('enrolMessage', errorCount + ' row(s) had errors and were skipped', 'error');
+                }
+
                 document.getElementById('csvFile').value = '';
             };
+
             reader.readAsText(file);
         }
 
-        // Upload learners from CSV
-        async function uploadLearners() {
-            if (!window.csvData) {
-                showMessage('enrolMessage', 'Please select a CSV file', 'error');
+        function assignUnit() {
+            const learnerId = parseInt(document.getElementById('learnerSelect').value);
+            const unit = document.getElementById('unitSelect').value;
+            const assignDate = document.getElementById('assignDate').value;
+
+            if (!learnerId || !unit || !assignDate) {
+                showMessage('assignMessage', 'Please select a learner, unit, and date', 'error');
                 return;
             }
 
-            const lines = window.csvData.split('\n').filter(line => line.trim());
-            const learners = [];
-
-            for (let i = 0; i < lines.length; i++) {
-                const parts = lines[i].split(',').map(part => part.trim());
-                if (parts.length >= 2) {
-                    const [name, email, startDate] = parts;
-                    if (name && email) {
-                        learners.push({
-                            full_name: name,
-                            email: email,
-                            programme_start_date: startDate ? formatDateForDB(startDate) : new Date().toISOString().split('T')[0]
-                        });
-                    }
-                }
-            }
-
-            if (learners.length === 0) {
-                showMessage('enrolMessage', 'No valid learners found in CSV', 'error');
+            const learner = learners.find(l => l.id === learnerId);
+            if (!learner) {
+                showMessage('assignMessage', 'Learner not found', 'error');
                 return;
             }
 
-            try {
-                const { error } = await supabase.from('learners').insert(learners);
-                if (error) throw error;
-                showMessage('enrolMessage', `${learners.length} learners uploaded successfully!`, 'success');
-                window.csvData = '';
-            } catch (error) {
-                showMessage('enrolMessage', `Error uploading: ${error.message}`, 'error');
-            }
-        }
-
-        function formatDateForDB(dateStr) {
-            const parts = dateStr.split('/');
-            if (parts.length === 3) {
-                return `${parts[2]}-${parts[1]}-${parts[0]}`;
-            }
-            return dateStr;
-        }
-
-        // Load roster with UK date formatting
-        async function loadRoster() {
-            try {
-                const { data: learners, error } = await supabase
-                    .from('learners')
-                    .select('*')
-                    .order('full_name');
-
-                if (error) throw error;
-
-                const tbody = document.getElementById('rosterTableBody');
-                tbody.innerHTML = '';
-
-                for (const learner of learners) {
-                    const { data: assignments } = await supabase
-                        .from('unit_assignments')
-                        .select('unit_id, status')
-                        .eq('learner_id', learner.id);
-
-                    const unitsHtml = assignments.length > 0
-                        ? assignments.map(a => {
-                            const unit = allUnits.find(u => u.id === a.unit_id);
-                            const unitNumber = unit ? unit.unit_number : '?';
-                            return `<span class="status-badge status-${a.status}">Unit ${unitNumber} ${a.status}</span>`;
-                        }).join(' ')
-                        : '<span style="color: #999;">No units assigned</span>';
-
-                    const row = `
-                        <tr>
-                            <td>${learner.full_name}</td>
-                            <td>${learner.email}</td>
-                            <td>${formatUKDate(learner.programme_start_date)}</td>
-                            <td>${unitsHtml}</td>
-                            <td><button class="btn btn-danger" onclick="deleteLearner('${learner.id}')">Delete</button></td>
-                        </tr>
-                    `;
-                    tbody.innerHTML += row;
-                }
-            } catch (error) {
-                console.error('Error loading roster:', error);
-            }
-        }
-
-        // Load assign UI
-        async function loadAssignUI() {
-            try {
-                const { data: learners, error } = await supabase
-                    .from('learners')
-                    .select('id, full_name')
-                    .order('full_name');
-
-                if (error) throw error;
-
-                const learnerSelect = document.getElementById('learnerSelect');
-                learnerSelect.innerHTML = '<option value="">-- Select Learner --</option>';
-                learners.forEach(learner => {
-                    learnerSelect.innerHTML += `<option value="${learner.id}">${learner.full_name}</option>`;
-                });
-
-                // Populate units dropdown with unit numbers
-                const unitSelect = document.getElementById('unitSelect');
-                unitSelect.innerHTML = '<option value="">-- Select Unit(s) --</option>';
-                allUnits.forEach((unit) => {
-                    unitSelect.innerHTML += `<option value="${unit.id}">Unit ${unit.unit_number} ${unit.display_name}</option>`;
-                });
-
-                // Display available units with unit numbers
-                const container = document.getElementById('unitsContainer');
-                container.innerHTML = allUnits.map((unit) => `
-                    <div class="unit-card">
-                        <h4>Unit ${unit.unit_number} ${unit.display_name}</h4>
-                    </div>
-                `).join('');
-            } catch (error) {
-                console.error('Error loading assign UI:', error);
-            }
-        }
-
-        // Assign units (supports multiple selection)
-        async function assignUnit() {
-            const learnerId = document.getElementById('learnerSelect').value;
-            const unitSelect = document.getElementById('unitSelect');
-            const selectedUnits = Array.from(unitSelect.selectedOptions).map(option => option.value);
-
-            if (!learnerId || selectedUnits.length === 0) {
-                showMessage('assignMessage', 'Please select a learner and at least one unit', 'error');
+            if (learner.units.includes(unit)) {
+                showMessage('assignMessage', 'This learner already has this unit assigned', 'error');
                 return;
             }
 
-            try {
-                // Check for existing assignments
-                const { data: existing } = await supabase
-                    .from('unit_assignments')
-                    .select('unit_id')
-                    .eq('learner_id', learnerId);
-
-                const existingUnitIds = (existing || []).map(e => String(e.unit_id));
-                const newAssignments = selectedUnits.filter(unitId => !existingUnitIds.includes(unitId));
-
-                if (newAssignments.length === 0) {
-                    showMessage('assignMessage', 'This learner already has all selected units assigned', 'error');
-                    return;
-                }
-
-                const assignmentsToInsert = newAssignments.map(unitId => ({
-                    learner_id: learnerId,
-                    unit_id: unitId,
-                    assignment_date: new Date().toISOString()
-                }));
-
-                const { data, error } = await supabase
-                    .from('unit_assignments')
-                    .insert(assignmentsToInsert);
-
-                if (error) {
-                    console.error('Insert error:', error);
-                    throw error;
-                }
-
-                showMessage('assignMessage', `✓ ${newAssignments.length} unit(s) assigned successfully!`, 'success');
-                document.getElementById('learnerSelect').value = '';
-                unitSelect.value = '';
-                setTimeout(() => loadAssignUI(), 1500);
-            } catch (error) {
-                showMessage('assignMessage', `Error: ${error.message}`, 'error');
-            }
+            learner.units.push(unit);
+            showMessage('assignMessage', unit + ' has been assigned to ' + learner.firstName + ' ' + learner.lastName, 'success');
+            loadLearnerUnits();
+            loadRoster();
         }
 
-        window.assignUnit = assignUnit;
+        function loadLearnerUnits() {
+            const learnerId = parseInt(document.getElementById('learnerSelect').value);
+            const learner = learners.find(l => l.id === learnerId);
 
-        // Load progress UI
-        async function loadProgressUI() {
-            try {
-                const { data: learners, error } = await supabase
-                    .from('learners')
-                    .select('id, full_name')
-                    .order('full_name');
+            if (!learner) {
+                document.getElementById('unitsList').innerHTML = 'Select a learner to view units';
+                return;
+            }
 
-                if (error) throw error;
-
-                const select = document.getElementById('progressLearnerSelect');
-                select.innerHTML = '<option value="">-- Select Learner --</option>';
-                learners.forEach(learner => {
-                    select.innerHTML += `<option value="${learner.id}">${learner.full_name}</option>`;
+            if (learner.units.length === 0) {
+                document.getElementById('unitsList').innerHTML = '<em>No units assigned</em>';
+            } else {
+                let html = '';
+                learner.units.forEach(unit => {
+                    html += '<div class="unit-badge">' + unit + '</div>';
                 });
-            } catch (error) {
-                console.error('Error loading progress UI:', error);
+                document.getElementById('unitsList').innerHTML = html;
             }
         }
 
-        // Load learner assignments
-        async function loadLearnerAssignments() {
-            const learnerId = document.getElementById('progressLearnerSelect').value;
-            if (!learnerId) return;
+        function populateLearnerSelect() {
+            const select = document.getElementById('learnerSelect');
+            const currentValue = select.value;
 
-            try {
-                const { data: assignments, error } = await supabase
-                    .from('unit_assignments')
-                    .select('id, unit_id, status')
-                    .eq('learner_id', learnerId);
-
-                if (error) throw error;
-
-                const container = document.getElementById('assignmentsList');
-                if (assignments.length === 0) {
-                    container.innerHTML = '<p>No units assigned to this learner</p>';
-                    return;
-                }
-
-                container.innerHTML = assignments.map(assignment => {
-                    const unit = allUnits.find(u => u.id === assignment.unit_id);
-                    const unitNumber = unit ? unit.unit_number : '?';
-                    const displayName = unit ? unit.display_name : 'Unknown';
-                    return `
-                    <div class="unit-card">
-                        <h4>Unit ${unitNumber} ${displayName}</h4>
-                        <p>Status: <span class="status-badge status-${assignment.status}">${assignment.status}</span></p>
-                        <button class="btn btn-secondary" onclick="selectAssignment('${assignment.id}', '${assignment.unit_id}')">Record Progress</button>
-                    </div>
-                `;
-                }).join('');
-            } catch (error) {
-                console.error('Error loading assignments:', error);
-            }
-        }
-
-        window.loadLearnerAssignments = loadLearnerAssignments;
-
-        // Select assignment for progress tracking
-        function selectAssignment(assignmentId, unitId) {
-            selectedAssignment = assignmentId;
-            const unit = allUnits.find(u => u.id === unitId);
-
-            if (unit) {
-                const displayName = `Unit ${unit.unit_number} ${unit.display_name}`;
-                document.getElementById('unitTitle').textContent = displayName;
-
-                const outcomesList = document.getElementById('outcomesList');
-                const outcomes = unit.outcomes || [];
-                outcomesList.innerHTML = outcomes.map((outcome, index) => `
-                    <li class="outcome-item">
-                        <input type="checkbox" id="outcome_${index}" value="${outcome}">
-                        <label for="outcome_${index}" style="display: inline; margin: 0;">${outcome}</label>
-                    </li>
-                `).join('');
-
-                document.getElementById('progressForm').style.display = 'block';
-                document.getElementById('unitStatus').value = 'pending';
-                document.getElementById('assessmentDecision').value = '';
-                document.getElementById('progressNotes').value = '';
-            }
-        }
-
-        window.selectAssignment = selectAssignment;
-
-        // Save progress
-        async function saveProgress() {
-            if (!selectedAssignment) return;
-
-            const status = document.getElementById('unitStatus').value;
-            const decision = document.getElementById('assessmentDecision').value;
-            const notes = document.getElementById('progressNotes').value;
-
-            const outcomes = [];
-            document.querySelectorAll('#outcomesList input[type="checkbox"]:checked').forEach(checkbox => {
-                outcomes.push(checkbox.value);
+            select.innerHTML = '<option value="">Choose a learner...</option>';
+            learners.forEach(learner => {
+                const option = document.createElement('option');
+                option.value = learner.id;
+                option.textContent = learner.firstName + ' ' + learner.lastName;
+                select.appendChild(option);
             });
 
-            try {
-                const { data, error } = await supabase
-                    .from('unit_assignments')
-                    .update({
-                        status: status,
-                        assessment_decision: decision || null,
-                        outcomes_achieved: outcomes.length > 0 ? outcomes : null,
-                        progress_notes: notes || null,
-                        updated_at: new Date().toISOString()
-                    })
-                    .eq('id', selectedAssignment)
-                    .select();
-
-                if (error) throw error;
-
-                showMessage('progressMessage', '✓ Progress saved successfully!', 'success');
-                setTimeout(() => {
-                    document.getElementById('progressForm').style.display = 'none';
-                    loadLearnerAssignments();
-                }, 1500);
-            } catch (error) {
-                showMessage('progressMessage', `Error: ${error.message}`, 'error');
-            }
+            select.value = currentValue;
         }
 
-        window.saveProgress = saveProgress;
+        function loadRoster() {
+            const rosterList = document.getElementById('rosterList');
 
-        // Delete learner
-        async function deleteLearner(learnerId) {
-            if (!confirm('Are you sure you want to delete this learner?')) return;
+            if (learners.length === 0) {
+                rosterList.innerHTML = '<div class="loading">No learners enrolled yet</div>';
+                return;
+            }
 
-            try {
-                const { error } = await supabase
-                    .from('learners')
-                    .delete()
-                    .eq('id', learnerId);
+            let html = '';
+            learners.forEach(learner => {
+                const unitBadges = learner.units.length > 0
+                    ? learner.units.map(unit => '<span class="unit-badge">' + unit + '</span>').join('')
+                    : '<span style="color: #999;">No units assigned</span>';
 
-                if (error) throw error;
+                html += `
+                    <div class="learner-item">
+                        <div class="learner-info">
+                            <h3>${learner.firstName} ${learner.lastName}</h3>
+                            <p>${learner.email}</p>
+                            <p>Enrolled: ${learner.enrolDate}</p>
+                        </div>
+                        <div class="learner-units">
+                            ${unitBadges}
+                        </div>
+                        <button class="btn-danger" onclick="deleteLearner(${learner.id})">Delete</button>
+                    </div>
+                `;
+            });
+
+            rosterList.innerHTML = html;
+        }
+
+        function deleteLearner(id) {
+            if (confirm('Are you sure you want to delete this learner?')) {
+                learners = learners.filter(l => l.id !== id);
                 loadRoster();
-            } catch (error) {
-                console.error('Error deleting learner:', error);
+                populateLearnerSelect();
+                showMessage('rosterMessage', 'Learner has been deleted', 'success');
             }
         }
 
-        window.deleteLearner = deleteLearner;
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
 
-        // Show message
         function showMessage(elementId, message, type) {
             const element = document.getElementById(elementId);
-            if (element) {
-                element.className = type === 'error' ? 'error-message' : 'success-message';
-                element.textContent = message;
-                setTimeout(() => {
-                    if (element) {
-                        element.textContent = '';
-                        element.className = '';
-                    }
-                }, 5000);
-            }
+            element.innerHTML = `<div class="message ${type}">${message}</div>`;
+            setTimeout(() => {
+                element.innerHTML = '';
+            }, 5000);
+        }
+
+        function goBackToHub() {
+            logout();
+        }
+
+        function logout() {
+            localStorage.removeItem('cava_user');
+            alert('You have been logged out. Redirecting to login page in 3 seconds...');
+            setTimeout(() => {
+                window.location.href = 'login.html';
+            }, 3000);
         }
     </script>
 </body>
