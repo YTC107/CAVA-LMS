@@ -38,6 +38,7 @@
     .outcome-select.pass { background: #d4edda; color: #155724; border-color: #c3e6cb; }
     .outcome-select.refer { background: #f8d7da; color: #721c24; border-color: #f5c6cb; }
     .outcome-select.pending { background: #fff; color: #555; }
+    .observation-row { background: #f9f5f0; }
     .signoff-card { background: #fff; border-radius: 8px; padding: 28px; margin-bottom: 28px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
     .signoff-card h3 { font-size: 1rem; font-weight: 700; color: #111; margin-bottom: 16px; border-bottom: 1px solid #eee; padding-bottom: 8px; }
     .signoff-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 16px; }
@@ -61,7 +62,7 @@
   <span id="logo-fallback" style="display:none; color:#c9a84c; font-size:1.6rem; font-weight:900; letter-spacing:2px;">PT ACADEMY</span>
   <div class="header-text">
     <h1>Level 3 Certificate in Assessing Vocational Achievement</h1>
-    <p>Focus Awards | QRN: 601/6104/8 | Assessment Plan &amp; Tracking Document</p>
+    <p>Focus Awards | QRN: 601/6104/8 | Assessment Plan & Tracking Document</p>
   </div>
 </header>
 
@@ -71,7 +72,7 @@
 
 <div class="page-wrap">
 
-  <h2 class="page-title">Assessment Plan &amp; Tracking Document</h2>
+  <h2 class="page-title">Assessment Plan & Tracking Document</h2>
 
   <!-- LEARNER SELECTOR -->
   <div class="details-card learner-selector-card">
@@ -90,7 +91,7 @@
 
   <!-- LEARNER & ASSESSOR DETAILS -->
   <div class="details-card">
-    <h3>Learner &amp; Assessor Details</h3>
+    <h3>Learner & Assessor Details</h3>
     <div class="details-grid">
       <div class="field"><label>Learner Name</label><input type="text" id="planLearnerName" placeholder="Full name" /></div>
       <div class="field"><label>Learner ID / Cohort</label><input type="text" placeholder="e.g. PTA-2024-001" /></div>
@@ -109,7 +110,7 @@
 
   <!-- UNIT 1 -->
   <div class="unit-block" data-unit="1">
-    <div class="unit-header">Unit 1 &mdash; Understanding the Principles and Practices of Assessment</div>
+    <div class="unit-header">Unit 1 Understanding the Principles and Practices of Assessment</div>
     <div class="table-scroll">
       <table class="track-table">
         <thead><tr>
@@ -138,7 +139,7 @@
 
   <!-- UNIT 2 -->
   <div class="unit-block" data-unit="2">
-    <div class="unit-header">Unit 2 &mdash; Assess Occupational Competence in the Work Environment</div>
+    <div class="unit-header">Unit 2 Preparing Assessments</div>
     <div class="table-scroll">
       <table class="track-table">
         <thead><tr>
@@ -156,6 +157,7 @@
           <tr><td><div class="lo-label">LO2</div><div class="lo-desc">Plan the assessment of occupational competence</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
           <tr><td><div class="lo-label">LO3</div><div class="lo-desc">Assess occupational competence in the work environment</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
           <tr><td><div class="lo-label">LO4</div><div class="lo-desc">Review assessment decisions</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
+          <tr class="observation-row"><td><div class="lo-label">Observation Unit 2</div><div class="lo-desc">Preparing Assessments (1.1, 1.2, 1.3)</div></td><td><input type="date" class="unit2-obs-planned" onchange="syncObsDates('unit2-obs-planned', 'unit3-obs-planned')" /></td><td><input type="date" class="unit2-obs-actual" onchange="syncObsDates('unit2-obs-actual', 'unit3-obs-actual')" /></td><td><select class="unit2-obs-outcome outcome-select pending" onchange="styleSelect(this); syncObsOutcome('unit2-obs-outcome', 'unit3-obs-outcome')"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option><option value="not-yet">Not Yet Attempted</option></select></td><td>&#8212;</td><td>&#8212;</td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
         </tbody>
       </table>
     </div>
@@ -163,7 +165,7 @@
 
   <!-- UNIT 3 -->
   <div class="unit-block" data-unit="3">
-    <div class="unit-header">Unit 3 &mdash; Assess Vocational Skills, Knowledge and Understanding</div>
+    <div class="unit-header">Unit 3 Carrying out Assessments and Information Management</div>
     <div class="table-scroll">
       <table class="track-table">
         <thead><tr>
@@ -181,6 +183,7 @@
           <tr><td><div class="lo-label">LO2</div><div class="lo-desc">Plan the assessment of vocational skills, knowledge and understanding</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
           <tr><td><div class="lo-label">LO3</div><div class="lo-desc">Assess vocational skills, knowledge and understanding</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
           <tr><td><div class="lo-label">LO4</div><div class="lo-desc">Review assessment decisions</div></td><td><input type="date" /></td><td><input type="date" class="date-assessed" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><select class="outcome-select pending" onchange="styleSelect(this)"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option></select></td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
+          <tr class="observation-row"><td><div class="lo-label">Observation Unit 3</div><div class="lo-desc">Carrying out Assessments and Information Management (2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 3.1, 3.2, 3.3, 4.1, 4.2)</div></td><td><input type="date" class="unit3-obs-planned" onchange="syncObsDates('unit3-obs-planned', 'unit2-obs-planned')" /></td><td><input type="date" class="unit3-obs-actual" onchange="syncObsDates('unit3-obs-actual', 'unit2-obs-actual')" /></td><td><select class="unit3-obs-outcome outcome-select pending" onchange="styleSelect(this); syncObsOutcome('unit3-obs-outcome', 'unit2-obs-outcome')"><option value="">&#8212; Select &#8212;</option><option value="pass">Pass</option><option value="refer">Refer</option><option value="not-yet">Not Yet Attempted</option></select></td><td>&#8212;</td><td>&#8212;</td><td><input type="date" /></td><td><input type="text" class="assessor-initials" placeholder="Initials" /></td></tr>
         </tbody>
       </table>
     </div>
@@ -204,7 +207,7 @@
 </div>
 
 <footer class="site-footer">
-  PT Academy | Focus Awards Level 3 CAVA | QRN: 601/6104/8 | Assessment Plan &amp; Tracking Document
+  PT Academy | Focus Awards Level 3 CAVA | QRN: 601/6104/8 | Assessment Plan & Tracking Document
 </footer>
 
 <script>
@@ -213,6 +216,27 @@
     if (sel.value === 'pass') sel.classList.add('pass');
     else if (sel.value === 'refer') sel.classList.add('refer');
     else sel.classList.add('pending');
+  }
+
+  function syncObsDates(sourceClass, targetClass) {
+    const sourceInputs = document.querySelectorAll('.' + sourceClass);
+    const targetInputs = document.querySelectorAll('.' + targetClass);
+    if (sourceInputs.length > 0) {
+      const sourceValue = sourceInputs[0].value;
+      targetInputs.forEach(input => { input.value = sourceValue; });
+    }
+  }
+
+  function syncObsOutcome(sourceClass, targetClass) {
+    const sourceSelects = document.querySelectorAll('.' + sourceClass);
+    const targetSelects = document.querySelectorAll('.' + targetClass);
+    if (sourceSelects.length > 0) {
+      const sourceValue = sourceSelects[0].value;
+      targetSelects.forEach(select => { 
+        select.value = sourceValue; 
+        styleSelect(select);
+      });
+    }
   }
 
   const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
@@ -238,7 +262,6 @@
 
     document.getElementById('planLearnerName').value = sel.options[sel.selectedIndex].textContent;
 
-    // Reset all fields
     document.querySelectorAll('.outcome-select').forEach(s => { s.value = ''; styleSelect(s); });
     document.querySelectorAll('.date-assessed').forEach(d => { d.value = ''; });
     document.querySelectorAll('.assessor-initials').forEach(i => { i.value = ''; });
@@ -340,7 +363,6 @@
 
   document.addEventListener('DOMContentLoaded', async () => {
     await loadLearnersForPlan();
-    // Auto-select learner if passed via URL ?learner=ID
     const params = new URLSearchParams(window.location.search);
     const learnerId = params.get('learner');
     if (learnerId) {
