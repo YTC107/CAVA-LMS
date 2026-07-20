@@ -160,11 +160,20 @@
   }
 
   async function loadLearners() {
-    const { data, error } = await sb.from('learners').select('id, username, full_name, email').order('full_name');
-    if (error || !data) {
-      document.getElementById('learnerList').innerHTML = '<div class="text-xs text-red-400 text-center py-4">Could not load learners</div>';
+    const listEl = document.getElementById('learnerList');
+    const { data, error } = await sb.from('learners').select('id, full_name, email, programme_start_date').order('full_name');
+    
+    if (error) {
+      console.error('Learner fetch error:', error);
+      listEl.innerHTML = '<div class="text-xs text-red-400 text-center py-6"><strong>Error:</strong><br>' + error.message + '</div>';
       return;
     }
+    
+    if (!data || data.length === 0) {
+      listEl.innerHTML = '<div class="text-xs text-gray-500 text-center py-6">No learners. Check Learner Management.</div>';
+      return;
+    }
+    
     allLearners = data;
     renderLearners(data);
   }
@@ -174,8 +183,8 @@
     if (!list.length) { el.innerHTML = '<div class="text-xs text-gray-500 text-center py-4">No learners found</div>'; return; }
     el.innerHTML = list.map(l => `
       <div class="learner-item rounded-lg px-3 py-2 ${selectedLearner && String(selectedLearner.id) === String(l.id) ? 'selected' : ''}" onclick="selectLearner('${l.id}')">
-        <div class="text-white text-sm font-medium">${l.full_name || l.username}</div>
-        <div class="text-gray-400 text-xs">${l.email || l.username}</div>
+        <div class="text-white text-sm font-medium">${l.full_name || 'Unknown'}</div>
+        <div class="text-gray-400 text-xs">${l.email || 'No email'}</div>
       </div>
     `).join('');
   }
