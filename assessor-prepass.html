@@ -6,7 +6,6 @@
   <title>Pre-Pass Manager | PT Academy CAVA</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabase-integration.js"></script> 
   <style>
     body { background: #1a1a2e; font-family: 'Segoe UI', sans-serif; }
     .gold { background: #c9a84c; }
@@ -29,8 +28,8 @@
     .step-label { color: #c9a84c; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; }
     .lo-date-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; }
     .lo-date-label { color: #aaa; font-size: 0.7rem; min-width: 32px; }
-    input[type="date"].lo-date { color: #fff !important; font-weight: 700 !important; background: #ffffff25; border: 1px solid #ffffff30; border-radius: 4px; padding: 4px 6px; font-size: 0.78rem; width: 160px; }
-    .lo-status-btn { border-radius: 4px; padding: 6px 14px; font-size: 0.7rem; font-weight: 700; cursor: pointer; min-width: 60px; border: 1px solid; transition: all 0.2s; }
+    input[type="date"].lo-date { color: #fff !important; font-weight: 700 !important; background: #ffffff25; border: 1px solid #ffffff30; border-radius: 4px; padding: 3px 6px; font-size: 0.78rem; width: 160px; }
+    .lo-status-btn { border-radius: 4px; padding: 2px 8px; font-size: 0.7rem; font-weight: 700; cursor: pointer; min-width: 60px; border: 1px solid; transition: all 0.2s; }
   </style>
 </head>
 <body class="min-h-screen">
@@ -44,7 +43,7 @@
         <div class="text-xs" style="color:#c9a84c;">Assessor Tools · Focus Awards Level 3 CAVA</div>
       </div>
     </div>
-    <button onclick="window.location.href='assessor-hub.html'" class="gold text-black text-xs font-bold px-4 py-2 rounded-lg hover:opacity-90">← Back to Assessor Hub</button>
+    <button onclick="logout()" class="gold text-black text-xs font-bold px-4 py-2 rounded-lg hover:opacity-90">&#8592; Back to Assessor Hub</button>
   </div>
 
   <!-- NAV -->
@@ -95,6 +94,10 @@
   <div class="text-center py-4 text-xs text-gray-600">Focus Awards Level 3 CAVA · Assessor Tools</div>
 
 <script>
+  const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
+  const { createClient } = supabase;
+  const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   const UNITS = [
     {
@@ -119,57 +122,37 @@
   let unitStates = {};
   let currentOverrides = {};
   let assessorUser = null;
-  let sb = null;
-
-  // Date input handler for arrow key navigation
-  document.addEventListener('keydown', (e) => {
-    if (e.target.classList.contains('lo-date') && (e.key === 'ArrowUp' || e.key === 'ArrowDown')) {
-      e.preventDefault();
-      const input = e.target;
-      let value = input.value;
-      if (!value) value = new Date().toISOString().split('T')[0];
-      
-      const [year, month, day] = value.split('-');
-      let y = parseInt(year), m = parseInt(month), d = parseInt(day);
-      const increment = e.key === 'ArrowUp' ? 1 : -1;
-      
-      const selStart = input.selectionStart;
-      
-      // Cursor positions: yyyy=0-4, mm=5-7, dd=8-10
-      if (selStart >= 5 && selStart < 7) {
-        // Month
-        m += increment;
-        if (m < 1) m = 12;
-        if (m > 12) m = 1;
-      } else if (selStart >= 8) {
-        // Day
-        d += increment;
-        if (d < 1) d = 31;
-        if (d > 31) d = 1;
-      } else {
-        // Year
-        y += increment;
-        if (y < 2000) y = 2099;
-        if (y > 2099) y = 2000;
-      }
-      
-      const newValue = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-      input.value = newValue;
-      input.dispatchEvent(new Event('input', { bubbles: true }));
-    }
-  }, true);
 
   async function init() {
     const userRaw = localStorage.getItem('cava_user');
-    if (!userRaw) { window.location.href = 'login.html'; return; }
-    assessorUser = JSON.parse(userRaw);
-    sb = window.sbClient;
-    if (!sb) {
-      document.getElementById('learnerList').innerHTML = '<div class="text-xs text-red-400 text-center py-4">Supabase client not initialised</div>';
+    if (!userRaw) {
+      showAuthError('Session not found. Redirecting to login in 3 seconds...');
+      setTimeout(() => { window.location.href = 'login.html'; }, 3000);
+      return;
+    }
+    try {
+      assessorUser = JSON.parse(userRaw);
+    } catch (e) {
+      console.error('Corrupted user data:', e);
+      localStorage.removeItem('cava_user');
+      showAuthError('Session data corrupted. Redirecting to login in 3 seconds...');
+      setTimeout(() => { window.location.href = 'login.html'; }, 3000);
       return;
     }
     await loadLearners();
     await loadLog(null);
+  }
+
+  function showAuthError(message) {
+    const el = document.getElementById('learnerList');
+    if (el) {
+      el.innerHTML = `<div class="text-xs text-red-400 text-center py-4 font-semibold">${message}</div>`;
+    }
+  }
+
+  function logout() {
+    localStorage.removeItem('cava_user');
+    window.location.href = 'login.html';
   }
 
   async function loadLearners() {
@@ -421,11 +404,11 @@
       }
     }
 
+    btn.disabled = false; btn.textContent = 'Save Changes';
     const msg = document.getElementById('saveMsg');
     msg.textContent = '✓ Saved successfully';
     msg.className = 'text-center text-xs mt-2 text-green-400';
     setTimeout(() => msg.textContent = '', 4000);
-    btn.disabled = false; btn.textContent = 'Save Changes';
     await loadLog(selectedLearner.id);
   }
 
@@ -533,7 +516,6 @@
   }
 
   init();
-
 </script>
 </body>
 </html>
