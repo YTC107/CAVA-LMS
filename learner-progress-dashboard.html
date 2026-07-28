@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learner Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f3f0;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background-color: #1a1a1a;
+            padding: 15px 40px;
+            border-bottom: 4px solid #c9a961;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 45px;
+            height: 45px;
+            background-color: #c9a961;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: #1a1a1a;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+
+        .header-text h1 {
+            color: #c9a961;
+            font-size: 18px;
+            margin-bottom: 3px;
+            font-weight: bold;
+        }
+
+        .header-text p {
+            color: #ccc;
+            font-size: 11px;
+        }
+
+        .back-link {
+            color: #c9a961;
+            text-decoration: none;
+            font-size: 12px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Main Content */
+        main {
+            max-width: 1000px;
+            margin: 40px auto;
+            padding: 0 40px;
+            flex: 1;
+            width: 100%;
+        }
+
+        h2 {
+            color: #5a5a5a;
+            font-size: 28px;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        h2.section-title {
+            color: #5a5a5a;
+            font-size: 22px;
+            margin-top: 40px;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #5a5a5a;
+            padding-bottom: 10px;
+        }
+
+        /* Information Section */
+        .info-section {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .info-section h3 {
+            color: #5a5a5a;
+            font-size: 16px;
+            margin-bottom: 12px;
+            font-weight: bold;
+        }
+
+        .info-section p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .status-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .status-info-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        /* Pie Chart Section */
+        .pie-chart-section {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 30px;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .pie-container {
+            flex: 1;
+            min-width: 250px;
+            max-width: 300px;
+        }
+
+        .pie-container canvas {
+            max-width: 100%;
+        }
+
+        .pie-legend {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .pie-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s, opacity 0.3s;
+            opacity: 0.6;
+        }
+
+        .pie-legend-item:hover {
+            background-color: #f9f9f9;
+        }
+
+        .pie-legend-item.active {
+            opacity: 1;
+            background-color: #f0f0f0;
+        }
+
+        .pie-legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            flex-shrink: 0;
+        }
+
+        .pie-legend-item span:last-child {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Unit Cards */
+        .unit-card {
+            background-color: #fff;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .unit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .unit-header:hover {
+            background-color: #f9f9f9;
+        }
+
+        .unit-title {
+            color: #333;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .unit-status {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .progress-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            min-width: 200px;
+        }
+
+        .progress-bar {
+            width: 150px;
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: #28a745;
+            border-radius: 10px;
+        }
+
+        .progress-fill.in-progress {
+            background-color: #ffc107;
+        }
+
+        .progress-fill.not-started {
+            background-color: #dc3545;
+        }
+
+        .percentage {
+            color: #666;
+            font-weight: bold;
+            min-width: 35px;
+            text-align: right;
+        }
+
+        .status-badge {
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            color: #fff;
+            background-color: #28a745;
+        }
+
+        .status-badge.in-progress {
+            background-color: #ffc107;
+            color: #333;
+        }
+
+        .status-badge.not-started {
+            background-color: #dc3545;
+        }
+
+        .toggle-icon {
+            color: #666;
+            font-size: 18px;
+            transition: transform 0.3s;
+        }
+
+        .toggle-icon.open {
+            transform: rotate(180deg);
+        }
+
+        .learning-outcomes {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        .learning-outcomes.show {
+            display: block;
+        }
+
+        .lo-row {
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 20px;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        .lo-row:last-child {
+            border-bottom: none;
+        }
+
+        .lo-title {
+            color: #333;
+            font-size: 14px;
+        }
+
+        .lo-status {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: bold;
+            text-align: center;
+            min-width: 70px;
+        }
+
+        .lo-status.pass {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .lo-status.refer {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .lo-status.pending {
+            background-color: #fff3cd;
+            color: #856404;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1a1a1a;
+            color: #fff;
+            text-align: center;
+            padding: 15px 40px;
+            margin-top: 40px;
+            font-size: 12px;
+        }
+
+        footer p {
+            margin: 0;
+            color: #c9a961;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                padding: 15px 20px;
+            }
+
+            .header-top {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+
+            .header-text h1 {
+                font-size: 14px;
+            }
+
+            main {
+                padding: 0 20px;
+                margin: 20px auto;
+            }
+
+            h2 {
+                font-size: 22px;
+            }
+
+            .pie-chart-section {
+                flex-direction: column;
+                gap: 20px;
+            }
+
+            .pie-container {
+                max-width: 250px;
+                margin: 0 auto;
+            }
+
+            footer {
+                padding: 15px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="header-top">
+            <div class="header-content">
+                <div class="logo">🎓</div>
+                <div class="header-text">
+                    <h1>Level 3 Certificate in Assessing Vocational Achievement</h1>
+                    <p>Focus Awards | QRN: 601/6156/8 | Learner Dashboard</p>
+                </div>
+            </div>
+            <a href="#" class="back-link">← Back to Assessor Hub</a>
+        </div>
+    </header>
+
+    <main>
+        <h2>Your Progress</h2>
+
+        <!-- Information Section -->
+        <section class="info-section">
+            <h3>About Your Progress Dashboard</h3>
+            <p>This dashboard tracks your progress across all three units of the Level 3 Certificate in Assessing Vocational Achievement. Each unit contains multiple learning outcomes that you need to complete. Use the progress bars and status badges to monitor where you are in your learning journey.</p>
+            
+            <div class="status-info">
+                <div class="status-info-item">
+                    <span class="status-badge">Complete</span>
+                    <span>All learning outcomes achieved</span>
+                </div>
+                <div class="status-info-item">
+                    <span class="status-badge in-progress">In Progress</span>
+                    <span>Some learning outcomes still to complete</span>
+                </div>
+                <div class="status-info-item">
+                    <span class="status-badge not-started">Not Started</span>
+                    <span>Learning outcomes not yet begun</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pie Chart Section -->
+        <section class="pie-chart-section">
+            <div class="pie-container">
+                <canvas id="progressChart"></canvas>
+            </div>
+            <div class="pie-legend">
+                <div class="pie-legend-item active" onclick="filterChart(event, 'all')" style="cursor: pointer;">
+                    <span class="pie-legend-color" style="background-color: #28a745;"></span>
+                    <span>All Units: 61% Complete</span>
+                </div>
+                <div class="pie-legend-item" onclick="filterChart(event, 'unit1')" style="cursor: pointer;">
+                    <span class="pie-legend-color" style="background-color: #28a745;"></span>
+                    <span>Unit 1: 100%</span>
+                </div>
+                <div class="pie-legend-item" onclick="filterChart(event, 'unit2')" style="cursor: pointer;">
+                    <span class="pie-legend-color" style="background-color: #ffc107;"></span>
+                    <span>Unit 2: 67%</span>
+                </div>
+                <div class="pie-legend-item" onclick="filterChart(event, 'unit3')" style="cursor: pointer;">
+                    <span class="pie-legend-color" style="background-color: #dc3545;"></span>
+                    <span>Unit 3: 15%</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Units Section -->
+        <h2 class="section-title">Unit Breakdown</h2>
+
+        <!-- Unit 1 -->
+        <div class="unit-card">
+            <div class="unit-header" onclick="toggleUnit(this)">
+                <span class="unit-title">Unit 1: Understanding the Principles and Practices of Assessment</span>
+                <div class="unit-status">
+                    <div class="progress-section">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%;"></div>
+                        </div>
+                        <span class="percentage">100%</span>
+                    </div>
+                    <span class="status-badge">Complete</span>
+                    <span class="toggle-icon">▼</span>
+                </div>
+            </div>
+            <div class="learning-outcomes">
+                <div class="lo-row">
+                    <span class="lo-title">Learning Outcome 1: Understand the principles of assessment</span>
+                    <span class="lo-status pass">Pass</span>
+                </div>
+                <div class="lo-row">
+                    <span class="lo-title">Learning Outcome 2: Understand the procedures for preparing learner assessments</span>
+                    <span class="lo-status pass">Pass</span>
+                </div>
+                <div class="lo-row">
+                    <span class="lo-title">Learning Outcome 3: Understand how to carry out formative assessment</span>
+                    <span class="lo-status pass">Pass</span>
+                </div>
+                <div class="lo-row">
+                    <span class="lo-title">Learning Outcome 4: Understand how to conduct summative assessment</span>
+                    <span class="lo-status pass">Pass</span>
+                </div>
+                <div class="lo-row">
+                    <span class="lo-title">Learning Outcome 5: Understand how to provide constructive feedback</span>
+                    <span class="lo-status pass">Pass</span>
+                </div>
+                <div class="lo-row">
+                    <span class="lo-title">Learning Outcome 6: Understand assessment for equality and diversity</span>
+                    <span class="lo-status pass">Pass</span>
+                </div>
+                <div class="lo-row">
+                    <span class="lo-title">Learning Outcome 7: Understand how to maintain assessment records</span>
+                    <span class="lo-status pass">Pass</span>
+                </div>
+                <div class="lo-row">
+                    <span class="lo-title">Learning Outcome 8: Understand quality assurance in assessment</span>
+                    <span class="lo-status pass">Pass</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unit 2 -->
+        <div class="unit-card">
+            <div class="unit-header" onclick="toggleUnit(this)">
+                <span class="unit-title">Unit 2: Assess Occupational Competence in the Work Environment</span>
+                <div class="unit-status">
+                    <div class="progress-section">
+                        <div class="progress-bar">
+                            <div class="progress-fill in-progress" style="width: 67%;"></div>
+                        </div>
+                        <span class="percentage">67%</span>
+                    </div>
+                    <span class="status-badge in-progress">In Progress</span>
+                    <span class="toggle-icon">▼</span>
+                </div>
+            </div>
+            <div class="learning-outcomes">
+                <div class="lo-row">
+                    <span class="lo-title">LO1</span>
+                    <span class="lo-status pass">Pass</span>
+                </div>
+                <div class="lo-row">
+                    <span class="lo-title">LO2</span>
+                    <span class="lo-status refer">Refer</span>
+                </div>
+                <div class="lo-row">
+                    <span class="lo-title">LO3</span>
+                    <span class="lo-status pending">Pending</span>
+                </div>
+                <div class="lo-row">
+                    <span class="lo-title">LO4</span>
+                    <span class="lo-status pass">Pass</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Unit 3 -->
+        <div class="unit-card">
+            <div class="unit-header" onclick="toggleUnit(this)">
+                <span class="unit-title">Unit 3: Assess Vocational Knowledge and Understanding</span>
+                <div class="unit-status">
+                    <div class="progress-section">
+                        <div class="progress-bar">
+                            <div class="progress-fill not-started" style="width: 15%;"></div>
+                        </div>
+                        <span class="percentage">15%</span>
+                    </div>
+                    <span class="status-badge not-started">Not Started</span>
+                    <span class="toggle-icon">▼</span>
+                </div>
+            </div>
+            <div class="learning-outcomes">
+                <div class="lo-row">
+                    <span class="lo-title">LO1</span>
+                    <span class="lo-status pending">Pending</span>
+                </div>
+                <div class="lo-row">
+                    <span class="lo-title">LO2</span>
+                    <span class="lo-status pending">Pending</span>
+                </div>
+                <div class="lo-row">
+                    <span class="lo-title">LO3</span>
+                    <span class="lo-status pending">Pending</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>PT Academy | Focus Awards Level 3 Certificate in Assessing Vocational Achievement (CAVA) | QRN: 601/6156/8</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let chartInstance = null;
+
+        function initChart(filter = 'all') {
+            const ctx = document.getElementById('progressChart');
+            if (!ctx) return;
+
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+
+            let labels, data, backgroundColor;
+
+            if (filter === 'all') {
+                labels = ['Complete', 'In Progress', 'Not Started'];
+                data = [61, 27, 12];
+                backgroundColor = ['#28a745', '#ffc107', '#dc3545'];
+            } else if (filter === 'unit1') {
+                labels = ['Complete'];
+                data = [100];
+                backgroundColor = ['#28a745'];
+            } else if (filter === 'unit2') {
+                labels = ['Complete', 'In Progress'];
+                data = [67, 33];
+                backgroundColor = ['#28a745', '#ffc107'];
+            } else if (filter === 'unit3') {
+                labels = ['Not Started'];
+                data = [85];
+                backgroundColor = ['#dc3545'];
+            }
+
+            chartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: backgroundColor,
+                        borderColor: '#fff',
+                        borderWidth: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function filterChart(event, filter) {
+            initChart(filter);
+
+            document.querySelectorAll('.pie-legend-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.currentTarget.classList.add('active');
+        }
+
+        function toggleUnit(element) {
+            const card = element.closest('.unit-card');
+            const outcomes = card.querySelector('.learning-outcomes');
+            const icon = element.querySelector('.toggle-icon');
+
+            outcomes.classList.toggle('show');
+            icon.classList.toggle('open');
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            initChart('all');
+        });
+    </script>
+</body>
+</html>
