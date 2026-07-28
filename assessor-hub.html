@@ -1,394 +1,636 @@
 <!DOCTYPE html>
-<html lang="en-GB">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CAVA – Assessor Hub</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    :root { --gold: #C9A84C; }
-    .gold-text { color: #C9A84C; }
-    .gold-bg { background-color: #C9A84C; }
-    .card-hover:hover { border-color: #C9A84C; box-shadow: 0 4px 16px rgba(201,168,76,0.15); }
-    .judgement-btn { border: 2px solid; padding: 4px 18px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; transition: all 0.15s; background: white; }
-    .judgement-btn.pass-btn { border-color: #16a34a; color: #16a34a; }
-    .judgement-btn.pass-btn.selected { background: #16a34a; color: white; }
-    .judgement-btn.refer-btn { border-color: #dc2626; color: #dc2626; }
-    .judgement-btn.refer-btn.selected { background: #dc2626; color: white; }
-    .feedback-card { background: #fefdf5; border: 1.5px solid #C9A84C; border-radius: 10px; padding: 20px; margin-bottom: 16px; }
-    .save-indicator { font-size: 11px; color: #6b7280; height: 16px; margin-top: 4px; }
-    .lo-label { background: #1a1a2e; color: #C9A84C; font-size: 12px; font-weight: 700; padding: 4px 12px; border-radius: 20px; display: inline-block; margin-bottom: 10px; }
-    details > summary { list-style: none; cursor: pointer; }
-    details > summary::-webkit-details-marker { display: none; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PT Academy - Assessor Hub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+        header {
+            background: #0a0a0a;
+            color: white;
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            font-size: 24px;
+            color: #C9A84C;
+        }
+        header p {
+            color: white;
+            margin: 0;
+        }
+        .header-left {
+            flex: 1;
+        }
+        .header-right {
+            text-align: right;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .user-info {
+            font-size: 12px;
+        }
+        .user-info p {
+            margin: 2px 0;
+            color: white;
+        }
+        .user-info p.role {
+            color: #C9A84C;
+        }
+        .logout-btn {
+            background: #C9A84C;
+            color: black;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .logout-btn:hover {
+            background: #b89639;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 20px;
+        }
+        .welcome-section {
+            background: white;
+            border-left: 4px solid #C9A84C;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 4px;
+        }
+        .welcome-section h2 {
+            color: #0a0a0a;
+            margin-bottom: 5px;
+        }
+        .section-title {
+            color: #666;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-weight: bold;
+        }
+        .card {
+            background: white;
+            border-radius: 4px;
+            padding: 20px;
+            margin-bottom: 15px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .badge {
+            display: inline-block;
+            background: #C9A84C;
+            color: black;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            margin-bottom: 15px;
+        }
+        .card h3 {
+            color: #0a0a0a;
+            margin-bottom: 8px;
+        }
+        .card p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+        .btn-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        button, .btn-open {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 14px;
+            background: #C9A84C;
+            color: black;
+            text-decoration: none;
+            display: inline-block;
+        }
+        button:hover, .btn-open:hover {
+            background: #b89639;
+        }
+        .progress-bar {
+            height: 8px;
+            background: #C9A84C;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+        th {
+            background: #0a0a0a;
+            color: #C9A84C;
+            font-weight: bold;
+            border-bottom: 2px solid #C9A84C;
+        }
+        tr:hover {
+            background: #f9f9f9;
+        }
+        .learner-link {
+            color: #000000;
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .learner-link:hover {
+            text-decoration: underline;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal.active {
+            display: flex;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #C9A84C;
+            padding-bottom: 15px;
+        }
+        .modal-header h4 {
+            margin: 0;
+            color: #0a0a0a;
+        }
+        .modal-close {
+            background: #C9A84C;
+            color: black;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .learner-info {
+            background: #f5f5f5;
+            padding: 12px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .learner-info p {
+            margin: 4px 0;
+        }
+        .unit-section {
+            margin-bottom: 20px;
+        }
+        .unit-section h5 {
+            color: #C9A84C;
+            border-bottom: 1px solid #C9A84C;
+            padding-bottom: 8px;
+            margin-bottom: 12px;
+            font-size: 14px;
+        }
+        .outcome-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 8px 0;
+        }
+        .outcome-item input {
+            cursor: pointer;
+        }
+        .outcome-item span {
+            font-size: 14px;
+        }
+        .sort-controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .sort-controls button {
+            padding: 8px 15px;
+            background: #f0f0f0;
+            border: 1px solid #C9A84C;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s ease;
+            color: black;
+        }
+        .sort-controls button:hover,
+        .sort-controls button.active {
+            background: #C9A84C;
+            color: black;
+            font-weight: bold;
+        }
+        .search-box {
+            padding: 8px 12px;
+            border: 1px solid #C9A84C;
+            border-radius: 4px;
+            font-size: 14px;
+            min-width: 200px;
+        }
+    </style>
 </head>
-<body class="min-h-screen bg-gray-50 text-gray-900 px-4 py-8">
-
-  <div class="max-w-5xl mx-auto">
-
-    <!-- Header -->
-    <div class="flex items-center justify-between mb-8 px-6 py-5 rounded-2xl" style="background-color:#0a0a0a;">
-      <div class="flex items-center gap-4">
-        <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy Logo" class="h-14 w-auto" />
-        <div>
-          <h1 class="text-2xl font-bold gold-text">Assessor Hub</h1>
-          <p class="text-gray-400 text-sm">Level 3 Certificate in Assessing Vocational Achievement</p>
+<body>
+    <header>
+        <div class="header-left">
+            <h1>Assessor Hub</h1>
+            <p>Level 3 Certificate in Assessing Vocational Achievement</p>
         </div>
-      </div>
-      <div class="text-right">
-        <p class="text-gray-300 text-sm" id="display-name">Loading...</p>
-        <p class="gold-text text-xs" id="display-role">Loading...</p>
-        <button onclick="logout()" class="mt-3 px-4 py-1.5 text-xs font-semibold text-black rounded-lg transition" style="background-color:#C9A84C;">Log Out</button>
-      </div>
+        <div class="header-right">
+            <div class="user-info">
+                <p id="userEmail">mike@yardleytrainingclub.co.uk</p>
+                <p class="role">Super Admin</p>
+            </div>
+            <button class="logout-btn" onclick="logout()">Log Out</button>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="welcome-section">
+            <h2>Welcome, Michael</h2>
+            <p>Manage learner progress, complete observation records, and mark submitted unit work below.</p>
+        </div>
+
+        <div class="section-title">ADMIN FUNCTIONS</div>
+        <div class="card">
+            <span class="badge">Dashboard</span>
+            <h3>Learner Management</h3>
+            <p>Manage all learner accounts, enrolments, unit assignments, and assessor allocations in one place.</p>
+            <a href="https://ytc107.github.io/CAVA-LMS/learner-management-dashboard.html" class="btn-open" style="display: inline-block; text-decoration: none; color: black;">Open →</a>
+        </div>
+
+        <div class="section-title">ASSESSOR DOCUMENTS</div>
+        <div class="btn-group">
+            <div class="card">
+                <span class="badge">Start Here</span>
+                <h3>Assessment Plan</h3>
+                <p>Review and agree assessment schedules and methods with each learner. Complete this first.</p>
+                <a href="https://ytc107.github.io/CAVA-LMS/assessment-plan.html" class="btn-open">Open →</a>
+            </div>
+            <div class="card">
+                <span class="badge">Observation</span>
+                <h3>Observation Record</h3>
+                <p>Record observed practice for learners in the workplace environment.</p>
+                <a href="https://ytc107.github.io/CAVA-LMS/observation.html" class="btn-open">Open →</a>
+            </div>
+        </div>
+        <div class="btn-group">
+            <div class="card">
+                <span class="badge">Document</span>
+                <h3>Action Plan</h3>
+                <p>Set and review targets and actions with learners.</p>
+                <a href="https://ytc107.github.io/CAVA-LMS/action-plan.html" class="btn-open">Open →</a>
+            </div>
+            <div class="card">
+                <span class="badge">Admin</span>
+                <h3>Manage Pre-Passed Units</h3>
+                <p>Mark learner units as pre-passed or referred, and record the date awarded.</p>
+                <a href="https://ytc107.github.io/CAVA-LMS/assessor-prepass.html" class="btn-open">Open →</a>
+            </div>
+        </div>
+
+        <div class="section-title">LEARNER PROGRESS</div>
+        <div class="card">
+            <div class="sort-controls">
+                <input type="text" id="searchBox" class="search-box" placeholder="Search learner name..." onkeyup="searchLearners()">
+                <button onclick="sortBy('name')" id="btnName" class="active">A-Z</button>
+                <button onclick="sortBy('unitsMost')" id="btnUnitsMost">Most Units</button>
+                <button onclick="sortBy('unitsLeast')" id="btnUnitsLeast">Fewest Units</button>
+                <button onclick="sortBy('progress')" id="btnProgress">Highest Progress</button>
+            </div>
+            <div style="margin-bottom: 15px;">
+                <label style="margin-right: 10px; font-weight: bold;">Rows per page:</label>
+                <select id="rowsPerPageSelect" onchange="changeRowsPerPage()" style="padding: 5px 10px; border: 1px solid #C9A84C; border-radius: 4px; background: white;">
+                    <option value="10">10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="100">100</option>
+                </select>
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>LEARNER</th>
+                            <th style="text-align: center;">UNIT 1</th>
+                            <th style="text-align: center;">UNIT 2</th>
+                            <th style="text-align: center;">UNIT 3</th>
+                            <th style="text-align: center;">PROGRAMME %</th>
+                            <th style="text-align: center;">PROGRESS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="learnerProgressBody"></tbody>
+                </table>
+            </div>
+            <div style="margin-top: 15px; text-align: center; color: #666;">
+                <span id="paginationInfo"></span>
+            </div>
+            <div style="margin-top: 15px; text-align: center;">
+                <button class="btn-open" onclick="previousPage()">← Previous</button>
+                <button class="btn-open" onclick="nextPage()">Next →</button>
+            </div>
+        </div>
     </div>
 
-    <!-- Welcome Banner -->
-    <div class="rounded-2xl p-6 mb-8 border-l-4 bg-white shadow-sm" style="border-left-color:#C9A84C;">
-      <h2 class="text-xl font-semibold text-gray-900 mb-1">Welcome, Michael</h2>
-      <p class="text-gray-500 text-sm">Manage learner progress, complete observation records, and mark submitted unit work below.</p>
+    <!-- Learner Profile Modal -->
+    <div id="learnerModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 id="modalLearnerName"></h4>
+                <button class="modal-close" onclick="closeLearnerProfile()">Close</button>
+            </div>
+            <div class="learner-info">
+                <p><strong>Email:</strong> <span id="modalEmail"></span></p>
+                <p><strong>Start Date:</strong> <span id="modalStartDate"></span></p>
+                <p><strong>Assessment Plan:</strong> <span style="color: #C9A84C;">✓ Completed</span></p>
+            </div>
+            <h5 style="color: #C9A84C; margin-top: 20px;">Learning Outcomes Progress</h5>
+            <div id="modalUnitsContainer"></div>
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #ddd;">
+                <button class="btn-open" onclick="closeLearnerProfile()" style="width: 100%; padding: 12px;">Save Changes</button>
+            </div>
+        </div>
     </div>
 
-    <!-- Admin Functions (Super Admin Only) -->
-    <div id="admin-functions-section" style="display:none;">
-      <h3 class="text-gray-400 text-xs uppercase tracking-widest mb-4">Admin Functions</h3>
-      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
+    <script>
+        let currentPage = 1;
+        let rowsPerPage = 10;
+        let allLearners = [];
+        let currentSort = 'name';
+        let displayedLearners = [];
 
-        <a href="learner-management-dashboard.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group">
-          <div class="flex items-center justify-between mb-3">
-            <span class="text-xs text-black px-2 py-1 rounded-full font-semibold gold-bg">Dashboard</span>
-            <span class="text-xs text-gray-400 group-hover:text-yellow-600 transition">Open →</span>
-          </div>
-          <h4 class="font-semibold text-gray-900 mb-1">Learner Management</h4>
-          <p class="text-gray-500 text-sm">Manage all learner accounts, enrolments, unit assignments, and assessor allocations in one place.</p>
-        </a>
+        // Session verification
+        function checkSession() {
+            const token = localStorage.getItem('cava_token');
+            if (!token) {
+                window.location.href = 'https://ytc107.github.io/CAVA-LMS/login.html';
+            }
+        }
 
-      </div>
-    </div>
+        // Logout function
+        function logout() {
+            localStorage.removeItem('cava_token');
+            localStorage.removeItem('cava_user');
+            localStorage.removeItem('cava_role');
+            window.location.href = 'https://ytc107.github.io/CAVA-LMS/login.html';
+        }
 
-    <!-- Assessor Documents -->
-    <h3 class="text-gray-400 text-xs uppercase tracking-widest mb-4">Assessor Documents</h3>
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
+        function calculateUnitPercentage(learner, unitNum) {
+            const unitAssigned = learner.assignedUnits && learner.assignedUnits.includes('unit-' + unitNum);
+            if (!unitAssigned) return 0;
+            
+            const progress = learner.progress && learner.progress['unit-' + unitNum] || {};
+            const outcomes = progress ? Object.values(progress).filter(p => p === true).length : 0;
+            const maxPoints = unitNum === 1 ? 8 : 5;
+            return Math.round((outcomes / maxPoints) * 100);
+        }
 
-      <a href="assessment-plan.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group sm:col-span-2">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-xs text-black px-2 py-1 rounded-full font-semibold gold-bg">Start Here</span>
-          <span class="text-xs text-gray-400 group-hover:text-yellow-600 transition">Open →</span>
-        </div>
-        <h4 class="font-semibold text-gray-900 mb-1">Assessment Plan</h4>
-        <p class="text-gray-500 text-sm">Review and agree assessment schedules and methods with each learner. Complete this first.</p>
-      </a>
+        function calculateOverallPercentage(learner) {
+            const unit1 = calculateUnitPercentage(learner, 1);
+            const unit2 = calculateUnitPercentage(learner, 2);
+            const unit3 = calculateUnitPercentage(learner, 3);
+            const unitsAssigned = (learner.assignedUnits || []).length;
+            if (unitsAssigned === 0) return 0;
+            return Math.round((unit1 + unit2 + unit3) / unitsAssigned);
+        }
 
-      <a href="observation.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-xs text-black px-2 py-1 rounded-full font-semibold gold-bg">Observation</span>
-          <span class="text-xs text-gray-400 group-hover:text-yellow-600 transition">Open →</span>
-        </div>
-        <h4 class="font-semibold text-gray-900 mb-1">Observation Record</h4>
-        <p class="text-gray-500 text-sm">Record observed practice for learners in the workplace environment.</p>
-      </a>
+        function sortBy(sortType) {
+            currentSort = sortType;
+            currentPage = 1;
+            updateLearnerDisplay();
+            updateSortButtons();
+        }
+        
+        function updateSortButtons() {
+            document.querySelectorAll('.sort-controls button').forEach(btn => btn.classList.remove('active'));
+            if (currentSort === 'name') document.getElementById('btnName').classList.add('active');
+            else if (currentSort === 'unitsMost') document.getElementById('btnUnitsMost').classList.add('active');
+            else if (currentSort === 'unitsLeast') document.getElementById('btnUnitsLeast').classList.add('active');
+            else if (currentSort === 'progress') document.getElementById('btnProgress').classList.add('active');
+        }
+        
+        function searchLearners() {
+            const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+            if (!searchTerm) {
+                displayedLearners = [...allLearners];
+            } else {
+                displayedLearners = allLearners.filter(learner => learner.fullName.toLowerCase().includes(searchTerm));
+            }
+            currentPage = 1;
+            updateLearnerDisplay();
+        }
+        
+        function updateLearnerDisplay() {
+            let sorted = [...displayedLearners];
+            
+            if (currentSort === 'name') {
+                sorted.sort((a, b) => a.fullName.localeCompare(b.fullName));
+            } else if (currentSort === 'unitsMost') {
+                sorted.sort((a, b) => (b.assignedUnits ? b.assignedUnits.length : 0) - (a.assignedUnits ? a.assignedUnits.length : 0));
+            } else if (currentSort === 'unitsLeast') {
+                sorted.sort((a, b) => (a.assignedUnits ? a.assignedUnits.length : 0) - (b.assignedUnits ? b.assignedUnits.length : 0));
+            } else if (currentSort === 'progress') {
+                sorted.sort((a, b) => calculateOverallPercentage(b) - calculateOverallPercentage(a));
+            }
+            
+            const tableBody = document.getElementById('learnerProgressBody');
+            tableBody.innerHTML = '';
 
-      <a href="action-plan.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-xs text-black px-2 py-1 rounded-full font-semibold gold-bg">Document</span>
-          <span class="text-xs text-gray-400 group-hover:text-yellow-600 transition">Open →</span>
-        </div>
-        <h4 class="font-semibold text-gray-900 mb-1">Action Plan</h4>
-        <p class="text-gray-500 text-sm">Set and review targets and actions with learners.</p>
-      </a>
+            if (sorted.length === 0) {
+                tableBody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #999;">No learners match your search</td></tr>';
+                updatePaginationInfo(0);
+                return;
+            }
 
-      <a href="assessor-prepass.html" class="block bg-white border border-gray-200 rounded-2xl p-6 transition card-hover group">
-        <div class="flex items-center justify-between mb-3">
-          <span class="text-xs text-black px-2 py-1 rounded-full font-semibold gold-bg">Admin</span>
-          <span class="text-xs text-gray-400 group-hover:text-yellow-600 transition">Open →</span>
-        </div>
-        <h4 class="font-semibold text-gray-900 mb-1">Manage Pre-Passed Units</h4>
-        <p class="text-gray-500 text-sm">Mark learner units as pre-passed or referred, and record the date awarded.</p>
-      </a>
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const paginatedLearners = sorted.slice(start, end);
 
-    </div>
+            paginatedLearners.forEach((learner) => {
+                const unit1Pct = calculateUnitPercentage(learner, 1);
+                const unit2Pct = calculateUnitPercentage(learner, 2);
+                const unit3Pct = calculateUnitPercentage(learner, 3);
+                const overallPct = calculateOverallPercentage(learner);
+                const learnerName = learner.fullName || '';
+                const learnerId = allLearners.indexOf(learner);
 
-    <!-- Learner Progress Dashboard -->
-    <h3 class="text-gray-400 text-xs uppercase tracking-widest mb-4">Learner Progress</h3>
-    <div class="bg-white rounded-2xl border overflow-hidden mb-10 shadow-sm" style="border-color:#C9A84C;">
-      <div class="grid grid-cols-6 text-xs uppercase tracking-widest px-4 py-3 font-semibold" style="background-color:#0a0a0a; color:#C9A84C; border-bottom:1px solid #C9A84C;">
-        <div class="col-span-2">Learner</div>
-        <div class="text-center">Assessment Plan</div>
-        <div class="text-center">Unit 1</div>
-        <div class="text-center">Unit 2</div>
-        <div class="text-center">Unit 3</div>
-      </div>
-      <div id="learner-table">
-        <div class="px-4 py-6 text-center text-sm text-gray-400">Loading learners...</div>
-      </div>
-      <div class="flex gap-6 px-4 py-3 text-xs text-gray-400 bg-gray-50">
-        <span>✅ Complete</span>
-        <span>🔄 In Progress</span>
-        <span>⬜ Not Started</span>
-      </div>
-    </div>
+                const row = document.createElement('tr');
+                row.innerHTML = '<td><a class="learner-link" onclick="openLearnerProfile(' + learnerId + '); return false;">' + learnerName + '</a></td>' +
+                    '<td style="text-align: center;">' + unit1Pct + '%</td>' +
+                    '<td style="text-align: center;">' + unit2Pct + '%</td>' +
+                    '<td style="text-align: center;">' + unit3Pct + '%</td>' +
+                    '<td style="text-align: center;">' + overallPct + '%</td>' +
+                    '<td style="text-align: center;"><div class="progress-bar" style="width: ' + overallPct + '%; display: inline-block; min-width: 50px;"></div></td>';
+                tableBody.appendChild(row);
+            });
 
-    <!-- Learner Marking Section -->
-    <h3 class="text-gray-400 text-xs uppercase tracking-widest mb-4">Mark Unit Work — Select Learner</h3>
+            updatePaginationInfo(sorted.length);
+        }
 
-    <div class="bg-white rounded-2xl border border-gray-200 p-5 mb-6 shadow-sm">
-      <label class="text-xs font-semibold text-gray-500 uppercase tracking-wide">Learner</label>
-      <select id="markingLearner" onchange="loadFeedback()" class="w-full border border-gray-300 rounded-lg px-3 py-2 mt-2 text-sm">
-        <option value="">— Select a learner —</option>
-      </select>
-      <div id="learnerLoadMsg" class="text-xs text-gray-400 mt-2"></div>
-    </div>
+        function openLearnerProfile(learnerId) {
+            const learner = allLearners[learnerId];
+            if (!learner) return;
 
-    <!-- Per-LO Feedback Cards -->
-    <div id="markingPanel" style="display:none;">
-      <div class="bg-blue-50 border border-blue-200 rounded-xl px-5 py-3 mb-6 text-sm text-blue-700">
-        Select <strong>Pass</strong> or <strong>Refer</strong> for each learning outcome, write your feedback, then click <strong>Save Feedback</strong>. The learner will see this immediately when they next open their worksheet.
-      </div>
-      <div id="loFeedbackCards"></div>
-    </div>
+            const learnerName = learner.fullName || 'Unknown';
+            document.getElementById('modalLearnerName').textContent = learnerName;
+            document.getElementById('modalEmail').textContent = learner.email || 'N/A';
+            document.getElementById('modalStartDate').textContent = learner.startDate || 'Not set';
 
-    <p class="text-center text-gray-400 text-xs mt-10">CAVA LMS &middot; Focus Awards &middot; PT Academy</p>
+            let unitsHtml = '';
+            [1, 2, 3].forEach(unitNum => {
+                const unitAssigned = learner.assignedUnits && learner.assignedUnits.includes('unit-' + unitNum);
+                if (!unitAssigned) return;
+                
+                const outcomes = learner.progress && learner.progress['unit-' + unitNum] || {};
+                let outcomesHtml = '';
+                Object.keys(outcomes).forEach(outcome => {
+                    const checked = outcomes[outcome] ? 'checked' : '';
+                    outcomesHtml += '<div class="outcome-item"><input type="checkbox" ' + checked + ' onchange="updateOutcome(' + learnerId + ', \'unit-' + unitNum + '\', \'' + outcome + '\', this.checked)"><span>' + outcome + '</span></div>';
+                });
+                unitsHtml += '<div class="unit-section"><h5>Unit ' + unitNum + '</h5>' + outcomesHtml + '</div>';
+            });
 
-  </div>
+            document.getElementById('modalUnitsContainer').innerHTML = unitsHtml || '<p style="color: #999;">No assigned units</p>';
+            document.getElementById('learnerModal').classList.add('active');
+        }
 
-<script>
-const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
-const { createClient } = supabase;
-const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        function closeLearnerProfile() {
+            document.getElementById('learnerModal').classList.remove('active');
+        }
 
-const LO_LIST = [
-  { id: 'lo1', label: 'LO1', title: 'Understand the principles and requirements of assessment' },
-  { id: 'lo2', label: 'LO2', title: 'Understand different types of assessment method' },
-  { id: 'lo3', label: 'LO3', title: 'Understand how to plan assessment' },
-  { id: 'lo4', label: 'LO4', title: 'Understand how to involve learners and others in assessment' },
-  { id: 'lo5', label: 'LO5', title: 'Understand how to make assessment decisions' },
-  { id: 'lo6', label: 'LO6', title: 'Understand quality assurance of the assessment process' },
-  { id: 'lo7', label: 'LO7', title: 'Understand how to manage information relating to assessment' },
-  { id: 'lo8', label: 'LO8', title: 'Understand the legal and good practice requirements in relation to assessment' }
-];
+        function updateOutcome(learnerId, unitKey, outcome, completed) {
+            const stored = localStorage.getItem('ptAcademyLearners') || '[]';
+            const allData = JSON.parse(stored);
+            const learner = allData[learnerId];
+            if (learner && learner.progress && learner.progress[unitKey]) {
+                learner.progress[unitKey][outcome] = completed;
+                localStorage.setItem('ptAcademyLearners', JSON.stringify(allData));
+                updateLearnerDisplay();
+            }
+        }
 
-let selectedUserId = null;
-let outcomeSelections = {};
-let allLearners = [];
+        function changeRowsPerPage() {
+            rowsPerPage = parseInt(document.getElementById('rowsPerPageSelect').value);
+            currentPage = 1;
+            updateLearnerDisplay();
+        }
 
-async function init() {
-  // Load and display user role
-  const userJson = localStorage.getItem('cava_user');
-  const role = localStorage.getItem('cava_role') || 'Assessor';
-  
-  if (userJson) {
-    const user = JSON.parse(userJson);
-    document.getElementById('display-name').textContent = user.email || 'User';
-  }
-  document.getElementById('display-role').textContent = role;
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                updateLearnerDisplay();
+            }
+        }
 
-  // Show admin functions section only for Super Admins
-  if (role === 'Super Admin') {
-    document.getElementById('admin-functions-section').style.display = 'block';
-  }
+        function nextPage() {
+            const maxPage = Math.ceil(displayedLearners.length / rowsPerPage);
+            if (currentPage < maxPage) {
+                currentPage++;
+                updateLearnerDisplay();
+            }
+        }
 
-  await loadLearnerProgress();
-}
+        function updatePaginationInfo(totalLearners) {
+            const maxPage = Math.ceil(totalLearners / rowsPerPage);
+            const start = (currentPage - 1) * rowsPerPage + 1;
+            const end = Math.min(currentPage * rowsPerPage, totalLearners);
+            document.getElementById('paginationInfo').textContent = 'Showing ' + start + '-' + end + ' of ' + totalLearners + ' learners | Page ' + currentPage + ' of ' + maxPage;
+        }
 
-async function loadLearnerProgress() {
-  const { data: learners, error } = await sb
-    .from('learners')
-    .select('id, full_name, username, email')
-    .order('full_name');
+        function populateLearnerProgress() {
+            const allData = [
+                { fullName: 'Michael Kplomedo', email: 'mike@yardleytrainingclub.co.uk', assignedUnits: ['unit-1', 'unit-2', 'unit-3'], progress: { 'unit-1': {}, 'unit-2': {}, 'unit-3': {} } },
+                { fullName: 'Ahmad Masto', email: 'ahmadmasto@gmail.com', assignedUnits: ['unit-1', 'unit-2'], progress: { 'unit-1': {}, 'unit-2': {} } },
+                { fullName: 'Natalia Jefimenko', email: 'nataliajefimenko@gmail.com', assignedUnits: ['unit-2'], progress: { 'unit-2': {} } },
+                { fullName: 'Tal Halden-Mckeown', email: 'tajhaldenmckeown@gmail.com', assignedUnits: ['unit-1', 'unit-2', 'unit-3'], progress: { 'unit-1': {}, 'unit-2': {}, 'unit-3': {} } },
+                { fullName: 'Mark Hamilton', email: 'markhamilton@gmail.com', assignedUnits: ['unit-1', 'unit-3'], progress: { 'unit-1': {}, 'unit-3': {} } },
+                { fullName: 'Anthony Bevan', email: 'anthonybevan@gmail.com', assignedUnits: ['unit-2', 'unit-3'], progress: { 'unit-2': {}, 'unit-3': {} } },
+                { fullName: 'David Ompreon', email: 'davidompreon@gmail.com', assignedUnits: ['unit-1', 'unit-3'], progress: { 'unit-1': {}, 'unit-3': {} } },
+                { fullName: 'Francesca Tuozzo', email: 'francescatuozzo@gmail.com', assignedUnits: ['unit-2', 'unit-3'], progress: { 'unit-2': {}, 'unit-3': {} } },
+                { fullName: 'Luca Panayiotou', email: 'lucapanayiotou@gmail.com', assignedUnits: ['unit-2', 'unit-3'], progress: { 'unit-2': {}, 'unit-3': {} } },
+                { fullName: 'Shadman Khan', email: 'shadmankhan@gmail.com', assignedUnits: ['unit-1', 'unit-2'], progress: { 'unit-1': {}, 'unit-2': {} } },
+                { fullName: 'Laura Garnier', email: 'lauragarnier@gmail.com', assignedUnits: ['unit-1', 'unit-2'], progress: { 'unit-1': {}, 'unit-2': {} } },
+                { fullName: 'Irsalan Qayyum', email: 'irsalanqayyum@gmail.com', assignedUnits: ['unit-1', 'unit-2', 'unit-3'], progress: { 'unit-1': {}, 'unit-2': {}, 'unit-3': {} } },
+                { fullName: 'Shera Thind', email: 'sherathind@gmail.com', assignedUnits: ['unit-3'], progress: { 'unit-3': {} } },
+                { fullName: 'Aaron Finn', email: 'aaronfinn@gmail.com', assignedUnits: ['unit-1', 'unit-2', 'unit-3'], progress: { 'unit-1': {}, 'unit-2': {}, 'unit-3': {} } }
+            ];
+            allLearners = allData;
+            displayedLearners = [...allLearners];
+            updateLearnerDisplay();
+            updateSortButtons();
+        }
 
-  if (error || !learners) {
-    document.getElementById('learner-table').innerHTML = '<div class="px-4 py-4 text-sm text-red-400">Could not load learners.</div>';
-    return;
-  }
+        document.getElementById('learnerModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('learnerModal')) {
+                closeLearnerProfile();
+            }
+        });
 
-  allLearners = learners;
+        function syncLearnersFromManagement() {
+            const managementStored = localStorage.getItem('ptAcademyLearners') || '[]';
+            const managementData = JSON.parse(managementStored);
+            if (managementData && managementData.length > 0) {
+                allLearners = managementData;
+                displayedLearners = [...allLearners];
+                updateLearnerDisplay();
+            }
+        }
 
-  // Populate marking dropdown
-  const sel = document.getElementById('markingLearner');
-  learners.forEach(l => {
-    const opt = document.createElement('option');
-    opt.value = l.id;
-    opt.textContent = l.full_name || l.username;
-    sel.appendChild(opt);
-  });
-
-  // Load unit_overrides — use String() for all id comparisons to avoid type mismatch
-  const { data: overrides } = await sb.from('unit_overrides').select('id, user_id, unit, status').order('id', { ascending: false });
-  const overrideMap = {};
-  if (overrides) {
-    overrides.forEach(o => {
-      const uid = String(o.user_id);
-      if (!overrideMap[uid]) overrideMap[uid] = {};
-      // Order is descending so first seen is most recent — don't overwrite
-      if (!overrideMap[uid][o.unit]) overrideMap[uid][o.unit] = o.status;
-    });
-  }
-
-  // Load unit1_submissions to check who has submitted work
-  const { data: subs } = await sb.from('unit1_submissions').select('user_id');
-  const submittedIds = new Set((subs || []).map(s => String(s.user_id)));
-
-  const table = document.getElementById('learner-table');
-  if (!learners.length) {
-    table.innerHTML = '<div class="px-4 py-4 text-sm text-gray-400">No learners found.</div>';
-    return;
-  }
-
-  table.innerHTML = learners.map(l => {
-    const uid = String(l.id);
-    const lo = overrideMap[uid] || {};
-
-    function unitIcon(key) {
-      const s = lo[key];
-      if (s === 'pre_passed') return '✅';
-      if (s === 'referred') return '🔴';
-      if (submittedIds.has(uid)) return '🔄';
-      return '⬜';
-    }
-
-    // Assessment Plan column: show ✅ if any unit has an override record, 🔄 if submitted, else ⬜
-    const hasAnyOverride = Object.keys(lo).length > 0;
-    const planIcon = hasAnyOverride ? '✅' : submittedIds.has(uid) ? '🔄' : '⬜';
-
-    return `
-      <div class="grid grid-cols-6 items-center px-4 py-4 border-b border-gray-100">
-        <div class="col-span-2">
-          <a href="assessment-plan.html?learner=${encodeURIComponent(String(l.id))}" class="text-gray-900 font-medium text-sm hover:underline block" style="color:#0a0a0a;">${l.full_name || l.username}</a>
-          <p class="text-gray-400 text-xs">${l.email || l.username}</p>
-        </div>
-        <a href="assessment-plan.html?learner=${encodeURIComponent(String(l.id))}" class="text-center text-lg block hover:scale-110 transition" title="Open Assessment Plan">${planIcon}</a>
-        <a href="unit1.html?learner=${encodeURIComponent(String(l.id))}" class="text-center text-lg block hover:scale-110 transition" title="Unit 1">${unitIcon('unit1')}</a>
-        <a href="unit2.html?learner=${encodeURIComponent(String(l.id))}" class="text-center text-lg block hover:scale-110 transition" title="Unit 2">${unitIcon('unit2')}</a>
-        <a href="unit2.html?learner=${encodeURIComponent(String(l.id))}" class="text-center text-lg block hover:scale-110 transition" title="Unit 3">${unitIcon('unit3')}</a>
-      </div>
-    `;
-  }).join('');
-}
-
-function buildMarkingCards() {
-  const container = document.getElementById('loFeedbackCards');
-  container.innerHTML = '';
-  LO_LIST.forEach(lo => {
-    outcomeSelections[lo.id] = null;
-    container.innerHTML += `
-      <div class="feedback-card" id="card-${lo.id}">
-        <div class="flex items-center justify-between mb-3">
-          <div>
-            <span class="lo-label">${lo.label}</span>
-            <div class="text-sm font-semibold text-gray-800 mt-1">${lo.title}</div>
-          </div>
-        </div>
-        <div class="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-2">Assessor Judgement</div>
-        <div class="flex gap-3 mb-4">
-          <button class="judgement-btn pass-btn" id="pass-${lo.id}" onclick="selectOutcome('${lo.id}', 'Pass')">Pass</button>
-          <button class="judgement-btn refer-btn" id="refer-${lo.id}" onclick="selectOutcome('${lo.id}', 'Refer')">Refer</button>
-        </div>
-        <div class="text-xs font-semibold text-gray-500 mb-1">Feedback to Learner</div>
-        <textarea id="fb-${lo.id}" rows="4" placeholder="Write your feedback here..." class="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm resize-y"></textarea>
-        <div class="flex items-center justify-between mt-3">
-          <div class="save-indicator" id="si-${lo.id}"></div>
-          <button onclick="saveFeedback('${lo.id}')" class="gold-bg text-black text-xs font-bold px-5 py-2 rounded-lg hover:opacity-90 transition">Save Feedback</button>
-        </div>
-      </div>
-    `;
-  });
-}
-
-function selectOutcome(loId, outcome) {
-  outcomeSelections[loId] = outcome;
-  document.getElementById('pass-' + loId).classList.toggle('selected', outcome === 'Pass');
-  document.getElementById('refer-' + loId).classList.toggle('selected', outcome === 'Refer');
-}
-
-async function loadFeedback() {
-  const sel = document.getElementById('markingLearner').value;
-  const panel = document.getElementById('markingPanel');
-  const msg = document.getElementById('learnerLoadMsg');
-
-  if (!sel) { panel.style.display = 'none'; msg.textContent = ''; return; }
-
-  msg.textContent = 'Loading...';
-  selectedUserId = sel;
-
-  const { data: rows } = await sb
-    .from('unit1_submissions')
-    .select('user_id')
-    .eq('user_id', sel)
-    .maybeSingle();
-
-  if (!rows) {
-    msg.textContent = 'No submitted worksheet found for this learner yet.';
-    panel.style.display = 'none';
-    return;
-  }
-
-  msg.textContent = '';
-  buildMarkingCards();
-  panel.style.display = 'block';
-
-  const { data: feedback } = await sb
-    .from('unit1_feedback')
-    .select('*')
-    .eq('user_id', selectedUserId);
-
-  if (feedback && feedback.length > 0) {
-    feedback.forEach(row => {
-      const fbEl = document.getElementById('fb-' + row.lo);
-      if (fbEl) fbEl.value = row.feedback_text || '';
-      if (row.outcome) selectOutcome(row.lo, row.outcome);
-      const si = document.getElementById('si-' + row.lo);
-      if (si) si.textContent = '✓ Previously saved';
-    });
-  }
-}
-
-async function saveFeedback(loId) {
-  if (!selectedUserId) return;
-  const outcome = outcomeSelections[loId];
-  const text = document.getElementById('fb-' + loId)?.value.trim();
-  const si = document.getElementById('si-' + loId);
-
-  if (!outcome) { si.textContent = '⚠ Please select Pass or Refer'; si.style.color = '#dc2626'; return; }
-  if (!text) { si.textContent = '⚠ Please write feedback before saving'; si.style.color = '#dc2626'; return; }
-
-  si.textContent = 'Saving...';
-  si.style.color = '#6b7280';
-
-  const { error } = await sb
-    .from('unit1_feedback')
-    .upsert({ user_id: selectedUserId, lo: loId, outcome, feedback_text: text, saved_at: new Date().toISOString() }, { onConflict: 'user_id,lo' });
-
-  if (error) {
-    si.textContent = '⚠ Save failed — ' + error.message;
-    si.style.color = '#dc2626';
-  } else {
-    si.textContent = '✓ Feedback saved';
-    si.style.color = '#16a34a';
-    loadLearnerProgress();
-  }
-}
-
-async function logout() {
-  try {
-    await sb.auth.signOut();
-    localStorage.removeItem('cava_token');
-    localStorage.removeItem('cava_user');
-    localStorage.removeItem('cava_role');
-    const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-    window.location.href = basePath + 'login.html';
-  } catch (error) {
-    console.error('Logout error:', error);
-    localStorage.removeItem('cava_token');
-    localStorage.removeItem('cava_user');
-    localStorage.removeItem('cava_role');
-    const basePath = window.location.pathname.substring(0, window.location.pathname.lastIndexOf('/') + 1);
-    window.location.href = basePath + 'login.html';
-  }
-}
-
-init();
-</script>
-
+        document.addEventListener('DOMContentLoaded', () => {
+            checkSession();
+            populateLearnerProgress();
+            syncLearnersFromManagement();
+            setInterval(syncLearnersFromManagement, 5000);
+        });
+    </script>
 </body>
 </html>
