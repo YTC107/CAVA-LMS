@@ -1,455 +1,916 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>CAVA – Learner Hub</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="supabase-integration.js"></script> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PT Academy | Level 3 CAVA | Learner Hub</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    .gold { color: #c9a84c; }
-    .bg-gold { background-color: #c9a84c; }
-    .border-gold { border-color: #c9a84c; }
-    .tab-btn { transition: background 0.15s, color 0.15s; background-color: #374151; color: #d1d5db; }
-    .tab-btn.active { background-color: #c9a84c; color: #000; font-weight: 600; }
-    .tab-btn:not(.active):hover { background-color: #4b5563; color: #fff; }
-    .section { display: none; }
-    .section.active { display: block; }
-    .step-num { background-color: #c9a84c; color: #000; font-weight: 700; border-radius: 9999px; width: 2rem; height: 2rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-    .doc-card { border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1.25rem; background: #fff; transition: border-color 0.2s, box-shadow 0.2s; }
-    .doc-card:hover { border-color: #c9a84c; box-shadow: 0 2px 8px rgba(201,168,76,0.15); }
-    .accordion-btn { width: 100%; text-align: left; background: #fff; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1rem 1.25rem; font-weight: 600; font-size: 0.95rem; color: #1f2937; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: border-color 0.2s; }
-    .accordion-btn:hover { border-color: #c9a84c; }
-    .accordion-btn.open { border-bottom-left-radius: 0; border-bottom-right-radius: 0; border-color: #c9a84c; }
-    .accordion-body { display: none; border: 1px solid #c9a84c; border-top: none; border-bottom-left-radius: 0.75rem; border-bottom-right-radius: 0.75rem; background: #fff; padding: 1.25rem; }
-    .accordion-body.open { display: block; }
-    .chevron { transition: transform 0.2s; }
-    .chevron.open { transform: rotate(180deg); }
-    .page-title { font-size: 1.25rem; font-weight: 700; color: #1f2937; border-left: 4px solid #c9a84c; padding-left: 0.75rem; margin-bottom: 1.5rem; }
-    .sub-heading { font-size: 1rem; font-weight: 700; color: #1f2937; border-left: 3px solid #c9a84c; padding-left: 0.6rem; margin-bottom: 1rem; margin-top: 0.25rem; }
-    .sub-section { background: #fff; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 1.5rem; margin-bottom: 1.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    .sub-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 0.75rem 1rem; margin-bottom: 1.5rem; }
-    .sub-nav a { font-size: 0.75rem; font-weight: 600; color: #374151; background: #fff; border: 1px solid #d1d5db; border-radius: 9999px; padding: 0.3rem 0.85rem; text-decoration: none; transition: border-color 0.15s, color 0.15s; }
-    .sub-nav a:hover { border-color: #c9a84c; color: #c9a84c; }
-    .pre-passed-card { border-left: 4px solid #16a34a !important; }
-    .pre-passed-badge { background-color: #dcfce7; color: #15803d; font-weight: 700; font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 9999px; }
-    .pre-passed-btn { background-color: #16a34a; color: #fff; font-size: 0.75rem; padding: 0.35rem 0.85rem; border-radius: 0.5rem; cursor: not-allowed; opacity: 0.85; pointer-events: none; }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f3f0; color: #2c2c2c; }
+    
+    .header { background: #1a1a1a; padding: 20px 40px; display: flex; align-items: center; gap: 20px; border-bottom: 4px solid #c9a84c; }
+    .header h1 { color: #c9a84c; font-size: 1.3rem; }
+    .header p { color: #bbb; font-size: 0.85rem; margin-top: 4px; }
+    .welcome { color: #c9a84c; font-size: 1rem; margin-left: auto; }
+    
+    .tabs { background: #2a2a2a; padding: 0 40px; display: flex; gap: 0; border-bottom: 1px solid #444; }
+    .tab-btn { background: none; border: none; color: #bbb; padding: 16px 20px; cursor: pointer; font-size: 0.95rem; font-weight: 600; transition: all 0.3s; border-bottom: 3px solid transparent; }
+    .tab-btn.active { color: #c9a84c; border-bottom-color: #c9a84c; }
+    .tab-btn:hover { color: #c9a84c; }
+    
+    .content { max-width: 1300px; margin: 0 auto; padding: 40px 20px; }
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block; }
+    
+    .intro-card { background: #fff; border-left: 5px solid #c9a84c; padding: 28px 32px; margin-bottom: 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .intro-card h3 { color: #1a1a1a; font-size: 1.05rem; margin-bottom: 14px; }
+    .intro-card p { color: #444; line-height: 1.7; margin-bottom: 12px; font-size: 0.95rem; }
+    .intro-card a { color: #c9a84c; text-decoration: none; font-weight: 600; }
+    .intro-card a:hover { text-decoration: underline; }
+    
+    .dashboard-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 30px; margin-bottom: 30px; }
+    .chart-container { background: #fff; padding: 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .stats-container { background: #fff; padding: 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    
+    .unit-card { background: #fff; border-top: 4px solid #c9a84c; padding: 20px; margin-bottom: 16px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .unit-card h4 { color: #1a1a1a; margin-bottom: 12px; }
+    .unit-card .progress-bar { background: #e8e8e8; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
+    .unit-card .progress-fill { background: #28a745; height: 100%; transition: width 0.3s; }
+    .unit-card .progress-text { font-size: 0.85rem; color: #666; }
+    
+    .lo-item { background: #fafafa; padding: 12px 16px; margin: 8px 0; border-radius: 4px; cursor: pointer; border-left: 3px solid #c9a84c; }
+    .lo-item:hover { background: #f0f0f0; }
+    
+    .assessment-plan { background: #fff; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    .unit-header { background: #1a1a1a; color: #c9a84c; padding: 16px 24px; font-weight: 700; }
+    .unit-content { padding: 24px; }
+    .lo-block { margin-bottom: 24px; border-bottom: 1px solid #e8e8e8; padding-bottom: 24px; }
+    .lo-block:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+    .lo-title { font-weight: 700; color: #1a1a1a; font-size: 0.95rem; margin-bottom: 8px; }
+    .lo-description { color: #555; font-size: 0.9rem; margin-bottom: 12px; line-height: 1.5; }
+    
+    .planned-date-box { display: flex; flex-direction: column; min-width: 200px; }
+    .planned-date-box label { font-size: 0.75rem; font-weight: 700; color: #666; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .planned-date-box input { padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 1rem; font-weight: 600; background: #ffffff; color: #1a1a1a; }
+    .planned-date-box input:focus { outline: none; background: #fff; border-color: #c9a84c; box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.15); }
+    
+    .manual-entry { background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; padding: 20px; margin-bottom: 16px; }
+    .manual-entry-title { font-size: 0.8rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 12px; }
+    .manual-entry-grid { display: grid; grid-template-columns: 1fr 1.2fr 1.8fr 1fr auto; gap: 12px; align-items: flex-end; }
+    .manual-entry-grid input { padding: 8px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem; background: #fff; }
+    .manual-entry-grid input:focus { outline: none; border-color: #c9a84c; box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1); }
+    .manual-entry-grid select { padding: 8px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.9rem; background: #fff; }
+    .manual-entry-grid select:focus { outline: none; border-color: #c9a84c; box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1); }
+    .manual-entry-grid button { background: #c9a84c; color: #1a1a1a; font-weight: 700; font-size: 0.85rem; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; transition: background 0.3s; }
+    .manual-entry-grid button:hover { background: #b8974a; }
+    
+    .audit-headers { display: grid; grid-template-columns: 1fr 1.2fr 1.8fr 1fr; gap: 12px; padding: 10px 0; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; border-bottom: 2px solid #c9a84c; margin-bottom: 8px; }
+    .audit-row { display: grid; grid-template-columns: 1fr 1.2fr 1.8fr 1fr; gap: 12px; padding: 12px 0; font-size: 0.9rem; border-bottom: 1px solid #e8e8e8; align-items: center; }
+    .audit-row.pass { background: #f0f9f5; }
+    .audit-row.refer { background: #fdf5f5; }
+    .audit-row.pending { background: #fffaf0; }
+    .outcome-pass { font-weight: 700; color: #2d7a3a; }
+    .outcome-refer { font-weight: 700; color: #a0293a; }
+    .outcome-pending { font-weight: 700; color: #8b6914; }
+    
+    .obs-section { background: #f5f5f5; padding: 20px 24px; margin-top: 20px; border-left: 3px solid #c9a84c; border-radius: 2px; }
+    .obs-title { font-size: 0.9rem; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
+    .obs-headers { display: grid; grid-template-columns: 1fr 1.2fr 1.8fr 1fr; gap: 12px; padding: 10px 0; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; border-bottom: 2px solid #c9a84c; margin-bottom: 8px; }
+    .obs-row { display: grid; grid-template-columns: 1fr 1.2fr 1.8fr 1fr; gap: 12px; padding: 12px 0; font-size: 0.9rem; border-bottom: 1px solid #e8e8e8; align-items: center; }
+    
+    .signoff-card { background: #fff; border-radius: 4px; padding: 28px 32px; margin-bottom: 32px; box-shadow: 0 1px 4px rgba(0,0,0,0.05); }
+    .signoff-card h3 { font-size: 1rem; font-weight: 700; color: #1a1a1a; margin-bottom: 20px; border-bottom: 2px solid #e8e8e8; padding-bottom: 12px; }
+    .signoff-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .sig-section { display: flex; flex-direction: column; }
+    .sig-section label { font-size: 0.8rem; font-weight: 700; color: #666; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.3px; }
+    .sig-input { padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.95rem; background: #fafafa; }
+    .sig-input:focus { outline: none; border-color: #c9a84c; background: #fff; box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.1); }
+    
+    .footer { background: #1a1a1a; color: #c9a84c; text-align: center; padding: 20px; margin-top: 40px; font-size: 0.85rem; }
   </style>
 </head>
-<body class="bg-gray-100 min-h-screen" style="font-family: sans-serif;">
+<body>
 
-  <!-- Header -->
-  <header class="bg-black text-white px-6 py-3">
-    <div class="max-w-5xl mx-auto flex items-center justify-between">
-      <div class="flex items-center gap-3">
-        <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy" class="h-12 w-auto" />
-        <div>
-          <p class="font-bold text-base leading-tight gold">Level 3 Certificate in Assessing Vocational Achievement</p>
-          <p class="text-xs text-gray-400">Focus Awards | QRN: 601/6104/8 | Learner Hub</p>
-        </div>
-      </div>
-      <div class="text-right">
-        <p class="text-gray-400 text-xs mb-1" id="user-email">Loading...</p>
-        <button onclick="logout()" class="text-red-400 text-xs hover:text-red-300 transition">Sign out</button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Nav Tabs -->
-  <nav class="bg-black border-t border-gray-800 px-6">
-    <div class="max-w-5xl mx-auto flex flex-wrap gap-1 py-1">
-      <button class="tab-btn active text-xs px-3 py-1.5 rounded" onclick="showTab('introduction', this)">Introduction</button>
-      <button class="tab-btn text-xs px-3 py-1.5 rounded" onclick="showTab('documents', this)">Assessment Documents</button>
-    </div>
-  </nav>
-
-  <!-- Main Content -->
-  <main class="max-w-5xl mx-auto px-6 py-8">
-
-    <!-- Welcome Banner -->
-    <div class="bg-white border-l-4 border-yellow-500 rounded-xl p-5 mb-6 shadow-sm">
-      <h2 class="text-lg font-bold text-gray-800" id="welcome-heading">Welcome back!</h2>
-      <p class="text-sm text-gray-600 mt-1">Your assessor is <strong class="gold">Michael Kplomedo</strong>. Work through the Introduction below, then head to Assessment Documents when you are ready to begin.</p>
-    </div>
-
-    <!-- INTRODUCTION -->
-    <div id="tab-introduction" class="section active">
-      <h2 class="page-title">Introduction</h2>
-
-      <!-- Sub-navigation -->
-      <div class="sub-nav">
-        <a href="#intro-what">What Is This Qualification?</a>
-        <a href="#intro-steps">Your Step-by-Step Guide</a>
-        <a href="#qual-structure">Qualification Structure</a>
-        <a href="#requirements">Requirements</a>
-      </div>
-
-      <!-- What Is This Qualification -->
-      <div class="sub-section" id="intro-what">
-        <h3 class="sub-heading">What Is This Qualification?</h3>
-        <p class="text-sm text-gray-600">The <strong>Level 3 Certificate in Assessing Vocational Achievement (CAVA)</strong> is a nationally recognised qualification awarded by Focus Awards. It is designed for anyone working in a training or coaching environment who assesses the competence, skills, knowledge, and understanding of learners.</p>
-        <p class="text-sm text-gray-600 mt-2">As a PT Academy learner, you will complete written questions, observation records, and a portfolio of evidence to demonstrate your ability to assess others.</p>
-      </div>
-
-      <!-- Step-by-Step Guide -->
-      <div class="sub-section" id="intro-steps">
-        <h3 class="sub-heading">Your Step-by-Step Guide</h3>
-        <div class="flex flex-col gap-4">
-
-          <div class="flex items-start gap-3">
-            <div class="step-num">1</div>
-            <div>
-              <p class="font-semibold text-gray-800 text-sm">Read the course information</p>
-              <p class="text-sm text-gray-500 mt-0.5">Work through the <button class="gold font-semibold underline bg-transparent border-none cursor-pointer p-0" onclick="scrollToSection('qual-structure')">Qualification Structure</button> and <button class="gold font-semibold underline bg-transparent border-none cursor-pointer p-0" onclick="scrollToSection('requirements')">Requirements</button> sections on this page so you understand what each unit involves and what you need to produce.</p>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-3">
-            <div class="step-num">2</div>
-            <div>
-              <p class="font-semibold text-gray-800 text-sm">Complete your Assessment Plan</p>
-              <p class="text-sm text-gray-500 mt-0.5">Open the Assessment Plan in the <button class="gold font-semibold underline bg-transparent border-none cursor-pointer p-0" onclick="showTabByName('documents')">Assessment Documents</button> tab and fill in your planned completion dates for each unit. Your assessor will countersign this with you.</p>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-3">
-            <div class="step-num">3</div>
-            <div>
-              <p class="font-semibold text-gray-800 text-sm">Unit 1: Complete all written questions</p>
-              <p class="text-sm text-gray-500 mt-0.5">Unit 1 is knowledge-based. You must answer all written questions fully and in your own words. These cover the principles, types, and legal responsibilities of assessment.</p>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-3">
-            <div class="step-num">4</div>
-            <div>
-              <p class="font-semibold text-gray-800 text-sm">Units 2 and 3: Complete your practical assessments</p>
-              <p class="text-sm text-gray-500 mt-0.5">For Units 2 and 3, you will work with two PT learners (one Level 2 Gym, one Level 3 Personal Training). You must gather evidence across all seven assessment methods and complete Observation Records for both units.</p>
-            </div>
-          </div>
-
-          <div class="flex items-start gap-3">
-            <div class="step-num">5</div>
-            <div>
-              <p class="font-semibold text-gray-800 text-sm">Sign the Declaration and submit your portfolio</p>
-              <p class="text-sm text-gray-500 mt-0.5">Each assessment document includes a Declaration at the end. Sign each one to confirm your evidence is authentic and your own, then submit your portfolio for review. Your assessor will provide feedback before sign-off.</p>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- Qualification Structure -->
-      <div class="sub-section" id="qual-structure">
-        <h3 class="sub-heading">Qualification Structure</h3>
-        <p class="text-sm text-gray-600 mb-4">The Level 3 CAVA is made up of <strong>three units</strong>. You are required to complete all three. Click each unit below to read more.</p>
-
-        <div class="flex flex-col gap-3">
-
-          <div>
-            <button class="accordion-btn" onclick="toggleAccordion('unit1-struct', this)">
-              Unit 1: Understanding the Principles and Practices of Assessment
-              <svg class="chevron w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-            </button>
-            <div id="unit1-struct" class="accordion-body">
-              <p class="text-sm text-gray-600">The theory unit. Covers the functions of assessment, types of assessment, quality assurance, and the legal and ethical responsibilities of an assessor. Assessed through written questions across 8 learning outcomes.</p>
-              <p class="text-sm text-gray-500 mt-2"><strong>Unit reference:</strong> A/601/5313</p>
-            </div>
-          </div>
-
-          <div>
-            <button class="accordion-btn" onclick="toggleAccordion('unit2-struct', this)">
-              Unit 2: Assess Occupational Competence in the Work Environment
-              <svg class="chevron w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-            </button>
-            <div id="unit2-struct" class="accordion-body">
-              <p class="text-sm text-gray-600">The practical unit. You will plan and carry out work-based assessments with your PT learners using direct observation, work products, and professional discussion to judge competence.</p>
-              <p class="text-sm text-gray-500 mt-2"><strong>Unit reference:</strong> H/601/5314</p>
-              <ul class="list-disc list-inside text-sm text-gray-600 mt-2 space-y-1">
-                <li>Observation of performance in the work environment</li>
-                <li>Examining products of work</li>
-                <li>Questioning the learner</li>
-                <li>Discussing with the learner</li>
-                <li>Use of others (witness testimony)</li>
-                <li>Looking at learner statements</li>
-                <li>Recognising prior learning</li>
-              </ul>
-            </div>
-          </div>
-
-          <div>
-            <button class="accordion-btn" onclick="toggleAccordion('unit3-struct', this)">
-              Unit 3: Assess Vocational Skills, Knowledge and Understanding
-              <svg class="chevron w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-            </button>
-            <div id="unit3-struct" class="accordion-body">
-              <p class="text-sm text-gray-600">The knowledge assessment unit. You will assess learners in classroom or theory-based settings using a range of methods.</p>
-              <p class="text-sm text-gray-500 mt-2"><strong>Unit reference:</strong> F/601/5319</p>
-              <ul class="list-disc list-inside text-sm text-gray-600 mt-2 space-y-1">
-                <li>Assessments in simulated environments</li>
-                <li>Skills tests</li>
-                <li>Oral and written questions</li>
-                <li>Assignments</li>
-                <li>Projects</li>
-                <li>Case studies</li>
-                <li>Recognising prior learning</li>
-              </ul>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="mt-4 bg-gray-50 rounded-xl border border-gray-200 p-5">
-          <h4 class="font-semibold text-gray-700 text-sm mb-2">Your Two Learners</h4>
-          <p class="text-sm text-gray-600 mb-2">Throughout this qualification you must work with <strong>two PT learners at different levels:</strong></p>
-          <ul class="list-disc list-inside text-sm text-gray-600 mb-3">
-            <li>Learner 1: Level 2 Gym Instructing</li>
-            <li>Learner 2: Level 3 Personal Training</li>
-          </ul>
-          <p class="text-sm text-gray-600">You must use a minimum of <strong>7 different assessment methods</strong> across both learners. Evidence from Units 2 and 3 is linked and the Observation Record maps across both units.</p>
-        </div>
-      </div>
-
-      <!-- Requirements -->
-      <div class="sub-section" id="requirements">
-        <h3 class="sub-heading">Requirements</h3>
-        <p class="text-sm text-gray-600 mb-4">Below are the specific requirements for each unit. Click a unit to expand the details.</p>
-
-        <div class="flex flex-col gap-3">
-
-          <div>
-            <button class="accordion-btn" onclick="toggleAccordion('req-unit1', this)">
-              Unit 1: Understanding the Principles and Practices of Assessment
-              <svg class="chevron w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-            </button>
-            <div id="req-unit1" class="accordion-body">
-              <p class="text-sm text-gray-600 mb-3">All 25 questions must be answered in full. Answers should be in your own words and reflect your own practice. Evidence must be authentic, sufficient, and current.</p>
-              <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
-                <li>Learning Outcome 1: Understand the principles and requirements of assessment</li>
-                <li>Learning Outcome 2: Understand different types of assessment methods</li>
-                <li>Learning Outcome 3: Understand how to plan assessment</li>
-                <li>Learning Outcome 4: Understand how to involve learners and others in assessment</li>
-                <li>Learning Outcome 5: Understand how to make assessment decisions</li>
-                <li>Learning Outcome 6: Understand quality assurance of the assessment process</li>
-                <li>Learning Outcome 7: Understand how to manage information relating to assessment</li>
-                <li>Learning Outcome 8: Understand the legal and good practice requirements in relation to assessment</li>
-              </ul>
-            </div>
-          </div>
-
-          <div>
-            <button class="accordion-btn" onclick="toggleAccordion('req-unit2', this)">
-              Unit 2: Assess Occupational Competence in the Work Environment
-              <svg class="chevron w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-            </button>
-            <div id="req-unit2" class="accordion-body">
-              <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
-                <li>Learning Outcome 1: Be able to plan the assessment of occupational competence</li>
-                <li>Learning Outcome 2: Be able to make assessment decisions about occupational competence</li>
-                <li>Learning Outcome 3: Be able to give feedback and support learners</li>
-                <li>Learning Outcome 4: Be able to contribute to the internal quality assurance process</li>
-                <li>Observation Record required (shared with Unit 3)</li>
-              </ul>
-            </div>
-          </div>
-
-          <div>
-            <button class="accordion-btn" onclick="toggleAccordion('req-unit3', this)">
-              Unit 3: Assess Vocational Skills, Knowledge and Understanding
-              <svg class="chevron w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-            </button>
-            <div id="req-unit3" class="accordion-body">
-              <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
-                <li>Learning Outcome 1: Be able to prepare assessments of vocational skills, knowledge and understanding</li>
-                <li>Learning Outcome 2: Be able to carry out assessments of vocational skills, knowledge and understanding</li>
-                <li>Learning Outcome 3: Be able to give feedback and support learners</li>
-                <li>Learning Outcome 4: Be able to contribute to the internal quality assurance process</li>
-                <li>Observation Record required (same record as Unit 2)</li>
-              </ul>
-            </div>
-          </div>
-
-        </div>
-
-        <div class="mt-4 bg-gray-50 rounded-xl border border-gray-200 p-5">
-          <h4 class="font-semibold text-gray-700 text-sm mb-2">The 7 Mandatory Assessment Methods</h4>
-          <p class="text-sm text-gray-600 mb-3">Across both learners and both units, you must demonstrate the use of all seven methods:</p>
-          <ul class="list-disc list-inside text-sm text-gray-600 space-y-1">
-            <li>Recognition of Prior Learning (RPL)</li>
-            <li>Direct Observation</li>
-            <li>Examining Work Products</li>
-            <li>Questioning (oral or written)</li>
-            <li>Witness Testimony and Expert Witness</li>
-            <li>Learner Statement and Professional Discussion</li>
-            <li>Simulation (where appropriate)</li>
-          </ul>
-        </div>
-      </div>
-
-    </div>
-
-    <!-- ASSESSMENT DOCUMENTS -->
-    <div id="tab-documents" class="section">
-      <h2 class="page-title">Assessment Documents</h2>
-      <p class="text-sm text-gray-500 mb-5">Open each document below to complete your work. Start with the Assessment Plan before moving on to the unit documents.</p>
-
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-        <a href="assessment-plan.html" class="doc-card sm:col-span-2 block">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs bg-gold text-black px-2 py-1 rounded-full font-semibold">Start Here</span>
-            <span class="text-xs text-gray-400">Open →</span>
-          </div>
-          <h4 class="font-semibold text-gray-800 mb-1">Assessment Plan</h4>
-          <p class="text-sm text-gray-500">Agree your assessment schedule and methods with your assessor. Fill in your planned end dates and have this countersigned before you begin.</p>
-        </a>
-
-        <div id="unit1-card" class="doc-card block">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs border border-yellow-500 gold px-2 py-1 rounded-full">Unit 1</span>
-            <span id="unit1-status" class="text-xs text-gray-400">Open →</span>
-          </div>
-          <h4 class="font-semibold text-gray-800 mb-1">Understanding the Principles and Practices of Assessment</h4>
-          <p class="text-sm text-gray-500">Written questions covering assessment theory, legislation, and ethics.</p>
-          <div id="unit1-action" class="mt-3">
-            <a href="unit1.html" class="text-xs gold font-semibold underline">Open Unit 1</a>
-          </div>
-        </div>
-
-        <div id="unit2-card" class="doc-card block">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs border border-yellow-500 gold px-2 py-1 rounded-full">Unit 2</span>
-            <span id="unit2-status" class="text-xs text-gray-400">Open →</span>
-          </div>
-          <h4 class="font-semibold text-gray-800 mb-1">H/601/5314: Assess Occupational Competence in the Work Environment</h4>
-          <p class="text-sm text-gray-500">Plan and carry out work-based assessments using observation, work products, and professional discussion to judge learner competence.</p>
-          <div id="unit2-action" class="mt-3">
-            <a href="unit2.html" class="text-xs gold font-semibold underline">Open Unit 2</a>
-          </div>
-        </div>
-
-        <div class="doc-card block opacity-60 cursor-not-allowed">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs border border-gray-400 text-gray-400 px-2 py-1 rounded-full">Unit 3</span>
-            <span class="text-xs bg-gray-200 text-gray-500 px-2 py-1 rounded-full font-semibold">Coming Soon</span>
-          </div>
-          <h4 class="font-semibold text-gray-600 mb-1">F/601/5319: Assess Vocational Skills, Knowledge and Understanding</h4>
-          <p class="text-sm text-gray-400">Assess learners in classroom or theory-based settings using skills tests, oral and written questions, assignments, and case studies.</p>
-        </div>
-
-        <a href="action-plan.html" class="doc-card sm:col-span-2 block">
-          <div class="flex items-center justify-between mb-2">
-            <span class="text-xs border border-yellow-500 gold px-2 py-1 rounded-full">Document</span>
-            <span class="text-xs text-gray-400">Open →</span>
-          </div>
-          <h4 class="font-semibold text-gray-800 mb-1">Action Plan</h4>
-          <p class="text-sm text-gray-500">Review targets and actions agreed with your assessor following feedback sessions.</p>
-        </a>
-
-      </div>
-    </div>
-
-  </main>
-
-  <footer class="text-center text-gray-400 text-xs py-4">
-    PT Academy &middot; Focus Awards Level 3 CAVA &middot; QRN: 601/6104/8 &middot; Learner Hub
-  </footer>
-
+<div class="header">
+  <div>
+    <h1>PT Academy | Level 3 CAVA</h1>
+    <p>Integrated Learner Hub & Assessment Tracking</p>
+  </div>
+  <div class="welcome">Welcome, <span id="learnerNameDisplay" style="font-weight: 700;">Learner</span></div>
   <script>
-    async function loadUnitOverrides(userId) {
-      try {
-        const res = await fetch(
-          `${window.SUPABASE_URL}/rest/v1/unit_overrides?user_id=eq.${userId}&status=eq.pre_passed&select=unit,passed_date`,
-          { headers: { 'apikey': window.SUPABASE_KEY, 'Authorization': `Bearer ${window.SUPABASE_KEY}` } }
-        );
-        const data = await res.json();
-        if (!Array.isArray(data)) return;
-        data.forEach(row => {
-          const card = document.getElementById(row.unit + '-card');
-          const statusEl = document.getElementById(row.unit + '-status');
-          const actionEl = document.getElementById(row.unit + '-action');
-          if (!card) return;
-          card.classList.add('pre-passed-card');
-          if (statusEl) statusEl.innerHTML = '<span class="pre-passed-badge">&#10003; Pre-Passed</span>';
-          if (actionEl) {
-            const dateLabel = row.passed_date ? ` &middot; Passed ${row.passed_date}` : '';
-            actionEl.innerHTML = `<span class="pre-passed-btn">&#128274; Locked</span><span class="text-xs text-gray-400 ml-2">${dateLabel}</span>`;
-          }
-        });
-      } catch(e) {
-        // fail silently — cards remain in normal state
-      }
-    }
-
-    const token = localStorage.getItem('cava_token');
-    const userRaw = localStorage.getItem('cava_user');
-
-    if (!token || !userRaw) {
-      window.location.href = 'login.html';
-    } else {
-      const user = JSON.parse(userRaw);
-      document.getElementById('user-email').textContent = user.email || 'Learner';
-      const firstName = localStorage.getItem('cava_first_name');
-      const name = firstName || user.full_name || user.name || null;
-      if (name) {
-        document.getElementById('welcome-heading').textContent = 'Welcome, ' + name + '!';
-      }
-      if (user.id) loadUnitOverrides(user.id);
-    }
-
-    function logout() {
-      localStorage.removeItem('cava_token');
-      localStorage.removeItem('cava_user');
-      localStorage.removeItem('cava_first_name');
-      window.location.href = 'login.html';
-    }
-
-    function showTab(id, btn) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById('tab-' + id).classList.add('active');
-      btn.classList.add('active');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function showTabByName(id) {
-      document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      document.getElementById('tab-' + id).classList.add('active');
-      const btns = document.querySelectorAll('.tab-btn');
-      btns.forEach(b => {
-        if (b.getAttribute('onclick') && b.getAttribute('onclick').includes("'" + id + "'")) {
-          b.classList.add('active');
-        }
-      });
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
-
-    function scrollToSection(id) {
-      const el = document.getElementById(id);
-      if (el) {
-        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      }
-    }
-
-    function toggleAccordion(id, btn) {
-      const body = document.getElementById(id);
-      const chevron = btn.querySelector('.chevron');
-      const isOpen = body.classList.contains('open');
-      body.classList.toggle('open', !isOpen);
-      btn.classList.toggle('open', !isOpen);
-      chevron.classList.toggle('open', !isOpen);
-    }
-
-     // Auto-switch tab based on URL parameter
-    window.addEventListener('DOMContentLoaded', function() {
-      const params = new URLSearchParams(window.location.search);
-      const tabParam = params.get('tab');
-      if (tabParam) {
-        showTabByName(tabParam);
-      }
+    // On page load, populate learner name if available from session/database
+    document.addEventListener('DOMContentLoaded', function() {
+      const learnerName = localStorage.getItem('learnerName') || 'Learner';
+      document.getElementById('learnerNameDisplay').textContent = learnerName;
     });
   </script>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="switchTab('dashboard')">Dashboard</button>
+  <button class="tab-btn" onclick="switchTab('introduction')">Introduction</button>
+  <button class="tab-btn" onclick="switchTab('assessment')">Assessment Plan</button>
+  <button class="tab-btn" onclick="switchTab('documents')">Assessment Documents</button>
+</div>
+
+<div class="content">
+
+  <!-- DASHBOARD TAB -->
+  <div id="dashboard" class="tab-pane active">
+    <h2 style="margin-bottom: 24px; color: #1a1a1a;">Your Progress</h2>
+    
+    <div class="intro-card">
+      <h3>Understanding Your Progress</h3>
+      <p>This dashboard shows your current progress across all three units of the Level 3 Certificate in Assessing Vocational Achievement. It tracks how many learning outcomes you have completed in each unit.</p>
+      <p>Each unit contains a number of learning outcomes. When you submit work for assessment and your assessor records a Pass outcome, that learning outcome is marked as complete. The progress bar shows how many of the learning outcomes in each unit you have completed so far.</p>
+      <p>You can expand each unit card to see all the individual learning outcomes and understand what skills and knowledge you need to demonstrate. As you complete more assessments, your progress will update automatically.</p>
+      <p><strong>Key points:</strong> Each learning outcome must be assessed separately. You progress through a unit as you complete each outcome. Your assessor will record when you have achieved the required standard. Review the Assessment Plan tab to see all your assessment attempts and outcomes.</p>
+    </div>
+    
+    <div class="dashboard-grid">
+      <div class="chart-container">
+        <canvas id="progressChart"></canvas>
+      </div>
+      <div class="stats-container">
+        <h3 style="margin-bottom: 20px;">Units Overview</h3>
+        <div class="unit-card">
+          <h4>Unit 1: Principles & Practices</h4>
+          <div class="progress-bar"><div class="progress-fill" style="width: 75%;"></div></div>
+          <div class="progress-text">6 of 8 learning outcomes complete</div>
+          <div style="margin-top: 12px;">
+            <button onclick="toggleLOs('unit1')" style="background: #c9a84c; color: #1a1a1a; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: 600;">View Learning Outcomes</button>
+            <div id="unit1-los" style="display: none; margin-top: 12px;">
+              <div class="lo-item">LO1: Understand principles and requirements</div>
+              <div class="lo-item">LO2: Understand assessment methods</div>
+              <div class="lo-item">LO3: Understand how to plan assessment</div>
+              <div class="lo-item">LO4: Involve learners and others</div>
+              <div class="lo-item">LO5: Make assessment decisions</div>
+              <div class="lo-item">LO6: Quality assurance</div>
+              <div class="lo-item">LO7: Manage assessment information</div>
+              <div class="lo-item">LO8: Legal and good practice</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="unit-card">
+          <h4>Unit 2: Occupational Competence</h4>
+          <div class="progress-bar"><div class="progress-fill" style="width: 50%;"></div></div>
+          <div class="progress-text">2 of 4 learning outcomes complete</div>
+          <div style="margin-top: 12px;">
+            <button onclick="toggleLOs('unit2')" style="background: #c9a84c; color: #1a1a1a; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: 600;">View Learning Outcomes</button>
+            <div id="unit2-los" style="display: none; margin-top: 12px;">
+              <div class="lo-item">LO1: Plan assessments of occupational competence</div>
+              <div class="lo-item">LO2: Make assessment decisions</div>
+              <div class="lo-item">LO3: Provide information following assessment</div>
+              <div class="lo-item">LO4: Review assessment decisions</div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="unit-card">
+          <h4>Unit 3: Vocational Skills & Knowledge</h4>
+          <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
+          <div class="progress-text">0 of 4 learning outcomes complete</div>
+          <div style="margin-top: 12px;">
+            <button onclick="toggleLOs('unit3')" style="background: #c9a84c; color: #1a1a1a; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: 600;">View Learning Outcomes</button>
+            <div id="unit3-los" style="display: none; margin-top: 12px;">
+              <div class="lo-item">LO1: Plan assessments of vocational skills</div>
+              <div class="lo-item">LO2: Make assessment decisions</div>
+              <div class="lo-item">LO3: Provide information following assessment</div>
+              <div class="lo-item">LO4: Review assessment decisions</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- INTRODUCTION TAB -->
+  <div id="introduction" class="tab-pane">
+    <h2 style="margin-bottom: 24px; color: #1a1a1a;">About Your Programme</h2>
+    
+    <div class="intro-card">
+      <h3>Level 3 Certificate in Assessing Vocational Achievement</h3>
+      <p>Welcome to the Level 3 Certificate in Assessing Vocational Achievement (QRN: 601/6104/8). This nationally recognised qualification is designed for professional assessors working in vocational education and training.</p>
+      <p>This new integrated model combines traditional assessment methods with live tracking, giving you real-time visibility of your progress whilst maintaining rigorous quality assurance standards.</p>
+    </div>
+    
+    <div class="intro-card">
+      <h3>Programme Structure</h3>
+      <p>Your qualification is structured across three units:</p>
+      <p><strong>Unit 1: Understanding the Principles and Practices of Assessment</strong> covers the foundations of assessment practice, including principles, methods, planning, decision-making, quality assurance, information management, and legal requirements.</p>
+      <p><strong>Unit 2: Assess Occupational Competence in the Work Environment</strong> focuses on assessing learner competence in real work settings, including planning, decision-making, feedback, and review processes.</p>
+      <p><strong>Unit 3: Assess Vocational Skills, Knowledge and Understanding</strong> extends assessment practice to vocational skills development, covering similar learning outcomes to Unit 2 but applied to skills and knowledge contexts.</p>
+    </div>
+    
+    <div class="intro-card">
+      <h3>The New Integrated Assessment Model</h3>
+      <p>Unlike traditional programmes, this qualification uses a live integrated model where every assessment decision you make is tracked in real time. When your assessor marks your work and records an outcome (Pass, Refer, or Pending), that decision automatically updates your Assessment Plan, creating a complete audit trail of your learning journey.</p>
+      <p>This approach provides several benefits:</p>
+      <p>You see exactly where you are in your learning at any moment. Your assessor can track patterns across assessments. Quality assurance is built in through the audit trail. You have a comprehensive record of evidence for final verification.</p>
+    </div>
+    
+    <div class="intro-card">
+      <h3>How Assessments Are Recorded</h3>
+      <p>Each learning outcome has a planned end date that you set at the start. When you submit work for assessment, your assessor will evaluate it against the learning outcome criteria and record one of three outcomes:</p>
+      <p><strong>Pass</strong>: You have met all criteria for this learning outcome.</p>
+      <p><strong>Refer</strong>: You need to resubmit after addressing feedback.</p>
+      <p><strong>Pending</strong>: Assessment is in progress or awaiting additional evidence.</p>
+      <p>Each attempt is logged in your Assessment Plan with the date, assessor name, and outcome. This creates a complete record of your assessment journey.</p>
+    </div>
+    
+    <div class="intro-card">
+      <h3>Your Assessment Plan</h3>
+      <p>Your Assessment Plan document is your personal learning record. It tracks:</p>
+      <p>All three units and their learning outcomes. Your planned completion dates for each learning outcome. Every assessment attempt you make, including date and assessor name. The outcome of each assessment (Pass, Refer, or Pending). Observation records where applicable. Your sign-off and formal record of completion.</p>
+      <p>Visit the <a href="#assessment">Assessment Plan tab</a> to review and update your planned dates and track your progress.</p>
+    </div>
+    
+    <div class="intro-card">
+      <h3>Assessment Documents & Resources</h3>
+      <p>Access assignment briefs, worksheets, and supporting materials in the <a href="#documents">Assessment Documents tab</a>. Each unit has its own set of resources to guide your learning and assessment.</p>
+    </div>
+    
+    <div class="intro-card">
+      <h3>Getting Started</h3>
+      <p>Start by visiting the Assessment Plan tab and filling in your planned end dates for each learning outcome. Think realistically about when you registered and when you'd like to complete each unit. Your assessor will use these dates to help track your progress and provide support where needed.</p>
+    </div>
+  </div>
+
+  <!-- ASSESSMENT PLAN TAB -->
+  <div id="assessment" class="tab-pane">
+    <h2 style="margin-bottom: 24px; color: #1a1a1a;">Assessment Plan & Tracking Document</h2>
+    
+    <div class="intro-card">
+      <h3>About Your Assessment Plan</h3>
+      <p>This Assessment Plan is your personal learning record for the Level 3 Certificate in Assessing Vocational Achievement. It tracks your progress across all three units and shows every assessment attempt you make.</p>
+      <p>Your assessor will use this document to record when they have assessed your work, the date they assessed it, and whether you have passed or need to resubmit (referred). This creates a complete audit trail of your learning journey.</p>
+      <p><strong>Before you start any work:</strong> Please complete the "Planned End Date" field for each learning outcome below. Think about when you registered on the programme and plan realistically when you would like to complete each unit and learning outcome. Your assessor will use these dates to help track your progress.</p>
+    </div>
+
+    <div style="background: #fff; border-radius: 4px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+      <p style="font-size: 0.9rem; color: #666;">When all tracking is complete, use the button at the bottom to download a PDF copy for your records.</p>
+    </div>
+
+    <!-- UNIT 1 -->
+    <div class="assessment-plan">
+      <div class="unit-header">Unit 1: Understanding the Principles and Practices of Assessment</div>
+      <div class="unit-content">
+        <div class="lo-block">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 16px;">
+            <div>
+              <div class="lo-title">LO1: Understand the principles and requirements of assessment</div>
+              <div class="lo-description">Develop knowledge of what assessment is, why it's important in vocational training, and the key principles that guide fair, valid and reliable assessment practice.</div>
+            </div>
+            <div style="background: #fafafa; border-left: 4px solid #c9a84c; padding: 14px 16px; border-radius: 4px; min-width: 200px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Planned End Date</label>
+              <input type="date" style="padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 0.95rem; background: #fff; width: 100%; font-family: inherit;" />
+            </div>
+          </div>
+          <div class="manual-entry">
+            <div class="manual-entry-title">MANUAL ENTRY: ADD ASSESSMENT FROM WORKSHEET</div>
+            <div class="manual-entry-grid">
+              <input type="text" placeholder="Attempt">
+              <input type="text" placeholder="DD/MM/YYYY">
+              <input type="text" placeholder="Assessor Name">
+              <select><option>Select Outcome</option><option>Pass</option><option>Refer</option><option>Pending</option></select>
+              <button>Add Entry</button>
+            </div>
+          </div>
+          <div class="audit-headers">
+            <div>ATTEMPT</div>
+            <div>ASSESSMENT DATE</div>
+            <div>ASSESSOR NAME</div>
+            <div>OUTCOME</div>
+          </div>
+        </div>
+
+        <div class="lo-block">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 16px;">
+            <div>
+              <div class="lo-title">LO2: Understand different types of assessment method</div>
+              <div class="lo-description">Learn about observation, questioning, witness testimony, and other assessment methods used to evaluate learner achievement in vocational settings.</div>
+            </div>
+            <div style="background: #fafafa; border-left: 4px solid #c9a84c; padding: 14px 16px; border-radius: 4px; min-width: 200px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Planned End Date</label>
+              <input type="date" style="padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 0.95rem; background: #fff; width: 100%; font-family: inherit;" />
+            </div>
+          </div>
+          <div class="manual-entry">
+            <div class="manual-entry-title">MANUAL ENTRY: ADD ASSESSMENT FROM WORKSHEET</div>
+            <div class="manual-entry-grid">
+              <input type="text" placeholder="Attempt">
+              <input type="text" placeholder="DD/MM/YYYY">
+              <input type="text" placeholder="Assessor Name">
+              <select><option>Select Outcome</option><option>Pass</option><option>Refer</option><option>Pending</option></select>
+              <button>Add Entry</button>
+            </div>
+          </div>
+          <div class="audit-headers">
+            <div>ATTEMPT</div>
+            <div>ASSESSMENT DATE</div>
+            <div>ASSESSOR NAME</div>
+            <div>OUTCOME</div>
+          </div>
+        </div>
+
+        <div class="lo-block">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 16px;">
+            <div>
+              <div class="lo-title">LO3: Understand how to plan assessment</div>
+              <div class="lo-description">Understand how to design assessment activities that meet learner needs, align with unit requirements, and provide appropriate evidence of competence.</div>
+            </div>
+            <div style="background: #fafafa; border-left: 4px solid #c9a84c; padding: 14px 16px; border-radius: 4px; min-width: 200px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Planned End Date</label>
+              <input type="date" style="padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 0.95rem; background: #fff; width: 100%; font-family: inherit;" />
+            </div>
+          </div>
+          <div class="manual-entry">
+            <div class="manual-entry-title">MANUAL ENTRY: ADD ASSESSMENT FROM WORKSHEET</div>
+            <div class="manual-entry-grid">
+              <input type="text" placeholder="Attempt">
+              <input type="text" placeholder="DD/MM/YYYY">
+              <input type="text" placeholder="Assessor Name">
+              <select><option>Select Outcome</option><option>Pass</option><option>Refer</option><option>Pending</option></select>
+              <button>Add Entry</button>
+            </div>
+          </div>
+          <div class="audit-headers">
+            <div>ATTEMPT</div>
+            <div>ASSESSMENT DATE</div>
+            <div>ASSESSOR NAME</div>
+            <div>OUTCOME</div>
+          </div>
+        </div>
+
+        <div class="lo-block">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 16px;">
+            <div>
+              <div class="lo-title">LO4: Understand how to involve learners and others in assessment</div>
+              <div class="lo-description">Learn how to communicate with learners about assessment, involve them in planning, and work with colleagues and stakeholders throughout the assessment process.</div>
+            </div>
+            <div style="background: #fafafa; border-left: 4px solid #c9a84c; padding: 14px 16px; border-radius: 4px; min-width: 200px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Planned End Date</label>
+              <input type="date" style="padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 0.95rem; background: #fff; width: 100%; font-family: inherit;" />
+            </div>
+          </div>
+          <div class="manual-entry">
+            <div class="manual-entry-title">MANUAL ENTRY: ADD ASSESSMENT FROM WORKSHEET</div>
+            <div class="manual-entry-grid">
+              <input type="text" placeholder="Attempt">
+              <input type="text" placeholder="DD/MM/YYYY">
+              <input type="text" placeholder="Assessor Name">
+              <select><option>Select Outcome</option><option>Pass</option><option>Refer</option><option>Pending</option></select>
+              <button>Add Entry</button>
+            </div>
+          </div>
+          <div class="audit-headers">
+            <div>ATTEMPT</div>
+            <div>ASSESSMENT DATE</div>
+            <div>ASSESSOR NAME</div>
+            <div>OUTCOME</div>
+          </div>
+        </div>
+
+        <div class="lo-block">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 16px;">
+            <div>
+              <div class="lo-title">LO5: Understand how to make assessment decisions</div>
+              <div class="lo-description">Develop skills to analyse evidence collected, make fair judgements about learner achievement, and provide clear feedback on progress and next steps.</div>
+            </div>
+            <div style="background: #fafafa; border-left: 4px solid #c9a84c; padding: 14px 16px; border-radius: 4px; min-width: 200px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Planned End Date</label>
+              <input type="date" style="padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 0.95rem; background: #fff; width: 100%; font-family: inherit;" />
+            </div>
+          </div>
+          <div class="manual-entry">
+            <div class="manual-entry-title">MANUAL ENTRY: ADD ASSESSMENT FROM WORKSHEET</div>
+            <div class="manual-entry-grid">
+              <input type="text" placeholder="Attempt">
+              <input type="text" placeholder="DD/MM/YYYY">
+              <input type="text" placeholder="Assessor Name">
+              <select><option>Select Outcome</option><option>Pass</option><option>Refer</option><option>Pending</option></select>
+              <button>Add Entry</button>
+            </div>
+          </div>
+          <div class="audit-headers">
+            <div>ATTEMPT</div>
+            <div>ASSESSMENT DATE</div>
+            <div>ASSESSOR NAME</div>
+            <div>OUTCOME</div>
+          </div>
+        </div>
+
+        <div class="lo-block">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 16px;">
+            <div>
+              <div class="lo-title">LO6: Understand quality assurance of the assessment process</div>
+              <div class="lo-description">Understand how quality assurance works, the role of internal and external verification, and how to maintain standards and consistency in assessment practice.</div>
+            </div>
+            <div style="background: #fafafa; border-left: 4px solid #c9a84c; padding: 14px 16px; border-radius: 4px; min-width: 200px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Planned End Date</label>
+              <input type="date" style="padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 0.95rem; background: #fff; width: 100%; font-family: inherit;" />
+            </div>
+          </div>
+          <div class="manual-entry">
+            <div class="manual-entry-title">MANUAL ENTRY: ADD ASSESSMENT FROM WORKSHEET</div>
+            <div class="manual-entry-grid">
+              <input type="text" placeholder="Attempt">
+              <input type="text" placeholder="DD/MM/YYYY">
+              <input type="text" placeholder="Assessor Name">
+              <select><option>Select Outcome</option><option>Pass</option><option>Refer</option><option>Pending</option></select>
+              <button>Add Entry</button>
+            </div>
+          </div>
+          <div class="audit-headers">
+            <div>ATTEMPT</div>
+            <div>ASSESSMENT DATE</div>
+            <div>ASSESSOR NAME</div>
+            <div>OUTCOME</div>
+          </div>
+        </div>
+
+        <div class="lo-block">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 16px;">
+            <div>
+              <div class="lo-title">LO7: Understand how to manage information relating to assessment</div>
+              <div class="lo-description">Learn about record-keeping, data protection, confidentiality, and how to store and manage assessment information securely and professionally.</div>
+            </div>
+            <div style="background: #fafafa; border-left: 4px solid #c9a84c; padding: 14px 16px; border-radius: 4px; min-width: 200px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Planned End Date</label>
+              <input type="date" style="padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 0.95rem; background: #fff; width: 100%; font-family: inherit;" />
+            </div>
+          </div>
+          <div class="manual-entry">
+            <div class="manual-entry-title">MANUAL ENTRY: ADD ASSESSMENT FROM WORKSHEET</div>
+            <div class="manual-entry-grid">
+              <input type="text" placeholder="Attempt">
+              <input type="text" placeholder="DD/MM/YYYY">
+              <input type="text" placeholder="Assessor Name">
+              <select><option>Select Outcome</option><option>Pass</option><option>Refer</option><option>Pending</option></select>
+              <button>Add Entry</button>
+            </div>
+          </div>
+          <div class="audit-headers">
+            <div>ATTEMPT</div>
+            <div>ASSESSMENT DATE</div>
+            <div>ASSESSOR NAME</div>
+            <div>OUTCOME</div>
+          </div>
+        </div>
+
+        <div class="lo-block">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 16px;">
+            <div>
+              <div class="lo-title">LO8: Understand the legal and good practice requirements in relation to assessment</div>
+              <div class="lo-description">Understand legislation and regulations that affect assessment practice, including equality, diversity, safeguarding, and professional conduct standards.</div>
+            </div>
+            <div style="background: #fafafa; border-left: 4px solid #c9a84c; padding: 14px 16px; border-radius: 4px; min-width: 200px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Planned End Date</label>
+              <input type="date" style="padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 0.95rem; background: #fff; width: 100%; font-family: inherit;" />
+            </div>
+          </div>
+          <div class="manual-entry">
+            <div class="manual-entry-title">MANUAL ENTRY: ADD ASSESSMENT FROM WORKSHEET</div>
+            <div class="manual-entry-grid">
+              <input type="text" placeholder="Attempt">
+              <input type="text" placeholder="DD/MM/YYYY">
+              <input type="text" placeholder="Assessor Name">
+              <select><option>Select Outcome</option><option>Pass</option><option>Refer</option><option>Pending</option></select>
+              <button>Add Entry</button>
+            </div>
+          </div>
+          <div class="audit-headers">
+            <div>ATTEMPT</div>
+            <div>ASSESSMENT DATE</div>
+            <div>ASSESSOR NAME</div>
+            <div>OUTCOME</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UNIT 2 -->
+    <div class="assessment-plan" style="margin-top: 30px;">
+      <div class="unit-header">Unit 2: Assess Occupational Competence in the Work Environment</div>
+      <div class="unit-content">
+        <div class="lo-block">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 16px;">
+            <div>
+              <div class="lo-title">LO1: Plan assessments of occupational competence</div>
+              <div class="lo-description">Design and plan assessments that evaluate a learner's ability to perform occupational tasks competently in real work environments, meeting industry standards.</div>
+            </div>
+            <div style="background: #fafafa; border-left: 4px solid #c9a84c; padding: 14px 16px; border-radius: 4px; min-width: 200px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Planned End Date</label>
+              <input type="date" style="padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 0.95rem; background: #fff; width: 100%; font-family: inherit;" />
+            </div>
+          </div>
+          <div class="manual-entry">
+            <div class="manual-entry-title">MANUAL ENTRY: ADD ASSESSMENT FROM WORKSHEET</div>
+            <div class="manual-entry-grid">
+              <input type="text" placeholder="Attempt">
+              <input type="text" placeholder="DD/MM/YYYY">
+              <input type="text" placeholder="Assessor Name">
+              <select><option>Select Outcome</option><option>Pass</option><option>Refer</option><option>Pending</option></select>
+              <button>Add Entry</button>
+            </div>
+          </div>
+          <div class="audit-headers">
+            <div>ATTEMPT</div>
+            <div>ASSESSMENT DATE</div>
+            <div>ASSESSOR NAME</div>
+            <div>OUTCOME</div>
+          </div>
+        </div>
+
+        <div class="lo-block">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 16px;">
+            <div>
+              <div class="lo-title">LO2: Make assessment decisions for occupational competence</div>
+              <div class="lo-description">Assess evidence of occupational competence, make informed decisions about whether learners have met requirements, and provide constructive feedback on performance.</div>
+            </div>
+            <div style="background: #fafafa; border-left: 4px solid #c9a84c; padding: 14px 16px; border-radius: 4px; min-width: 200px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Planned End Date</label>
+              <input type="date" style="padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 0.95rem; background: #fff; width: 100%; font-family: inherit;" />
+            </div>
+          </div>
+          <div class="manual-entry">
+            <div class="manual-entry-title">MANUAL ENTRY: ADD ASSESSMENT FROM WORKSHEET</div>
+            <div class="manual-entry-grid">
+              <input type="text" placeholder="Attempt">
+              <input type="text" placeholder="DD/MM/YYYY">
+              <input type="text" placeholder="Assessor Name">
+              <select><option>Select Outcome</option><option>Pass</option><option>Refer</option><option>Pending</option></select>
+              <button>Add Entry</button>
+            </div>
+          </div>
+          <div class="audit-headers">
+            <div>ATTEMPT</div>
+            <div>ASSESSMENT DATE</div>
+            <div>ASSESSOR NAME</div>
+            <div>OUTCOME</div>
+          </div>
+        </div>
+
+        <div class="lo-block">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 16px;">
+            <div>
+              <div class="lo-title">LO3: Provide information following assessment of occupational competence</div>
+              <div class="lo-description">Record and communicate assessment outcomes to learners clearly, explaining what they have achieved, what areas need development, and next steps in their learning journey.</div>
+            </div>
+            <div style="background: #fafafa; border-left: 4px solid #c9a84c; padding: 14px 16px; border-radius: 4px; min-width: 200px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Planned End Date</label>
+              <input type="date" style="padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 0.95rem; background: #fff; width: 100%; font-family: inherit;" />
+            </div>
+          </div>
+          <div class="manual-entry">
+            <div class="manual-entry-title">MANUAL ENTRY: ADD ASSESSMENT FROM WORKSHEET</div>
+            <div class="manual-entry-grid">
+              <input type="text" placeholder="Attempt">
+              <input type="text" placeholder="DD/MM/YYYY">
+              <input type="text" placeholder="Assessor Name">
+              <select><option>Select Outcome</option><option>Pass</option><option>Refer</option><option>Pending</option></select>
+              <button>Add Entry</button>
+            </div>
+          </div>
+          <div class="audit-headers">
+            <div>ATTEMPT</div>
+            <div>ASSESSMENT DATE</div>
+            <div>ASSESSOR NAME</div>
+            <div>OUTCOME</div>
+          </div>
+        </div>
+
+        <div class="lo-block">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 16px;">
+            <div>
+              <div class="lo-title">LO4: Review assessment decisions for occupational competence</div>
+              <div class="lo-description">Review previous assessment decisions, evaluate whether feedback was acted upon, consider if further assessment or support is needed, and update learner progress records.</div>
+            </div>
+            <div style="background: #fafafa; border-left: 4px solid #c9a84c; padding: 14px 16px; border-radius: 4px; min-width: 200px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Planned End Date</label>
+              <input type="date" style="padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 0.95rem; background: #fff; width: 100%; font-family: inherit;" />
+            </div>
+          </div>
+          <div class="manual-entry">
+            <div class="manual-entry-title">MANUAL ENTRY: ADD ASSESSMENT FROM WORKSHEET</div>
+            <div class="manual-entry-grid">
+              <input type="text" placeholder="Attempt">
+              <input type="text" placeholder="DD/MM/YYYY">
+              <input type="text" placeholder="Assessor Name">
+              <select><option>Select Outcome</option><option>Pass</option><option>Refer</option><option>Pending</option></select>
+              <button>Add Entry</button>
+            </div>
+          </div>
+          <div class="audit-headers">
+            <div>ATTEMPT</div>
+            <div>ASSESSMENT DATE</div>
+            <div>ASSESSOR NAME</div>
+            <div>OUTCOME</div>
+          </div>
+        </div>
+
+        <div class="lo-block" style="margin-top: 32px; padding-top: 32px; border-top: 2px solid #e8e8e8;">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 16px;">
+            <div>
+              <div class="lo-title">Observation Record (Learning Outcomes Covered: LO1–LO4)</div>
+              <p style="color: #555; font-size: 0.9rem; margin: 12px 0;">Your assessor will observe you carrying out occupational assessment in your work environment. This observation records the evidence of your competence in assessing occupational skills and knowledge in practice. The observation logs the protocol of assessment delivery, including how you engage with learners, manage assessment activities, and provide feedback.</p>
+            </div>
+            <div style="background: #fafafa; border-left: 4px solid #c9a84c; padding: 14px 16px; border-radius: 4px; min-width: 200px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Planned Observation Date</label>
+              <input type="date" style="padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 0.95rem; background: #fff; width: 100%; font-family: inherit;" />
+            </div>
+          </div>
+          <div class="manual-entry">
+            <div class="manual-entry-title">MANUAL ENTRY: ADD OBSERVATION FROM WORKSHEET</div>
+            <div class="manual-entry-grid">
+              <input type="text" placeholder="Attempt">
+              <input type="text" placeholder="DD/MM/YYYY">
+              <input type="text" placeholder="Assessor Name">
+              <select><option>Select Outcome</option><option>Pass</option><option>Refer</option><option>Pending</option></select>
+              <button>Add Entry</button>
+            </div>
+          </div>
+          <div class="audit-headers">
+            <div>ATTEMPT</div>
+            <div>OBSERVATION DATE</div>
+            <div>ASSESSOR NAME</div>
+            <div>OUTCOME</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UNIT 3 -->
+    <div class="assessment-plan" style="margin-top: 30px;">
+      <div class="unit-header">Unit 3: Assess Vocational Skills, Knowledge and Understanding</div>
+      <div class="unit-content">
+        <div class="lo-block">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 16px;">
+            <div>
+              <div class="lo-title">LO1: Plan assessments of vocational skills, knowledge and understanding</div>
+              <div class="lo-description">Design assessments that evaluate learner competence in vocational skills, theoretical knowledge, and practical understanding required for their occupation or role.</div>
+            </div>
+            <div style="background: #fafafa; border-left: 4px solid #c9a84c; padding: 14px 16px; border-radius: 4px; min-width: 200px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Planned End Date</label>
+              <input type="date" style="padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 0.95rem; background: #fff; width: 100%; font-family: inherit;" />
+            </div>
+          </div>
+          <div class="manual-entry">
+            <div class="manual-entry-title">MANUAL ENTRY: ADD ASSESSMENT FROM WORKSHEET</div>
+            <div class="manual-entry-grid">
+              <input type="text" placeholder="Attempt">
+              <input type="text" placeholder="DD/MM/YYYY">
+              <input type="text" placeholder="Assessor Name">
+              <select><option>Select Outcome</option><option>Pass</option><option>Refer</option><option>Pending</option></select>
+              <button>Add Entry</button>
+            </div>
+          </div>
+          <div class="audit-headers">
+            <div>ATTEMPT</div>
+            <div>ASSESSMENT DATE</div>
+            <div>ASSESSOR NAME</div>
+            <div>OUTCOME</div>
+          </div>
+        </div>
+
+        <div class="lo-block">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 16px;">
+            <div>
+              <div class="lo-title">LO2: Make assessment decisions for vocational skills, knowledge and understanding</div>
+              <div class="lo-description">Assess evidence of vocational competence, judge whether learners meet standards in both practical skills and theoretical knowledge, and make clear pass or refer decisions.</div>
+            </div>
+            <div style="background: #fafafa; border-left: 4px solid #c9a84c; padding: 14px 16px; border-radius: 4px; min-width: 200px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Planned End Date</label>
+              <input type="date" style="padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 0.95rem; background: #fff; width: 100%; font-family: inherit;" />
+            </div>
+          </div>
+          <div class="manual-entry">
+            <div class="manual-entry-title">MANUAL ENTRY: ADD ASSESSMENT FROM WORKSHEET</div>
+            <div class="manual-entry-grid">
+              <input type="text" placeholder="Attempt">
+              <input type="text" placeholder="DD/MM/YYYY">
+              <input type="text" placeholder="Assessor Name">
+              <select><option>Select Outcome</option><option>Pass</option><option>Refer</option><option>Pending</option></select>
+              <button>Add Entry</button>
+            </div>
+          </div>
+          <div class="audit-headers">
+            <div>ATTEMPT</div>
+            <div>ASSESSMENT DATE</div>
+            <div>ASSESSOR NAME</div>
+            <div>OUTCOME</div>
+          </div>
+        </div>
+
+        <div class="lo-block">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 16px;">
+            <div>
+              <div class="lo-title">LO3: Provide information following assessment of vocational skills, knowledge and understanding</div>
+              <div class="lo-description">Communicate assessment results to learners, explain how they have performed against vocational standards, and identify areas for improvement or further development.</div>
+            </div>
+            <div style="background: #fafafa; border-left: 4px solid #c9a84c; padding: 14px 16px; border-radius: 4px; min-width: 200px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Planned End Date</label>
+              <input type="date" style="padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 0.95rem; background: #fff; width: 100%; font-family: inherit;" />
+            </div>
+          </div>
+          <div class="manual-entry">
+            <div class="manual-entry-title">MANUAL ENTRY: ADD ASSESSMENT FROM WORKSHEET</div>
+            <div class="manual-entry-grid">
+              <input type="text" placeholder="Attempt">
+              <input type="text" placeholder="DD/MM/YYYY">
+              <input type="text" placeholder="Assessor Name">
+              <select><option>Select Outcome</option><option>Pass</option><option>Refer</option><option>Pending</option></select>
+              <button>Add Entry</button>
+            </div>
+          </div>
+          <div class="audit-headers">
+            <div>ATTEMPT</div>
+            <div>ASSESSMENT DATE</div>
+            <div>ASSESSOR NAME</div>
+            <div>OUTCOME</div>
+          </div>
+        </div>
+
+        <div class="lo-block">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 16px;">
+            <div>
+              <div class="lo-title">LO4: Review assessment decisions for vocational skills, knowledge and understanding</div>
+              <div class="lo-description">Review and evaluate previous assessment decisions, monitor learner progress over time, identify trends or patterns in achievement, and adjust assessment approaches as needed.</div>
+            </div>
+            <div style="background: #fafafa; border-left: 4px solid #c9a84c; padding: 14px 16px; border-radius: 4px; min-width: 200px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Planned End Date</label>
+              <input type="date" style="padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 0.95rem; background: #fff; width: 100%; font-family: inherit;" />
+            </div>
+          </div>
+          <div class="manual-entry">
+            <div class="manual-entry-title">MANUAL ENTRY: ADD ASSESSMENT FROM WORKSHEET</div>
+            <div class="manual-entry-grid">
+              <input type="text" placeholder="Attempt">
+              <input type="text" placeholder="DD/MM/YYYY">
+              <input type="text" placeholder="Assessor Name">
+              <select><option>Select Outcome</option><option>Pass</option><option>Refer</option><option>Pending</option></select>
+              <button>Add Entry</button>
+            </div>
+          </div>
+          <div class="audit-headers">
+            <div>ATTEMPT</div>
+            <div>ASSESSMENT DATE</div>
+            <div>ASSESSOR NAME</div>
+            <div>OUTCOME</div>
+          </div>
+        </div>
+
+        <div class="lo-block" style="margin-top: 32px; padding-top: 32px; border-top: 2px solid #e8e8e8;">
+          <div style="display: grid; grid-template-columns: 1fr auto; gap: 24px; align-items: start; margin-bottom: 16px;">
+            <div>
+              <div class="lo-title">Observation Record (Learning Outcomes Covered: LO1–LO4)</div>
+              <p style="color: #555; font-size: 0.9rem; margin: 12px 0;">Your assessor will observe you delivering vocational training and assessment. This observation records the evidence of your competence in assessing vocational skills, knowledge and understanding in a learning environment. The observation logs the protocol of assessment delivery, including how you engage with learners, deliver assessment activities, and provide feedback on their vocational development.</p>
+            </div>
+            <div style="background: #fafafa; border-left: 4px solid #c9a84c; padding: 14px 16px; border-radius: 4px; min-width: 200px;">
+              <label style="display: block; font-size: 0.75rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Planned Observation Date</label>
+              <input type="date" style="padding: 10px 12px; border: 2px solid #c9a84c; border-radius: 4px; font-size: 0.95rem; background: #fff; width: 100%; font-family: inherit;" />
+            </div>
+          </div>
+          <div class="manual-entry">
+            <div class="manual-entry-title">MANUAL ENTRY: ADD OBSERVATION FROM WORKSHEET</div>
+            <div class="manual-entry-grid">
+              <input type="text" placeholder="Attempt">
+              <input type="text" placeholder="DD/MM/YYYY">
+              <input type="text" placeholder="Assessor Name">
+              <select><option>Select Outcome</option><option>Pass</option><option>Refer</option><option>Pending</option></select>
+              <button>Add Entry</button>
+            </div>
+          </div>
+          <div class="audit-headers">
+            <div>ATTEMPT</div>
+            <div>OBSERVATION DATE</div>
+            <div>ASSESSOR NAME</div>
+            <div>OUTCOME</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- WHAT HAPPENS NEXT SECTION -->
+    <div style="background: #fff; border-radius: 4px; padding: 28px 32px; margin-top: 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+      <div style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #e8e8e8;">
+        <input type="checkbox" id="confirmCheckbox" style="width: 16px; height: 16px; margin-right: 12px; cursor: pointer;" />
+        <label for="confirmCheckbox" style="font-size: 0.9rem; color: #1a1a1a; cursor: pointer;">I confirm that the information provided is accurate and that I am ready to begin my assessment journey. By signing below, I declare that I understand the requirements and will work towards completion of all three units.</label>
+      </div>
+      
+      <div style="margin-bottom: 24px;">
+        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Your Signature (type your name as confirmation)</label>
+        <input type="text" id="signatureName" placeholder="Type your name here to sign" style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.95rem; background: #fafafa; width: 100%; font-family: inherit;" />
+      </div>
+      
+      <div style="background: #e3f2fd; border-left: 4px solid #1976d2; padding: 16px; border-radius: 4px; margin-bottom: 24px; font-size: 0.9rem; color: #1565c0; line-height: 1.6;">
+        <p><strong>What happens next?</strong> Once you sign this plan, your assessor's name (Michael Kolomski) and today's date will be automatically added. Unit 1 will then unlock for you to begin.</p>
+      </div>
+      
+      <button onclick="submitAssessmentPlan()" style="background: #c9a84c; color: #1a1a1a; font-weight: 700; font-size: 0.95rem; padding: 12px 32px; border: none; border-radius: 4px; cursor: pointer; width: 100%; transition: background 0.3s;">↓ Sign and Submit Assessment Plan</button>
+    </div>
+  </div>
+
+  <!-- ASSESSMENT DOCUMENTS TAB -->
+  <div id="documents" class="tab-pane">
+    <h2 style="margin-bottom: 24px; color: #1a1a1a;">Assessment Tasks to Complete</h2>
+    <p style="margin-bottom: 24px; color: #666; font-size: 0.95rem;">Click on each unit to access your assessment worksheets. Complete all learning outcomes and submit your work for marking.</p>
+    
+    <div class="unit-card" style="border-top: 4px solid #28a745;">
+      <h4 style="display: flex; align-items: center; gap: 10px;">
+        <span style="display: inline-block; width: 24px; height: 24px; background: #28a745; color: white; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; font-size: 0.8rem;">✓</span>
+        Unit 1: Assessment Principles & Practice
+      </h4>
+      <p style="font-size: 0.9rem; color: #555; margin: 12px 0;">Complete 8 learning outcomes across 25 questions. Covers assessment principles, methods, planning, decision-making, quality assurance, information management, and legal requirements.</p>
+      <p style="font-size: 0.8rem; color: #999; margin: 8px 0;">Status: Ready to start</p>
+      <a href="unit-1-assessment.html" style="display: inline-block; background: #28a745; color: white; text-decoration: none; font-weight: 600; padding: 10px 20px; border-radius: 4px; cursor: pointer; transition: background 0.3s;" onmouseover="this.style.background='#218838'" onmouseout="this.style.background='#28a745'">Start Unit 1 Assessment →</a>
+    </div>
+    
+    <div class="unit-card" style="border-top: 4px solid #ffc107;">
+      <h4 style="display: flex; align-items: center; gap: 10px;">
+        <span style="display: inline-block; width: 24px; height: 24px; background: #ffc107; color: #333; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; font-size: 0.8rem;">⧗</span>
+        Unit 2: Occupational Competence Assessment
+      </h4>
+      <p style="font-size: 0.9rem; color: #555; margin: 12px 0;">Assess occupational competence in work environments. Covers planning, decision-making, feedback, and review processes for workplace-based assessment.</p>
+      <p style="font-size: 0.8rem; color: #999; margin: 8px 0;">Status: In development – coming soon</p>
+      <button style="background: #ddd; color: #666; border: none; padding: 10px 20px; border-radius: 4px; cursor: not-allowed; font-weight: 600;">Unit 2 Assessment (Coming Soon)</button>
+    </div>
+    
+    <div class="unit-card" style="border-top: 4px solid #999; opacity: 0.6;">
+      <h4 style="display: flex; align-items: center; gap: 10px;">
+        <span style="display: inline-block; width: 24px; height: 24px; background: #999; color: white; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; font-size: 0.8rem;">3</span>
+        Unit 3: Vocational Skills & Knowledge Assessment
+      </h4>
+      <p style="font-size: 0.9rem; color: #555; margin: 12px 0;">Assess vocational skills, knowledge and understanding. Covers planning, decision-making, feedback, and review processes for skills-based learning.</p>
+      <p style="font-size: 0.8rem; color: #999; margin: 8px 0;">Status: Locked – will unlock after Unit 2 completion</p>
+      <button style="background: #ccc; color: #666; border: none; padding: 10px 20px; border-radius: 4px; cursor: not-allowed; font-weight: 600;">Unit 3 Assessment (Locked)</button>
+    </div>
+    
+    <div style="background: #f0f9f5; border-left: 4px solid #28a745; padding: 16px; border-radius: 4px; margin-top: 24px;">
+      <p style="color: #2d7a3a; font-weight: 600;">Action Plan</p>
+      <p style="font-size: 0.9rem; color: #444; margin-top: 8px;">Download your personal action plan tracking your learning goals and progress milestones.</p>
+      <button style="background: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; margin-top: 12px;">Download Action Plan</button>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  <p>PT Academy | Level 3 Certificate in Assessing Vocational Achievement | QRN: 601/6104/8</p>
+</div>
+
+<script>
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById(tab).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  function toggleLOs(unit) {
+    const element = document.getElementById(unit + '-los');
+    element.style.display = element.style.display === 'none' ? 'block' : 'none';
+  }
+
+  function submitAssessmentPlan() {
+    const checkbox = document.getElementById('confirmCheckbox');
+    const signature = document.getElementById('signatureName').value.trim();
+    if (!checkbox.checked) {
+      alert('Please tick the confirmation checkbox before submitting.');
+      return;
+    }
+    if (!signature) {
+      alert('Please type your name to sign the assessment plan.');
+      return;
+    }
+    alert('Assessment Plan submitted by ' + signature + '. Your assessor will confirm receipt.');
+  }
+
+  // Simple chart for dashboard
+  const ctx = document.getElementById('progressChart');
+  if (ctx) {
+    new Chart(ctx, {
+      type: 'doughnut',
+      data: {
+        labels: ['Complete', 'In Progress', 'Not Started'],
+        datasets: [{
+          data: [8, 6, 2],
+          backgroundColor: ['#28a745', '#ffc107', '#dc3545'],
+          borderColor: '#fff',
+          borderWidth: 2
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom' }
+        }
+      }
+    });
+  }
+</script>
 
 </body>
 </html>
