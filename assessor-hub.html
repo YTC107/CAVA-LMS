@@ -159,6 +159,15 @@
     .unit-control-row h5 { font-size: 0.9rem; margin: 0; }
     .unit-control-row p { color: #737373; font-size: 0.73rem; margin: 2px 0 0; }
     .unit-control-row select { border: 1px solid #aaa69d; border-radius: 4px; min-height: 41px; padding: 8px; width: 100%; }
+    .prior-achievement-panel { background: #fff; border: 1px solid #ddd8ca; border-radius: 4px; grid-column: 1 / -1; padding: 14px; }
+    .prior-achievement-panel.recorded { background: #edf8f0; border-color: #80b98b; }
+    .prior-achievement-panel h6 { font-size: 0.82rem; margin: 0 0 5px; }
+    .prior-achievement-panel > p { color: #666; font-size: 0.75rem; line-height: 1.45; margin: 0 0 11px; }
+    .prior-achievement-fields { align-items: end; display: grid; gap: 10px; grid-template-columns: minmax(160px, 1fr) minmax(120px, 0.7fr) auto; }
+    .prior-achievement-fields label { color: #444; display: block; font-size: 0.7rem; font-weight: 900; margin-bottom: 5px; }
+    .prior-achievement-fields input { border: 1px solid #aaa69d; border-radius: 4px; min-height: 41px; padding: 8px 10px; width: 100%; }
+    .prior-achievement-button { background: var(--ink); border: 0; border-radius: 4px; color: var(--gold); cursor: pointer; font-size: 0.74rem; font-weight: 900; min-height: 41px; padding: 8px 12px; }
+    .prior-achievement-summary { color: var(--green); font-size: 0.76rem; font-weight: 800; margin-bottom: 11px; }
 
     .plan-summary { background: #fff; border: 1px solid var(--line); border-top: 5px solid var(--gold); border-radius: 6px; padding: 20px; }
     .plan-summary-header { align-items: center; display: flex; gap: 15px; justify-content: space-between; margin-bottom: 16px; }
@@ -200,6 +209,7 @@
       .stat-grid, .detail-grid, .form-grid, .analytics-grid { grid-template-columns: 1fr; }
       .milestone-grid { grid-template-columns: 1fr 1fr; }
       .unit-control-row, .marking-row { align-items: stretch; grid-template-columns: 1fr; }
+      .prior-achievement-fields { grid-template-columns: 1fr; }
       .record-content { padding: 17px; }
     }
   </style>
@@ -255,18 +265,18 @@
 
     <section id="learners" class="page-section">
       <div class="page-heading">
-        <div><h2>Learner Management</h2><p>Control programme route, unit availability, live learner allocations, payment visibility and assessment records.</p></div>
+        <div><h2>Learner Management</h2><p>Control learner type, unit availability, live learner allocations, payment visibility and assessment records.</p></div>
         <a class="primary-link" href="learner-management-dashboard.html">Add or Manage Learners</a>
       </div>
       <div class="toolbar">
         <input id="learnerSearch" class="search-input" type="search" placeholder="Search by learner name or email" aria-label="Search learners">
-        <select id="routeFilter" class="filter-select" aria-label="Filter by programme route"><option value="all">All programme routes</option><option value="funded">AE funded</option><option value="commercial">Commercial</option><option value="unassigned">Route not selected</option></select>
+        <select id="routeFilter" class="filter-select" aria-label="Filter by learner type"><option value="all">All learner types</option><option value="funded">Funded learner</option><option value="commercial">Commercial learner</option><option value="unassigned">Learner type not selected</option></select>
         <select id="planFilter" class="filter-select" aria-label="Filter by plan status"><option value="all">All plan statuses</option><option value="draft">Draft plans</option><option value="awaiting">Awaiting confirmation</option><option value="confirmed">Confirmed plans</option></select>
       </div>
       <section class="panel">
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Trainee assessor</th><th>Programme route</th><th>Units</th><th>Assessment Plan</th><th>Progress</th><th>Next action</th></tr></thead>
+            <thead><tr><th>Trainee assessor</th><th>Learner type</th><th>Units</th><th>Assessment Plan</th><th>Progress</th><th>Next action</th></tr></thead>
             <tbody id="learnerTableBody"></tbody>
           </table>
         </div>
@@ -292,7 +302,7 @@
       </header>
       <nav class="record-nav" aria-label="Learner record">
         <button class="record-tab active" type="button" data-record-tab="overview">Overview</button>
-        <button class="record-tab" type="button" data-record-tab="programme">Programme and Funding</button>
+        <button class="record-tab" type="button" data-record-tab="programme">Units and Funding</button>
         <button class="record-tab" type="button" data-record-tab="plan">CAVA Assessment Plan</button>
         <button class="record-tab" type="button" data-record-tab="marking">Work and Marking</button>
         <button class="record-tab" type="button" data-record-tab="actions">Action Plans and Reviews</button>
@@ -344,6 +354,10 @@
       try { return JSON.parse(value); } catch { return fallback; }
     }
 
+    function escapeHtml(value) {
+      return String(value || '').replace(/[&<>'"]/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[character]));
+    }
+
     function getHubStore() {
       const stored = safeParse(localStorage.getItem(HUB_STORE_KEY) || '{}', {});
       return { settings: stored.settings || {}, plans: stored.plans || {} };
@@ -374,6 +388,7 @@
         learner.level2Learner = saved.level2Learner || '';
         learner.level3Learner = saved.level3Learner || '';
         learner.unitSettings = saved.unitSettings || {};
+        learner.priorAchievements = saved.priorAchievements || {};
         [1,2,3].forEach(function(unit) {
           const key = 'unit-' + unit;
           if (!learner.unitSettings[key]) learner.unitSettings[key] = learner.assignedUnits.includes(key) ? 'available' : 'locked';
@@ -390,7 +405,8 @@
         paymentTracking: learner.route === 'funded' && learner.paymentTracking,
         level2Learner: learner.level2Learner,
         level3Learner: learner.level3Learner,
-        unitSettings: learner.unitSettings
+        unitSettings: learner.unitSettings,
+        priorAchievements: learner.priorAchievements || {}
       };
       saveHubStore(store);
     }
@@ -466,15 +482,18 @@
         const match = key.match(/^unit([1-3])-lo/);
         if (match && recordIsPassed(record)) completeByUnit[Number(match[1])-1] += 1;
       });
-      if (!Object.keys(plan.records || {}).length) {
-        [1,2,3].forEach(function(unit) {
+      [1,2,3].forEach(function(unit) {
+        const unitRecords = Object.keys(plan.records || {}).filter(key => key.startsWith('unit'+unit+'-lo'));
+        if (!unitRecords.length) {
           const progress = learner.progress?.['unit-'+unit] || {};
           completeByUnit[unit-1] = Object.values(progress).filter(Boolean).length;
-        });
-      }
-      const availableTotal = totalByUnit.reduce((sum,total,index) => learner.unitSettings['unit-'+(index+1)] === 'locked' ? sum : sum+total,0);
+        }
+        if (learner.priorAchievements?.['unit-'+unit]) completeByUnit[unit-1] = totalByUnit[unit-1];
+      });
       const complete = completeByUnit.reduce((a,b)=>a+b,0);
-      return { total:availableTotal, complete, percentage:availableTotal ? Math.round(complete/availableTotal*100) : 0, completeByUnit, totalByUnit };
+      const unitPercentages = completeByUnit.map((value,index)=>Math.round(value/totalByUnit[index]*100));
+      const percentage = Math.round(unitPercentages.reduce((sum,value)=>sum+value,0)/3);
+      return { total:totalByUnit.reduce((a,b)=>a+b,0), complete, percentage, unitPercentages, completeByUnit, totalByUnit };
     }
 
     function getQueueItems() {
@@ -493,7 +512,7 @@
     }
 
     function routePill(learner) {
-      const label = learner.route === 'funded' ? 'AE funded' : learner.route === 'commercial' ? 'Commercial' : 'Not selected';
+      const label = learner.route === 'funded' ? 'Funded learner' : learner.route === 'commercial' ? 'Commercial learner' : 'Not selected';
       return '<span class="pill '+learner.route+'">'+label+'</span>';
     }
 
@@ -511,7 +530,7 @@
       }).join('') || '<div class="empty-state">There are no priority actions in the records currently available.</div>';
       document.getElementById('programmeOverview').innerHTML = [
         ['Confirmed plans',confirmed,learners.length],
-        ['Programme routes selected',learners.filter(item=>item.route!=='unassigned').length,learners.length],
+        ['Learner types selected',learners.filter(item=>item.route!=='unassigned').length,learners.length],
         ['Level 2 learners allocated',learners.filter(item=>item.level2Learner).length,learners.length],
         ['Level 3 learners allocated',learners.filter(item=>item.level3Learner).length,learners.length]
       ].map(function(row){const pct=row[2]?Math.round(row[1]/row[2]*100):0;return '<div class="status-row"><div class="status-row-copy"><span>'+row[0]+'</span><strong>'+row[1]+'/'+row[2]+'</strong></div><div class="mini-progress"><span style="width:'+pct+'%"></span></div></div>';}).join('');
@@ -545,7 +564,7 @@
       const passed = learners.reduce((sum,learner)=>sum+getProgress(learner).complete,0);
       const openReferrals = getQueueItems().filter(item=>item.urgent).length;
       document.getElementById('analyticsGrid').innerHTML = `
-        <article class="analytics-card"><h3>Programme Routes</h3><div class="key-value"><span>AE funded</span><strong>${routes.funded}</strong></div><div class="key-value"><span>Commercial</span><strong>${routes.commercial}</strong></div><div class="key-value"><span>Not selected</span><strong>${routes.unassigned}</strong></div></article>
+        <article class="analytics-card"><h3>Learner Types</h3><div class="key-value"><span>Funded learner</span><strong>${routes.funded}</strong></div><div class="key-value"><span>Commercial learner</span><strong>${routes.commercial}</strong></div><div class="key-value"><span>Not selected</span><strong>${routes.unassigned}</strong></div></article>
         <article class="analytics-card"><h3>Assessment Activity</h3><div class="key-value"><span>Learning outcomes passed</span><strong>${passed}</strong></div><div class="key-value"><span>Open referrals</span><strong>${openReferrals}</strong></div><div class="key-value"><span>Items awaiting action</span><strong>${getQueueItems().length}</strong></div></article>
         <article class="analytics-card"><h3>Planning</h3><div class="key-value"><span>Confirmed plans</span><strong>${learners.filter(x=>planStatus(getLearnerPlan(x))==='confirmed').length}</strong></div><div class="key-value"><span>Awaiting confirmation</span><strong>${learners.filter(x=>planStatus(getLearnerPlan(x))==='awaiting').length}</strong></div><div class="key-value"><span>Draft plans</span><strong>${learners.filter(x=>planStatus(getLearnerPlan(x))==='draft').length}</strong></div></article>`;
     }
@@ -588,12 +607,19 @@
 
     function renderRecordOverview(learner) {
       const plan=getLearnerPlan(learner), progress=getProgress(learner), queue=getQueueItems().filter(item=>item.learner.id===learner.id);
-      document.getElementById('record-overview').innerHTML=`<h3>Programme Overview</h3><div class="detail-grid"><article class="detail-card"><h4>Current Position</h4><div class="key-value"><span>Overall progress</span><strong>${progress.percentage}%</strong></div><div class="key-value"><span>Assessment Plan</span><strong>${planStatusLabel(planStatus(plan))}</strong></div><div class="key-value"><span>Outstanding actions</span><strong>${queue.length}</strong></div><div class="key-value"><span>Programme start</span><strong>${formatDate(plan.startDate||learner.startDate)}</strong></div></article><article class="detail-card"><h4>Allocated Live Learners</h4><div class="key-value"><span>Level 2 Gym Instructor</span><strong>${learner.level2Learner||'Not allocated'}</strong></div><div class="key-value"><span>Level 3 Personal Training</span><strong>${learner.level3Learner||'Not allocated'}</strong></div><div class="key-value"><span>Programme route</span><strong>${learner.route==='funded'?'AE funded':learner.route==='commercial'?'Commercial':'Not selected'}</strong></div></article></div>`;
+      document.getElementById('record-overview').innerHTML=`<h3>Programme Overview</h3><div class="detail-grid"><article class="detail-card"><h4>Current Position</h4><div class="key-value"><span>Overall progress</span><strong>${progress.percentage}%</strong></div><div class="key-value"><span>Assessment Plan</span><strong>${planStatusLabel(planStatus(plan))}</strong></div><div class="key-value"><span>Outstanding actions</span><strong>${queue.length}</strong></div><div class="key-value"><span>Programme start</span><strong>${formatDate(plan.startDate||learner.startDate)}</strong></div></article><article class="detail-card"><h4>Allocated Live Learners</h4><div class="key-value"><span>Level 2 Gym Instructor</span><strong>${learner.level2Learner||'Not allocated'}</strong></div><div class="key-value"><span>Level 3 Personal Training</span><strong>${learner.level3Learner||'Not allocated'}</strong></div><div class="key-value"><span>Learner type</span><strong>${learner.route==='funded'?'Funded learner':learner.route==='commercial'?'Commercial learner':'Not selected'}</strong></div></article></div>`;
+    }
+
+    function priorAchievementMarkup(learner, unitNumber) {
+      const unitKey='unit-'+unitNumber;
+      const record=learner.priorAchievements?.[unitKey]||null;
+      const summary=record?`<div class="prior-achievement-summary">Previously achieved &middot; ${formatDate(record.date)} &middot; ${escapeHtml(record.initials)}</div>`:'';
+      return `<div class="prior-achievement-panel ${record?'recorded':''}"><h6>Prior achievement completed outside this platform</h6><p>Use this only where the complete unit has already been assessed through the manual or PDF process. The Pass will be added to the Assessment Plan and learner progress.</p>${summary}<div class="prior-achievement-fields"><div><label for="priorDate${unitNumber}">Unit completion date</label><input id="priorDate${unitNumber}" data-prior-date="${unitKey}" type="date" value="${escapeHtml(record?.date||'')}"></div><div><label for="priorInitials${unitNumber}">Assessor initials</label><input id="priorInitials${unitNumber}" data-prior-initials="${unitKey}" type="text" maxlength="6" value="${escapeHtml(record?.initials||'')}" placeholder="e.g. MK"></div><button class="prior-achievement-button" type="button" onclick="recordPriorAchievement(${unitNumber})">${record?'Update prior achievement':'Record prior achievement'}</button></div></div>`;
     }
 
     function renderRecordProgramme(learner) {
       const unitNames=['Assessment Principles and Practice','Occupational Competence Assessment','Vocational Skills and Knowledge Assessment'];
-      document.getElementById('record-programme').innerHTML=`<h3>Programme and Funding</h3><div class="detail-card"><div class="form-grid"><div class="field"><label for="programmeRoute">Trainee assessor route</label><select id="programmeRoute"><option value="unassigned">Select programme route</option><option value="funded">AE funded trainee assessor</option><option value="commercial">Commercial CAVA learner</option></select><p class="field-help">This setting controls whether payment recording is available.</p></div><div class="field"><label for="level2Learner">Allocated Level 2 learner</label><input id="level2Learner" type="text" value="${learner.level2Learner}" placeholder="Gym Instructor learner name"></div><div class="field"><label for="level3Learner">Allocated Level 3 learner</label><input id="level3Learner" type="text" value="${learner.level3Learner}" placeholder="Personal Training learner name"></div></div><div id="fundingNote" class="funding-note"></div><div id="paymentControl" class="payment-control"><label class="switch-row"><input id="paymentTracking" type="checkbox"><strong>Show payment recording for this trainee assessor</strong></label><p class="field-help">This is an authorised assessor/admin control and is never displayed to the learner.</p></div><h4 style="margin-top:22px;">Unit Availability</h4><div class="unit-control-list">${unitNames.map((name,index)=>`<div class="unit-control-row"><div><h5>Unit ${index+1}: ${name}</h5><p>Choose whether this unit is available, locked or already achieved.</p></div><select data-unit-control="unit-${index+1}"><option value="available">Available</option><option value="locked">Locked</option><option value="previously-achieved">Previously achieved</option></select></div>`).join('')}</div><button class="save-button" type="button" onclick="saveProgrammeSettings()">Save Programme Settings</button></div>`;
+      document.getElementById('record-programme').innerHTML=`<h3>Units and Funding</h3><div class="detail-card"><div class="form-grid"><div class="field"><label for="programmeRoute">Learner type</label><select id="programmeRoute"><option value="unassigned">Select learner type</option><option value="funded">Funded learner</option><option value="commercial">Commercial learner</option></select><p class="field-help">This setting controls whether payment recording is available.</p></div><div class="field"><label for="level2Learner">Allocated Level 2 learner</label><input id="level2Learner" type="text" value="${learner.level2Learner}" placeholder="Gym Instructor learner name"></div><div class="field"><label for="level3Learner">Allocated Level 3 learner</label><input id="level3Learner" type="text" value="${learner.level3Learner}" placeholder="Personal Training learner name"></div></div><div id="fundingNote" class="funding-note"></div><div id="paymentControl" class="payment-control"><label class="switch-row"><input id="paymentTracking" type="checkbox"><strong>Show payment recording for this trainee assessor</strong></label><p class="field-help">This is an authorised assessor/admin control and is never displayed to the learner.</p></div><h4 style="margin-top:22px;">Unit Availability and Prior Achievement</h4><div class="unit-control-list">${unitNames.map((name,index)=>`<div class="unit-control-row"><div><h5>Unit ${index+1}: ${name}</h5><p>Control access or record a complete unit achieved before the learner joined this platform.</p></div><select data-unit-control="unit-${index+1}"><option value="available">Available</option><option value="locked">Locked</option><option value="previously-achieved">Previously achieved</option></select>${priorAchievementMarkup(learner,index+1)}</div>`).join('')}</div><button class="save-button" type="button" onclick="saveProgrammeSettings()">Save Units and Funding</button></div>`;
       const route=document.getElementById('programmeRoute'); route.value=learner.route; document.getElementById('paymentTracking').checked=learner.paymentTracking;
       document.querySelectorAll('[data-unit-control]').forEach(select=>select.value=learner.unitSettings[select.dataset.unitControl]||'locked');
       route.addEventListener('change',updateFundingVisibility); updateFundingVisibility();
@@ -601,16 +627,50 @@
 
     function updateFundingVisibility() {
       const route=document.getElementById('programmeRoute')?.value||'unassigned'; const note=document.getElementById('fundingNote'); const payment=document.getElementById('paymentControl'); if(!note||!payment)return;
-      if(route==='funded'){note.className='funding-note funded';note.textContent='AE funded: authorised staff may enable payment recording for completed learner-assessment activity.';payment.hidden=false;}
-      else if(route==='commercial'){note.className='funding-note commercial';note.textContent='Commercial learner: payment recording is hidden because PT Academy is not paying this trainee assessor.';payment.hidden=true;document.getElementById('paymentTracking').checked=false;}
-      else{note.className='funding-note';note.textContent='Select the programme route before configuring payment visibility.';payment.hidden=true;document.getElementById('paymentTracking').checked=false;}
+      if(route==='funded'){note.className='funding-note funded';note.textContent='Funded learner: authorised staff may enable payment recording for completed learner-assessment activity.';payment.hidden=false;}
+      else if(route==='commercial'){note.className='funding-note commercial';note.textContent='Commercial learner: this learner has paid for the course, so payment recording for assessment activity is hidden.';payment.hidden=true;document.getElementById('paymentTracking').checked=false;}
+      else{note.className='funding-note';note.textContent='Select the learner type before configuring payment visibility.';payment.hidden=true;document.getElementById('paymentTracking').checked=false;}
     }
 
     function saveProgrammeSettings() {
       const learner=learners.find(item=>item.id===selectedLearnerId); if(!learner)return;
       learner.route=document.getElementById('programmeRoute').value; learner.paymentTracking=learner.route==='funded'&&document.getElementById('paymentTracking').checked; learner.level2Learner=document.getElementById('level2Learner').value.trim(); learner.level3Learner=document.getElementById('level3Learner').value.trim();
       document.querySelectorAll('[data-unit-control]').forEach(select=>learner.unitSettings[select.dataset.unitControl]=select.value);
-      saveLearnerSettings(learner); renderRecordOverview(learner); renderRecordProgramme(learner); renderAll(); alert('Programme settings saved for '+learner.fullName+'.');
+      saveLearnerSettings(learner); renderRecordOverview(learner); renderRecordProgramme(learner); renderAll(); alert('Units and funding saved for '+learner.fullName+'.');
+    }
+
+    function recordPriorAchievement(unitNumber) {
+      const learner=learners.find(item=>item.id===selectedLearnerId);
+      const unit=Number(unitNumber);
+      if(!learner||![1,2,3].includes(unit))return;
+      const unitKey='unit-'+unit;
+      const date=document.querySelector(`[data-prior-date="${unitKey}"]`)?.value||'';
+      const initials=(document.querySelector(`[data-prior-initials="${unitKey}"]`)?.value||'').trim().toUpperCase();
+      if(!date||!initials){alert('Enter the unit completion date and assessor initials before recording prior achievement.');return;}
+      const plan=getLearnerPlan(learner);
+      const totals=[8,4,4];
+      const existing=Object.entries(plan.records||{}).filter(([key])=>key.startsWith('unit'+unit+'-lo'));
+      const hasPlatformAssessment=existing.some(([,record])=>record?.initial&&record.initial.sourceType!=='manual-prior-achievement');
+      if(hasPlatformAssessment&&!learner.priorAchievements?.[unitKey]){alert('This unit already contains platform assessment decisions. Continue through Work and Marking so the existing audit trail is preserved.');return;}
+      const recordedAt=new Date().toISOString();
+      for(let outcome=1;outcome<=totals[unit-1];outcome+=1){
+        const key='unit'+unit+'-lo'+outcome;
+        if(!plan.records[key])plan.records[key]={initial:null,progress:[]};
+        if(!Array.isArray(plan.records[key].progress))plan.records[key].progress=[];
+        const entry={outcome:'Pass',date,initials,source:'Prior achievement – manual/PDF workbook',sourceType:'manual-prior-achievement',recordedAt};
+        if(!plan.records[key].initial||plan.records[key].initial.sourceType==='manual-prior-achievement')plan.records[key].initial=entry;
+      }
+      learner.priorAchievements=learner.priorAchievements||{};
+      learner.priorAchievements[unitKey]={date,initials,source:'Manual/PDF workbook',recordedAt};
+      learner.unitSettings[unitKey]='previously-achieved';
+      saveLearnerPlan(learner,plan);
+      saveLearnerSettings(learner);
+      renderRecordOverview(learner);
+      renderRecordProgramme(learner);
+      renderRecordPlan(learner);
+      renderRecordMarking(learner);
+      renderAll();
+      alert('Unit '+unit+' prior achievement recorded for '+learner.fullName+'.');
     }
 
     function renderRecordPlan(learner) {
@@ -630,15 +690,25 @@
       const learner=learners.find(item=>item.id===selectedLearnerId); if(!learner)return; const plan=getLearnerPlan(learner); localStorage.setItem(ACTIVE_LEARNER_KEY,learner.id); localStorage.setItem(LEARNER_PLAN_KEY,JSON.stringify(plan)); localStorage.setItem('learnerName',learner.fullName); window.open('index.html?tab=assessment','_blank','noopener');
     }
 
+    function openLearnerUnit(unitNumber) {
+      const learner=learners.find(item=>item.id===selectedLearnerId); if(!learner||![1,2,3].includes(Number(unitNumber)))return;
+      const plan=getLearnerPlan(learner);
+      localStorage.setItem(ACTIVE_LEARNER_KEY,learner.id);
+      localStorage.setItem(LEARNER_PLAN_KEY,JSON.stringify(plan));
+      localStorage.setItem('learnerName',learner.fullName);
+      window.open('index.html?tab=documents&unit='+Number(unitNumber),'_blank','noopener');
+    }
+
     function renderRecordMarking(learner) {
       const plan=getLearnerPlan(learner), unitNames=['Unit 1 · Principles and Practice','Unit 2 · Occupational Competence','Unit 3 · Vocational Skills and Knowledge'];
-      const rows=unitNames.map(function(name,index){const unit=index+1,records=Object.entries(plan.records||{}).filter(([key])=>key.startsWith('unit'+unit+'-lo'));const passed=records.filter(([,record])=>recordIsPassed(record)).length;const open=records.filter(([,record])=>record?.initial?.outcome==='Refer'&&!recordIsPassed(record)).length;return `<article class="marking-row"><div><h4>${name}</h4><p>${passed} outcomes passed${open?' · '+open+' open referral'+(open===1?'':'s'):''}</p></div><span class="pill ${open?'refer':passed?'pass':'draft'}">${open?'Action needed':passed?'In progress':'Not assessed'}</span><button class="marking-action" type="button" onclick="openSharedAssessmentPlan()">Open marking</button></article>`;}).join('');
+      const totals=[8,4,4];
+      const rows=unitNames.map(function(name,index){const unit=index+1,records=Object.entries(plan.records||{}).filter(([key])=>key.startsWith('unit'+unit+'-lo'));const passed=records.filter(([,record])=>recordIsPassed(record)).length;const open=records.filter(([,record])=>record?.initial?.outcome==='Refer'&&!recordIsPassed(record)).length;const prior=learner.priorAchievements?.['unit-'+unit];const complete=passed===totals[index];const status=open?'Action needed':prior?'Prior achievement':complete?'Passed':passed?'In progress':'Not assessed';return `<article class="marking-row"><div><h4>${name}</h4><p>${passed} outcomes passed${open?' · '+open+' open referral'+(open===1?'':'s'):''}${prior?' · manual/PDF record '+formatDate(prior.date):''}</p></div><span class="pill ${open?'refer':(prior||complete||passed)?'pass':'draft'}">${status}</span><button class="marking-action" type="button" onclick="openLearnerUnit(${unit})">Open unit</button></article>`;}).join('');
       document.getElementById('record-marking').innerHTML=`<h3>Work and Marking</h3><p style="color:#666;font-size:.86rem;margin:-8px 0 17px;">Initial decisions and every reassessment are recorded in the learner&rsquo;s Assessment Plan. The first Refer is never overwritten.</p><div class="marking-list">${rows}</div>`;
     }
 
     function renderRecordActions(learner) {
       const returnUrl=new URL('assessor-hub.html',window.location.href); returnUrl.hash=''; const actionUrl=new URL('PT-Academy-Assessment-Action-Plan.html',window.location.href); actionUrl.searchParams.set('return',returnUrl.href); actionUrl.searchParams.set('learner',learner.id);
-      document.getElementById('record-actions').innerHTML=`<h3>Action Plans and Reviews</h3><div class="detail-card"><h4>Shared learner-working record</h4><p>Use the Action Plan whenever the trainee assessor plans or reviews work with an allocated Level 2 or Level 3 learner. Funding and payment settings remain in Programme and Funding and are not duplicated here.</p><a class="secondary-link" href="${actionUrl.href}" target="_blank" rel="noopener">Open Action Plan Workspace</a></div>`;
+      document.getElementById('record-actions').innerHTML=`<h3>Action Plans and Reviews</h3><div class="detail-card"><h4>Shared learner-working record</h4><p>Use the Action Plan whenever the trainee assessor plans or reviews work with an allocated Level 2 or Level 3 learner. Funding and payment settings remain in Units and Funding and are not duplicated here.</p><a class="secondary-link" href="${actionUrl.href}" target="_blank" rel="noopener">Open Action Plan Workspace</a></div>`;
     }
 
     async function initialiseSession() {
