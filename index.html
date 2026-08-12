@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PT Academy | Level 3 CAVA | Learner Hub</title>
+  <title>Focus Awards Level 3 Certificate in Assessing Vocational Achievement | PT Academy Learner Hub</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -11,22 +11,55 @@
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f3f0; color: #2c2c2c; }
     
-    .header { background: #1a1a1a; padding: 20px 40px; display: flex; align-items: center; gap: 20px; border-bottom: 4px solid #c9a84c; }
-    .header h1 { color: #c9a84c; font-size: 1.3rem; }
-    .header p { color: #bbb; font-size: 0.85rem; margin-top: 4px; }
-    .welcome { color: #c9a84c; font-size: 1rem; margin-left: auto; }
+    .header { background: #1a1a1a; padding: 18px 40px; display: flex; align-items: center; gap: 28px; border-bottom: 4px solid #c9a84c; }
+    .header-brand { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0; }
+    .header-logo { width: 56px; height: 56px; object-fit: contain; flex-shrink: 0; }
+    .header-copy { min-width: 0; }
+    .header-kicker { color: #c9a84c; font-size: 0.76rem; font-weight: 800; letter-spacing: 0.9px; margin-bottom: 4px; text-transform: uppercase; }
+    .header h1 { color: #fff; font-size: 1.2rem; font-weight: 700; line-height: 1.35; max-width: 900px; }
+    .header p { color: #bbb; font-size: 0.85rem; margin-top: 5px; }
+    .welcome { border-left: 1px solid #555; margin-left: auto; min-width: 150px; padding-left: 24px; text-align: right; }
+    .welcome-label { color: #bbb; display: block; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
+    .welcome-name { color: #c9a84c; display: block; font-size: 1.02rem; font-weight: 800; margin-top: 3px; }
+    @media (max-width: 700px) {
+      .header { align-items: flex-start; flex-direction: column; gap: 12px; padding: 16px; }
+      .header-brand { align-items: flex-start; }
+      .header-logo { height: 48px; width: 48px; }
+      .header h1 { font-size: 1rem; }
+      .welcome { border-left: 0; border-top: 1px solid #444; display: flex; gap: 8px; margin-left: 64px; min-width: 0; padding: 10px 0 0; text-align: left; }
+      .welcome-label, .welcome-name { display: inline; margin-top: 0; }
+      .tabs { overflow-x: auto; padding: 0 12px; }
+      .tab-btn { flex: 0 0 auto; }
+    }
     
     .tabs { background: #2a2a2a; padding: 0 40px; display: flex; gap: 0; border-bottom: 1px solid #444; }
     .tab-btn { background: none; border: none; color: #bbb; padding: 16px 20px; cursor: pointer; font-size: 0.95rem; font-weight: 600; transition: all 0.3s; border-bottom: 3px solid transparent; }
     .tab-btn.active { color: #c9a84c; border-bottom-color: #c9a84c; }
     .tab-btn:hover { color: #c9a84c; }
+    .hub-page-heading { border-left: 6px solid #c9a84c; color: #111; font-size: clamp(1.45rem, 2.4vw, 1.85rem); font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; margin: 0 0 22px; padding: 4px 0 4px 16px; }
+    .hub-section-heading { color: #1a1a1a; font-size: clamp(1.08rem, 1.7vw, 1.25rem); font-weight: 800; line-height: 1.3; margin: 0 0 18px; padding-bottom: 11px; position: relative; }
+    .hub-section-heading::after { background: #c9a84c; bottom: 0; content: ""; height: 3px; left: 0; position: absolute; width: 48px; }
+    .action-plan-card { background: linear-gradient(135deg, #171717 0%, #292929 100%); border: 2px solid #c9a84c; border-left-width: 8px; border-radius: 8px; box-shadow: 0 8px 20px rgba(0,0,0,0.16); margin: 0 0 28px; overflow: hidden; padding: 24px 26px; position: relative; }
+    .action-plan-card::after { background: rgba(201,168,76,0.10); border-radius: 50%; content: ""; height: 150px; position: absolute; right: -48px; top: -72px; width: 150px; }
+    .action-plan-kicker { color: #c9a84c; font-size: 0.76rem; font-weight: 800; letter-spacing: 0.08em; margin-bottom: 7px; text-transform: uppercase; }
+    .action-plan-card h3 { color: #fff; font-size: clamp(1.3rem, 2vw, 1.55rem); font-weight: 800; line-height: 1.2; margin: 0 0 10px; position: relative; z-index: 1; }
+    .action-plan-card p { color: #f1f1f1; font-size: 0.96rem; line-height: 1.6; margin: 0; max-width: 760px; position: relative; z-index: 1; }
+    .action-plan-card p strong { color: #e3c566; }
+    .action-plan-launch { align-items: center; background: #c9a84c; border: 2px solid #c9a84c; border-radius: 5px; color: #111; cursor: pointer; display: inline-flex; font-size: 0.92rem; font-weight: 800; gap: 9px; margin-top: 17px; padding: 11px 18px; position: relative; z-index: 1; }
+    .action-plan-launch:hover { background: #fff; border-color: #fff; color: #111; }
+    .action-plan-launch .launch-icon { color: #111; font-size: 1.05rem; }
+    .action-plan-launch:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+    .plan-workspace-link { align-items: center; background: #111; border: 2px solid #c9a84c; border-radius: 4px; color: #fff; cursor: pointer; display: inline-flex; font-size: 12px; font-weight: 700; gap: 7px; margin: 10px 0 4px; padding: 8px 11px; }
+    .plan-workspace-link:hover { background: #c9a84c; color: #111; }
+    @media print { .plan-workspace-link { display: none !important; } }
     
     .content { max-width: 1300px; margin: 0 auto; padding: 40px 20px; }
     .tab-pane { display: none; }
     .tab-pane.active { display: block; }
     
     .intro-card { background: #fff; border-left: 5px solid #c9a84c; padding: 28px 32px; margin-bottom: 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .intro-card h3 { color: #1a1a1a; font-size: 1.05rem; margin-bottom: 14px; }
+    .intro-card h3 { color: #1a1a1a; font-size: clamp(1.08rem, 1.7vw, 1.25rem); font-weight: 800; line-height: 1.3; margin-bottom: 16px; padding-bottom: 11px; position: relative; }
+    .intro-card h3::after { background: #c9a84c; bottom: 0; content: ""; height: 3px; left: 0; position: absolute; width: 48px; }
     .intro-card p { color: #444; line-height: 1.7; margin-bottom: 12px; font-size: 0.95rem; }
     .intro-card a { color: #c9a84c; text-decoration: none; font-weight: 600; }
     .intro-card a:hover { text-decoration: underline; }
@@ -36,7 +69,7 @@
     .stats-container { background: #fff; padding: 24px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
     
     .unit-card { background: #fff; border-top: 4px solid #c9a84c; padding: 20px; margin-bottom: 16px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
-    .unit-card h4 { color: #1a1a1a; margin-bottom: 12px; }
+    .unit-card h4 { color: #1a1a1a; font-weight: 700; margin-bottom: 12px; }
     .unit-card .progress-bar { background: #e8e8e8; height: 8px; border-radius: 4px; overflow: hidden; margin-bottom: 8px; }
     .unit-card .progress-fill { background: #28a745; height: 100%; transition: width 0.3s; }
     .unit-card .progress-text { font-size: 0.85rem; color: #666; }
@@ -121,6 +154,7 @@
 #unit2WorksheetView .logo-fallback{ display: none; color: #c9a84c; font-weight: bold; font-size: 13px; text-align: center; line-height: 1.2; }
 #unit2WorksheetView .header-titles{ color: #fff; }
 #unit2WorksheetView .header-titles h1{ font-size: 18px; line-height: 1.4; }
+#unit2WorksheetView .header-titles .unit-subtitle{ color: #c9a84c; font-size: 13px; font-weight: 700; margin-top: 4px; }
 #unit2WorksheetView .header-right{ text-align: right; color: #fff; }
 #unit2WorksheetView .header-right .lo-label{ color: #c9a84c; font-weight: bold; margin-top: 4px; }
 #unit2WorksheetView .top-nav{ position: sticky; top: 0; z-index: 1000; background: #c9a84c; display: flex; gap: 4px; padding: 8px 16px; align-items: center; flex-wrap: wrap; }
@@ -193,23 +227,88 @@
 #unit2WorksheetView .feedback-section input, #unit2WorksheetView .feedback-section textarea{ background: #fff; border-color: #c9a84c; color: #333; }
 #unit2WorksheetView .feedback-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
 #unit2WorksheetView .feedback-outcome-row{ display: flex; gap: 10px; margin: 12px 0; }
-#unit2WorksheetView .site-footer{ background: #111; color: #c9a84c; text-align: center; padding: 16px; font-size: 13px; font-weight: bold; margin-top: 30px; }
 @media print { #unit2WorksheetView .top-nav { display: none; } #unit2WorksheetView .lo-section { display: block !important; } }
 
 
   #unit1WorksheetView,
-  #unit2WorksheetView {
+  #unit2WorksheetView,
+  #unit3WorksheetView {
     display: none;
     margin: -8px -4px 0;
   }
-  #unit1WorksheetView .embedded-unit-banner,
-  #unit2WorksheetView .embedded-unit-banner {
-    border-radius: 6px 6px 0 0;
+  #unit1WorksheetView .worksheet-unit-strip,
+  #unit2WorksheetView .worksheet-unit-strip,
+  #unit3WorksheetView .worksheet-unit-strip {
+    align-items: center;
+    background: #fff;
+    border: 1px solid #e1ded6;
+    border-left: 5px solid #c9a84c;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+    display: flex;
+    gap: 24px;
+    justify-content: space-between;
+    margin: 0 0 16px;
+    padding: 16px 18px;
   }
-  #unit1WorksheetView .embedded-unit-nav {
-    border-radius: 0 0 6px 6px;
-    margin-bottom: 22px;
+  #unit1WorksheetView .worksheet-unit-copy,
+  #unit2WorksheetView .worksheet-unit-copy,
+  #unit3WorksheetView .worksheet-unit-copy { min-width: 0; }
+  #unit1WorksheetView .worksheet-unit-eyebrow,
+  #unit2WorksheetView .worksheet-unit-eyebrow,
+  #unit3WorksheetView .worksheet-unit-eyebrow {
+    color: #8a6d1d;
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    margin-bottom: 4px;
+    text-transform: uppercase;
   }
+  #unit1WorksheetView .worksheet-unit-title,
+  #unit2WorksheetView .worksheet-unit-title,
+  #unit3WorksheetView .worksheet-unit-title {
+    color: #1a1a1a;
+    font-size: 1rem;
+    font-weight: 750;
+    line-height: 1.35;
+    margin: 0;
+  }
+  #unit1WorksheetView .worksheet-unit-type,
+  #unit2WorksheetView .worksheet-unit-type,
+  #unit3WorksheetView .worksheet-unit-type {
+    color: #666;
+    display: block;
+    font-size: 0.78rem;
+    margin-top: 3px;
+  }
+  #unit1WorksheetView .worksheet-unit-actions,
+  #unit2WorksheetView .worksheet-unit-actions,
+  #unit3WorksheetView .worksheet-unit-actions {
+    align-items: center;
+    display: flex;
+    flex-shrink: 0;
+    gap: 16px;
+  }
+  #unit1WorksheetView .worksheet-unit-meta,
+  #unit2WorksheetView .worksheet-unit-meta,
+  #unit3WorksheetView .worksheet-unit-meta {
+    border-right: 1px solid #ddd8ca;
+    color: #333;
+    display: grid;
+    font-size: 0.8rem;
+    gap: 6px;
+    line-height: 1.45;
+    min-width: 190px;
+    padding-right: 16px;
+    text-align: right;
+  }
+  #unit1WorksheetView .worksheet-unit-meta span,
+  #unit2WorksheetView .worksheet-unit-meta span,
+  #unit3WorksheetView .worksheet-unit-meta span { font-weight: 700; }
+  #unit1WorksheetView .worksheet-unit-meta strong,
+  #unit2WorksheetView .worksheet-unit-meta strong,
+  #unit3WorksheetView .worksheet-unit-meta strong { color: #111; font-weight: 800; }
   .embedded-back-button {
     background: #c9a84c;
     color: #111;
@@ -225,54 +324,340 @@
     max-width: 56rem;
     margin: 0 auto;
   }
-  #unit2WorksheetView .site-header {
-    border-radius: 6px 6px 0 0;
-  }
   #unit2WorksheetView .top-nav {
-    border-radius: 0 0 6px 6px;
+    border-radius: 6px;
     margin-bottom: 18px;
   }
   @media (max-width: 700px) {
     #unit1WorksheetView,
-    #unit2WorksheetView { margin: 0; }
-    #unit1WorksheetView .embedded-unit-banner {
-      align-items: flex-start;
+    #unit2WorksheetView,
+    #unit3WorksheetView { margin: 0; }
+    #unit1WorksheetView .worksheet-unit-strip,
+    #unit2WorksheetView .worksheet-unit-strip,
+    #unit3WorksheetView .worksheet-unit-strip {
+      align-items: stretch;
+      flex-direction: column;
+      gap: 14px;
+    }
+    #unit1WorksheetView .worksheet-unit-actions,
+    #unit2WorksheetView .worksheet-unit-actions,
+    #unit3WorksheetView .worksheet-unit-actions {
+      align-items: stretch;
       flex-direction: column;
       gap: 12px;
     }
+    #unit1WorksheetView .worksheet-unit-meta,
+    #unit2WorksheetView .worksheet-unit-meta,
+    #unit3WorksheetView .worksheet-unit-meta {
+      border-bottom: 1px solid #ddd8ca;
+      border-right: 0;
+      padding: 0 0 12px;
+      text-align: left;
+    }
+    #unit1WorksheetView .embedded-back-button,
+    #unit2WorksheetView .embedded-back-button,
+    #unit3WorksheetView .embedded-back-button {
+      width: 100%;
+    }
   }
+
+#unit3WorksheetView, #unit3WorksheetView *{ box-sizing: border-box; margin: 0; padding: 0; }
+#unit3WorksheetView{ font-family: Arial, sans-serif; font-size: 14px; background: #f5f5f5; color: #111; padding-bottom: 60px; }
+#unit3WorksheetView .site-header{ background: #111; padding: 16px 24px; display: flex; align-items: center; gap: 20px; }
+#unit3WorksheetView .header-left{ display: flex; align-items: center; gap: 12px; flex: 1; }
+#unit3WorksheetView .logo-box{ width: 54px; height: 54px; flex-shrink: 0; }
+#unit3WorksheetView .logo-box img{ width: 100%; height: 100%; object-fit: contain; }
+#unit3WorksheetView .logo-fallback{ display: none; color: #c9a84c; font-weight: bold; font-size: 13px; text-align: center; line-height: 1.2; }
+#unit3WorksheetView .header-titles{ color: #fff; }
+#unit3WorksheetView .header-titles h1{ font-size: 18px; line-height: 1.4; }
+#unit3WorksheetView .header-titles .unit-subtitle{ color: #c9a84c; font-size: 13px; font-weight: 700; margin-top: 4px; }
+#unit3WorksheetView .header-right{ text-align: right; color: #fff; }
+#unit3WorksheetView .header-right .lo-label{ color: #c9a84c; font-weight: bold; margin-top: 4px; }
+#unit3WorksheetView .top-nav{ position: sticky; top: 0; z-index: 1000; background: #c9a84c; display: flex; gap: 4px; padding: 8px 16px; align-items: center; flex-wrap: wrap; }
+#unit3WorksheetView .nav-tab{ background: #111; color: #c9a84c; border: 2px solid #c9a84c; padding: 8px 18px; cursor: pointer; font-size: 14px; font-weight: bold; border-radius: 4px; }
+#unit3WorksheetView .nav-tab:hover, #unit3WorksheetView .nav-tab.active-tab{ background: #c9a84c; color: #111; border-color: #111; }
+#unit3WorksheetView .pdf-btn{ margin-left: auto; background: #111; color: #c9a84c; border: 2px solid #111; padding: 8px 18px; cursor: pointer; font-size: 14px; font-weight: bold; border-radius: 4px; }
+#unit3WorksheetView .pdf-btn:hover{ background: #c9a84c; color: #111; }
+#unit3WorksheetView .candidate-wrap{ max-width: 960px; margin: 24px auto; padding: 0 20px; }
+#unit3WorksheetView .candidate-box{ border: 2px solid #c9a84c; border-radius: 8px; padding: 20px 24px; background: #fff; }
+#unit3WorksheetView .candidate-box .label{ font-size: 13px; font-weight: 700; color: #c9a84c; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 16px; }
+#unit3WorksheetView .candidate-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+#unit3WorksheetView .candidate-grid label{ font-size: 12px; font-weight: 600; display: block; margin-bottom: 4px; color: #555; }
+#unit3WorksheetView .candidate-grid input{ width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; }
+#unit3WorksheetView .lo-section{ display: none; max-width: 960px; margin: 0 auto; padding: 20px; }
+#unit3WorksheetView .lo-section.active{ display: block; }
+#unit3WorksheetView .lo-header{ background: #111; color: #c9a84c; padding: 18px 20px; border-radius: 6px; margin-bottom: 16px; }
+#unit3WorksheetView .lo-header h2{ font-size: 20px; margin-bottom: 6px; }
+#unit3WorksheetView .lo-header .ac-list{ font-size: 13px; color: #e0c97a; margin-bottom: 10px; }
+#unit3WorksheetView .lo-description{ background: #1e1e1e; border-left: 4px solid #c9a84c; padding: 12px 16px; border-radius: 4px; margin-top: 10px; font-size: 13px; color: #f0e0a0; line-height: 1.7; }
+#unit3WorksheetView .info-box{ border: 2px solid #c9a84c; background: #fffbe6; padding: 14px 16px; border-radius: 6px; margin-bottom: 18px; font-size: 13px; line-height: 1.7; color: #333; }
+#unit3WorksheetView .info-box strong{ color: #7a5c00; }
+#unit3WorksheetView .learner-block{ border-radius: 8px; margin-bottom: 28px; overflow: hidden; }
+#unit3WorksheetView .learner-block.green{ border: 3px solid #2d6a2d; }
+#unit3WorksheetView .learner-block.purple{ border: 3px solid #5b2d8e; }
+#unit3WorksheetView .learner-header{ padding: 14px 20px; color: #fff; font-size: 16px; font-weight: bold; }
+#unit3WorksheetView .learner-header.green{ background: #2d6a2d; }
+#unit3WorksheetView .learner-header.purple{ background: #5b2d8e; }
+#unit3WorksheetView .learner-body{ background: #fff; padding: 20px; }
+#unit3WorksheetView .plan-block{ border: 2px solid #c9a84c; border-radius: 6px; padding: 16px; margin-bottom: 20px; background: #fffdf0; }
+#unit3WorksheetView .plan-block h3{ color: #7a5c00; font-size: 15px; margin-bottom: 12px; }
+#unit3WorksheetView .plan-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+#unit3WorksheetView .cross-ref-note{ margin-top: 12px; background: #fff3cd; border-left: 4px solid #c9a84c; padding: 10px 14px; font-size: 12px; color: #555; border-radius: 3px; }
+#unit3WorksheetView .ac-block{ border: 1px solid #ddd; border-radius: 6px; margin-bottom: 18px; overflow: hidden; }
+#unit3WorksheetView .ac-title{ background: #c9a84c; color: #111; padding: 10px 16px; font-weight: bold; font-size: 14px; }
+#unit3WorksheetView .ac-body{ padding: 16px; background: #fafafa; }
+#unit3WorksheetView .ac-description{ background: #f0f0f0; border-left: 3px solid #c9a84c; padding: 10px 14px; margin-bottom: 14px; font-size: 13px; color: #333; line-height: 1.6; }
+#unit3WorksheetView label{ display: block; font-weight: bold; margin-bottom: 5px; margin-top: 12px; font-size: 13px; color: #333; }
+#unit3WorksheetView select, #unit3WorksheetView textarea, #unit3WorksheetView input[type="text"], #unit3WorksheetView input[type="date"]{ width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 13px; font-family: Arial, sans-serif; }
+#unit3WorksheetView select[multiple]{ height: 120px; }
+#unit3WorksheetView textarea{ resize: vertical; }
+#unit3WorksheetView .min-160{ min-height: 160px; }
+#unit3WorksheetView .upload-area{ border: 2px dashed #c9a84c; border-radius: 6px; padding: 20px; text-align: center; background: #fffbe6; cursor: pointer; position: relative; margin-top: 6px; }
+#unit3WorksheetView .upload-area input[type="file"]{ position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+#unit3WorksheetView .upload-area p{ font-size: 13px; color: #888; }
+#unit3WorksheetView .upload-icon{ font-size: 24px; color: #c9a84c; }
+#unit3WorksheetView .filename-display{ font-size: 12px; color: #2d6a2d; margin-top: 6px; font-style: italic; }
+#unit3WorksheetView .judgement-panel{ background: #fffbe6; border: 2px solid #c9a84c; border-radius: 6px; padding: 16px; margin-top: 16px; }
+#unit3WorksheetView .judgement-panel h4{ color: #7a5c00; font-size: 14px; margin-bottom: 12px; }
+#unit3WorksheetView .judgement-panel label{ color: #333; margin-top: 10px; }
+#unit3WorksheetView .judgement-panel input[type="text"], #unit3WorksheetView .judgement-panel input[type="date"]{ border-color: #c9a84c; }
+#unit3WorksheetView .toggle-row{ display: flex; gap: 10px; margin-bottom: 14px; }
+#unit3WorksheetView .toggle-btn{ padding: 9px 24px; border: 2px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 14px; }
+#unit3WorksheetView .toggle-btn.pass{ border-color: #2d6a2d; color: #2d6a2d; }
+#unit3WorksheetView .toggle-btn.pass.active{ background: #2d6a2d; color: #fff; }
+#unit3WorksheetView .toggle-btn.refer{ border-color: #c0392b; color: #c0392b; }
+#unit3WorksheetView .toggle-btn.refer.active{ background: #c0392b; color: #fff; }
+#unit3WorksheetView .declaration-section{ background: #fffbe6; border: 2px solid #c9a84c; border-radius: 8px; padding: 20px 24px; margin-bottom: 24px; }
+#unit3WorksheetView .declaration-section .section-title{ background: #111; color: #c9a84c; padding: 12px 16px; margin: -20px -24px 16px -24px; border-radius: 6px 6px 0 0; font-size: 14px; font-weight: bold; }
+#unit3WorksheetView .declaration-section label{ color: #333; font-weight: 600; font-size: 13px; }
+#unit3WorksheetView .declaration-section input[type="checkbox"]{ margin-right: 8px; }
+#unit3WorksheetView .declaration-checkbox{ display: flex; align-items: flex-start; gap: 10px; margin-bottom: 12px; color: #333; font-size: 13px; line-height: 1.5; }
+#unit3WorksheetView .declaration-checkbox input{ margin-top: 3px; }
+#unit3WorksheetView .declaration-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+#unit3WorksheetView .declaration-grid input{ background: #fff; border-color: #c9a84c; }
+#unit3WorksheetView .submit-btn{ background: #c9a84c; color: #111; border: none; padding: 12px 24px; font-weight: bold; font-size: 14px; border-radius: 4px; cursor: pointer; width: 100%; margin-top: 16px; text-transform: uppercase; }
+#unit3WorksheetView .submit-btn:hover{ background: #b39638; }
+#unit3WorksheetView .feedback-section{ background: #f9f7f2; border: 2px solid #c9a84c; border-radius: 8px; padding: 20px 24px; margin-bottom: 24px; }
+#unit3WorksheetView .feedback-section .section-title{ background: #111; color: #c9a84c; padding: 12px 16px; margin: -20px -24px 16px -24px; border-radius: 6px 6px 0 0; font-size: 14px; font-weight: bold; }
+#unit3WorksheetView .feedback-section label{ color: #333; font-weight: 600; font-size: 13px; }
+#unit3WorksheetView .feedback-section input, #unit3WorksheetView .feedback-section textarea{ background: #fff; border-color: #c9a84c; color: #333; }
+#unit3WorksheetView .feedback-grid{ display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
+#unit3WorksheetView .feedback-outcome-row{ display: flex; gap: 10px; margin: 12px 0; }
+@media print { #unit3WorksheetView .top-nav { display: none; } #unit3WorksheetView .lo-section { display: block !important; } }
+
+#unit3WorksheetView { display: none; margin: -8px -4px 0; }
+#unit3WorksheetView .site-header { border-radius: 6px 6px 0 0; justify-content: space-between; }
+#unit3WorksheetView .header-titles p { color: #c9a84c; font-size: 14px; font-weight: 700; margin-top: 3px; }
+#unit3WorksheetView .header-right .unit-ref { color: #ddd; font-size: 12px; margin-top: 3px; }
+#unit3WorksheetView .top-nav { border-radius: 0 0 6px 6px; margin-bottom: 18px; }
+#unit3WorksheetView .unit3-folder-button { margin-left: 0; }
+#unit3WorksheetView .page-body { background: #f5f5f5; padding: 2px 0 24px; }
+#unit3WorksheetView .unit3-live-note { max-width: 920px; margin: 0 auto 18px; }
+#unit3WorksheetView .summary-block { background: #111; color: #c9a84c; border-radius: 6px; padding: 18px; margin-top: 18px; }
+#unit3WorksheetView .summary-block h3 { font-size: 15px; margin-bottom: 12px; border-bottom: 2px solid #c9a84c; padding-bottom: 7px; }
+#unit3WorksheetView .summary-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 12px; }
+#unit3WorksheetView .summary-block label { color: #c9a84c; margin-top: 6px; }
+#unit3WorksheetView .summary-block input[type="text"], #unit3WorksheetView .summary-block input[type="date"], #unit3WorksheetView .summary-block textarea { background: #222; color: #f3dfa0; border-color: #c9a84c; }
+#unit3WorksheetView .summary-toggle-row { display: flex; gap: 8px; margin: 8px 0 14px; }
+#unit3WorksheetView .summary-toggle { padding: 8px 22px; border: 2px solid #c9a84c; background: #222; color: #c9a84c; border-radius: 3px; cursor: pointer; font-weight: bold; font-size: 13px; }
+#unit3WorksheetView .summary-toggle.active { background: #c9a84c; color: #111; }
+@media (max-width: 700px) {
+  #unit3WorksheetView { margin: 0; }
+  #unit3WorksheetView .site-header { align-items: flex-start; flex-direction: column; }
+  #unit3WorksheetView .header-right { text-align: left; }
+  #unit3WorksheetView .candidate-grid, #unit3WorksheetView .plan-grid, #unit3WorksheetView .summary-grid, #unit3WorksheetView .declaration-grid, #unit3WorksheetView .feedback-grid { grid-template-columns: 1fr; }
+  #unit3WorksheetView .pdf-btn { margin-left: 0; width: 100%; }
+  #unit3WorksheetView .nav-tab { width: 100%; }
+}
+
+/* Worksheet navigation and document actions */
+#unit2WorksheetView .top-nav,
+#unit3WorksheetView .top-nav {
+  align-items: stretch;
+  display: grid;
+  gap: 12px;
+  grid-template-columns: minmax(0, 1fr) auto;
+  padding: 12px;
+}
+#unit2WorksheetView .lo-nav-group,
+#unit3WorksheetView .lo-nav-group {
+  display: grid;
+  gap: 8px;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+#unit2WorksheetView .nav-tab,
+#unit3WorksheetView .nav-tab {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  line-height: 1.25;
+  min-height: 48px;
+  padding: 10px 12px;
+  text-align: center;
+  width: 100%;
+}
+#unit2WorksheetView .worksheet-nav-tools,
+#unit3WorksheetView .worksheet-nav-tools { display: flex; }
+#unit2WorksheetView .pdf-btn,
+#unit3WorksheetView .pdf-btn {
+  align-items: center;
+  background: #fff;
+  border: 2px solid #111;
+  box-shadow: 0 2px 0 rgba(17, 17, 17, 0.18);
+  color: #111;
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+  margin: 0;
+  min-width: 235px;
+  padding: 10px 16px;
+  width: 100%;
+}
+#unit2WorksheetView .pdf-btn:hover,
+#unit3WorksheetView .pdf-btn:hover { background: #f8f4e8; color: #111; }
+#unit2WorksheetView .pdf-btn .download-icon,
+#unit3WorksheetView .pdf-btn .download-icon {
+  align-items: center;
+  background: #111;
+  border-radius: 50%;
+  color: #c9a84c;
+  display: inline-flex;
+  flex: 0 0 30px;
+  font-size: 18px;
+  height: 30px;
+  justify-content: center;
+  line-height: 1;
+  width: 30px;
+}
+#unit2WorksheetView .lo-header h2,
+#unit3WorksheetView .lo-header h2 { font-weight: 700; line-height: 1.35; }
+#unit2WorksheetView .lo-header .ac-list,
+#unit3WorksheetView .lo-header .ac-list { font-weight: 600; }
+@media (max-width: 850px) {
+  #unit2WorksheetView .top-nav,
+  #unit3WorksheetView .top-nav { grid-template-columns: 1fr; }
+  #unit2WorksheetView .lo-nav-group,
+  #unit3WorksheetView .lo-nav-group { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  #unit2WorksheetView .pdf-btn,
+  #unit3WorksheetView .pdf-btn { min-width: 0; }
+}
+@media (max-width: 520px) {
+  #unit2WorksheetView .lo-nav-group,
+  #unit3WorksheetView .lo-nav-group { grid-template-columns: 1fr; }
+}
+
+/* Persistent return control within each open worksheet */
+#unit1WorksheetView,
+#unit2WorksheetView,
+#unit3WorksheetView { padding-bottom: 82px; }
+#unit1WorksheetView .embedded-back-button,
+#unit2WorksheetView .embedded-back-button,
+#unit3WorksheetView .embedded-back-button {
+  align-items: center;
+  background: #111;
+  border: 2px solid #c9a84c;
+  border-radius: 999px;
+  bottom: 22px;
+  box-shadow: 0 7px 20px rgba(0, 0, 0, 0.28);
+  color: #fff;
+  display: inline-flex;
+  font-size: 0.9rem;
+  font-weight: 700;
+  gap: 10px;
+  justify-content: center;
+  padding: 12px 19px;
+  position: fixed;
+  right: 22px;
+  transition: background 0.2s, box-shadow 0.2s, transform 0.2s;
+  width: auto;
+  z-index: 1300;
+}
+#unit1WorksheetView .embedded-back-button:hover,
+#unit2WorksheetView .embedded-back-button:hover,
+#unit3WorksheetView .embedded-back-button:hover {
+  background: #c9a84c;
+  box-shadow: 0 9px 24px rgba(0, 0, 0, 0.32);
+  color: #111;
+  transform: translateY(-2px);
+}
+#unit1WorksheetView .embedded-back-button .back-button-icon,
+#unit2WorksheetView .embedded-back-button .back-button-icon,
+#unit3WorksheetView .embedded-back-button .back-button-icon {
+  color: #c9a84c;
+  font-size: 1.15rem;
+  line-height: 1;
+}
+#unit1WorksheetView .embedded-back-button:hover .back-button-icon,
+#unit2WorksheetView .embedded-back-button:hover .back-button-icon,
+#unit3WorksheetView .embedded-back-button:hover .back-button-icon { color: #111; }
+@media (max-width: 600px) {
+  #unit1WorksheetView .embedded-back-button,
+  #unit2WorksheetView .embedded-back-button,
+  #unit3WorksheetView .embedded-back-button {
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    width: calc(100% - 24px);
+  }
+}
+@media print {
+  #unit1WorksheetView .embedded-back-button,
+  #unit2WorksheetView .embedded-back-button,
+  #unit3WorksheetView .embedded-back-button { display: none !important; }
+}
 
   </style>
 </head>
 <body>
 
 <div class="header">
-  <div>
-    <h1>PT Academy | Level 3 CAVA</h1>
-    <p>Integrated Learner Hub & Assessment Tracking</p>
+  <div class="header-brand">
+    <img class="header-logo" src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy">
+    <div class="header-copy">
+      <div class="header-kicker">PT Academy Learner Hub</div>
+      <h1>Focus Awards Level 3 Certificate in Assessing Vocational Achievement (RQF) (CAVA)</h1>
+      <p>Integrated Learner Hub &amp; Assessment Tracking</p>
+    </div>
   </div>
-  <div class="welcome">Welcome, <span id="learnerNameDisplay" style="font-weight: 700;">Learner</span></div>
+  <div class="welcome" aria-live="polite">
+    <span class="welcome-label">Welcome</span>
+    <span id="learnerNameDisplay" class="welcome-name">Learner</span>
+  </div>
   <script>
-    // On page load, populate learner name if available from session/database
+    function syncLearnerWelcome(name, persist = true) {
+      const cleanedName = String(name || '').trim();
+      const displayName = cleanedName || 'Learner';
+      const display = document.getElementById('learnerNameDisplay');
+      if (display) display.textContent = displayName;
+      if (persist) {
+        if (cleanedName) localStorage.setItem('learnerName', cleanedName);
+        else localStorage.removeItem('learnerName');
+      }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
-      const learnerName = localStorage.getItem('learnerName') || 'Learner';
-      document.getElementById('learnerNameDisplay').textContent = learnerName;
+      syncLearnerWelcome(localStorage.getItem('learnerName') || '', false);
+      ['learnerName', 'cand-name', 'u3-candidate-name'].forEach(function(id) {
+        const input = document.getElementById(id);
+        if (input) input.addEventListener('input', function() { syncLearnerWelcome(input.value); });
+      });
     });
   </script>
 </div>
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="switchTab('dashboard')">Dashboard</button>
-  <button class="tab-btn" onclick="switchTab('introduction')">Introduction</button>
-  <button class="tab-btn" onclick="switchTab('assessment')">Assessment Plan</button>
-  <button class="tab-btn" onclick="switchTab('documents')">Assessment Documents</button>
+  <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard', this)">Dashboard</button>
+  <button class="tab-btn" data-tab="introduction" onclick="switchTab('introduction', this)">Introduction</button>
+  <button class="tab-btn" data-tab="assessment" onclick="switchTab('assessment', this)">Assessment Plan</button>
+  <button class="tab-btn" data-tab="documents" onclick="switchTab('documents', this)">Assessment Documents</button>
+  <button class="tab-btn" onclick="openActionPlanWorkspace()">Action Plans &amp; Reviews</button>
 </div>
 
 <div class="content">
 
   <!-- DASHBOARD TAB -->
   <div id="dashboard" class="tab-pane active">
-    <h2 style="margin-bottom: 24px; color: #1a1a1a;">Your Progress</h2>
+    <h2 class="hub-page-heading">Your Progress</h2>
     
     <div class="intro-card">
       <h3>Understanding Your Progress</h3>
@@ -287,7 +672,7 @@
         <canvas id="progressChart"></canvas>
       </div>
       <div class="stats-container">
-        <h3 style="margin-bottom: 20px;">Units Overview</h3>
+        <h3 class="hub-section-heading">Units Overview</h3>
         <div class="unit-card">
           <h4>Unit 1: Principles & Practices</h4>
           <div class="progress-bar"><div class="progress-fill" style="width: 75%;"></div></div>
@@ -342,7 +727,7 @@
 
   <!-- INTRODUCTION TAB -->
   <div id="introduction" class="tab-pane">
-    <h2 style="margin-bottom: 24px; color: #1a1a1a;">About Your Programme</h2>
+    <h2 class="hub-page-heading">About Your Programme</h2>
     
     <div class="intro-card">
       <h3>Level 3 Certificate in Assessing Vocational Achievement</h3>
@@ -394,7 +779,7 @@
 
   <!-- ASSESSMENT PLAN TAB -->
   <div id="assessment" class="tab-pane">
-    <h2 style="margin-bottom: 24px; color: #1a1a1a;">Assessment Plan & Tracking Document</h2>
+    <h2 class="hub-page-heading">Assessment Plan &amp; Tracking Document</h2>
     
     <div class="intro-card">
       <h3>About Your Assessment Plan</h3>
@@ -970,8 +1355,15 @@
   <!-- ASSESSMENT DOCUMENTS TAB -->
   <div id="documents" class="tab-pane">
     <div id="unitFolderList">
-    <h2 style="margin-bottom: 24px; color: #1a1a1a;">Assessment Tasks to Complete</h2>
+    <h2 class="hub-page-heading">Assessment Tasks to Complete</h2>
     <p style="margin-bottom: 24px; color: #666; font-size: 0.95rem;">Click on each unit to access your assessment worksheets. Complete all learning outcomes and submit your work for marking.</p>
+
+    <div class="action-plan-card">
+      <div class="action-plan-kicker">Essential assessor workspace</div>
+      <h3>Action Plans &amp; Reviews</h3>
+      <p><strong>Use this workspace whenever work is planned or reviewed with a learner.</strong> Create the initial action plan, continue a saved record and document progress, feedback and the learner&rsquo;s agreed next actions.</p>
+      <button type="button" class="action-plan-launch" onclick="openActionPlanWorkspace()"><span class="launch-icon" aria-hidden="true">&#8599;</span><span>Open Action Plan Workspace</span></button>
+    </div>
     
     <div class="unit-card" style="border-top: 4px solid #c9a84c;">
       <h4 style="display: flex; align-items: center; gap: 10px;">
@@ -993,48 +1385,35 @@
       <button type="button" onclick="openUnit2Worksheet()" style="background: #c9a84c; color: #1a1a1a; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: 700;">Open Unit 2 Worksheet →</button>
     </div>
     
-    <div class="unit-card" style="border-top: 4px solid #999; opacity: 0.6;">
+    <div class="unit-card" style="border-top: 4px solid #c9a84c;">
       <h4 style="display: flex; align-items: center; gap: 10px;">
-        <span style="display: inline-block; width: 24px; height: 24px; background: #999; color: white; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; font-size: 0.8rem;">3</span>
-        Unit 3: Vocational Skills & Knowledge Assessment
+        <span style="display: inline-block; width: 24px; height: 24px; background: #c9a84c; color: #1a1a1a; border-radius: 50%; text-align: center; line-height: 24px; font-weight: bold; font-size: 0.8rem;">3</span>
+        Unit 3: Vocational Skills &amp; Knowledge Assessment
       </h4>
-      <p style="font-size: 0.9rem; color: #555; margin: 12px 0;">Assess vocational skills, knowledge and understanding. Covers planning, decision-making, feedback, and review processes for skills-based learning.</p>
-      <p style="font-size: 0.8rem; color: #999; margin: 8px 0;">Status: Locked – will unlock after Unit 2 completion</p>
-      <button style="background: #ccc; color: #666; border: none; padding: 10px 20px; border-radius: 4px; cursor: not-allowed; font-weight: 600;">Unit 3 Assessment (Locked)</button>
+      <p style="font-size: 0.9rem; color: #555; margin: 12px 0;">Assess vocational skills, knowledge and understanding with both allocated learners. Covers assessment preparation, assessment decisions, feedback, records, equality, safety and reflective practice.</p>
+      <p style="font-size: 0.8rem; color: #999; margin: 8px 0;">Status: Ready to start</p>
+      <button type="button" onclick="openUnit3Worksheet()" style="background: #c9a84c; color: #1a1a1a; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; font-weight: 700;">Open Unit 3 Worksheet &#8594;</button>
     </div>
     
-    <div style="background: #f0f9f5; border-left: 4px solid #28a745; padding: 16px; border-radius: 4px; margin-top: 24px;">
-      <p style="color: #2d7a3a; font-weight: 600;">Action Plan</p>
-      <p style="font-size: 0.9rem; color: #444; margin-top: 8px;">Download your personal action plan tracking your learning goals and progress milestones.</p>
-      <button style="background: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; font-weight: 600; margin-top: 12px;">Download Action Plan</button>
-    </div>
     </div>
 
     <div id="unit1WorksheetView" aria-label="Unit 1 Evidence Worksheet">
 
 
-<!-- TOP HEADER -->
-<div class="dark-header embedded-unit-banner text-white px-6 py-3 flex items-center justify-between">
-  <div class="flex items-center gap-3">
-    <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy" class="h-10 w-auto">
-    <div>
-      <div class="font-semibold text-sm">Focus Awards Level 3 Certificate in Assessing Vocational Achievement (CAVA)</div>
-      <div class="text-xs text-gray-400">Unit 1 Evidence Worksheet</div>
-    </div>
+<!-- UNIT INFORMATION -->
+<div class="worksheet-unit-strip">
+  <div class="worksheet-unit-copy">
+    <span class="worksheet-unit-eyebrow">Assessment Document</span>
+    <h2 class="worksheet-unit-title">Unit 1: Understanding the Principles and Practices of Assessment</h2>
+    <span class="worksheet-unit-type">Evidence Worksheet</span>
   </div>
-  <div class="flex items-center gap-4">
-    <button type="button" onclick="closeUnit1Worksheet()" class="embedded-back-button">&larr; Back to Unit Folders</button>
-    <div class="text-right text-xs text-gray-400">
-      <div>Qualification Ref: R/616/2834</div>
-      <div>Learning Outcomes 1&ndash;8</div>
+  <div class="worksheet-unit-actions">
+    <div class="worksheet-unit-meta">
+      <span><strong>Unit Ref:</strong> D/601/5313</span>
+      <span><strong>Learning Outcomes:</strong> 1 to 8</span>
     </div>
+    <button type="button" onclick="closeUnit1Worksheet()" class="embedded-back-button" aria-label="Back to Assessment Documents"><span class="back-button-icon" aria-hidden="true">&larr;</span><span>Back to Assessment Documents</span></button>
   </div>
-</div>
-
-<!-- EMBEDDED NAV -->
-<div class="nav-bar embedded-unit-nav text-white flex items-center justify-between gap-3 px-6 py-2">
-  <span class="text-xs text-gray-300">Assessment Documents / Unit 1 Worksheet</span>
-  <button type="button" onclick="closeUnit1Worksheet()" class="embedded-back-button">&larr; Assessment Documents</button>
 </div>
 
 <!-- MAIN CONTENT -->
@@ -1228,7 +1607,6 @@
           &#x2705; SUBMIT FOR MARKING
         </button>
         <div id="submitMsg" class="text-center text-sm mt-3"></div>
-        <div class="mt-4 text-center"><button type="button" onclick="closeUnit1Worksheet()" class="embedded-back-button">&larr; Return to Unit Folders</button></div>
       </div>
 
     </div><!-- /section-intro -->
@@ -1508,29 +1886,31 @@
 
     <div id="unit2WorksheetView" aria-label="Unit 2 Evidence Worksheet">
 
-<header class="site-header">
-  <div class="header-left">
-    <div class="logo-box">
-      <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy" onerror="this.style.display='none';this.nextElementSibling.style.display='block'">
-      <div class="logo-fallback">PT<br>ACADEMY</div>
-    </div>
-    <div class="header-titles">
-      <h1>Focus Awards Level 3 Certificate in Assessing Vocational Achievement (RQF) (CAVA)<br>Unit 2 Evidence Worksheet</h1>
-      <button type="button" onclick="closeUnit2Worksheet()" class="embedded-back-button" style="margin-top:8px;">&#8592; Back to Unit Folders</button>
-    </div>
+<div class="worksheet-unit-strip">
+  <div class="worksheet-unit-copy">
+    <span class="worksheet-unit-eyebrow">Assessment Document</span>
+    <h2 class="worksheet-unit-title">Unit 2: Assess Occupational Competence in the Work Environment</h2>
+    <span class="worksheet-unit-type">Evidence Worksheet</span>
   </div>
-  <div class="header-right">
-    <div>QRN: 601/6104/8</div>
-    <div class="lo-label" id="active-lo-label">Learning Outcome 1</div>
+  <div class="worksheet-unit-actions">
+    <div class="worksheet-unit-meta">
+      <span><strong>Unit Ref:</strong> H/601/5314</span>
+      <span><strong>Learning Outcomes:</strong> 1 to 4</span>
+    </div>
+    <button type="button" onclick="closeUnit2Worksheet()" class="embedded-back-button" aria-label="Back to Assessment Documents"><span class="back-button-icon" aria-hidden="true">&#8592;</span><span>Back to Assessment Documents</span></button>
   </div>
-</header>
+</div>
 
-<nav class="top-nav">
-  <button class="nav-tab active-tab" onclick="showLO(1)">LO1 Plan Assessment</button>
-  <button class="nav-tab" onclick="showLO(2)">LO2 Assessment Decisions</button>
-  <button class="nav-tab" onclick="showLO(3)">LO3 Evidence Criteria</button>
-  <button class="nav-tab" onclick="showLO(4)">LO4 Legal and Good Practice</button>
-  <button type="button" class="pdf-btn" onclick="window.print()">&#11015; Download Full Worksheet as PDF</button><button type="button" class="pdf-btn" onclick="closeUnit2Worksheet()">&#8592; Unit Folders</button>
+<nav class="top-nav" aria-label="Unit 2 worksheet sections">
+  <div class="lo-nav-group">
+    <button class="nav-tab active-tab" onclick="showLO(1)">LO1 Plan Assessment</button>
+    <button class="nav-tab" onclick="showLO(2)">LO2 Assessment Decisions</button>
+    <button class="nav-tab" onclick="showLO(3)">LO3 Evidence Criteria</button>
+    <button class="nav-tab" onclick="showLO(4)">LO4 Legal and Good Practice</button>
+  </div>
+  <div class="worksheet-nav-tools">
+    <button type="button" class="pdf-btn" onclick="window.print()"><span class="download-icon" aria-hidden="true">&#8595;</span><span>Download worksheet PDF</span></button>
+  </div>
 </nav>
 
 <div class="candidate-wrap">
@@ -1761,9 +2141,1307 @@
 </div>
 
 
-
-
     </div>
+
+<div id="unit3WorksheetView" aria-label="Unit 3 Evidence Worksheet">
+<div class="worksheet-unit-strip">
+  <div class="worksheet-unit-copy">
+    <span class="worksheet-unit-eyebrow">Assessment Document</span>
+    <h2 class="worksheet-unit-title">Unit 3: Assess Vocational Skills, Knowledge and Understanding</h2>
+    <span class="worksheet-unit-type">Evidence Worksheet</span>
+  </div>
+  <div class="worksheet-unit-actions">
+    <div class="worksheet-unit-meta">
+      <span><strong>Unit Ref:</strong> F/601/5319</span>
+      <span><strong>Learning Outcomes:</strong> 1 to 4</span>
+    </div>
+    <button type="button" onclick="closeUnit3Worksheet()" class="embedded-back-button" aria-label="Back to Assessment Documents"><span class="back-button-icon" aria-hidden="true">&#8592;</span><span>Back to Assessment Documents</span></button>
+  </div>
+</div>
+
+
+<nav class="top-nav" aria-label="Unit 3 worksheet sections">
+  <div class="lo-nav-group">
+    <button class="nav-tab active-tab" onclick="showUnit3LO('unit3-lo1', this, 'Learning Outcome 1')" type="button">LO1 Prepare Assessments</button>
+    <button class="nav-tab" onclick="showUnit3LO('unit3-lo2', this, 'Learning Outcome 2')" type="button">LO2 Carry Out Assessments</button>
+    <button class="nav-tab" onclick="showUnit3LO('unit3-lo3', this, 'Learning Outcome 3')" type="button">LO3 Provide Information</button>
+    <button class="nav-tab" onclick="showUnit3LO('unit3-lo4', this, 'Learning Outcome 4')" type="button">LO4 Legal and Good Practice</button>
+  </div>
+  <div class="worksheet-nav-tools">
+    <button type="button" class="pdf-btn" onclick="window.print()"><span class="download-icon" aria-hidden="true">&#8595;</span><span>Download worksheet PDF</span></button>
+  </div>
+</nav>
+
+
+<div class="page-body">
+
+  <div class="candidate-wrap">
+    <div class="candidate-box">
+      <div class="label">Candidate Details</div>
+      <div class="candidate-grid">
+        <div>
+<label>Trainee Assessor Name</label><input type="text" placeholder="Full name" id="u3-candidate-name" name="u3-candidate-name">
+</div>
+        <div>
+<label>Date Started</label><input type="date" id="u3-date-started" name="u3-date-started">
+</div>
+        <div>
+<label>Assessor / Tutor Name</label><input type="text" placeholder="Full name" id="u3-assessor-name" name="u3-assessor-name">
+</div>
+        <div>
+<label>IQA Name</label><input type="text" placeholder="Full name" id="u3-iqa-name" name="u3-iqa-name">
+</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="info-box unit3-live-note">
+<strong>Live assessment requirement:</strong> Evidence must come from genuine assessment activity with the allocated Level 2 Gym Instructor learner and Level 3 Personal Training learner. Simulation must not be used.</div>
+<section class="lo-section active" id="unit3-lo1">
+    <div class="lo-header">
+      <h2>Learning Outcome 1 • Be able to prepare assessments of vocational skills, knowledge and understanding</h2>
+      <div class="ac-list">Assessment Criteria 1.1 • 1.2 • 1.3</div>
+      <div class="lo-description">This learning outcome requires the candidate assessor to demonstrate they can select appropriate assessment methods that meet learner needs and assessment requirements, prepare the necessary resources and conditions, and communicate the purpose, requirements and processes of assessment clearly to learners.</div>
+    </div>
+    <div class="info-box">
+<strong>Instructions:</strong> For each assessment criterion below, select the evidence types submitted (minimum 2 per AC), upload supporting files, and complete the reflective account. The assessor must record a judgement and provide written feedback for each AC.</div>
+
+    <div class="learner-block green">
+      <div class="learner-header green">Learner 1 • Level 2 Gym Instructor</div>
+      <div class="learner-body">
+        <div class="plan-block">
+      <h3>Action Plan • Learner 1</h3>
+      <div class="plan-grid">
+        <div>
+          <label for="u3-l1-lo1-plan-type">Action Plan Type</label>
+          <select id="u3-l1-lo1-plan-type" name="u3-l1-lo1-plan-type">
+            <option value="">Select plan type</option>
+            <option>Initial Action Plan</option>
+            <option>Session Review &amp; Action Plan</option>
+          </select>
+        </div>
+        <div>
+          <label>Upload Signed Action Plan</label>
+          <div class="upload-area">
+            <div class="upload-icon">📎</div>
+            <p>Click to attach or drag and drop</p>
+            <input id="u3-l1-lo1-plan-file" name="u3-l1-lo1-plan-file" type="file" accept=".pdf,image/*" onchange="showFilenameUnit3(this)">
+            <div class="filename-display"></div>
+          </div>
+        </div>
+      </div>
+      <label for="u3-l1-lo1-plan-summary">Summary of What Was Agreed</label>
+      <textarea id="u3-l1-lo1-plan-summary" name="u3-l1-lo1-plan-summary" class="min-160" placeholder="Summarise the assessment activity, evidence required, submission route and agreed completion date."></textarea>
+      <div class="cross-ref-note">📌 <strong>Cross-reference note:</strong> This Action Plan provides evidence of assessment preparation and communication for ACs 1.1 to 1.3.</div>
+    </div>
+<div class="ac-block">
+<div class="ac-title">AC 1.1 • Select methods to assess vocational skills, knowledge and understanding which address learner needs and meet assessment requirements</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor must demonstrate selection of appropriate methods from: live skills demonstrations, skills tests, oral and written questions, assignments, projects, case studies, and recognition of prior learning.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l1-lo1-ac1-evidence-types" name="u3-l1-lo1-ac1-evidence-types"><option>Initial Action Plan and assessment agreement</option>
+<option>Learner needs or initial assessment record</option>
+<option>Assessment method selection and rationale</option>
+<option>Marked knowledge workbook or written assessment</option>
+<option>Professional discussion plan or question set</option>
+<option>Assignment, project or case study brief</option>
+<option>Recognition of prior learning evidence</option>
+<option>Assessor observation report</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l1-lo1-ac1-files" name="u3-l1-lo1-ac1-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l1-lo1-ac1-reflective-account" name="u3-l1-lo1-ac1-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l1-lo1-ac1-assessor-name">Assessor Name</label><input type="text" id="u3-l1-lo1-ac1-assessor-name" name="u3-l1-lo1-ac1-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l1-lo1-ac1-feedback-date">Feedback Date</label><input type="date" id="u3-l1-lo1-ac1-feedback-date" name="u3-l1-lo1-ac1-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l1-lo1-ac1-feedback" name="u3-l1-lo1-ac1-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 1.2 • Prepare resources and conditions for the assessment of vocational skills, knowledge and understanding</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor should evidence how they prepared all necessary resources, materials and conditions required to conduct a fair and valid assessment.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l1-lo1-ac2-evidence-types" name="u3-l1-lo1-ac2-evidence-types"><option>Assessment resources and marking guidance</option>
+<option>Prepared workbook, assignment or project brief</option>
+<option>Professional discussion questions</option>
+<option>Assessment timetable or meeting invitation</option>
+<option>Reasonable adjustment record</option>
+<option>Technology or platform readiness check</option>
+<option>Assessor observation report</option>
+<option>Risk assessment or learner welfare check</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l1-lo1-ac2-files" name="u3-l1-lo1-ac2-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l1-lo1-ac2-reflective-account" name="u3-l1-lo1-ac2-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l1-lo1-ac2-assessor-name">Assessor Name</label><input type="text" id="u3-l1-lo1-ac2-assessor-name" name="u3-l1-lo1-ac2-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l1-lo1-ac2-feedback-date">Feedback Date</label><input type="date" id="u3-l1-lo1-ac2-feedback-date" name="u3-l1-lo1-ac2-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l1-lo1-ac2-feedback" name="u3-l1-lo1-ac2-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 1.3 • Communicate the purpose, requirements and processes of assessment of vocational skills, knowledge and understanding to learners</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor must demonstrate how they communicated assessment information to learners clearly, ensuring learners understood what was involved, what was expected and how the process would work.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l1-lo1-ac3-evidence-types" name="u3-l1-lo1-ac3-evidence-types"><option>Initial Action Plan agreed with the learner</option>
+<option>Email or message explaining assessment requirements</option>
+<option>Online meeting notes or recording</option>
+<option>Learner acknowledgement of the assessment plan</option>
+<option>Assessment timetable or deadline record</option>
+<option>Assessor observation report</option>
+<option>Professional discussion record</option>
+<option>Witness statement confirming communication</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l1-lo1-ac3-files" name="u3-l1-lo1-ac3-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l1-lo1-ac3-reflective-account" name="u3-l1-lo1-ac3-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l1-lo1-ac3-assessor-name">Assessor Name</label><input type="text" id="u3-l1-lo1-ac3-assessor-name" name="u3-l1-lo1-ac3-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l1-lo1-ac3-feedback-date">Feedback Date</label><input type="date" id="u3-l1-lo1-ac3-feedback-date" name="u3-l1-lo1-ac3-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l1-lo1-ac3-feedback" name="u3-l1-lo1-ac3-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="summary-block">
+<h3>LO1 Summary – Learner 1</h3>
+<div class="summary-grid">
+<div>
+<label>Assessment Date</label><input type="date" id="u3-l1-lo1-summary-assessment-date" name="u3-l1-lo1-summary-assessment-date">
+</div>
+<div>
+<label>Assessor Name</label><input type="text" placeholder="Enter name" id="u3-l1-lo1-summary-assessor-name" name="u3-l1-lo1-summary-assessor-name">
+</div>
+<div>
+<label>Assessor Signature</label><input type="text" placeholder="Type name as signature" id="u3-l1-lo1-summary-assessor-signature" name="u3-l1-lo1-summary-assessor-signature">
+</div>
+<div>
+<label>Learner Signature</label><input type="text" placeholder="Type name as signature" id="u3-l1-lo1-summary-learner-signature" name="u3-l1-lo1-summary-learner-signature">
+</div>
+</div>
+<label>Overall LO1 Outcome:</label><div class="summary-toggle-row">
+<button class="summary-toggle" onclick="toggleSummaryUnit3(this)" type="button">Pass</button><button class="summary-toggle" onclick="toggleSummaryUnit3(this)" type="button">Refer</button>
+</div>
+<label>Additional Notes:</label><textarea placeholder="Any additional notes for LO1..." id="u3-l1-lo1-summary-notes" name="u3-l1-lo1-summary-notes"></textarea>
+</div>
+      </div>
+    </div>
+
+    <div class="learner-block purple">
+      <div class="learner-header purple">Learner 2 • Level 3 Personal Training</div>
+      <div class="learner-body">
+        <div class="plan-block">
+      <h3>Action Plan • Learner 2</h3>
+      <div class="plan-grid">
+        <div>
+          <label for="u3-l2-lo1-plan-type">Action Plan Type</label>
+          <select id="u3-l2-lo1-plan-type" name="u3-l2-lo1-plan-type">
+            <option value="">Select plan type</option>
+            <option>Initial Action Plan</option>
+            <option>Session Review &amp; Action Plan</option>
+          </select>
+        </div>
+        <div>
+          <label>Upload Signed Action Plan</label>
+          <div class="upload-area">
+            <div class="upload-icon">📎</div>
+            <p>Click to attach or drag and drop</p>
+            <input id="u3-l2-lo1-plan-file" name="u3-l2-lo1-plan-file" type="file" accept=".pdf,image/*" onchange="showFilenameUnit3(this)">
+            <div class="filename-display"></div>
+          </div>
+        </div>
+      </div>
+      <label for="u3-l2-lo1-plan-summary">Summary of What Was Agreed</label>
+      <textarea id="u3-l2-lo1-plan-summary" name="u3-l2-lo1-plan-summary" class="min-160" placeholder="Summarise the assessment activity, evidence required, submission route and agreed completion date."></textarea>
+      <div class="cross-ref-note">📌 <strong>Cross-reference note:</strong> This Action Plan provides evidence of assessment preparation and communication for ACs 1.1 to 1.3.</div>
+    </div>
+<div class="ac-block">
+<div class="ac-title">AC 1.1 • Select methods to assess vocational skills, knowledge and understanding which address learner needs and meet assessment requirements</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor must demonstrate selection of appropriate methods from: live skills demonstrations, skills tests, oral and written questions, assignments, projects, case studies, and recognition of prior learning.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l2-lo1-ac1-evidence-types" name="u3-l2-lo1-ac1-evidence-types"><option>Initial Action Plan and assessment agreement</option>
+<option>Learner needs or initial assessment record</option>
+<option>Assessment method selection and rationale</option>
+<option>Marked knowledge workbook or written assessment</option>
+<option>Professional discussion plan or question set</option>
+<option>Assignment, project or case study brief</option>
+<option>Recognition of prior learning evidence</option>
+<option>Assessor observation report</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l2-lo1-ac1-files" name="u3-l2-lo1-ac1-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l2-lo1-ac1-reflective-account" name="u3-l2-lo1-ac1-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l2-lo1-ac1-assessor-name">Assessor Name</label><input type="text" id="u3-l2-lo1-ac1-assessor-name" name="u3-l2-lo1-ac1-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l2-lo1-ac1-feedback-date">Feedback Date</label><input type="date" id="u3-l2-lo1-ac1-feedback-date" name="u3-l2-lo1-ac1-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l2-lo1-ac1-feedback" name="u3-l2-lo1-ac1-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 1.2 • Prepare resources and conditions for the assessment of vocational skills, knowledge and understanding</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor should evidence how they prepared all necessary resources, materials and conditions required to conduct a fair and valid assessment.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l2-lo1-ac2-evidence-types" name="u3-l2-lo1-ac2-evidence-types"><option>Assessment resources and marking guidance</option>
+<option>Prepared workbook, assignment or project brief</option>
+<option>Professional discussion questions</option>
+<option>Assessment timetable or meeting invitation</option>
+<option>Reasonable adjustment record</option>
+<option>Technology or platform readiness check</option>
+<option>Assessor observation report</option>
+<option>Risk assessment or learner welfare check</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l2-lo1-ac2-files" name="u3-l2-lo1-ac2-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l2-lo1-ac2-reflective-account" name="u3-l2-lo1-ac2-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l2-lo1-ac2-assessor-name">Assessor Name</label><input type="text" id="u3-l2-lo1-ac2-assessor-name" name="u3-l2-lo1-ac2-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l2-lo1-ac2-feedback-date">Feedback Date</label><input type="date" id="u3-l2-lo1-ac2-feedback-date" name="u3-l2-lo1-ac2-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l2-lo1-ac2-feedback" name="u3-l2-lo1-ac2-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 1.3 • Communicate the purpose, requirements and processes of assessment of vocational skills, knowledge and understanding to learners</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor must demonstrate how they communicated assessment information to learners clearly, ensuring learners understood what was involved, what was expected and how the process would work.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l2-lo1-ac3-evidence-types" name="u3-l2-lo1-ac3-evidence-types"><option>Initial Action Plan agreed with the learner</option>
+<option>Email or message explaining assessment requirements</option>
+<option>Online meeting notes or recording</option>
+<option>Learner acknowledgement of the assessment plan</option>
+<option>Assessment timetable or deadline record</option>
+<option>Assessor observation report</option>
+<option>Professional discussion record</option>
+<option>Witness statement confirming communication</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l2-lo1-ac3-files" name="u3-l2-lo1-ac3-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l2-lo1-ac3-reflective-account" name="u3-l2-lo1-ac3-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l2-lo1-ac3-assessor-name">Assessor Name</label><input type="text" id="u3-l2-lo1-ac3-assessor-name" name="u3-l2-lo1-ac3-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l2-lo1-ac3-feedback-date">Feedback Date</label><input type="date" id="u3-l2-lo1-ac3-feedback-date" name="u3-l2-lo1-ac3-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l2-lo1-ac3-feedback" name="u3-l2-lo1-ac3-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="summary-block">
+<h3>LO1 Summary – Learner 2</h3>
+<div class="summary-grid">
+<div>
+<label>Assessment Date</label><input type="date" id="u3-l2-lo1-summary-assessment-date" name="u3-l2-lo1-summary-assessment-date">
+</div>
+<div>
+<label>Assessor Name</label><input type="text" placeholder="Enter name" id="u3-l2-lo1-summary-assessor-name" name="u3-l2-lo1-summary-assessor-name">
+</div>
+<div>
+<label>Assessor Signature</label><input type="text" placeholder="Type name as signature" id="u3-l2-lo1-summary-assessor-signature" name="u3-l2-lo1-summary-assessor-signature">
+</div>
+<div>
+<label>Learner Signature</label><input type="text" placeholder="Type name as signature" id="u3-l2-lo1-summary-learner-signature" name="u3-l2-lo1-summary-learner-signature">
+</div>
+</div>
+<label>Overall LO1 Outcome:</label><div class="summary-toggle-row">
+<button class="summary-toggle" onclick="toggleSummaryUnit3(this)" type="button">Pass</button><button class="summary-toggle" onclick="toggleSummaryUnit3(this)" type="button">Refer</button>
+</div>
+<label>Additional Notes:</label><textarea placeholder="Any additional notes for LO1..." id="u3-l2-lo1-summary-notes" name="u3-l2-lo1-summary-notes"></textarea>
+</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lo-section" id="unit3-lo2">
+    <div class="lo-header">
+      <h2>Learning Outcome 2 • Be able to carry out assessments of vocational skills, knowledge and understanding</h2>
+      <div class="ac-list">Assessment Criteria 2.1 • 2.2 • 2.3 • 2.4 • 2.5 • 2.6</div>
+      <div class="lo-description">This learning outcome requires the candidate assessor to demonstrate they can manage assessments to meet requirements, provide appropriate support to learners, analyse evidence of achievement, make sound assessment decisions, follow standardisation procedures, and provide developmental feedback to learners.</div>
+    </div>
+    <div class="info-box">
+<strong>Instructions:</strong> For each assessment criterion below, select the evidence types submitted (minimum 2 per AC), upload supporting files, and complete the reflective account. The assessor must record a judgement and provide written feedback for each AC.</div>
+
+    <div class="learner-block green">
+      <div class="learner-header green">Learner 1 • Level 2 Gym Instructor</div>
+      <div class="learner-body">
+        <div class="plan-block">
+      <h3>Action Plan • Learner 1</h3>
+      <div class="plan-grid">
+        <div>
+          <label for="u3-l1-lo2-plan-type">Action Plan Type</label>
+          <select id="u3-l1-lo2-plan-type" name="u3-l1-lo2-plan-type">
+            <option value="">Select plan type</option>
+            <option>Initial Action Plan</option>
+            <option>Session Review &amp; Action Plan</option>
+          </select>
+        </div>
+        <div>
+          <label>Upload Signed Action Plan</label>
+          <div class="upload-area">
+            <div class="upload-icon">📎</div>
+            <p>Click to attach or drag and drop</p>
+            <input id="u3-l1-lo2-plan-file" name="u3-l1-lo2-plan-file" type="file" accept=".pdf,image/*" onchange="showFilenameUnit3(this)">
+            <div class="filename-display"></div>
+          </div>
+        </div>
+      </div>
+      <label for="u3-l1-lo2-plan-summary">Summary of What Was Agreed</label>
+      <textarea id="u3-l1-lo2-plan-summary" name="u3-l1-lo2-plan-summary" class="min-160" placeholder="Summarise the assessment activity, evidence required, submission route and agreed completion date."></textarea>
+      <div class="cross-ref-note">📌 <strong>Cross-reference note:</strong> This Action Plan and the subsequent Session Review support evidence of managing assessment, feedback and progression across ACs 2.1 to 2.6.</div>
+    </div>
+<div class="ac-block">
+<div class="ac-title">AC 2.1 • Manage assessments of vocational skills, knowledge and understanding to meet assessment requirements</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor should demonstrate effective management of the assessment process, ensuring all requirements are met throughout the assessment activity.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l1-lo2-ac1-evidence-types" name="u3-l1-lo2-ac1-evidence-types"><option>Assessor observation report</option>
+<option>Completed assessment checklist</option>
+<option>Marked workbook, assignment or project</option>
+<option>Professional discussion recording or notes</option>
+<option>Questioning record</option>
+<option>Assessment decision record</option>
+<option>Session Review and Action Plan</option>
+<option>Learner witness statement</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l1-lo2-ac1-files" name="u3-l1-lo2-ac1-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l1-lo2-ac1-reflective-account" name="u3-l1-lo2-ac1-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l1-lo2-ac1-assessor-name">Assessor Name</label><input type="text" id="u3-l1-lo2-ac1-assessor-name" name="u3-l1-lo2-ac1-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l1-lo2-ac1-feedback-date">Feedback Date</label><input type="date" id="u3-l1-lo2-ac1-feedback-date" name="u3-l1-lo2-ac1-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l1-lo2-ac1-feedback" name="u3-l1-lo2-ac1-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 2.2 • Provide support to learners within agreed limitations</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor must show how they offered appropriate support to learners during assessment without compromising the validity or fairness of the assessment.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l1-lo2-ac2-evidence-types" name="u3-l1-lo2-ac2-evidence-types"><option>Learner support record</option>
+<option>Email or message providing agreed support</option>
+<option>Reasonable adjustment record</option>
+<option>Online support meeting notes</option>
+<option>Referral or signposting record</option>
+<option>Assessor observation report</option>
+<option>Learner witness statement</option>
+<option>Session Review and Action Plan</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l1-lo2-ac2-files" name="u3-l1-lo2-ac2-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l1-lo2-ac2-reflective-account" name="u3-l1-lo2-ac2-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l1-lo2-ac2-assessor-name">Assessor Name</label><input type="text" id="u3-l1-lo2-ac2-assessor-name" name="u3-l1-lo2-ac2-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l1-lo2-ac2-feedback-date">Feedback Date</label><input type="date" id="u3-l1-lo2-ac2-feedback-date" name="u3-l1-lo2-ac2-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l1-lo2-ac2-feedback" name="u3-l1-lo2-ac2-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 2.3 • Analyse evidence of learner achievement</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor should demonstrate how they reviewed and analysed evidence produced by the learner to determine whether it is valid, authentic, current, sufficient and reliable.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l1-lo2-ac3-evidence-types" name="u3-l1-lo2-ac3-evidence-types"><option>Marked Level 2 Gym Instructor workbook or assessment task</option>
+<option>Assessment criteria mapping record</option>
+<option>Professional discussion record</option>
+<option>Questioning record</option>
+<option>Product evidence review</option>
+<option>Assessor observation report</option>
+<option>Learner progress record</option>
+<option>Evidence authenticity check</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l1-lo2-ac3-files" name="u3-l1-lo2-ac3-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l1-lo2-ac3-reflective-account" name="u3-l1-lo2-ac3-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l1-lo2-ac3-assessor-name">Assessor Name</label><input type="text" id="u3-l1-lo2-ac3-assessor-name" name="u3-l1-lo2-ac3-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l1-lo2-ac3-feedback-date">Feedback Date</label><input type="date" id="u3-l1-lo2-ac3-feedback-date" name="u3-l1-lo2-ac3-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l1-lo2-ac3-feedback" name="u3-l1-lo2-ac3-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 2.4 • Make assessment decisions relating to vocational skills, knowledge and understanding against specified criteria</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor must evidence how they made clear, justified assessment decisions based on the specified criteria, and how those decisions were recorded.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l1-lo2-ac4-evidence-types" name="u3-l1-lo2-ac4-evidence-types"><option>Assessment decision record</option>
+<option>Completed marking or assessment checklist</option>
+<option>Marked learner work with annotations</option>
+<option>Assessment criteria mapping record</option>
+<option>Professional discussion record</option>
+<option>Assessor observation report</option>
+<option>Record of insufficient evidence and further actions</option>
+<option>Session Review and Action Plan</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l1-lo2-ac4-files" name="u3-l1-lo2-ac4-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l1-lo2-ac4-reflective-account" name="u3-l1-lo2-ac4-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l1-lo2-ac4-assessor-name">Assessor Name</label><input type="text" id="u3-l1-lo2-ac4-assessor-name" name="u3-l1-lo2-ac4-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l1-lo2-ac4-feedback-date">Feedback Date</label><input type="date" id="u3-l1-lo2-ac4-feedback-date" name="u3-l1-lo2-ac4-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l1-lo2-ac4-feedback" name="u3-l1-lo2-ac4-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 2.5 • Follow standardisation procedures</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor should demonstrate how they participated in and adhered to the centre's standardisation procedures to ensure consistency of assessment decisions across the team.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l1-lo2-ac5-evidence-types" name="u3-l1-lo2-ac5-evidence-types"><option>Standardisation meeting attendance record</option>
+<option>Standardisation activity or sample exercise</option>
+<option>Agreed marking guidance</option>
+<option>Comparison of assessment decisions</option>
+<option>Assessor observation report</option>
+<option>IQA or supervising assessor feedback</option>
+<option>Countersigned assessment decision</option>
+<option>Reflective account of standardisation learning</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l1-lo2-ac5-files" name="u3-l1-lo2-ac5-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l1-lo2-ac5-reflective-account" name="u3-l1-lo2-ac5-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l1-lo2-ac5-assessor-name">Assessor Name</label><input type="text" id="u3-l1-lo2-ac5-assessor-name" name="u3-l1-lo2-ac5-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l1-lo2-ac5-feedback-date">Feedback Date</label><input type="date" id="u3-l1-lo2-ac5-feedback-date" name="u3-l1-lo2-ac5-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l1-lo2-ac5-feedback" name="u3-l1-lo2-ac5-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 2.6 • Provide feedback to the learner that affirms achievement and identifies any further implications for learning, assessment and progression</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor must demonstrate how they delivered constructive feedback to the learner, confirming what was achieved and identifying any next steps for learning, further assessment or progression.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l1-lo2-ac6-evidence-types" name="u3-l1-lo2-ac6-evidence-types"><option>Written feedback record</option>
+<option>Recorded feedback meeting or professional discussion</option>
+<option>Marked work showing developmental comments</option>
+<option>Session Review and Action Plan</option>
+<option>Learner acknowledgement of feedback</option>
+<option>Assessment outcome email or message</option>
+<option>Assessor observation report</option>
+<option>Reassessment or progression plan</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l1-lo2-ac6-files" name="u3-l1-lo2-ac6-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l1-lo2-ac6-reflective-account" name="u3-l1-lo2-ac6-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l1-lo2-ac6-assessor-name">Assessor Name</label><input type="text" id="u3-l1-lo2-ac6-assessor-name" name="u3-l1-lo2-ac6-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l1-lo2-ac6-feedback-date">Feedback Date</label><input type="date" id="u3-l1-lo2-ac6-feedback-date" name="u3-l1-lo2-ac6-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l1-lo2-ac6-feedback" name="u3-l1-lo2-ac6-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="summary-block">
+<h3>LO2 Summary – Learner 1</h3>
+<div class="summary-grid">
+<div>
+<label>Assessment Date</label><input type="date" id="u3-l1-lo2-summary-assessment-date" name="u3-l1-lo2-summary-assessment-date">
+</div>
+<div>
+<label>Assessor Name</label><input type="text" placeholder="Enter name" id="u3-l1-lo2-summary-assessor-name" name="u3-l1-lo2-summary-assessor-name">
+</div>
+<div>
+<label>Assessor Signature</label><input type="text" placeholder="Type name as signature" id="u3-l1-lo2-summary-assessor-signature" name="u3-l1-lo2-summary-assessor-signature">
+</div>
+<div>
+<label>Learner Signature</label><input type="text" placeholder="Type name as signature" id="u3-l1-lo2-summary-learner-signature" name="u3-l1-lo2-summary-learner-signature">
+</div>
+</div>
+<label>Overall LO2 Outcome:</label><div class="summary-toggle-row">
+<button class="summary-toggle" onclick="toggleSummaryUnit3(this)" type="button">Pass</button><button class="summary-toggle" onclick="toggleSummaryUnit3(this)" type="button">Refer</button>
+</div>
+<label>Additional Notes:</label><textarea placeholder="Any additional notes for LO2..." id="u3-l1-lo2-summary-notes" name="u3-l1-lo2-summary-notes"></textarea>
+</div>
+      </div>
+    </div>
+
+    <div class="learner-block purple">
+      <div class="learner-header purple">Learner 2 • Level 3 Personal Training</div>
+      <div class="learner-body">
+        <div class="plan-block">
+      <h3>Action Plan • Learner 2</h3>
+      <div class="plan-grid">
+        <div>
+          <label for="u3-l2-lo2-plan-type">Action Plan Type</label>
+          <select id="u3-l2-lo2-plan-type" name="u3-l2-lo2-plan-type">
+            <option value="">Select plan type</option>
+            <option>Initial Action Plan</option>
+            <option>Session Review &amp; Action Plan</option>
+          </select>
+        </div>
+        <div>
+          <label>Upload Signed Action Plan</label>
+          <div class="upload-area">
+            <div class="upload-icon">📎</div>
+            <p>Click to attach or drag and drop</p>
+            <input id="u3-l2-lo2-plan-file" name="u3-l2-lo2-plan-file" type="file" accept=".pdf,image/*" onchange="showFilenameUnit3(this)">
+            <div class="filename-display"></div>
+          </div>
+        </div>
+      </div>
+      <label for="u3-l2-lo2-plan-summary">Summary of What Was Agreed</label>
+      <textarea id="u3-l2-lo2-plan-summary" name="u3-l2-lo2-plan-summary" class="min-160" placeholder="Summarise the assessment activity, evidence required, submission route and agreed completion date."></textarea>
+      <div class="cross-ref-note">📌 <strong>Cross-reference note:</strong> This Action Plan and the subsequent Session Review support evidence of managing assessment, feedback and progression across ACs 2.1 to 2.6.</div>
+    </div>
+<div class="ac-block">
+<div class="ac-title">AC 2.1 • Manage assessments of vocational skills, knowledge and understanding to meet assessment requirements</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor should demonstrate effective management of the assessment process, ensuring all requirements are met throughout the assessment activity.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l2-lo2-ac1-evidence-types" name="u3-l2-lo2-ac1-evidence-types"><option>Assessor observation report</option>
+<option>Completed assessment checklist</option>
+<option>Marked workbook, assignment or project</option>
+<option>Professional discussion recording or notes</option>
+<option>Questioning record</option>
+<option>Assessment decision record</option>
+<option>Session Review and Action Plan</option>
+<option>Learner witness statement</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l2-lo2-ac1-files" name="u3-l2-lo2-ac1-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l2-lo2-ac1-reflective-account" name="u3-l2-lo2-ac1-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l2-lo2-ac1-assessor-name">Assessor Name</label><input type="text" id="u3-l2-lo2-ac1-assessor-name" name="u3-l2-lo2-ac1-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l2-lo2-ac1-feedback-date">Feedback Date</label><input type="date" id="u3-l2-lo2-ac1-feedback-date" name="u3-l2-lo2-ac1-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l2-lo2-ac1-feedback" name="u3-l2-lo2-ac1-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 2.2 • Provide support to learners within agreed limitations</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor must show how they offered appropriate support to learners during assessment without compromising the validity or fairness of the assessment.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l2-lo2-ac2-evidence-types" name="u3-l2-lo2-ac2-evidence-types"><option>Learner support record</option>
+<option>Email or message providing agreed support</option>
+<option>Reasonable adjustment record</option>
+<option>Online support meeting notes</option>
+<option>Referral or signposting record</option>
+<option>Assessor observation report</option>
+<option>Learner witness statement</option>
+<option>Session Review and Action Plan</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l2-lo2-ac2-files" name="u3-l2-lo2-ac2-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l2-lo2-ac2-reflective-account" name="u3-l2-lo2-ac2-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l2-lo2-ac2-assessor-name">Assessor Name</label><input type="text" id="u3-l2-lo2-ac2-assessor-name" name="u3-l2-lo2-ac2-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l2-lo2-ac2-feedback-date">Feedback Date</label><input type="date" id="u3-l2-lo2-ac2-feedback-date" name="u3-l2-lo2-ac2-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l2-lo2-ac2-feedback" name="u3-l2-lo2-ac2-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 2.3 • Analyse evidence of learner achievement</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor should demonstrate how they reviewed and analysed evidence produced by the learner to determine whether it is valid, authentic, current, sufficient and reliable.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l2-lo2-ac3-evidence-types" name="u3-l2-lo2-ac3-evidence-types"><option>Marked Level 3 Personal Training workbook or assessment task</option>
+<option>Assessment criteria mapping record</option>
+<option>Professional discussion record</option>
+<option>Questioning record</option>
+<option>Product evidence review</option>
+<option>Assessor observation report</option>
+<option>Learner progress record</option>
+<option>Evidence authenticity check</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l2-lo2-ac3-files" name="u3-l2-lo2-ac3-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l2-lo2-ac3-reflective-account" name="u3-l2-lo2-ac3-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l2-lo2-ac3-assessor-name">Assessor Name</label><input type="text" id="u3-l2-lo2-ac3-assessor-name" name="u3-l2-lo2-ac3-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l2-lo2-ac3-feedback-date">Feedback Date</label><input type="date" id="u3-l2-lo2-ac3-feedback-date" name="u3-l2-lo2-ac3-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l2-lo2-ac3-feedback" name="u3-l2-lo2-ac3-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 2.4 • Make assessment decisions relating to vocational skills, knowledge and understanding against specified criteria</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor must evidence how they made clear, justified assessment decisions based on the specified criteria, and how those decisions were recorded.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l2-lo2-ac4-evidence-types" name="u3-l2-lo2-ac4-evidence-types"><option>Assessment decision record</option>
+<option>Completed marking or assessment checklist</option>
+<option>Marked learner work with annotations</option>
+<option>Assessment criteria mapping record</option>
+<option>Professional discussion record</option>
+<option>Assessor observation report</option>
+<option>Record of insufficient evidence and further actions</option>
+<option>Session Review and Action Plan</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l2-lo2-ac4-files" name="u3-l2-lo2-ac4-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l2-lo2-ac4-reflective-account" name="u3-l2-lo2-ac4-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l2-lo2-ac4-assessor-name">Assessor Name</label><input type="text" id="u3-l2-lo2-ac4-assessor-name" name="u3-l2-lo2-ac4-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l2-lo2-ac4-feedback-date">Feedback Date</label><input type="date" id="u3-l2-lo2-ac4-feedback-date" name="u3-l2-lo2-ac4-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l2-lo2-ac4-feedback" name="u3-l2-lo2-ac4-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 2.5 • Follow standardisation procedures</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor should demonstrate how they participated in and adhered to the centre's standardisation procedures to ensure consistency of assessment decisions across the team.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l2-lo2-ac5-evidence-types" name="u3-l2-lo2-ac5-evidence-types"><option>Standardisation meeting attendance record</option>
+<option>Standardisation activity or sample exercise</option>
+<option>Agreed marking guidance</option>
+<option>Comparison of assessment decisions</option>
+<option>Assessor observation report</option>
+<option>IQA or supervising assessor feedback</option>
+<option>Countersigned assessment decision</option>
+<option>Reflective account of standardisation learning</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l2-lo2-ac5-files" name="u3-l2-lo2-ac5-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l2-lo2-ac5-reflective-account" name="u3-l2-lo2-ac5-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l2-lo2-ac5-assessor-name">Assessor Name</label><input type="text" id="u3-l2-lo2-ac5-assessor-name" name="u3-l2-lo2-ac5-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l2-lo2-ac5-feedback-date">Feedback Date</label><input type="date" id="u3-l2-lo2-ac5-feedback-date" name="u3-l2-lo2-ac5-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l2-lo2-ac5-feedback" name="u3-l2-lo2-ac5-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 2.6 • Provide feedback to the learner that affirms achievement and identifies any further implications for learning, assessment and progression</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor must demonstrate how they delivered constructive feedback to the learner, confirming what was achieved and identifying any next steps for learning, further assessment or progression.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l2-lo2-ac6-evidence-types" name="u3-l2-lo2-ac6-evidence-types"><option>Written feedback record</option>
+<option>Recorded feedback meeting or professional discussion</option>
+<option>Marked work showing developmental comments</option>
+<option>Session Review and Action Plan</option>
+<option>Learner acknowledgement of feedback</option>
+<option>Assessment outcome email or message</option>
+<option>Assessor observation report</option>
+<option>Reassessment or progression plan</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l2-lo2-ac6-files" name="u3-l2-lo2-ac6-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l2-lo2-ac6-reflective-account" name="u3-l2-lo2-ac6-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l2-lo2-ac6-assessor-name">Assessor Name</label><input type="text" id="u3-l2-lo2-ac6-assessor-name" name="u3-l2-lo2-ac6-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l2-lo2-ac6-feedback-date">Feedback Date</label><input type="date" id="u3-l2-lo2-ac6-feedback-date" name="u3-l2-lo2-ac6-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l2-lo2-ac6-feedback" name="u3-l2-lo2-ac6-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="summary-block">
+<h3>LO2 Summary – Learner 2</h3>
+<div class="summary-grid">
+<div>
+<label>Assessment Date</label><input type="date" id="u3-l2-lo2-summary-assessment-date" name="u3-l2-lo2-summary-assessment-date">
+</div>
+<div>
+<label>Assessor Name</label><input type="text" placeholder="Enter name" id="u3-l2-lo2-summary-assessor-name" name="u3-l2-lo2-summary-assessor-name">
+</div>
+<div>
+<label>Assessor Signature</label><input type="text" placeholder="Type name as signature" id="u3-l2-lo2-summary-assessor-signature" name="u3-l2-lo2-summary-assessor-signature">
+</div>
+<div>
+<label>Learner Signature</label><input type="text" placeholder="Type name as signature" id="u3-l2-lo2-summary-learner-signature" name="u3-l2-lo2-summary-learner-signature">
+</div>
+</div>
+<label>Overall LO2 Outcome:</label><div class="summary-toggle-row">
+<button class="summary-toggle" onclick="toggleSummaryUnit3(this)" type="button">Pass</button><button class="summary-toggle" onclick="toggleSummaryUnit3(this)" type="button">Refer</button>
+</div>
+<label>Additional Notes:</label><textarea placeholder="Any additional notes for LO2..." id="u3-l2-lo2-summary-notes" name="u3-l2-lo2-summary-notes"></textarea>
+</div>
+      </div>
+    </div>
+  </section>  <section class="lo-section" id="unit3-lo3">
+    <div class="lo-header">
+      <h2>Learning Outcome 3 • Be able to provide required information following the assessment of vocational skills, knowledge and understanding</h2>
+      <div class="ac-list">Assessment Criteria 3.1 • 3.2 • 3.3</div>
+      <div class="lo-description">This learning outcome requires the candidate assessor to demonstrate that they maintain accurate records of assessments and outcomes, make assessment information available to authorised colleagues as required, and follow procedures to maintain the confidentiality of assessment information.</div>
+    </div>
+    <div class="info-box">
+<strong>Instructions:</strong> For each assessment criterion below, select the evidence types submitted (minimum 2 per AC), upload supporting files, and complete the reflective account. The assessor must record a judgement and provide written feedback for each AC.</div>
+
+    <div class="learner-block green">
+      <div class="learner-header green">Learner 1 • Level 2 Gym Instructor</div>
+      <div class="learner-body">
+        <div class="plan-block">
+      <h3>Action Plan • Learner 1</h3>
+      <div class="plan-grid">
+        <div>
+          <label for="u3-l1-lo3-plan-type">Action Plan Type</label>
+          <select id="u3-l1-lo3-plan-type" name="u3-l1-lo3-plan-type">
+            <option value="">Select plan type</option>
+            <option>Initial Action Plan</option>
+            <option>Session Review &amp; Action Plan</option>
+          </select>
+        </div>
+        <div>
+          <label>Upload Signed Action Plan</label>
+          <div class="upload-area">
+            <div class="upload-icon">📎</div>
+            <p>Click to attach or drag and drop</p>
+            <input id="u3-l1-lo3-plan-file" name="u3-l1-lo3-plan-file" type="file" accept=".pdf,image/*" onchange="showFilenameUnit3(this)">
+            <div class="filename-display"></div>
+          </div>
+        </div>
+      </div>
+      <label for="u3-l1-lo3-plan-summary">Summary of What Was Agreed</label>
+      <textarea id="u3-l1-lo3-plan-summary" name="u3-l1-lo3-plan-summary" class="min-160" placeholder="Summarise the assessment activity, evidence required, submission route and agreed completion date."></textarea>
+      <div class="cross-ref-note">📌 <strong>Cross-reference note:</strong> This Action Plan and review record support the audit trail for assessment decisions, learner progress and secure information sharing across ACs 3.1 to 3.3.</div>
+    </div>
+<div class="ac-block">
+<div class="ac-title">AC 3.1 • Maintain records of the assessment of vocational skills, knowledge and understanding, its outcomes and learner progress</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor must provide evidence that assessment records, outcomes and records of learner progress are accurately maintained in line with organisational and awarding organisation requirements.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l1-lo3-ac1-evidence-types" name="u3-l1-lo3-ac1-evidence-types"><option>Assessment decision and outcome record</option>
+<option>Learner progress record</option>
+<option>Initial Action Plan</option>
+<option>Session Review and Action Plan</option>
+<option>Marked workbook, assignment or project</option>
+<option>Feedback record</option>
+<option>Assessment tracking sheet</option>
+<option>Assessor observation report</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l1-lo3-ac1-files" name="u3-l1-lo3-ac1-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l1-lo3-ac1-reflective-account" name="u3-l1-lo3-ac1-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l1-lo3-ac1-assessor-name">Assessor Name</label><input type="text" id="u3-l1-lo3-ac1-assessor-name" name="u3-l1-lo3-ac1-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l1-lo3-ac1-feedback-date">Feedback Date</label><input type="date" id="u3-l1-lo3-ac1-feedback-date" name="u3-l1-lo3-ac1-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l1-lo3-ac1-feedback" name="u3-l1-lo3-ac1-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 3.2 • Make assessment information available to authorised colleagues as required</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor should demonstrate how they shared relevant assessment information with authorised colleagues, including IQAs and other relevant personnel, in a timely and appropriate manner.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l1-lo3-ac2-evidence-types" name="u3-l1-lo3-ac2-evidence-types"><option>IQA or supervising assessor submission record</option>
+<option>Countersignature request and response</option>
+<option>Securely shared assessment record</option>
+<option>Assessment outcome notification</option>
+<option>Standardisation meeting record</option>
+<option>Authorised colleague acknowledgement</option>
+<option>Assessment tracking system entry</option>
+<option>Assessor observation report</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l1-lo3-ac2-files" name="u3-l1-lo3-ac2-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l1-lo3-ac2-reflective-account" name="u3-l1-lo3-ac2-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l1-lo3-ac2-assessor-name">Assessor Name</label><input type="text" id="u3-l1-lo3-ac2-assessor-name" name="u3-l1-lo3-ac2-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l1-lo3-ac2-feedback-date">Feedback Date</label><input type="date" id="u3-l1-lo3-ac2-feedback-date" name="u3-l1-lo3-ac2-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l1-lo3-ac2-feedback" name="u3-l1-lo3-ac2-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 3.3 • Follow procedures to maintain the confidentiality of assessment information</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor must evidence how they handled assessment information in line with confidentiality procedures, data protection requirements and organisational policies.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l1-lo3-ac3-evidence-types" name="u3-l1-lo3-ac3-evidence-types"><option>Secure learner record or portfolio structure</option>
+<option>Data protection compliance record</option>
+<option>Access control or permissions evidence</option>
+<option>Confidentiality policy acknowledgement</option>
+<option>Secure file-sharing record</option>
+<option>Assessment audit trail</option>
+<option>Records retention procedure</option>
+<option>Reflective account of secure information handling</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l1-lo3-ac3-files" name="u3-l1-lo3-ac3-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l1-lo3-ac3-reflective-account" name="u3-l1-lo3-ac3-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l1-lo3-ac3-assessor-name">Assessor Name</label><input type="text" id="u3-l1-lo3-ac3-assessor-name" name="u3-l1-lo3-ac3-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l1-lo3-ac3-feedback-date">Feedback Date</label><input type="date" id="u3-l1-lo3-ac3-feedback-date" name="u3-l1-lo3-ac3-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l1-lo3-ac3-feedback" name="u3-l1-lo3-ac3-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="summary-block">
+<h3>LO3 Summary – Learner 1</h3>
+<div class="summary-grid">
+<div>
+<label>Assessment Date</label><input type="date" id="u3-l1-lo3-summary-assessment-date" name="u3-l1-lo3-summary-assessment-date">
+</div>
+<div>
+<label>Assessor Name</label><input type="text" placeholder="Enter name" id="u3-l1-lo3-summary-assessor-name" name="u3-l1-lo3-summary-assessor-name">
+</div>
+<div>
+<label>Assessor Signature</label><input type="text" placeholder="Type name as signature" id="u3-l1-lo3-summary-assessor-signature" name="u3-l1-lo3-summary-assessor-signature">
+</div>
+<div>
+<label>Learner Signature</label><input type="text" placeholder="Type name as signature" id="u3-l1-lo3-summary-learner-signature" name="u3-l1-lo3-summary-learner-signature">
+</div>
+</div>
+<label>Overall LO3 Outcome:</label><div class="summary-toggle-row">
+<button class="summary-toggle" onclick="toggleSummaryUnit3(this)" type="button">Pass</button><button class="summary-toggle" onclick="toggleSummaryUnit3(this)" type="button">Refer</button>
+</div>
+<label>Additional Notes:</label><textarea placeholder="Any additional notes for LO3..." id="u3-l1-lo3-summary-notes" name="u3-l1-lo3-summary-notes"></textarea>
+</div>
+      </div>
+    </div>
+
+    <div class="learner-block purple">
+      <div class="learner-header purple">Learner 2 • Level 3 Personal Training</div>
+      <div class="learner-body">
+        <div class="plan-block">
+      <h3>Action Plan • Learner 2</h3>
+      <div class="plan-grid">
+        <div>
+          <label for="u3-l2-lo3-plan-type">Action Plan Type</label>
+          <select id="u3-l2-lo3-plan-type" name="u3-l2-lo3-plan-type">
+            <option value="">Select plan type</option>
+            <option>Initial Action Plan</option>
+            <option>Session Review &amp; Action Plan</option>
+          </select>
+        </div>
+        <div>
+          <label>Upload Signed Action Plan</label>
+          <div class="upload-area">
+            <div class="upload-icon">📎</div>
+            <p>Click to attach or drag and drop</p>
+            <input id="u3-l2-lo3-plan-file" name="u3-l2-lo3-plan-file" type="file" accept=".pdf,image/*" onchange="showFilenameUnit3(this)">
+            <div class="filename-display"></div>
+          </div>
+        </div>
+      </div>
+      <label for="u3-l2-lo3-plan-summary">Summary of What Was Agreed</label>
+      <textarea id="u3-l2-lo3-plan-summary" name="u3-l2-lo3-plan-summary" class="min-160" placeholder="Summarise the assessment activity, evidence required, submission route and agreed completion date."></textarea>
+      <div class="cross-ref-note">📌 <strong>Cross-reference note:</strong> This Action Plan and review record support the audit trail for assessment decisions, learner progress and secure information sharing across ACs 3.1 to 3.3.</div>
+    </div>
+<div class="ac-block">
+<div class="ac-title">AC 3.1 • Maintain records of the assessment of vocational skills, knowledge and understanding, its outcomes and learner progress</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor must provide evidence that assessment records, outcomes and records of learner progress are accurately maintained in line with organisational and awarding organisation requirements.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l2-lo3-ac1-evidence-types" name="u3-l2-lo3-ac1-evidence-types"><option>Assessment decision and outcome record</option>
+<option>Learner progress record</option>
+<option>Initial Action Plan</option>
+<option>Session Review and Action Plan</option>
+<option>Marked workbook, assignment or project</option>
+<option>Feedback record</option>
+<option>Assessment tracking sheet</option>
+<option>Assessor observation report</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l2-lo3-ac1-files" name="u3-l2-lo3-ac1-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l2-lo3-ac1-reflective-account" name="u3-l2-lo3-ac1-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l2-lo3-ac1-assessor-name">Assessor Name</label><input type="text" id="u3-l2-lo3-ac1-assessor-name" name="u3-l2-lo3-ac1-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l2-lo3-ac1-feedback-date">Feedback Date</label><input type="date" id="u3-l2-lo3-ac1-feedback-date" name="u3-l2-lo3-ac1-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l2-lo3-ac1-feedback" name="u3-l2-lo3-ac1-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 3.2 • Make assessment information available to authorised colleagues as required</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor should demonstrate how they shared relevant assessment information with authorised colleagues, including IQAs and other relevant personnel, in a timely and appropriate manner.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l2-lo3-ac2-evidence-types" name="u3-l2-lo3-ac2-evidence-types"><option>IQA or supervising assessor submission record</option>
+<option>Countersignature request and response</option>
+<option>Securely shared assessment record</option>
+<option>Assessment outcome notification</option>
+<option>Standardisation meeting record</option>
+<option>Authorised colleague acknowledgement</option>
+<option>Assessment tracking system entry</option>
+<option>Assessor observation report</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l2-lo3-ac2-files" name="u3-l2-lo3-ac2-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l2-lo3-ac2-reflective-account" name="u3-l2-lo3-ac2-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l2-lo3-ac2-assessor-name">Assessor Name</label><input type="text" id="u3-l2-lo3-ac2-assessor-name" name="u3-l2-lo3-ac2-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l2-lo3-ac2-feedback-date">Feedback Date</label><input type="date" id="u3-l2-lo3-ac2-feedback-date" name="u3-l2-lo3-ac2-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l2-lo3-ac2-feedback" name="u3-l2-lo3-ac2-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 3.3 • Follow procedures to maintain the confidentiality of assessment information</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor must evidence how they handled assessment information in line with confidentiality procedures, data protection requirements and organisational policies.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l2-lo3-ac3-evidence-types" name="u3-l2-lo3-ac3-evidence-types"><option>Secure learner record or portfolio structure</option>
+<option>Data protection compliance record</option>
+<option>Access control or permissions evidence</option>
+<option>Confidentiality policy acknowledgement</option>
+<option>Secure file-sharing record</option>
+<option>Assessment audit trail</option>
+<option>Records retention procedure</option>
+<option>Reflective account of secure information handling</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l2-lo3-ac3-files" name="u3-l2-lo3-ac3-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l2-lo3-ac3-reflective-account" name="u3-l2-lo3-ac3-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l2-lo3-ac3-assessor-name">Assessor Name</label><input type="text" id="u3-l2-lo3-ac3-assessor-name" name="u3-l2-lo3-ac3-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l2-lo3-ac3-feedback-date">Feedback Date</label><input type="date" id="u3-l2-lo3-ac3-feedback-date" name="u3-l2-lo3-ac3-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l2-lo3-ac3-feedback" name="u3-l2-lo3-ac3-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="summary-block">
+<h3>LO3 Summary – Learner 2</h3>
+<div class="summary-grid">
+<div>
+<label>Assessment Date</label><input type="date" id="u3-l2-lo3-summary-assessment-date" name="u3-l2-lo3-summary-assessment-date">
+</div>
+<div>
+<label>Assessor Name</label><input type="text" placeholder="Enter name" id="u3-l2-lo3-summary-assessor-name" name="u3-l2-lo3-summary-assessor-name">
+</div>
+<div>
+<label>Assessor Signature</label><input type="text" placeholder="Type name as signature" id="u3-l2-lo3-summary-assessor-signature" name="u3-l2-lo3-summary-assessor-signature">
+</div>
+<div>
+<label>Learner Signature</label><input type="text" placeholder="Type name as signature" id="u3-l2-lo3-summary-learner-signature" name="u3-l2-lo3-summary-learner-signature">
+</div>
+</div>
+<label>Overall LO3 Outcome:</label><div class="summary-toggle-row">
+<button class="summary-toggle" onclick="toggleSummaryUnit3(this)" type="button">Pass</button><button class="summary-toggle" onclick="toggleSummaryUnit3(this)" type="button">Refer</button>
+</div>
+<label>Additional Notes:</label><textarea placeholder="Any additional notes for LO3..." id="u3-l2-lo3-summary-notes" name="u3-l2-lo3-summary-notes"></textarea>
+</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lo-section" id="unit3-lo4">
+    <div class="lo-header">
+      <h2>Learning Outcome 4 • Be able to apply requirements for equality and diversity and, where appropriate, bilingualism, and health, safety and welfare, and the legal and good practice requirements for assessment</h2>
+      <div class="ac-list">Assessment Criteria 4.1 • 4.2 • 4.3</div>
+      <div class="lo-description">This learning outcome requires the candidate assessor to demonstrate how they apply equality and diversity requirements throughout their assessment practice, comply with relevant health, safety and welfare legislation, and reflect on and improve their own assessment practice through continuing professional development.</div>
+    </div>
+    <div class="info-box">
+<strong>Instructions:</strong> For each assessment criterion below, select the evidence types submitted (minimum 2 per AC), upload supporting files, and complete the reflective account. The assessor must record a judgement and provide written feedback for each AC.</div>
+
+    <div class="learner-block green">
+      <div class="learner-header green">Learner 1 • Level 2 Gym Instructor</div>
+      <div class="learner-body">
+        <div class="ac-block">
+<div class="ac-title">AC 4.1 • Apply requirements for equality and diversity and, where appropriate, bilingualism</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor must demonstrate how they ensured their assessment practice promoted equality, valued diversity and, where relevant, accommodated bilingual learners appropriately throughout the assessment process.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l1-lo4-ac1-evidence-types" name="u3-l1-lo4-ac1-evidence-types"><option>Equality and diversity policy reference</option>
+<option>Assessment plan showing reasonable adjustments</option>
+<option>Learner needs assessment</option>
+<option>Bilingual support arrangement where applicable</option>
+<option>Assessor observation report</option>
+<option>Learner witness statement</option>
+<option>Professional discussion record</option>
+<option>Reflective account of inclusive assessment practice</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l1-lo4-ac1-files" name="u3-l1-lo4-ac1-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l1-lo4-ac1-reflective-account" name="u3-l1-lo4-ac1-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l1-lo4-ac1-assessor-name">Assessor Name</label><input type="text" id="u3-l1-lo4-ac1-assessor-name" name="u3-l1-lo4-ac1-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l1-lo4-ac1-feedback-date">Feedback Date</label><input type="date" id="u3-l1-lo4-ac1-feedback-date" name="u3-l1-lo4-ac1-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l1-lo4-ac1-feedback" name="u3-l1-lo4-ac1-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 4.2 • Apply health, safety and welfare requirements in assessment</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor should evidence how they complied with health, safety and welfare legislation and organisational policies throughout all assessment activities.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l1-lo4-ac2-evidence-types" name="u3-l1-lo4-ac2-evidence-types"><option>Health, safety and welfare risk assessment</option>
+<option>Safeguarding or welfare procedure reference</option>
+<option>Assessment environment safety check</option>
+<option>Learner support or referral record</option>
+<option>Assessor observation report</option>
+<option>Incident or concern reporting record</option>
+<option>Professional discussion record</option>
+<option>Reflective account of safe assessment practice</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l1-lo4-ac2-files" name="u3-l1-lo4-ac2-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l1-lo4-ac2-reflective-account" name="u3-l1-lo4-ac2-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l1-lo4-ac2-assessor-name">Assessor Name</label><input type="text" id="u3-l1-lo4-ac2-assessor-name" name="u3-l1-lo4-ac2-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l1-lo4-ac2-feedback-date">Feedback Date</label><input type="date" id="u3-l1-lo4-ac2-feedback-date" name="u3-l1-lo4-ac2-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l1-lo4-ac2-feedback" name="u3-l1-lo4-ac2-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 4.3 • Evaluate own assessment practice and identify continuing professional development needs</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor must reflect on their assessment practice, identifying strengths and areas for development, and demonstrate how they have engaged with or planned continuing professional development activity as a result.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l1-lo4-ac3-evidence-types" name="u3-l1-lo4-ac3-evidence-types"><option>Self-evaluation of assessment practice</option>
+<option>Reflective journal or account</option>
+<option>CPD action plan or log</option>
+<option>Standardisation meeting record</option>
+<option>IQA or supervising assessor feedback</option>
+<option>Assessor observation report</option>
+<option>Training or CPD attendance certificate</option>
+<option>Professional discussion about development needs</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l1-lo4-ac3-files" name="u3-l1-lo4-ac3-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l1-lo4-ac3-reflective-account" name="u3-l1-lo4-ac3-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l1-lo4-ac3-assessor-name">Assessor Name</label><input type="text" id="u3-l1-lo4-ac3-assessor-name" name="u3-l1-lo4-ac3-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l1-lo4-ac3-feedback-date">Feedback Date</label><input type="date" id="u3-l1-lo4-ac3-feedback-date" name="u3-l1-lo4-ac3-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l1-lo4-ac3-feedback" name="u3-l1-lo4-ac3-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="summary-block">
+<h3>LO4 Summary – Learner 1</h3>
+<div class="summary-grid">
+<div>
+<label>Assessment Date</label><input type="date" id="u3-l1-lo4-summary-assessment-date" name="u3-l1-lo4-summary-assessment-date">
+</div>
+<div>
+<label>Assessor Name</label><input type="text" placeholder="Enter name" id="u3-l1-lo4-summary-assessor-name" name="u3-l1-lo4-summary-assessor-name">
+</div>
+<div>
+<label>Assessor Signature</label><input type="text" placeholder="Type name as signature" id="u3-l1-lo4-summary-assessor-signature" name="u3-l1-lo4-summary-assessor-signature">
+</div>
+<div>
+<label>Learner Signature</label><input type="text" placeholder="Type name as signature" id="u3-l1-lo4-summary-learner-signature" name="u3-l1-lo4-summary-learner-signature">
+</div>
+</div>
+<label>Overall LO4 Outcome:</label><div class="summary-toggle-row">
+<button class="summary-toggle" onclick="toggleSummaryUnit3(this)" type="button">Pass</button><button class="summary-toggle" onclick="toggleSummaryUnit3(this)" type="button">Refer</button>
+</div>
+<label>Additional Notes:</label><textarea placeholder="Any additional notes for LO4..." id="u3-l1-lo4-summary-notes" name="u3-l1-lo4-summary-notes"></textarea>
+</div>
+      </div>
+    </div>
+
+    <div class="learner-block purple">
+      <div class="learner-header purple">Learner 2 • Level 3 Personal Training</div>
+      <div class="learner-body">
+        <div class="ac-block">
+<div class="ac-title">AC 4.1 • Apply requirements for equality and diversity and, where appropriate, bilingualism</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor must demonstrate how they ensured their assessment practice promoted equality, valued diversity and, where relevant, accommodated bilingual learners appropriately throughout the assessment process.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l2-lo4-ac1-evidence-types" name="u3-l2-lo4-ac1-evidence-types"><option>Equality and diversity policy reference</option>
+<option>Assessment plan showing reasonable adjustments</option>
+<option>Learner needs assessment</option>
+<option>Bilingual support arrangement where applicable</option>
+<option>Assessor observation report</option>
+<option>Learner witness statement</option>
+<option>Professional discussion record</option>
+<option>Reflective account of inclusive assessment practice</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l2-lo4-ac1-files" name="u3-l2-lo4-ac1-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l2-lo4-ac1-reflective-account" name="u3-l2-lo4-ac1-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l2-lo4-ac1-assessor-name">Assessor Name</label><input type="text" id="u3-l2-lo4-ac1-assessor-name" name="u3-l2-lo4-ac1-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l2-lo4-ac1-feedback-date">Feedback Date</label><input type="date" id="u3-l2-lo4-ac1-feedback-date" name="u3-l2-lo4-ac1-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l2-lo4-ac1-feedback" name="u3-l2-lo4-ac1-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 4.2 • Apply health, safety and welfare requirements in assessment</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor should evidence how they complied with health, safety and welfare legislation and organisational policies throughout all assessment activities.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l2-lo4-ac2-evidence-types" name="u3-l2-lo4-ac2-evidence-types"><option>Health, safety and welfare risk assessment</option>
+<option>Safeguarding or welfare procedure reference</option>
+<option>Assessment environment safety check</option>
+<option>Learner support or referral record</option>
+<option>Assessor observation report</option>
+<option>Incident or concern reporting record</option>
+<option>Professional discussion record</option>
+<option>Reflective account of safe assessment practice</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l2-lo4-ac2-files" name="u3-l2-lo4-ac2-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l2-lo4-ac2-reflective-account" name="u3-l2-lo4-ac2-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l2-lo4-ac2-assessor-name">Assessor Name</label><input type="text" id="u3-l2-lo4-ac2-assessor-name" name="u3-l2-lo4-ac2-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l2-lo4-ac2-feedback-date">Feedback Date</label><input type="date" id="u3-l2-lo4-ac2-feedback-date" name="u3-l2-lo4-ac2-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l2-lo4-ac2-feedback" name="u3-l2-lo4-ac2-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="ac-block">
+<div class="ac-title">AC 4.3 • Evaluate own assessment practice and identify continuing professional development needs</div>
+<div class="ac-body">
+<div class="ac-description">The candidate assessor must reflect on their assessment practice, identifying strengths and areas for development, and demonstrate how they have engaged with or planned continuing professional development activity as a result.</div>
+<label>Evidence Type(s) – select at least 2:</label><select multiple onchange="checkMinTwoUnit3(this)" id="u3-l2-lo4-ac3-evidence-types" name="u3-l2-lo4-ac3-evidence-types"><option>Self-evaluation of assessment practice</option>
+<option>Reflective journal or account</option>
+<option>CPD action plan or log</option>
+<option>Standardisation meeting record</option>
+<option>IQA or supervising assessor feedback</option>
+<option>Assessor observation report</option>
+<option>Training or CPD attendance certificate</option>
+<option>Professional discussion about development needs</option></select><div class="warn-text">Please select at least 2 evidence types.</div>
+<label>Upload Evidence:</label><div class="upload-area">
+<div class="upload-icon">📎</div>
+<p>Click or drag file here</p>
+<input type="file" multiple onchange="showFilenameUnit3(this)" id="u3-l2-lo4-ac3-files" name="u3-l2-lo4-ac3-files"><div class="filename-display"></div>
+</div>
+<label>Learner Reflective Account:</label><textarea class="min-160" placeholder="Enter reflective account here..." id="u3-l2-lo4-ac3-reflective-account" name="u3-l2-lo4-ac3-reflective-account"></textarea><div class="judgement-panel">
+<h4>Assessor Judgement</h4>
+<label for="u3-l2-lo4-ac3-assessor-name">Assessor Name</label><input type="text" id="u3-l2-lo4-ac3-assessor-name" name="u3-l2-lo4-ac3-assessor-name" placeholder="Full name"><div class="toggle-row">
+<button class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" type="button">Pass</button><button class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" type="button">Refer</button>
+</div>
+<label for="u3-l2-lo4-ac3-feedback-date">Feedback Date</label><input type="date" id="u3-l2-lo4-ac3-feedback-date" name="u3-l2-lo4-ac3-feedback-date"><label>Assessor Feedback:</label><textarea placeholder="Enter feedback..." id="u3-l2-lo4-ac3-feedback" name="u3-l2-lo4-ac3-feedback"></textarea>
+</div>
+</div>
+</div>
+        <div class="summary-block">
+<h3>LO4 Summary – Learner 2</h3>
+<div class="summary-grid">
+<div>
+<label>Assessment Date</label><input type="date" id="u3-l2-lo4-summary-assessment-date" name="u3-l2-lo4-summary-assessment-date">
+</div>
+<div>
+<label>Assessor Name</label><input type="text" placeholder="Enter name" id="u3-l2-lo4-summary-assessor-name" name="u3-l2-lo4-summary-assessor-name">
+</div>
+<div>
+<label>Assessor Signature</label><input type="text" placeholder="Type name as signature" id="u3-l2-lo4-summary-assessor-signature" name="u3-l2-lo4-summary-assessor-signature">
+</div>
+<div>
+<label>Learner Signature</label><input type="text" placeholder="Type name as signature" id="u3-l2-lo4-summary-learner-signature" name="u3-l2-lo4-summary-learner-signature">
+</div>
+</div>
+<label>Overall LO4 Outcome:</label><div class="summary-toggle-row">
+<button class="summary-toggle" onclick="toggleSummaryUnit3(this)" type="button">Pass</button><button class="summary-toggle" onclick="toggleSummaryUnit3(this)" type="button">Refer</button>
+</div>
+<label>Additional Notes:</label><textarea placeholder="Any additional notes for LO4..." id="u3-l2-lo4-summary-notes" name="u3-l2-lo4-summary-notes"></textarea>
+</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+
+<div class="candidate-wrap">
+      <div class="declaration-section">
+        <div class="section-title">Learner Declaration &amp; Plagiarism Statement</div>
+        <p style="color:#c0392b;font-weight:bold;margin-bottom:12px;">Important: By completing and submitting this worksheet, you confirm that:</p>
+        <div class="declaration-checkbox">
+<input type="checkbox" id="u3-decl1" name="u3-decl1"><label for="u3-decl1" style="margin:0;">All work submitted is my own original work and has not been copied from another source.</label>
+</div>
+        <div class="declaration-checkbox">
+<input type="checkbox" id="u3-decl2" name="u3-decl2"><label for="u3-decl2" style="margin:0;">I have not submitted this work for assessment elsewhere.</label>
+</div>
+        <div class="declaration-checkbox">
+<input type="checkbox" id="u3-decl3" name="u3-decl3"><label for="u3-decl3" style="margin:0;">Any sources or references used have been properly acknowledged and cited.</label>
+</div>
+        <hr style="border:none;border-top:1px solid #c9a84c;margin:16px 0;">
+        <div class="declaration-grid">
+          <div>
+<label for="u3-decl-name">Learner Name</label><input type="text" id="u3-decl-name" name="u3-decl-name">
+</div>
+          <div>
+<label for="u3-decl-date">Date</label><input type="date" id="u3-decl-date" name="u3-decl-date">
+</div>
+        </div>
+        <h3 style="margin-top:20px;margin-bottom:12px;font-size:15px;color:#333;">Assessor Declaration</h3>
+        <p style="color:#333;font-size:13px;margin-bottom:12px;">I confirm that I have reviewed this learner's assessment work and provided appropriate feedback on the learning outcomes.</p>
+        <div class="declaration-grid">
+          <div>
+<label for="u3-assessor-decl-name">Assessor Name</label><input type="text" id="u3-assessor-decl-name" name="u3-assessor-decl-name">
+</div>
+          <div>
+<label for="u3-assessor-decl-date">Date</label><input type="date" id="u3-assessor-decl-date" name="u3-assessor-decl-date">
+</div>
+        </div>
+        <button type="button" class="submit-btn" onclick="submitUnit3Form()">✓ Submit for Marking</button>
+      </div>
+    </div>
+    
+<div class="candidate-wrap">
+      <div class="feedback-section">
+        <div class="section-title">Overall Assessor Feedback</div>
+        <label>Overall Assessment Outcome</label>
+        <div class="feedback-outcome-row">
+          <button type="button" class="toggle-btn pass" onclick="toggleOutcomeUnit3(this)" style="flex:1;">Pass</button>
+          <button type="button" class="toggle-btn refer" onclick="toggleOutcomeUnit3(this)" style="flex:1;">Refer</button>
+        </div>
+        <label for="u3-overall-feedback">Overall Assessor Feedback</label>
+        <textarea id="u3-overall-feedback" name="u3-overall-feedback" class="min-160" placeholder="Provide overall feedback on the trainee assessor's achievement across all learning outcomes."></textarea>
+        <div class="feedback-grid">
+          <div>
+<label for="u3-final-assessor-signature">Assessor Signature</label><input type="text" id="u3-final-assessor-signature" name="u3-final-assessor-signature" placeholder="Type full name as signature">
+</div>
+          <div>
+<label for="u3-final-date">Date</label><input type="date" id="u3-final-date" name="u3-final-date">
+</div>
+        </div>
+      </div>
+    </div>
+    
+</div>
   </div>
 
 </div>
@@ -1776,6 +3454,8 @@
 
   function openUnit1Worksheet() {
     document.getElementById('unitFolderList').style.display = 'none';
+    document.getElementById('unit2WorksheetView').style.display = 'none';
+    document.getElementById('unit3WorksheetView').style.display = 'none';
     document.getElementById('unit1WorksheetView').style.display = 'block';
     showSection('intro');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1790,6 +3470,7 @@
   function openUnit2Worksheet() {
     document.getElementById('unitFolderList').style.display = 'none';
     document.getElementById('unit1WorksheetView').style.display = 'none';
+    document.getElementById('unit3WorksheetView').style.display = 'none';
     document.getElementById('unit2WorksheetView').style.display = 'block';
     showLO(1);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1801,12 +3482,119 @@
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  function switchTab(tab) {
+
+  function openUnit3Worksheet() {
+    document.getElementById('unitFolderList').style.display = 'none';
+    document.getElementById('unit1WorksheetView').style.display = 'none';
+    document.getElementById('unit2WorksheetView').style.display = 'none';
+    const view = document.getElementById('unit3WorksheetView');
+    view.style.display = 'block';
+    const firstTab = view.querySelector('.nav-tab');
+    showUnit3LO('unit3-lo1', firstTab, 'Learning Outcome 1');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function closeUnit3Worksheet() {
+    document.getElementById('unit3WorksheetView').style.display = 'none';
+    document.getElementById('unitFolderList').style.display = 'block';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function showUnit3LO(id, button, label) {
+    const view = document.getElementById('unit3WorksheetView');
+    view.querySelectorAll('.lo-section').forEach(section => section.classList.remove('active'));
+    view.querySelectorAll('.nav-tab').forEach(tab => tab.classList.remove('active-tab'));
+    const section = view.querySelector('#' + id);
+    if (section) section.classList.add('active');
+    if (button) button.classList.add('active-tab');
+    const activeLabel = view.querySelector('#unit3-active-lo-label');
+    if (activeLabel) activeLabel.textContent = label;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  function checkMinTwoUnit3(select) {
+    const warning = select.parentElement.querySelector('.warn-text');
+    if (warning) warning.style.display = select.selectedOptions.length < 2 ? 'block' : 'none';
+  }
+
+  function showFilenameUnit3(input) {
+    const display = input.closest('.upload-area')?.querySelector('.filename-display');
+    if (!display) return;
+    const names = Array.from(input.files || []).map(file => file.name);
+    display.textContent = names.length ? '\uD83D\uDCC4 ' + names.join(', ') : '';
+  }
+
+  function toggleOutcomeUnit3(button) {
+    const row = button.closest('.toggle-row') || button.closest('.feedback-outcome-row');
+    if (!row) return;
+    row.querySelectorAll('.toggle-btn').forEach(item => item.classList.remove('active'));
+    button.classList.add('active');
+  }
+
+  function toggleSummaryUnit3(button) {
+    const row = button.closest('.summary-toggle-row');
+    if (!row) return;
+    row.querySelectorAll('.summary-toggle').forEach(item => item.classList.remove('active'));
+    button.classList.add('active');
+  }
+
+  function submitUnit3Form() {
+    const view = document.getElementById('unit3WorksheetView');
+    const declarations = ['u3-decl1', 'u3-decl2', 'u3-decl3'].every(id => view.querySelector('#' + id)?.checked);
+    const learnerName = view.querySelector('#u3-decl-name')?.value.trim();
+    const declarationDate = view.querySelector('#u3-decl-date')?.value;
+    if (!declarations) {
+      alert('Please tick all three learner declaration statements before submitting.');
+      return;
+    }
+    if (!learnerName || !declarationDate) {
+      alert('Please enter the learner name and declaration date before submitting.');
+      return;
+    }
+    alert('Unit 3 worksheet is ready for marking. Secure online submission will be connected to the learner account during the platform build.');
+  }
+
+  function openActionPlanWorkspace() {
+    const actionPlanUrl = new URL('PT-Academy-Assessment-Action-Plan.html', window.location.href);
+    const assessmentDocumentsUrl = new URL(window.location.href);
+    assessmentDocumentsUrl.search = '';
+    assessmentDocumentsUrl.searchParams.set('tab', 'documents');
+    assessmentDocumentsUrl.hash = '';
+    actionPlanUrl.searchParams.set('return', assessmentDocumentsUrl.href);
+    window.open(actionPlanUrl.href, '_blank', 'noopener');
+  }
+
+  function enhanceActionPlanEvidenceLinks() {
+    document.querySelectorAll('#unit2WorksheetView .plan-block, #unit3WorksheetView .plan-block').forEach(function(block) {
+      if (block.querySelector('.plan-workspace-link')) return;
+      const heading = block.querySelector('h3');
+      if (!heading) return;
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = 'plan-workspace-link';
+      button.innerHTML = '<span aria-hidden="true">&#8599;</span><span>Open Action Plan Workspace</span>';
+      button.addEventListener('click', openActionPlanWorkspace);
+      heading.insertAdjacentElement('afterend', button);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', enhanceActionPlanEvidenceLinks);
+
+  function switchTab(tab, trigger) {
     document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById(tab).classList.add('active');
-    event.target.classList.add('active');
+    const pane = document.getElementById(tab);
+    const button = trigger || document.querySelector('.tab-btn[data-tab="' + tab + '"]');
+    if (pane) pane.classList.add('active');
+    if (button) button.classList.add('active');
   }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const requestedTab = new URLSearchParams(window.location.search).get('tab');
+    if (['dashboard', 'introduction', 'assessment', 'documents'].includes(requestedTab)) {
+      switchTab(requestedTab);
+    }
+  });
 
   function toggleLOs(unit) {
     const element = document.getElementById(unit + '-los');
@@ -1890,7 +3678,10 @@ function saveLocalWorksheetData(patch) {
 
 function loadLocalWorksheetData() {
   const data = getLocalWorksheetData();
-  if (data.learner_name) document.getElementById('learnerName').value = data.learner_name;
+  if (data.learner_name) {
+    document.getElementById('learnerName').value = data.learner_name;
+    syncLearnerWelcome(data.learner_name);
+  }
   if (data.date_started) document.getElementById('dateStarted').value = data.date_started;
   if (data.assessor_name) document.getElementById('assessorName').value = data.assessor_name;
   QUESTION_IDS.forEach(qid => {
@@ -1929,7 +3720,10 @@ async function loadSavedData() {
 
   if (data) {
     isSubmitted = data.submitted || false;
-    if (data.learner_name) document.getElementById('learnerName').value = data.learner_name;
+    if (data.learner_name) {
+    document.getElementById('learnerName').value = data.learner_name;
+    syncLearnerWelcome(data.learner_name);
+  }
     if (data.date_started) document.getElementById('dateStarted').value = data.date_started;
     if (data.assessor_name) document.getElementById('assessorName').value = data.assessor_name;
     QUESTION_IDS.forEach(qid => {
@@ -2132,8 +3926,6 @@ function showLO(n) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active-tab'));
   document.getElementById('lo' + n).classList.add('active');
   document.querySelectorAll('.nav-tab')[n - 1].classList.add('active-tab');
-  const labels = ['Learning Outcome 1','Learning Outcome 2','Learning Outcome 3','Learning Outcome 4'];
-  document.getElementById('active-lo-label').textContent = labels[n - 1];
 }
 
 function toggleOutcome(btn) {
