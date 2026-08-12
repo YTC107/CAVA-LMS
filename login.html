@@ -1,45 +1,274 @@
 <!DOCTYPE html>
 <html lang="en-GB">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PT Academy – Login</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign in | PT Academy Learner Hub</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    body { background-color: #f5f5f5; }
-    .pt-btn { background-color: #d4af37; color: #2a2a2a; font-weight: 600; }
-    .pt-btn:hover { background-color: #c9a227; }
-    input:focus { outline: none; box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1); }
+    :root {
+      --gold: #c9a84c;
+      --gold-dark: #aa8a34;
+      --ink: #171717;
+      --ink-soft: #292929;
+      --paper: #f5f3ef;
+      --muted: #696969;
+      --line: #ded9ce;
+      --danger: #a12a2a;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      background: var(--paper);
+      color: var(--ink);
+      font-family: "Segoe UI", Arial, sans-serif;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    .page-shell {
+      display: grid;
+      grid-template-columns: minmax(320px, 0.9fr) minmax(440px, 1.1fr);
+      min-height: 100vh;
+    }
+
+    .brand-panel {
+      background:
+        radial-gradient(circle at 12% 10%, rgba(201, 168, 76, 0.16), transparent 32%),
+        linear-gradient(145deg, #101010 0%, #252525 100%);
+      border-right: 5px solid var(--gold);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      padding: clamp(34px, 5vw, 72px);
+      position: relative;
+    }
+
+    .brand-panel::after {
+      border: 1px solid rgba(201, 168, 76, 0.18);
+      border-radius: 50%;
+      content: "";
+      height: 420px;
+      position: absolute;
+      right: -250px;
+      top: 28%;
+      width: 420px;
+    }
+
+    .brand-top, .brand-content, .brand-footer { position: relative; z-index: 1; }
+    .brand-top { align-items: center; display: flex; gap: 16px; }
+    .brand-logo { height: 68px; object-fit: contain; width: 68px; }
+    .brand-name { color: var(--gold); font-size: 0.8rem; font-weight: 900; letter-spacing: 0.12em; text-transform: uppercase; }
+    .brand-area { color: #fff; font-size: 0.95rem; font-weight: 700; margin-top: 4px; }
+    .brand-content { margin: clamp(50px, 8vh, 110px) 0; max-width: 590px; }
+    .eyebrow { color: var(--gold); font-size: 0.78rem; font-weight: 900; letter-spacing: 0.12em; margin: 0 0 16px; text-transform: uppercase; }
+    .brand-content h1 { font-size: clamp(2rem, 4.8vw, 3.65rem); letter-spacing: -0.035em; line-height: 1.05; margin: 0; }
+    .brand-content p { color: #d4d4d4; font-size: clamp(1rem, 1.4vw, 1.15rem); line-height: 1.7; margin: 24px 0 0; max-width: 510px; }
+    .brand-rule { background: var(--gold); height: 4px; margin: 28px 0 0; width: 72px; }
+    .brand-footer { color: #a9a9a9; font-size: 0.78rem; line-height: 1.5; }
+
+    .login-panel {
+      align-items: center;
+      display: flex;
+      justify-content: center;
+      padding: clamp(28px, 6vw, 80px);
+    }
+
+    .login-wrap { max-width: 510px; width: 100%; }
+    .mobile-brand { display: none; }
+    .login-kicker { color: #80671f; font-size: 0.78rem; font-weight: 900; letter-spacing: 0.1em; margin: 0 0 10px; text-transform: uppercase; }
+    .login-wrap h2 { font-size: clamp(1.8rem, 3vw, 2.45rem); letter-spacing: -0.025em; margin: 0; }
+    .login-intro { color: var(--muted); line-height: 1.6; margin: 12px 0 30px; }
+
+    .return-notice {
+      align-items: flex-start;
+      background: #fff9e9;
+      border: 1px solid #e4cf8a;
+      border-left: 5px solid var(--gold);
+      border-radius: 5px;
+      color: #4a3c15;
+      display: none;
+      font-size: 0.86rem;
+      gap: 10px;
+      line-height: 1.5;
+      margin-bottom: 22px;
+      padding: 12px 14px;
+    }
+
+    .return-notice.visible { display: flex; }
+    .return-notice strong { color: #2f270e; }
+
+    .alert {
+      border-radius: 5px;
+      display: none;
+      font-size: 0.88rem;
+      line-height: 1.5;
+      margin-bottom: 20px;
+      padding: 13px 15px;
+    }
+
+    .alert.visible { display: block; }
+    .alert-error { background: #fff2f2; border: 1px solid #e4a4a4; border-left: 5px solid var(--danger); color: #7c1d1d; }
+    .alert-info { background: #f4f7fb; border: 1px solid #bdc9d8; border-left: 5px solid #536b87; color: #2e4055; }
+
+    .field { margin-bottom: 20px; }
+    .field-row { align-items: baseline; display: flex; justify-content: space-between; margin-bottom: 8px; }
+    label { color: #292929; font-size: 0.86rem; font-weight: 800; }
+    .field-help { color: #777; font-size: 0.75rem; }
+    .input-wrap { position: relative; }
+
+    input {
+      appearance: none;
+      background: #fff;
+      border: 1px solid #bbb7ae;
+      border-radius: 5px;
+      color: #1d1d1d;
+      font: inherit;
+      min-height: 50px;
+      padding: 12px 14px;
+      width: 100%;
+    }
+
+    input::placeholder { color: #969696; }
+    input:hover { border-color: #7f7b73; }
+    input:focus { border-color: var(--gold-dark); box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.17); outline: none; }
+    .password-input { padding-right: 74px; }
+
+    .show-password {
+      background: transparent;
+      border: 0;
+      color: #665119;
+      cursor: pointer;
+      font: inherit;
+      font-size: 0.78rem;
+      font-weight: 800;
+      padding: 8px;
+      position: absolute;
+      right: 7px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .show-password:focus-visible, .support-link:focus-visible { outline: 3px solid rgba(201, 168, 76, 0.45); outline-offset: 2px; }
+
+    .sign-in-button {
+      align-items: center;
+      background: var(--gold);
+      border: 2px solid var(--gold);
+      border-radius: 5px;
+      color: #111;
+      cursor: pointer;
+      display: flex;
+      font: inherit;
+      font-size: 0.94rem;
+      font-weight: 900;
+      justify-content: center;
+      min-height: 52px;
+      padding: 12px 20px;
+      transition: background 0.2s, border-color 0.2s, transform 0.2s;
+      width: 100%;
+    }
+
+    .sign-in-button:hover { background: #b9993d; border-color: #b9993d; }
+    .sign-in-button:active { transform: translateY(1px); }
+    .sign-in-button:focus-visible { outline: 4px solid rgba(201, 168, 76, 0.3); outline-offset: 3px; }
+    .sign-in-button:disabled { cursor: wait; opacity: 0.7; }
+
+    .secure-note {
+      border-top: 1px solid var(--line);
+      color: #707070;
+      font-size: 0.77rem;
+      line-height: 1.55;
+      margin-top: 27px;
+      padding-top: 20px;
+    }
+
+    .support-link { color: #665119; font-weight: 800; }
+
+    @media (max-width: 820px) {
+      .page-shell { display: block; }
+      .brand-panel { display: none; }
+      .login-panel { min-height: 100vh; padding: 28px 20px 44px; }
+      .mobile-brand { align-items: center; border-bottom: 3px solid var(--gold); display: flex; gap: 13px; margin-bottom: 34px; padding-bottom: 18px; }
+      .mobile-brand img { height: 54px; object-fit: contain; width: 54px; }
+      .mobile-brand strong { display: block; font-size: 0.93rem; }
+      .mobile-brand span { color: #746126; display: block; font-size: 0.75rem; font-weight: 800; margin-top: 3px; text-transform: uppercase; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; }
+    }
   </style>
 </head>
-<body class="min-h-screen flex items-center justify-center px-4">
-
-  <div class="w-full max-w-md bg-white rounded-lg shadow-lg p-8 border-t-4" style="border-color: #d4af37;">
-    <div class="flex justify-center mb-6">
-      <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy" class="h-24" />
-    </div>
-    <h1 class="text-2xl font-bold text-center mb-1" style="color: #2a2a2a;">PT Academy</h1>
-    <p class="text-sm text-center mb-6" style="color: #666;">Level 3 Certificate in Assessing Vocational Achievement</p>
-
-    <div id="error-box" class="hidden bg-red-100 border border-red-400 text-red-700 text-sm rounded-lg px-4 py-3 mb-5"></div>
-
-    <form id="login-form" class="space-y-5">
-      <div>
-        <label class="block font-semibold text-sm mb-1" style="color: #2a2a2a;">Email address</label>
-        <input id="email" type="email" required placeholder="you@example.com"
-          class="w-full rounded-lg px-4 py-3 text-sm border border-gray-300" style="background-color: #f5f5f5;"/>
+<body>
+  <main class="page-shell">
+    <section class="brand-panel" aria-labelledby="qualification-title">
+      <div class="brand-top">
+        <img class="brand-logo" src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy">
+        <div>
+          <div class="brand-name">PT Academy</div>
+          <div class="brand-area">Learner &amp; Assessor Hub</div>
+        </div>
       </div>
-      <div>
-        <label class="block font-semibold text-sm mb-1" style="color: #2a2a2a;">Password</label>
-        <input id="password" type="password" required placeholder="••••••••"
-          class="w-full rounded-lg px-4 py-3 text-sm border border-gray-300" style="background-color: #f5f5f5;"/>
+
+      <div class="brand-content">
+        <p class="eyebrow">Secure programme access</p>
+        <h1 id="qualification-title">Your assessment workspace</h1>
+        <div class="brand-rule" aria-hidden="true"></div>
+        <p>Access your CAVA learning materials, assessment documents, action plans and progress records in one place.</p>
       </div>
-      <button type="submit" class="w-full rounded-lg py-3 text-sm transition pt-btn">
-        Sign in
-      </button>
-    </form>
-  </div>
+
+      <p class="brand-footer">Focus Awards Level 3 Certificate in Assessing Vocational Achievement (RQF) (CAVA)</p>
+    </section>
+
+    <section class="login-panel" aria-labelledby="sign-in-title">
+      <div class="login-wrap">
+        <div class="mobile-brand">
+          <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="">
+          <div><strong>PT Academy</strong><span>Learner &amp; Assessor Hub</span></div>
+        </div>
+
+        <p class="login-kicker">Welcome back</p>
+        <h2 id="sign-in-title">Sign in to continue</h2>
+        <p class="login-intro">Enter the email address and password linked to your PT Academy account.</p>
+
+        <div id="return-notice" class="return-notice" role="status">
+          <span aria-hidden="true">&#8592;</span>
+          <span>After signing in, you will return to the <strong>Learner Hub</strong>.</span>
+        </div>
+
+        <div id="error-box" class="alert alert-error" role="alert" aria-live="assertive"></div>
+        <div id="info-box" class="alert alert-info" role="status" aria-live="polite"></div>
+
+        <form id="login-form" novalidate>
+          <div class="field">
+            <div class="field-row">
+              <label for="email">Email address</label>
+            </div>
+            <input id="email" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="you@example.com">
+          </div>
+
+          <div class="field">
+            <div class="field-row">
+              <label for="password">Password</label>
+              <span class="field-help">Case-sensitive</span>
+            </div>
+            <div class="input-wrap">
+              <input id="password" class="password-input" name="password" type="password" autocomplete="current-password" required placeholder="Enter your password">
+              <button id="show-password" class="show-password" type="button" aria-controls="password" aria-pressed="false">Show</button>
+            </div>
+          </div>
+
+          <button id="sign-in-button" class="sign-in-button" type="submit">Sign in securely</button>
+        </form>
+
+        <p class="secure-note">Only use an account issued or approved by PT Academy. If you cannot access your account, contact your programme administrator using the normal PT Academy support route.</p>
+      </div>
+    </section>
+  </main>
 
   <script>
     const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
@@ -48,50 +277,114 @@
     const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const form = document.getElementById('login-form');
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const signInButton = document.getElementById('sign-in-button');
+    const showPasswordButton = document.getElementById('show-password');
     const errorBox = document.getElementById('error-box');
+    const infoBox = document.getElementById('info-box');
+    const returnNotice = document.getElementById('return-notice');
 
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      errorBox.classList.add('hidden');
+    function getSafeReturnPage() {
+      const requested = new URLSearchParams(window.location.search).get('return');
+      if (!requested || !/^(index|learner-hub)\.html$/i.test(requested)) return null;
+      return requested;
+    }
+
+    function showError(message) {
+      infoBox.classList.remove('visible');
+      errorBox.textContent = message;
+      errorBox.classList.add('visible');
+      errorBox.focus?.();
+    }
+
+    function showInfo(message) {
+      errorBox.classList.remove('visible');
+      infoBox.textContent = message;
+      infoBox.classList.add('visible');
+    }
+
+    function clearMessages() {
+      errorBox.classList.remove('visible');
+      infoBox.classList.remove('visible');
       errorBox.textContent = '';
+      infoBox.textContent = '';
+    }
 
-      const email = document.getElementById('email').value.trim();
-      const password = document.getElementById('password').value;
+    function setBusy(isBusy) {
+      emailInput.disabled = isBusy;
+      passwordInput.disabled = isBusy;
+      signInButton.disabled = isBusy;
+      showPasswordButton.disabled = isBusy;
+      signInButton.textContent = isBusy ? 'Signing in…' : 'Sign in securely';
+    }
 
-      const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'apikey': SUPABASE_ANON_KEY
-        },
-        body: JSON.stringify({ email, password })
-      });
+    async function routeAfterSignIn(user, session) {
+      localStorage.setItem('cava_token', session.access_token);
+      localStorage.setItem('cava_user', JSON.stringify(user));
 
-      const data = await res.json();
-
-      if (!res.ok) {
-        errorBox.textContent = 'Incorrect email or password. Please try again.';
-        errorBox.classList.remove('hidden');
+      const returnPage = getSafeReturnPage();
+      if (returnPage) {
+        localStorage.removeItem('cava_role');
+        window.location.assign(returnPage);
         return;
       }
 
-      // Store token and user
-      localStorage.setItem('cava_token', data.access_token);
-      localStorage.setItem('cava_user', JSON.stringify(data.user));
-
-      // Check if user is a Super Admin
       const { data: superAdminRecord, error: adminError } = await sb
         .from('super_admins')
         .select('id')
-        .eq('email', email)
+        .eq('email', user.email)
         .maybeSingle();
 
-      const role = superAdminRecord ? 'Super Admin' : 'Assessor';
-      localStorage.setItem('cava_role', role);
+      if (adminError) {
+        await sb.auth.signOut({ scope: 'local' });
+        localStorage.removeItem('cava_token');
+        localStorage.removeItem('cava_user');
+        throw new Error('Your account was recognised, but its access level could not be confirmed. Please contact the programme administrator.');
+      }
 
-      // Redirect to assessor hub
-      window.location.href = 'assessor-hub.html';
+      localStorage.setItem('cava_role', superAdminRecord ? 'Super Admin' : 'Assessor');
+      window.location.assign('assessor-hub.html');
+    }
+
+    showPasswordButton.addEventListener('click', function() {
+      const willShow = passwordInput.type === 'password';
+      passwordInput.type = willShow ? 'text' : 'password';
+      showPasswordButton.textContent = willShow ? 'Hide' : 'Show';
+      showPasswordButton.setAttribute('aria-pressed', String(willShow));
+      passwordInput.focus();
     });
+
+    form.addEventListener('submit', async function(event) {
+      event.preventDefault();
+      clearMessages();
+
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+
+      setBusy(true);
+
+      try {
+        const { data, error } = await sb.auth.signInWithPassword({
+          email: emailInput.value.trim(),
+          password: passwordInput.value
+        });
+
+        if (error || !data.user || !data.session) {
+          throw new Error('The email address or password was not recognised. Please check your details and try again.');
+        }
+
+        showInfo('Sign-in successful. Opening your workspace…');
+        await routeAfterSignIn(data.user, data.session);
+      } catch (error) {
+        showError(error.message || 'We could not sign you in. Please try again.');
+        setBusy(false);
+      }
+    });
+
+    if (getSafeReturnPage()) returnNotice.classList.add('visible');
   </script>
 </body>
 </html>
