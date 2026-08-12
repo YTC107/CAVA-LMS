@@ -18,16 +18,27 @@
     .header-kicker { color: #c9a84c; font-size: 0.76rem; font-weight: 800; letter-spacing: 0.9px; margin-bottom: 4px; text-transform: uppercase; }
     .header h1 { color: #fff; font-size: 1.2rem; font-weight: 700; line-height: 1.35; max-width: 900px; }
     .header p { color: #bbb; font-size: 0.85rem; margin-top: 5px; }
-    .welcome { border-left: 1px solid #555; margin-left: auto; min-width: 150px; padding-left: 24px; text-align: right; }
+    .welcome { align-items: center; border-left: 1px solid #555; display: flex; gap: 18px; margin-left: auto; min-width: 250px; padding-left: 24px; }
+    .welcome-copy { min-width: 0; text-align: right; }
     .welcome-label { color: #bbb; display: block; font-size: 0.76rem; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; }
-    .welcome-name { color: #c9a84c; display: block; font-size: 1.02rem; font-weight: 800; margin-top: 3px; }
+    .welcome-name { color: #c9a84c; display: block; font-size: 1.02rem; font-weight: 800; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .account-status { color: #aaa; display: block; font-size: 0.7rem; margin-top: 4px; }
+    .account-actions { align-items: center; display: flex; flex-shrink: 0; gap: 8px; }
+    .account-button { align-items: center; border: 2px solid #c9a84c; border-radius: 4px; cursor: pointer; display: inline-flex; font: inherit; font-size: 0.78rem; font-weight: 800; justify-content: center; min-height: 38px; padding: 8px 14px; text-decoration: none; transition: background 0.2s, border-color 0.2s, color 0.2s; }
+    .account-login { background: #c9a84c; color: #111; }
+    .account-login:hover { background: #fff; border-color: #fff; }
+    .account-logout { background: transparent; color: #fff; }
+    .account-logout:hover { background: #c9a84c; color: #111; }
+    .account-button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+    .account-button[hidden] { display: none; }
     @media (max-width: 700px) {
       .header { align-items: flex-start; flex-direction: column; gap: 12px; padding: 16px; }
       .header-brand { align-items: flex-start; }
       .header-logo { height: 48px; width: 48px; }
       .header h1 { font-size: 1rem; }
-      .welcome { border-left: 0; border-top: 1px solid #444; display: flex; gap: 8px; margin-left: 64px; min-width: 0; padding: 10px 0 0; text-align: left; }
-      .welcome-label, .welcome-name { display: inline; margin-top: 0; }
+      .welcome { align-items: center; border-left: 0; border-top: 1px solid #444; gap: 14px; justify-content: space-between; margin-left: 0; min-width: 100%; padding: 12px 0 0; }
+      .welcome-copy { min-width: 0; text-align: left; }
+      .account-actions { margin-left: auto; }
       .tabs { overflow-x: auto; padding: 0 12px; }
       .tab-btn { flex: 0 0 auto; }
     }
@@ -108,6 +119,81 @@
     .outcome-pass { font-weight: 700; color: #2d7a3a; }
     .outcome-refer { font-weight: 700; color: #a0293a; }
     .outcome-pending { font-weight: 700; color: #8b6914; }
+
+    .plan-schedule-card { background: #fff; border: 1px solid #dedbd3; border-top: 5px solid #c9a84c; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin-bottom: 26px; padding: 24px; }
+    .plan-schedule-header { align-items: flex-start; display: flex; gap: 20px; justify-content: space-between; margin-bottom: 20px; }
+    .plan-schedule-header h3 { color: #151515; font-size: 1.3rem; font-weight: 800; margin: 0 0 6px; }
+    .plan-schedule-header p { color: #555; font-size: 0.95rem; line-height: 1.55; margin: 0; max-width: 760px; }
+    .plan-status-pill { background: #f5f1e6; border: 1px solid #d6bd73; border-radius: 999px; color: #65501c; flex-shrink: 0; font-size: 0.8rem; font-weight: 800; padding: 8px 13px; }
+    .plan-status-pill.awaiting { background: #fff4d4; border-color: #d5a62e; color: #6d4c00; }
+    .plan-status-pill.confirmed { background: #e9f7ed; border-color: #70b580; color: #1e6630; }
+    .plan-form-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+    .plan-field label { color: #333; display: block; font-size: 0.8rem; font-weight: 800; margin-bottom: 7px; }
+    .plan-field input, .plan-field select { background: #fff; border: 1px solid #bdb9af; border-radius: 4px; color: #111; font: inherit; font-size: 0.95rem; min-height: 46px; padding: 10px 12px; width: 100%; }
+    .plan-field input:focus, .plan-field select:focus { border-color: #9e7c20; box-shadow: 0 0 0 4px rgba(201,168,76,0.16); outline: none; }
+    .plan-help { color: #6c6c6c; font-size: 0.78rem; line-height: 1.45; margin-top: 6px; }
+    .plan-milestones { background: #f8f6f0; border-radius: 5px; display: grid; gap: 1px; grid-template-columns: repeat(4, 1fr); margin-top: 20px; overflow: hidden; }
+    .plan-milestone { background: #f8f6f0; border-left: 1px solid #dedbd3; padding: 14px 16px; }
+    .plan-milestone:first-child { border-left: 0; }
+    .plan-milestone span { color: #696969; display: block; font-size: 0.72rem; font-weight: 800; letter-spacing: 0.03em; text-transform: uppercase; }
+    .plan-milestone strong { color: #1b1b1b; display: block; font-size: 0.95rem; margin-top: 5px; }
+    .generated-target-date { background: #f7f4eb !important; cursor: default; font-weight: 700; }
+
+    .assessment-record-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(0, 1fr)); margin-top: 16px; }
+    .assessment-record-panel { background: #fafafa; border: 1px solid #d8d8d8; border-radius: 6px; min-width: 0; padding: 18px; }
+    .assessment-record-panel.initial { border-top: 4px solid #c9a84c; }
+    .assessment-record-panel.progress { border-top: 4px solid #292929; }
+    .assessment-record-panel h4 { color: #171717; font-size: 1rem; font-weight: 800; margin: 0 0 6px; }
+    .assessment-record-panel > p { color: #666; font-size: 0.8rem; line-height: 1.45; margin: 0 0 14px; }
+    .assessment-entry-grid { align-items: end; display: grid; gap: 10px; grid-template-columns: minmax(110px, 1fr) minmax(130px, 1fr) minmax(90px, 0.65fr); }
+    .assessment-entry-grid label { color: #555; display: block; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.03em; margin-bottom: 5px; text-transform: uppercase; }
+    .assessment-entry-grid input, .assessment-entry-grid select { background: #fff; border: 1px solid #bbb; border-radius: 4px; font: inherit; font-size: 0.86rem; min-height: 42px; padding: 8px 9px; width: 100%; }
+    .record-assessment-button { background: #c9a84c; border: 0; border-radius: 4px; color: #111; cursor: pointer; font: inherit; font-size: 0.82rem; font-weight: 800; margin-top: 11px; min-height: 40px; padding: 9px 13px; width: 100%; }
+    .record-assessment-button:hover { background: #b59438; }
+    .record-assessment-button:disabled { background: #ddd; color: #777; cursor: not-allowed; }
+    .assessment-summary { background: #fff; border: 1px solid #ddd; border-radius: 4px; display: grid; gap: 8px; grid-template-columns: repeat(3, 1fr); padding: 12px; }
+    .assessment-summary div span { color: #777; display: block; font-size: 0.66rem; font-weight: 800; margin-bottom: 3px; text-transform: uppercase; }
+    .assessment-summary div strong { color: #222; font-size: 0.86rem; }
+    .assessment-history { display: grid; gap: 8px; margin-bottom: 12px; }
+    .assessment-history-row { align-items: center; background: #fff; border-left: 4px solid #b53a3a; border-radius: 3px; display: grid; font-size: 0.79rem; gap: 7px; grid-template-columns: 46px 1fr 1fr 0.7fr; padding: 9px 10px; }
+    .assessment-history-row.pass { border-left-color: #27823f; }
+    .assessment-history-row .attempt-number { color: #777; font-size: 0.69rem; font-weight: 800; text-transform: uppercase; }
+    .record-outcome { border-radius: 999px; display: inline-block; font-size: 0.72rem; font-weight: 900; padding: 4px 8px; text-align: center; }
+    .record-outcome.pass { background: #e3f4e8; color: #17672b; }
+    .record-outcome.refer { background: #fbe5e5; color: #922525; }
+    .assessment-record-empty { background: #f1f1f1; border-radius: 4px; color: #727272; font-size: 0.8rem; line-height: 1.45; padding: 12px; }
+    .assessment-editor-note { background: #f4f4f4; border-left: 4px solid #777; color: #555; font-size: 0.78rem; line-height: 1.45; margin-top: 11px; padding: 9px 11px; }
+    .assessment-editor-note.assessor { background: #fff8e6; border-left-color: #c9a84c; color: #5c491a; }
+
+    .plan-declaration-card { background: #fff; border: 1px solid #dedbd3; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); margin-top: 30px; padding: 26px 28px; }
+    .plan-declaration-card h3 { color: #171717; font-size: 1.25rem; font-weight: 800; margin: 0 0 8px; }
+    .plan-declaration-card > p { color: #555; font-size: 0.92rem; line-height: 1.55; margin: 0 0 20px; }
+    .plan-declaration-row { align-items: flex-start; background: #faf8f2; border-left: 4px solid #c9a84c; border-radius: 4px; display: flex; gap: 11px; line-height: 1.5; margin-bottom: 18px; padding: 15px; }
+    .plan-declaration-row input { flex: 0 0 auto; height: 18px; margin-top: 2px; width: 18px; }
+    .plan-declaration-row label { color: #292929; font-size: 0.9rem; }
+    .plan-primary-button { background: #c9a84c; border: 0; border-radius: 4px; color: #111; cursor: pointer; font: inherit; font-size: 0.95rem; font-weight: 800; min-height: 48px; padding: 12px 24px; width: 100%; }
+    .plan-primary-button:hover { background: #b59438; }
+    .plan-primary-button:disabled { background: #d8d8d8; color: #777; cursor: not-allowed; }
+    .assessor-confirmation-card { background: #1e1e1e; border: 2px solid #c9a84c; border-radius: 6px; color: #fff; margin-top: 20px; padding: 20px; }
+    .assessor-confirmation-card h4 { color: #c9a84c; font-size: 1.05rem; margin: 0 0 6px; }
+    .assessor-confirmation-card p { color: #ddd; font-size: 0.84rem; line-height: 1.5; margin: 0 0 14px; }
+    .assessor-confirmation-card .plan-field label { color: #eee; }
+    .confirmation-meta { color: #eee; display: none; font-size: 0.88rem; line-height: 1.55; }
+
+    @media (max-width: 820px) {
+      .plan-schedule-header { display: block; }
+      .plan-status-pill { display: inline-block; margin-top: 14px; }
+      .plan-form-grid, .assessment-record-grid { grid-template-columns: 1fr; }
+      .plan-milestones { grid-template-columns: repeat(2, 1fr); }
+      .plan-milestone:nth-child(3) { border-left: 0; }
+    }
+    @media (max-width: 560px) {
+      .assessment-entry-grid, .assessment-summary { grid-template-columns: 1fr; }
+      .assessment-history-row { grid-template-columns: 42px 1fr; }
+      .plan-milestones { grid-template-columns: 1fr; }
+      .plan-milestone { border-left: 0; border-top: 1px solid #dedbd3; }
+      .plan-milestone:first-child { border-top: 0; }
+    }
     
     .obs-section { background: #f5f5f5; padding: 20px 24px; margin-top: 20px; border-left: 3px solid #c9a84c; border-radius: 2px; }
     .obs-title { font-size: 0.9rem; font-weight: 700; color: #1a1a1a; margin-bottom: 12px; }
@@ -620,8 +706,15 @@
     </div>
   </div>
   <div class="welcome" aria-live="polite">
-    <span class="welcome-label">Welcome</span>
-    <span id="learnerNameDisplay" class="welcome-name">Learner</span>
+    <div class="welcome-copy">
+      <span class="welcome-label">Welcome</span>
+      <span id="learnerNameDisplay" class="welcome-name">Learner</span>
+      <span id="accountStatus" class="account-status">Not logged in</span>
+    </div>
+    <div class="account-actions" aria-label="Account">
+      <a id="loginLink" class="account-button account-login" href="login.html">Login</a>
+      <button id="logoutButton" class="account-button account-logout" type="button" hidden>Log out</button>
+    </div>
   </div>
   <script>
     function syncLearnerWelcome(name, persist = true) {
@@ -783,14 +876,41 @@
     
     <div class="intro-card">
       <h3>About Your Assessment Plan</h3>
-      <p>This Assessment Plan is your personal learning record for the Level 3 Certificate in Assessing Vocational Achievement. It tracks your progress across all three units and shows every assessment attempt you make.</p>
-      <p>Your assessor will use this document to record when they have assessed your work, the date they assessed it, and whether you have passed or need to resubmit (referred). This creates a complete audit trail of your learning journey.</p>
-      <p><strong>Before you start any work:</strong> Please complete the "Planned End Date" field for each learning outcome below. Think about when you registered on the programme and plan realistically when you would like to complete each unit and learning outcome. Your assessor will use these dates to help track your progress.</p>
+      <p>This is a working plan for your qualification. The target dates help you and your assessor understand the intended timeframe; they do not prevent you from completing work earlier.</p>
+      <p>Your assessor records the first assessment decision in the <strong>Initial Assessment</strong> column. If that decision is Refer, every reassessment remains visible in the <strong>Final Assessment / Progress</strong> column until the learning outcome is passed.</p>
+      <p><strong>To create your plan:</strong> enter your programme start date below. The platform will calculate the planned completion dates automatically.</p>
     </div>
 
-    <div style="background: #fff; border-radius: 4px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-      <p style="font-size: 0.9rem; color: #666;">When all tracking is complete, use the button at the bottom to download a PDF copy for your records.</p>
-    </div>
+    <section class="plan-schedule-card" aria-labelledby="programmeScheduleHeading">
+      <div class="plan-schedule-header">
+        <div>
+          <h3 id="programmeScheduleHeading">Programme Schedule</h3>
+          <p>Enter the programme start date once. Planned target dates for every learning outcome will then be generated across the selected programme timeframe.</p>
+        </div>
+        <span id="planStatusPill" class="plan-status-pill">Draft plan</span>
+      </div>
+      <div class="plan-form-grid">
+        <div class="plan-field">
+          <label for="programmeStartDate">Programme start date</label>
+          <input id="programmeStartDate" type="date">
+          <p class="plan-help">This is the learner&rsquo;s actual start date on the CAVA programme.</p>
+        </div>
+        <div class="plan-field">
+          <label for="programmeDuration">Programme timeframe</label>
+          <select id="programmeDuration">
+            <option value="12">Standard programme &mdash; 12 weeks</option>
+            <option value="8">Accelerated programme &mdash; 8 weeks</option>
+          </select>
+          <p class="plan-help">The learner may complete earlier. This selection creates the planned targets only.</p>
+        </div>
+      </div>
+      <div class="plan-milestones" aria-label="Generated programme milestones">
+        <div class="plan-milestone"><span>Unit 1 target</span><strong id="unit1TargetSummary">Enter a start date</strong></div>
+        <div class="plan-milestone"><span>Unit 2 target</span><strong id="unit2TargetSummary">Enter a start date</strong></div>
+        <div class="plan-milestone"><span>Unit 3 target</span><strong id="unit3TargetSummary">Enter a start date</strong></div>
+        <div class="plan-milestone"><span>Programme target</span><strong id="programmeTargetSummary">Enter a start date</strong></div>
+      </div>
+    </section>
 
     <!-- UNIT 1 -->
     <div class="assessment-plan">
@@ -1332,24 +1452,36 @@
       </div>
     </div>
 
-    <!-- WHAT HAPPENS NEXT SECTION -->
-    <div style="background: #fff; border-radius: 4px; padding: 28px 32px; margin-top: 30px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-      <div style="margin-bottom: 24px; padding-bottom: 20px; border-bottom: 1px solid #e8e8e8;">
-        <input type="checkbox" id="confirmCheckbox" style="width: 16px; height: 16px; margin-right: 12px; cursor: pointer;" />
-        <label for="confirmCheckbox" style="font-size: 0.9rem; color: #1a1a1a; cursor: pointer;">I confirm that the information provided is accurate and that I am ready to begin my assessment journey. By signing below, I declare that I understand the requirements and will work towards completion of all three units.</label>
+    <!-- LEARNER DECLARATION AND ASSESSOR CONFIRMATION -->
+    <section class="plan-declaration-card" aria-labelledby="learnerDeclarationHeading">
+      <h3 id="learnerDeclarationHeading">Learner Declaration</h3>
+      <p>Review the automatically generated dates before submitting the plan to your assessor. These are planned targets and may be completed earlier.</p>
+
+      <div class="plan-declaration-row">
+        <input type="checkbox" id="confirmCheckbox">
+        <label for="confirmCheckbox">I have reviewed the planned assessment dates, understand the qualification requirements and confirm that this plan can be sent to my assessor for agreement.</label>
       </div>
-      
-      <div style="margin-bottom: 24px;">
-        <label style="display: block; font-size: 0.8rem; font-weight: 700; color: #666; text-transform: uppercase; letter-spacing: 0.3px; margin-bottom: 8px;">Your Signature (type your name as confirmation)</label>
-        <input type="text" id="signatureName" placeholder="Type your name here to sign" style="padding: 10px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 0.95rem; background: #fafafa; width: 100%; font-family: inherit;" />
+
+      <div class="plan-field" style="margin-bottom: 18px;">
+        <label for="declarationName">Learner name</label>
+        <input type="text" id="declarationName" autocomplete="name" placeholder="Enter your full name">
       </div>
-      
-      <div style="background: #e3f2fd; border-left: 4px solid #1976d2; padding: 16px; border-radius: 4px; margin-bottom: 24px; font-size: 0.9rem; color: #1565c0; line-height: 1.6;">
-        <p><strong>What happens next?</strong> Once you sign this plan, your assessor's name (Michael Kolomski) and today's date will be automatically added. Unit 1 will then unlock for you to begin.</p>
+
+      <button id="submitPlanButton" type="button" class="plan-primary-button" onclick="submitAssessmentPlan()">Submit Plan for Assessor Confirmation</button>
+
+      <div class="assessor-confirmation-card" aria-labelledby="assessorConfirmationHeading">
+        <h4 id="assessorConfirmationHeading">Assessor Confirmation</h4>
+        <p>The assessor reviews the planned dates after the learner declaration has been submitted. Assessor confirmation does not replace any formal awarding organisation records.</p>
+        <div id="assessorConfirmationForm">
+          <div class="plan-field" style="margin-bottom: 13px;">
+            <label for="assessorConfirmationName">Assessor name</label>
+            <input type="text" id="assessorConfirmationName" autocomplete="name" placeholder="Enter assessor name">
+          </div>
+          <button id="confirmPlanButton" type="button" class="plan-primary-button" onclick="confirmAssessmentPlan()">Confirm Assessment Plan</button>
+        </div>
+        <div id="confirmationMeta" class="confirmation-meta"></div>
       </div>
-      
-      <button onclick="submitAssessmentPlan()" style="background: #c9a84c; color: #1a1a1a; font-weight: 700; font-size: 0.95rem; padding: 12px 32px; border: none; border-radius: 4px; cursor: pointer; width: 100%; transition: background 0.3s;">↓ Sign and Submit Assessment Plan</button>
-    </div>
+    </section>
   </div>
 
   <!-- ASSESSMENT DOCUMENTS TAB -->
@@ -3601,24 +3733,394 @@
     element.style.display = element.style.display === 'none' ? 'block' : 'none';
   }
 
-  function submitAssessmentPlan() {
-    const checkbox = document.getElementById('confirmCheckbox');
-    const signature = document.getElementById('signatureName').value.trim();
-    if (!checkbox.checked) {
-      alert('Please tick the confirmation checkbox before submitting.');
-      return;
+  const ASSESSMENT_PLAN_STORAGE_KEY = 'cava_assessment_plan_v2';
+  const PLAN_WEEK_POSITIONS = {
+    unit1: [1.25, 1.65, 2, 2.4, 2.8, 3.2, 3.6, 4],
+    unit2: [5, 6, 7, 8, 8],
+    unit3: [8, 9, 10, 11, 11]
+  };
+
+  function getAssessmentPlanData() {
+    try {
+      const saved = JSON.parse(localStorage.getItem(ASSESSMENT_PLAN_STORAGE_KEY) || '{}');
+      return {
+        startDate: saved.startDate || '',
+        durationWeeks: Number(saved.durationWeeks) === 8 ? 8 : 12,
+        status: ['draft', 'awaiting', 'confirmed'].includes(saved.status) ? saved.status : 'draft',
+        targets: saved.targets || {},
+        records: saved.records || {},
+        declaration: saved.declaration || null,
+        confirmation: saved.confirmation || null
+      };
+    } catch {
+      return { startDate: '', durationWeeks: 12, status: 'draft', targets: {}, records: {}, declaration: null, confirmation: null };
     }
-    if (!signature) {
-      alert('Please type your name to sign the assessment plan.');
-      return;
-    }
-    alert('Assessment Plan submitted by ' + signature + '. Your assessor will confirm receipt.');
   }
 
+  function saveAssessmentPlanData(data) {
+    localStorage.setItem(ASSESSMENT_PLAN_STORAGE_KEY, JSON.stringify(data));
+  }
+
+  function isAssessorPlanEditor() {
+    return ['Assessor', 'Super Admin'].includes(localStorage.getItem('cava_role') || '');
+  }
+
+  function addPlanDays(dateString, days) {
+    if (!dateString) return '';
+    const parts = dateString.split('-').map(Number);
+    const date = new Date(Date.UTC(parts[0], parts[1] - 1, parts[2]));
+    date.setUTCDate(date.getUTCDate() + days);
+    return date.toISOString().slice(0, 10);
+  }
+
+  function formatPlanDate(dateString) {
+    if (!dateString) return 'Not set';
+    const parts = dateString.split('-').map(Number);
+    return new Intl.DateTimeFormat('en-GB', { day: '2-digit', month: 'short', year: 'numeric', timeZone: 'UTC' })
+      .format(new Date(Date.UTC(parts[0], parts[1] - 1, parts[2])));
+  }
+
+  function getTodayDateString() {
+    const now = new Date();
+    const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+    return localDate.toISOString().slice(0, 10);
+  }
+
+  function getAssessmentPlanSections() {
+    return Array.from(document.querySelectorAll('#assessment > .assessment-plan')).slice(0, 3);
+  }
+
+  function getAssessmentRecord(data, key) {
+    if (!data.records[key]) data.records[key] = { initial: null, progress: [] };
+    if (!Array.isArray(data.records[key].progress)) data.records[key].progress = [];
+    return data.records[key];
+  }
+
+  function buildAssessmentRecord(block, key) {
+    const oldEntry = block.querySelector('.manual-entry');
+    if (!oldEntry) return;
+    const oldHeaders = block.querySelector('.audit-headers');
+    const wrapper = document.createElement('div');
+    wrapper.className = 'assessment-record-grid';
+    wrapper.dataset.assessmentKey = key;
+    wrapper.innerHTML = `
+      <section class="assessment-record-panel initial">
+        <h4>Initial Assessment</h4>
+        <p>The assessor&rsquo;s first decision is retained permanently. A first-time Pass completes this learning outcome.</p>
+        <div class="initial-record-content"></div>
+      </section>
+      <section class="assessment-record-panel progress">
+        <h4>Final Assessment / Progress</h4>
+        <p>Used after an initial Refer. Every reassessment is shown in date order until the final Pass is recorded.</p>
+        <div class="progress-record-content"></div>
+      </section>`;
+    oldEntry.replaceWith(wrapper);
+    if (oldHeaders) oldHeaders.remove();
+  }
+
+  function assessmentEntryFields(stage) {
+    const isInitial = stage === 'initial';
+    return `
+      <div class="assessment-entry-grid">
+        <div><label>Outcome</label><select data-field="outcome"><option value="">Select</option><option value="Pass">Pass</option><option value="Refer">Refer</option></select></div>
+        <div><label>Assessment date</label><input data-field="date" type="date" value="${getTodayDateString()}"></div>
+        <div><label>Assessor initials</label><input data-field="initials" type="text" maxlength="6" autocomplete="off" placeholder="e.g. MK"></div>
+      </div>
+      <button type="button" class="record-assessment-button" data-record-stage="${stage}">${isInitial ? 'Record Initial Assessment' : 'Add Reassessment'}</button>`;
+  }
+
+  function assessmentSummaryMarkup(entry) {
+    const outcomeClass = String(entry.outcome || '').toLowerCase();
+    return `<div class="assessment-summary">
+      <div><span>Outcome</span><strong class="record-outcome ${outcomeClass}">${entry.outcome}</strong></div>
+      <div><span>Assessment date</span><strong>${formatPlanDate(entry.date)}</strong></div>
+      <div><span>Assessor initials</span><strong>${entry.initials}</strong></div>
+    </div>`;
+  }
+
+  function renderAssessmentRecord(key) {
+    const wrapper = document.querySelector(`[data-assessment-key="${key}"]`);
+    if (!wrapper) return;
+    const data = getAssessmentPlanData();
+    const record = getAssessmentRecord(data, key);
+    const initialContent = wrapper.querySelector('.initial-record-content');
+    const progressContent = wrapper.querySelector('.progress-record-content');
+    const assessorCanEdit = isAssessorPlanEditor();
+
+    if (record.initial) {
+      initialContent.innerHTML = assessmentSummaryMarkup(record.initial);
+    } else if (assessorCanEdit) {
+      initialContent.innerHTML = assessmentEntryFields('initial') + '<div class="assessment-editor-note assessor">Assessor entry: record the first formal assessment decision here.</div>';
+    } else {
+      initialContent.innerHTML = '<div class="assessment-record-empty">No initial assessment decision has been recorded.</div><div class="assessment-editor-note">Assessment decisions can only be entered through an authorised assessor account.</div>';
+    }
+
+    if (!record.initial) {
+      progressContent.innerHTML = '<div class="assessment-record-empty">This column becomes active only if the initial decision is Refer.</div>';
+    } else if (record.initial.outcome === 'Pass') {
+      progressContent.innerHTML = '<div class="assessment-record-empty"><strong>Not required.</strong> The learning outcome was passed at the initial assessment.</div>';
+    } else {
+      const history = record.progress.map(function(entry, index) {
+        const outcomeClass = String(entry.outcome || '').toLowerCase();
+        return `<div class="assessment-history-row ${outcomeClass}">
+          <span class="attempt-number">Try ${index + 2}</span>
+          <span class="record-outcome ${outcomeClass}">${entry.outcome}</span>
+          <span>${formatPlanDate(entry.date)}</span>
+          <strong>${entry.initials}</strong>
+        </div>`;
+      }).join('');
+      const achieved = record.progress.some(entry => entry.outcome === 'Pass');
+      progressContent.innerHTML = `<div class="assessment-history">${history || '<div class="assessment-record-empty">Awaiting reassessment.</div>'}</div>`;
+      if (achieved) {
+        progressContent.insertAdjacentHTML('beforeend', '<div class="assessment-record-empty"><strong>Learning outcome achieved.</strong> The final passing assessment is retained above.</div>');
+      } else if (assessorCanEdit) {
+        progressContent.insertAdjacentHTML('beforeend', assessmentEntryFields('progress') + '<div class="assessment-editor-note assessor">Record each further Refer and the eventual Pass. Earlier attempts will remain visible.</div>');
+      } else {
+        progressContent.insertAdjacentHTML('beforeend', '<div class="assessment-editor-note">Further assessment decisions can only be entered through an authorised assessor account.</div>');
+      }
+    }
+
+    wrapper.querySelectorAll('[data-record-stage]').forEach(function(button) {
+      button.addEventListener('click', function() {
+        recordAssessmentDecision(key, button.dataset.recordStage);
+      });
+    });
+  }
+
+  function recordAssessmentDecision(key, stage) {
+    if (!isAssessorPlanEditor()) {
+      alert('Only an authorised assessor can record an assessment decision.');
+      return;
+    }
+    const wrapper = document.querySelector(`[data-assessment-key="${key}"]`);
+    const button = wrapper?.querySelector(`[data-record-stage="${stage}"]`);
+    const container = button?.parentElement;
+    const outcome = container?.querySelector('[data-field="outcome"]')?.value || '';
+    const date = container?.querySelector('[data-field="date"]')?.value || '';
+    const initials = (container?.querySelector('[data-field="initials"]')?.value || '').trim().toUpperCase();
+
+    if (!['Pass', 'Refer'].includes(outcome) || !date || !initials) {
+      alert('Select Pass or Refer and enter the assessment date and assessor initials.');
+      return;
+    }
+
+    const data = getAssessmentPlanData();
+    const record = getAssessmentRecord(data, key);
+    const entry = { outcome, date, initials, recordedAt: new Date().toISOString() };
+    if (stage === 'initial') {
+      if (record.initial) return;
+      record.initial = entry;
+    } else {
+      if (!record.initial || record.initial.outcome !== 'Refer' || record.progress.some(item => item.outcome === 'Pass')) return;
+      record.progress.push(entry);
+    }
+    saveAssessmentPlanData(data);
+    renderAssessmentRecord(key);
+    updateDashboardFromAssessmentPlan();
+  }
+
+  function calculatePlanTargets() {
+    const startInput = document.getElementById('programmeStartDate');
+    const durationInput = document.getElementById('programmeDuration');
+    if (!startInput || !durationInput) return;
+    const data = getAssessmentPlanData();
+    data.startDate = startInput.value;
+    data.durationWeeks = Number(durationInput.value) === 8 ? 8 : 12;
+    data.targets = {};
+
+    const scale = data.durationWeeks / 12;
+    getAssessmentPlanSections().forEach(function(section, unitIndex) {
+      const unitKey = 'unit' + (unitIndex + 1);
+      const positions = PLAN_WEEK_POSITIONS[unitKey];
+      const blocks = Array.from(section.querySelectorAll('.lo-block'));
+      blocks.forEach(function(block, itemIndex) {
+        const key = block.dataset.planItemKey;
+        const targetDate = data.startDate ? addPlanDays(data.startDate, Math.round(positions[itemIndex] * scale * 7)) : '';
+        if (key) data.targets[key] = targetDate;
+        const input = block.querySelector('input[type="date"].generated-target-date');
+        if (input) input.value = targetDate;
+      });
+    });
+
+    saveAssessmentPlanData(data);
+    updatePlanMilestones(data);
+  }
+
+  function updatePlanMilestones(data) {
+    const scale = data.durationWeeks / 12;
+    const targets = [4, 8, 11].map(week => data.startDate ? addPlanDays(data.startDate, Math.round(week * scale * 7)) : '');
+    const programmeTarget = data.startDate ? addPlanDays(data.startDate, data.durationWeeks * 7) : '';
+    ['unit1TargetSummary', 'unit2TargetSummary', 'unit3TargetSummary'].forEach(function(id, index) {
+      const element = document.getElementById(id);
+      if (element) element.textContent = targets[index] ? formatPlanDate(targets[index]) : 'Enter a start date';
+    });
+    const programmeElement = document.getElementById('programmeTargetSummary');
+    if (programmeElement) programmeElement.textContent = programmeTarget ? formatPlanDate(programmeTarget) : 'Enter a start date';
+  }
+
+  function renderPlanStatus() {
+    const data = getAssessmentPlanData();
+    const pill = document.getElementById('planStatusPill');
+    const startInput = document.getElementById('programmeStartDate');
+    const durationInput = document.getElementById('programmeDuration');
+    const checkbox = document.getElementById('confirmCheckbox');
+    const declarationName = document.getElementById('declarationName');
+    const submitButton = document.getElementById('submitPlanButton');
+    const assessorName = document.getElementById('assessorConfirmationName');
+    const confirmButton = document.getElementById('confirmPlanButton');
+    const confirmationForm = document.getElementById('assessorConfirmationForm');
+    const confirmationMeta = document.getElementById('confirmationMeta');
+
+    if (pill) {
+      pill.className = 'plan-status-pill' + (data.status === 'awaiting' ? ' awaiting' : data.status === 'confirmed' ? ' confirmed' : '');
+      pill.textContent = data.status === 'awaiting' ? 'Awaiting assessor confirmation' : data.status === 'confirmed' ? 'Plan confirmed' : 'Draft plan';
+    }
+
+    const learnerPlanLocked = data.status !== 'draft';
+    if (startInput) startInput.disabled = learnerPlanLocked;
+    if (durationInput) durationInput.disabled = learnerPlanLocked;
+    if (checkbox) {
+      checkbox.checked = Boolean(data.declaration);
+      checkbox.disabled = learnerPlanLocked;
+    }
+    if (declarationName) {
+      declarationName.value = data.declaration?.name || declarationName.value || localStorage.getItem('learnerName') || '';
+      declarationName.disabled = learnerPlanLocked;
+    }
+    if (submitButton) {
+      submitButton.disabled = learnerPlanLocked;
+      submitButton.textContent = data.status === 'confirmed' ? 'Assessment Plan Confirmed' : data.status === 'awaiting' ? 'Awaiting Assessor Confirmation' : 'Submit Plan for Assessor Confirmation';
+    }
+
+    const assessorCanConfirm = isAssessorPlanEditor() && data.status === 'awaiting';
+    if (assessorName) assessorName.disabled = !assessorCanConfirm;
+    if (confirmButton) confirmButton.disabled = !assessorCanConfirm;
+    if (confirmationForm) confirmationForm.style.display = data.status === 'confirmed' ? 'none' : 'block';
+    if (confirmationMeta) {
+      confirmationMeta.style.display = data.status === 'confirmed' ? 'block' : 'none';
+      confirmationMeta.innerHTML = data.confirmation ? `<strong>Confirmed by ${data.confirmation.name}</strong><br>${formatPlanDate(data.confirmation.date)}` : '';
+    }
+  }
+
+  function submitAssessmentPlan() {
+    const data = getAssessmentPlanData();
+    const checkbox = document.getElementById('confirmCheckbox');
+    const declarationName = document.getElementById('declarationName')?.value.trim() || '';
+    const startDate = document.getElementById('programmeStartDate')?.value || '';
+    if (!startDate) {
+      alert('Enter the programme start date so the planned dates can be generated.');
+      return;
+    }
+    if (!checkbox?.checked) {
+      alert('Please tick the learner declaration before submitting the plan.');
+      return;
+    }
+    if (!declarationName) {
+      alert('Enter the learner name before submitting the plan.');
+      return;
+    }
+    data.startDate = startDate;
+    data.durationWeeks = Number(document.getElementById('programmeDuration')?.value) === 8 ? 8 : 12;
+    data.status = 'awaiting';
+    data.declaration = { name: declarationName, date: getTodayDateString(), recordedAt: new Date().toISOString() };
+    saveAssessmentPlanData(data);
+    renderPlanStatus();
+    alert('Assessment Plan submitted for assessor confirmation.');
+  }
+
+  function confirmAssessmentPlan() {
+    if (!isAssessorPlanEditor()) {
+      alert('Only an authorised assessor can confirm this Assessment Plan.');
+      return;
+    }
+    const data = getAssessmentPlanData();
+    const assessorName = document.getElementById('assessorConfirmationName')?.value.trim() || '';
+    if (data.status !== 'awaiting') return;
+    if (!assessorName) {
+      alert('Enter the assessor name before confirming the plan.');
+      return;
+    }
+    data.status = 'confirmed';
+    data.confirmation = { name: assessorName, date: getTodayDateString(), recordedAt: new Date().toISOString() };
+    saveAssessmentPlanData(data);
+    renderPlanStatus();
+    alert('Assessment Plan confirmed.');
+  }
+
+  function updateDashboardFromAssessmentPlan() {
+    const data = getAssessmentPlanData();
+    const totals = [8, 4, 4];
+    const completeByUnit = [0, 0, 0];
+    const startedByUnit = [0, 0, 0];
+    Object.entries(data.records).forEach(function([key, record]) {
+      if (/observation/.test(key)) return;
+      const match = key.match(/^unit([1-3])-lo/);
+      if (!match || !record.initial) return;
+      const unitIndex = Number(match[1]) - 1;
+      startedByUnit[unitIndex] += 1;
+      if (record.initial.outcome === 'Pass' || (record.progress || []).some(entry => entry.outcome === 'Pass')) completeByUnit[unitIndex] += 1;
+    });
+
+    const cards = document.querySelectorAll('#dashboard .stats-container .unit-card');
+    cards.forEach(function(card, index) {
+      if (index > 2) return;
+      const percentage = Math.round((completeByUnit[index] / totals[index]) * 100);
+      const fill = card.querySelector('.progress-fill');
+      const text = card.querySelector('.progress-text');
+      if (fill) fill.style.width = percentage + '%';
+      if (text) text.textContent = completeByUnit[index] + ' of ' + totals[index] + ' learning outcomes complete';
+    });
+
+    const totalComplete = completeByUnit.reduce((sum, value) => sum + value, 0);
+    const totalStarted = startedByUnit.reduce((sum, value) => sum + value, 0);
+    if (dashboardProgressChart) {
+      dashboardProgressChart.data.datasets[0].data = [totalComplete, Math.max(0, totalStarted - totalComplete), 16 - totalStarted];
+      dashboardProgressChart.update();
+    }
+  }
+
+  function initialiseAssessmentPlan() {
+    const sections = getAssessmentPlanSections();
+    sections.forEach(function(section, unitIndex) {
+      let learningOutcomeIndex = 0;
+      section.querySelectorAll('.lo-block').forEach(function(block, itemIndex) {
+        const isObservation = /Observation Record/i.test(block.querySelector('.lo-title')?.textContent || '');
+        if (!isObservation) learningOutcomeIndex += 1;
+        const key = 'unit' + (unitIndex + 1) + '-' + (isObservation ? 'observation' : 'lo' + learningOutcomeIndex);
+        block.dataset.planItemKey = key;
+        const targetInput = block.querySelector('input[type="date"]');
+        if (targetInput) {
+          targetInput.classList.add('generated-target-date');
+          targetInput.readOnly = true;
+          targetInput.setAttribute('aria-label', 'Automatically generated planned target date');
+        }
+        buildAssessmentRecord(block, key);
+      });
+    });
+
+    const data = getAssessmentPlanData();
+    const startInput = document.getElementById('programmeStartDate');
+    const durationInput = document.getElementById('programmeDuration');
+    if (startInput) startInput.value = data.startDate;
+    if (durationInput) durationInput.value = String(data.durationWeeks);
+    if (data.startDate) calculatePlanTargets();
+    else updatePlanMilestones(data);
+
+    document.getElementById('programmeStartDate')?.addEventListener('change', calculatePlanTargets);
+    document.getElementById('programmeDuration')?.addEventListener('change', calculatePlanTargets);
+    Object.keys(getAssessmentPlanData().records).forEach(renderAssessmentRecord);
+    document.querySelectorAll('[data-assessment-key]').forEach(wrapper => renderAssessmentRecord(wrapper.dataset.assessmentKey));
+    renderPlanStatus();
+    updateDashboardFromAssessmentPlan();
+  }
+
+  document.addEventListener('DOMContentLoaded', initialiseAssessmentPlan);
+
   // Simple chart for dashboard
+  let dashboardProgressChart = null;
   const ctx = document.getElementById('progressChart');
   if (ctx) {
-    new Chart(ctx, {
+    dashboardProgressChart = new Chart(ctx, {
       type: 'doughnut',
       data: {
         labels: ['Complete', 'In Progress', 'Not Started'],
@@ -3644,6 +4146,69 @@ const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+function getHubPageName() {
+  const pageName = window.location.pathname.split('/').filter(Boolean).pop();
+  return pageName && pageName.toLowerCase().endsWith('.html') ? pageName : 'index.html';
+}
+
+function getLoginUrl() {
+  const params = new URLSearchParams({ return: getHubPageName() });
+  return 'login.html?' + params.toString();
+}
+
+function getUserDisplayName(user) {
+  const metadata = user && user.user_metadata ? user.user_metadata : {};
+  return String(metadata.full_name || metadata.name || user?.email?.split('@')[0] || 'Learner').trim();
+}
+
+function updateAccountState(session) {
+  const loginLink = document.getElementById('loginLink');
+  const logoutButton = document.getElementById('logoutButton');
+  const accountStatus = document.getElementById('accountStatus');
+
+  if (loginLink) loginLink.href = getLoginUrl();
+
+  if (session && session.user) {
+    const savedLearnerName = localStorage.getItem('learnerName');
+    syncLearnerWelcome(savedLearnerName || getUserDisplayName(session.user), false);
+    if (accountStatus) accountStatus.textContent = session.user.email || 'Logged in';
+    if (loginLink) loginLink.hidden = true;
+    if (logoutButton) logoutButton.hidden = false;
+  } else {
+    syncLearnerWelcome(localStorage.getItem('learnerName') || '', false);
+    if (accountStatus) accountStatus.textContent = 'Not logged in';
+    if (loginLink) loginLink.hidden = false;
+    if (logoutButton) logoutButton.hidden = true;
+  }
+}
+
+async function logoutLearner() {
+  const logoutButton = document.getElementById('logoutButton');
+  if (logoutButton) {
+    logoutButton.disabled = true;
+    logoutButton.textContent = 'Logging out…';
+  }
+
+  const { error } = await sb.auth.signOut({ scope: 'local' });
+  if (error) {
+    if (logoutButton) {
+      logoutButton.disabled = false;
+      logoutButton.textContent = 'Log out';
+    }
+    window.alert('We could not log you out. Please try again.');
+    return;
+  }
+
+  localStorage.removeItem('cava_token');
+  localStorage.removeItem('cava_user');
+  localStorage.removeItem('cava_role');
+  updateAccountState(null);
+  window.location.assign(getLoginUrl());
+}
+
+document.getElementById('logoutButton')?.addEventListener('click', logoutLearner);
+sb.auth.onAuthStateChange((_event, session) => updateAccountState(session));
 
 const QUESTION_IDS = [
   'q1_1','q1_2','q1_3','q1_4',
@@ -3692,9 +4257,27 @@ function loadLocalWorksheetData() {
 
 // --- AUTH ---
 async function init() {
-  const token = localStorage.getItem('cava_token');
-  const userRaw = localStorage.getItem('cava_user');
-  if (!token || !userRaw) {
+  let session = null;
+  try {
+    const { data, error } = await sb.auth.getSession();
+    if (!error) session = data.session;
+  } catch (error) {
+    console.warn('Unable to check the current login session.', error);
+  }
+
+  updateAccountState(session);
+
+  if (session && session.user) {
+    currentUser = session.user;
+    localStorage.setItem('cava_token', session.access_token);
+    localStorage.setItem('cava_user', JSON.stringify(session.user));
+  } else {
+    localStorage.removeItem('cava_token');
+    localStorage.removeItem('cava_user');
+    localStorage.removeItem('cava_role');
+  }
+
+  if (!currentUser) {
     isLocalPreview = true;
     currentUser = { id: 'local-preview' };
     document.getElementById('authCheck').style.display = 'none';
@@ -3703,7 +4286,6 @@ async function init() {
     updateProgress();
     return;
   }
-  currentUser = JSON.parse(userRaw);
   document.getElementById('authCheck').style.display = 'none';
   document.getElementById('worksheetContent').style.display = 'block';
   await loadSavedData();
