@@ -44,6 +44,8 @@
     .account-copy span { color: #bbb; display: block; font-size: 0.72rem; margin-top: 2px; }
     .logout-button { background: transparent; border: 2px solid var(--gold); border-radius: 4px; color: #fff; cursor: pointer; font-size: 0.82rem; font-weight: 900; min-height: 42px; padding: 8px 15px; }
     .logout-button:hover { background: var(--gold); color: #111; }
+    .preview-notice { background: #fff4d5; border-bottom: 1px solid #e3c76f; color: #503b05; font-size: 0.86rem; padding: 12px 34px; }
+    .preview-notice strong { color: #2b2105; }
 
     .primary-nav { background: var(--ink-soft); display: flex; gap: 0; overflow-x: auto; padding: 0 34px; }
     .nav-button { background: transparent; border: 0; border-bottom: 4px solid transparent; color: #d0d0d0; cursor: pointer; flex: 0 0 auto; font-size: 0.92rem; font-weight: 800; padding: 16px 20px 13px; }
@@ -229,7 +231,7 @@
         <strong id="accountRole">Assessor</strong>
         <span id="accountEmail">Checking login…</span>
       </div>
-      <button class="logout-button" type="button" onclick="logoutAssessor()">Log out</button>
+      <button id="accountActionButton" class="logout-button" type="button" onclick="handleAccountAction()">Login</button>
     </div>
   </header>
 
@@ -239,6 +241,10 @@
     <button class="nav-button" type="button" data-section="queue">Work Awaiting Assessment</button>
     <button class="nav-button" type="button" data-section="reports">Records and Reports</button>
   </nav>
+
+  <div id="previewNotice" class="preview-notice" role="status" hidden>
+    <strong>Preview mode:</strong> the Assessor Hub is open without a live account. Records are saved only in this browser. Do not enter live learner information until protected accounts and database security are enabled.
+  </div>
 
   <main class="page">
     <section id="dashboard" class="page-section active">
@@ -715,11 +721,29 @@
       let session=null;
       try { const response=await sb.auth.getSession(); session=response.data?.session||null; } catch {}
       const legacyToken=localStorage.getItem('cava_token');
-      if(!session&&!legacyToken){window.location.assign('login.html');return false;}
+      const accountButton=document.getElementById('accountActionButton');
+      const previewNotice=document.getElementById('previewNotice');
+      if(!session&&!legacyToken){
+        document.getElementById('accountEmail').textContent='Local prototype';
+        document.getElementById('accountRole').textContent='Assessor preview';
+        accountButton.textContent='Login';
+        accountButton.dataset.action='login';
+        previewNotice.hidden=false;
+        return true;
+      }
       const user=session?.user||safeParse(localStorage.getItem('cava_user')||'null',null);
       document.getElementById('accountEmail').textContent=user?.email||'Authorised account';
       document.getElementById('accountRole').textContent=localStorage.getItem('cava_role')||'Assessor';
+      accountButton.textContent='Log out';
+      accountButton.dataset.action='logout';
+      previewNotice.hidden=true;
       return true;
+    }
+
+    function handleAccountAction() {
+      const action=document.getElementById('accountActionButton').dataset.action;
+      if(action==='logout'){logoutAssessor();return;}
+      window.location.assign('login.html?return=assessor-hub.html');
     }
 
     async function logoutAssessor() {
