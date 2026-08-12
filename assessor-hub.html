@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PT Academy | Assessor Hub | COMPLETE PRE-PASS 8-4-4</title>
-  <!-- VERIFIED COMPLETE PRE-PASS BUILD: UNIT OUTCOMES 8 / 4 / 4 -->
+  <title>PT Academy | Assessor Hub</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
@@ -570,20 +569,38 @@
       return String(value || '').trim().toLowerCase().replace(/\s+/g, ' ');
     }
 
+    function getLearnerPlanStorageKeys(learner) {
+      const keys = [LEARNER_PLAN_KEY + ':learner:' + learner.id];
+      const email = String(learner.email || '').trim().toLowerCase();
+      if (email) keys.push(LEARNER_PLAN_KEY + ':email:' + email);
+      return keys;
+    }
+
+    function getLinkedLearnerPlan(learner) {
+      for (const key of getLearnerPlanStorageKeys(learner)) {
+        const plan = safeParse(localStorage.getItem(key) || 'null', null);
+        if (plan) return plan;
+      }
+      return null;
+    }
+
     function getLearnerPlan(learner) {
       const store = getHubStore();
       const storedPlan = store.plans[learner.id];
+      const linkedPlan = getLinkedLearnerPlan(learner);
       const currentPlan = safeParse(localStorage.getItem(LEARNER_PLAN_KEY) || 'null', null);
       const currentName = currentPlan?.declaration?.name || localStorage.getItem('learnerName') || '';
       const isActive = localStorage.getItem(ACTIVE_LEARNER_KEY) === learner.id;
       if (currentPlan && (isActive || normaliseName(currentName) === normaliseName(learner.fullName))) return currentPlan;
-      return storedPlan || emptyPlan();
+      return linkedPlan || storedPlan || emptyPlan();
     }
 
     function saveLearnerPlan(learner, plan) {
       const store = getHubStore();
       store.plans[learner.id] = plan;
       saveHubStore(store);
+      const serialised = JSON.stringify(plan);
+      getLearnerPlanStorageKeys(learner).forEach(key => localStorage.setItem(key, serialised));
       if (localStorage.getItem(ACTIVE_LEARNER_KEY) === learner.id) localStorage.setItem(LEARNER_PLAN_KEY, JSON.stringify(plan));
     }
 
@@ -591,11 +608,12 @@
       const activeId = localStorage.getItem(ACTIVE_LEARNER_KEY);
       if (!activeId) return;
       const learner = learners.find(item => item.id === activeId);
-      const plan = safeParse(localStorage.getItem(LEARNER_PLAN_KEY) || 'null', null);
+      const plan = learner ? getLinkedLearnerPlan(learner) || safeParse(localStorage.getItem(LEARNER_PLAN_KEY) || 'null', null) : null;
       if (learner && plan) {
         const store = getHubStore();
         store.plans[learner.id] = plan;
         saveHubStore(store);
+        localStorage.setItem(LEARNER_PLAN_KEY, JSON.stringify(plan));
       }
     }
 
@@ -762,6 +780,10 @@
       selectedLearnerId = learnerId;
       const learner = learners.find(item=>item.id===learnerId);
       if (!learner) return;
+      const learnerPlan = getLearnerPlan(learner);
+      localStorage.setItem(ACTIVE_LEARNER_KEY, learner.id);
+      localStorage.setItem(LEARNER_PLAN_KEY, JSON.stringify(learnerPlan));
+      localStorage.setItem('learnerName', learner.fullName);
       document.getElementById('recordLearnerName').textContent = learner.fullName;
       document.getElementById('recordLearnerMeta').textContent = (learner.email||'No email recorded')+' · CAVA trainee assessor record';
       renderRecordOverview(learner);

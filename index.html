@@ -10,6 +10,27 @@
   <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f3f0; color: #2c2c2c; }
+    body.auth-pending > .header,
+    body.auth-pending > .tabs,
+    body.auth-pending > .content,
+    body.auth-pending > .footer,
+    body.auth-required > .header,
+    body.auth-required > .tabs,
+    body.auth-required > .content,
+    body.auth-required > .footer { display: none !important; }
+    .learner-auth-gate { align-items: center; background: #f5f3f0; display: none; inset: 0; justify-content: center; min-height: 100vh; padding: 24px; position: fixed; z-index: 99999; }
+    body.auth-pending .learner-auth-gate,
+    body.auth-required .learner-auth-gate { display: flex; }
+    .learner-auth-card { background: #fff; border-top: 6px solid #c9a84c; border-radius: 8px; box-shadow: 0 16px 42px rgba(0,0,0,0.16); max-width: 560px; padding: 34px; text-align: center; width: 100%; }
+    .learner-auth-card img { height: 70px; margin-bottom: 18px; object-fit: contain; width: 70px; }
+    .learner-auth-card h1 { color: #171717; font-size: 1.55rem; line-height: 1.25; margin: 0 0 10px; }
+    .learner-auth-card p { color: #555; font-size: 0.96rem; line-height: 1.6; margin: 0 auto 20px; }
+    .learner-auth-card a { background: #c9a84c; border: 2px solid #c9a84c; border-radius: 5px; color: #111; display: inline-flex; font-weight: 800; justify-content: center; min-width: 150px; padding: 11px 18px; text-decoration: none; }
+    .learner-auth-card a:hover { background: #171717; color: #fff; }
+    body.auth-pending .learner-auth-card h1::after { content: 'Checking your login…'; }
+    body.auth-pending .learner-auth-card h1 > span,
+    body.auth-pending .learner-auth-card p,
+    body.auth-pending .learner-auth-card a { display: none; }
     
     .header { background: #1a1a1a; padding: 18px 40px; display: flex; align-items: center; gap: 28px; border-bottom: 4px solid #c9a84c; }
     .header-brand { display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0; }
@@ -717,9 +738,27 @@
   #unit3WorksheetView .embedded-back-button { display: none !important; }
 }
 
+body.auth-pending .header,
+body.auth-pending .tabs,
+body.auth-pending .content,
+body.auth-pending .footer,
+body.auth-required .header,
+body.auth-required .tabs,
+body.auth-required .content,
+body.auth-required .footer { display: none !important; }
+
   </style>
 </head>
-<body>
+<body class="auth-pending">
+
+<div id="learnerAuthGate" class="learner-auth-gate" role="status" aria-live="polite">
+  <section class="learner-auth-card" aria-labelledby="learnerAuthTitle">
+    <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy">
+    <h1 id="learnerAuthTitle"><span>Login required</span></h1>
+    <p id="learnerAuthMessage">Your learner record, assessment documents and progress are private. Login with your PT Academy account to continue.</p>
+    <a id="learnerAuthLoginLink" href="login.html?return=index.html">Go to Login</a>
+  </section>
+</div>
 
 <div class="header">
   <div class="header-brand">
@@ -754,7 +793,7 @@
     }
 
     document.addEventListener('DOMContentLoaded', function() {
-      syncLearnerWelcome(localStorage.getItem('learnerName') || '', false);
+      syncLearnerWelcome('', false);
       ['learnerName', 'cand-name', 'u3-candidate-name'].forEach(function(id) {
         const input = document.getElementById(id);
         if (input) input.addEventListener('input', function() { syncLearnerWelcome(input.value); });
@@ -3766,15 +3805,46 @@
   }
 
   const ASSESSMENT_PLAN_STORAGE_KEY = 'cava_assessment_plan_v2';
+  const ASSESSOR_HUB_STORAGE_KEY = 'cava_assessor_hub_v2';
+  const ACTIVE_ASSESSOR_LEARNER_KEY = 'cava_active_assessor_learner_id';
   const PLAN_WEEK_POSITIONS = {
     unit1: [1.25, 1.65, 2, 2.4, 2.8, 3.2, 3.6, 4],
     unit2: [5, 6, 7, 8, 8],
     unit3: [8, 9, 10, 11, 11]
   };
 
+  function assessmentPlanOwnerIdFromEmail(email) {
+    const slug = String(email || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    return slug ? 'learner-' + slug : '';
+  }
+
+  function getAssessmentPlanStorageContext() {
+    const role = localStorage.getItem('cava_role') || '';
+    const activeLearnerId = localStorage.getItem(ACTIVE_ASSESSOR_LEARNER_KEY) || '';
+    if (['Assessor', 'Super Admin', 'Assessor preview'].includes(role) && activeLearnerId) {
+      return { learnerId: activeLearnerId, keys: [ASSESSMENT_PLAN_STORAGE_KEY + ':learner:' + activeLearnerId, ASSESSMENT_PLAN_STORAGE_KEY] };
+    }
+    const email = String(currentUser?.email || '').trim().toLowerCase();
+    const learnerId = assessmentPlanOwnerIdFromEmail(email);
+    return email ? { learnerId, keys: [ASSESSMENT_PLAN_STORAGE_KEY + ':email:' + email, ASSESSMENT_PLAN_STORAGE_KEY + ':learner:' + learnerId] } : { learnerId: '', keys: [] };
+  }
+
+  function readAssessmentPlanBridge(context) {
+    for (const key of context.keys) {
+      try {
+        const value = JSON.parse(localStorage.getItem(key) || 'null');
+        if (value) return value;
+      } catch {}
+    }
+    try {
+      const hubStore = JSON.parse(localStorage.getItem(ASSESSOR_HUB_STORAGE_KEY) || '{}');
+      return context.learnerId ? hubStore?.plans?.[context.learnerId] || null : null;
+    } catch { return null; }
+  }
+
   function getAssessmentPlanData() {
     try {
-      const saved = JSON.parse(localStorage.getItem(ASSESSMENT_PLAN_STORAGE_KEY) || '{}');
+      const saved = readAssessmentPlanBridge(getAssessmentPlanStorageContext()) || {};
       return {
         startDate: saved.startDate || '',
         durationWeeks: Number(saved.durationWeeks) === 8 ? 8 : 12,
@@ -3791,7 +3861,17 @@
   }
 
   function saveAssessmentPlanData(data) {
-    localStorage.setItem(ASSESSMENT_PLAN_STORAGE_KEY, JSON.stringify(data));
+    const context = getAssessmentPlanStorageContext();
+    if (!context.keys.length || !context.learnerId) return;
+    const serialised = JSON.stringify(data);
+    context.keys.forEach(key => localStorage.setItem(key, serialised));
+    try {
+      const hubStore = JSON.parse(localStorage.getItem(ASSESSOR_HUB_STORAGE_KEY) || '{}');
+      hubStore.settings = hubStore.settings || {};
+      hubStore.plans = hubStore.plans || {};
+      hubStore.plans[context.learnerId] = data;
+      localStorage.setItem(ASSESSOR_HUB_STORAGE_KEY, JSON.stringify(hubStore));
+    } catch {}
   }
 
   function isAssessorPlanEditor() {
@@ -4234,8 +4314,6 @@
     enhanceWorksheetAssessmentDecisionPanels();
   }
 
-  document.addEventListener('DOMContentLoaded', initialiseAssessmentPlan);
-
   // Simple chart for dashboard
   let dashboardProgressChart = null;
   const ctx = document.getElementById('progressChart');
@@ -4290,17 +4368,30 @@ function updateAccountState(session) {
   if (loginLink) loginLink.href = getLoginUrl();
 
   if (session && session.user) {
-    const savedLearnerName = localStorage.getItem('learnerName');
-    syncLearnerWelcome(savedLearnerName || getUserDisplayName(session.user), false);
+    syncLearnerWelcome(getUserDisplayName(session.user), false);
     if (accountStatus) accountStatus.textContent = session.user.email || 'Logged in';
     if (loginLink) loginLink.hidden = true;
     if (logoutButton) logoutButton.hidden = false;
   } else {
-    syncLearnerWelcome(localStorage.getItem('learnerName') || '', false);
+    syncLearnerWelcome('', false);
     if (accountStatus) accountStatus.textContent = 'Not logged in';
     if (loginLink) loginLink.hidden = false;
     if (logoutButton) logoutButton.hidden = true;
   }
+}
+
+function showLearnerAuthRequired(message) {
+  document.body.classList.remove('auth-pending', 'auth-ready');
+  document.body.classList.add('auth-required');
+  const gateMessage = document.getElementById('learnerAuthMessage');
+  const gateLink = document.getElementById('learnerAuthLoginLink');
+  if (gateMessage && message) gateMessage.textContent = message;
+  if (gateLink) gateLink.href = getLoginUrl();
+}
+
+function unlockLearnerHub() {
+  document.body.classList.remove('auth-pending', 'auth-required');
+  document.body.classList.add('auth-ready');
 }
 
 async function logoutLearner() {
@@ -4323,12 +4414,18 @@ async function logoutLearner() {
   localStorage.removeItem('cava_token');
   localStorage.removeItem('cava_user');
   localStorage.removeItem('cava_role');
+  localStorage.removeItem('learnerName');
+  localStorage.removeItem(ACTIVE_ASSESSOR_LEARNER_KEY);
   updateAccountState(null);
+  showLearnerAuthRequired();
   window.location.assign(getLoginUrl());
 }
 
 document.getElementById('logoutButton')?.addEventListener('click', logoutLearner);
-sb.auth.onAuthStateChange((_event, session) => updateAccountState(session));
+sb.auth.onAuthStateChange((event, session) => {
+  updateAccountState(session);
+  if (event === 'SIGNED_OUT' && !session) showLearnerAuthRequired();
+});
 
 const QUESTION_IDS = [
   'q1_1','q1_2','q1_3','q1_4',
@@ -4345,69 +4442,44 @@ let currentUser = null;
 let autoSaveTimers = {};
 let detailsSaveTimer = null;
 let isSubmitted = false;
-let isLocalPreview = false;
-
-function getLocalWorksheetData() {
-  try {
-    return JSON.parse(localStorage.getItem('cava_unit1_preview') || '{}');
-  } catch {
-    return {};
-  }
-}
-
-function saveLocalWorksheetData(patch) {
-  const next = { ...getLocalWorksheetData(), ...patch };
-  localStorage.setItem('cava_unit1_preview', JSON.stringify(next));
-  return next;
-}
-
-function loadLocalWorksheetData() {
-  const data = getLocalWorksheetData();
-  if (data.learner_name) {
-    document.getElementById('learnerName').value = data.learner_name;
-    syncLearnerWelcome(data.learner_name);
-  }
-  if (data.date_started) document.getElementById('dateStarted').value = data.date_started;
-  if (data.assessor_name) document.getElementById('assessorName').value = data.assessor_name;
-  QUESTION_IDS.forEach(qid => {
-    const el = document.getElementById(qid);
-    if (el && data[qid]) el.value = data[qid];
-  });
-}
 
 // --- AUTH ---
 async function init() {
   let session = null;
+  let verifiedUser = null;
   try {
     const { data, error } = await sb.auth.getSession();
-    if (!error) session = data.session;
+    if (!error && data.session) {
+      const verified = await sb.auth.getUser();
+      if (!verified.error && verified.data?.user) {
+        session = data.session;
+        verifiedUser = verified.data.user;
+      }
+    }
   } catch (error) {
     console.warn('Unable to check the current login session.', error);
   }
 
-  updateAccountState(session);
-
-  if (session && session.user) {
-    currentUser = session.user;
+  if (session && verifiedUser) {
+    currentUser = verifiedUser;
+    session.user = verifiedUser;
     localStorage.setItem('cava_token', session.access_token);
-    localStorage.setItem('cava_user', JSON.stringify(session.user));
+    localStorage.setItem('cava_user', JSON.stringify(verifiedUser));
   } else {
     localStorage.removeItem('cava_token');
     localStorage.removeItem('cava_user');
     localStorage.removeItem('cava_role');
-  }
-
-  if (!currentUser) {
-    isLocalPreview = true;
-    currentUser = { id: 'local-preview' };
-    document.getElementById('authCheck').style.display = 'none';
-    document.getElementById('worksheetContent').style.display = 'block';
-    loadLocalWorksheetData();
-    updateProgress();
+    localStorage.removeItem('learnerName');
+    updateAccountState(null);
+    showLearnerAuthRequired('Your learner record, assessment documents and progress are private. Login with your PT Academy account to continue.');
     return;
   }
+
+  updateAccountState(session);
+  unlockLearnerHub();
   document.getElementById('authCheck').style.display = 'none';
   document.getElementById('worksheetContent').style.display = 'block';
+  initialiseAssessmentPlan();
   await loadSavedData();
   updateProgress();
 }
@@ -4472,15 +4544,6 @@ function scheduleDetailsSave() {
 
 async function saveDetails() {
   if (isSubmitted) return;
-  if (isLocalPreview) {
-    saveLocalWorksheetData({
-      learner_name: document.getElementById('learnerName').value,
-      date_started: document.getElementById('dateStarted').value || null,
-      assessor_name: document.getElementById('assessorName').value,
-      updated_at: new Date().toISOString()
-    });
-    return;
-  }
   const payload = {
     user_id: currentUser.id,
     learner_name: document.getElementById('learnerName').value,
@@ -4503,24 +4566,7 @@ function scheduleAutoSave(qid) {
 async function saveAnswer(qid) {
   if (isSubmitted) return;
   const value = document.getElementById(qid)?.value || '';
-  if (isLocalPreview) {
-    saveLocalWorksheetData({ [qid]: value, updated_at: new Date().toISOString() });
-    const localIndicator = document.getElementById('saved_' + qid);
-    if (localIndicator) localIndicator.textContent = '✓ Saved on this device';
-    return;
-  }
   const payload = { user_id: currentUser.id, [qid]: value, updated_at: new Date().toISOString() };
-  if (isLocalPreview) {
-    saveLocalWorksheetData(payload);
-    isSubmitted = true;
-    lockForm();
-    document.getElementById('submittedBanner').style.display = 'block';
-    document.getElementById('submitMsg').textContent = '';
-    showSection('intro');
-    window.scrollTo(0, 0);
-    return;
-  }
-
   const { error } = await sb.from('unit1_submissions').upsert(payload, { onConflict: 'user_id' });
   const indicator = document.getElementById('saved_' + qid);
   if (indicator) indicator.textContent = error ? '&#x26A0; Save failed' : '&#x2713; Saved';
