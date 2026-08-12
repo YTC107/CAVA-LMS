@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PT Academy | Assessor Hub</title>
+  <title>PT Academy | Assessor Hub | COMPLETE PRE-PASS 8-4-4</title>
+  <!-- VERIFIED COMPLETE PRE-PASS BUILD: UNIT OUTCOMES 8 / 4 / 4 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
@@ -171,6 +172,98 @@
     .prior-achievement-button { background: var(--ink); border: 0; border-radius: 4px; color: var(--gold); cursor: pointer; font-size: 0.74rem; font-weight: 900; min-height: 41px; padding: 8px 12px; }
     .prior-achievement-summary { color: var(--green); font-size: 0.76rem; font-weight: 800; margin-bottom: 11px; }
 
+    .manual-status-panel { background: #fff; border: 1px solid #d8d3c7; border-radius: 5px; grid-column: 1 / -1; overflow: hidden; }
+    .manual-status-panel > summary { align-items: center; background: #f4f1e8; cursor: pointer; display: flex; gap: 14px; justify-content: space-between; list-style: none; padding: 13px 15px; }
+    .manual-status-panel > summary::-webkit-details-marker { display: none; }
+    .manual-status-summary-copy { display: grid; gap: 3px; }
+    .manual-status-panel > summary strong { font-size: 0.84rem; }
+    .manual-status-panel > summary .manual-status-summary-text { color: #6f5a1b; font-size: 0.73rem; font-weight: 900; }
+    .manual-status-panel > summary .pill { flex: 0 0 auto; font-size: 0.7rem; }
+    .manual-status-intro { border-bottom: 1px solid #ebe7de; color: #666; font-size: 0.75rem; margin: 0; padding: 12px 15px; }
+    .manual-assessment-list { display: grid; }
+    .manual-assessment-row { border-bottom: 1px solid #dcd7cb; padding: 17px 15px; }
+    .manual-assessment-row:last-child { border-bottom: 0; }
+    .manual-assessment-heading { align-items: start; display: grid; gap: 14px; grid-template-columns: minmax(260px, 1fr) 170px auto; }
+    .manual-assessment-copy strong { display: block; font-size: 0.82rem; }
+    .manual-assessment-copy small { color: #696969; display: block; font-size: 0.7rem; margin-top: 2px; }
+    .manual-target-field label { color: #65501c; display: block; font-size: 0.64rem; font-weight: 900; margin-bottom: 4px; text-transform: uppercase; }
+    .manual-target-field input { border: 1px solid var(--gold-dark); border-radius: 4px; font-size: 0.72rem; min-height: 38px; padding: 7px; width: 100%; }
+    .attempt-table { margin-top: 13px; overflow-x: auto; }
+    .attempt-table table { min-width: 680px; }
+    .attempt-table th { background: #f3f0e7; border-bottom: 2px solid var(--gold); color: #5d4b19; font-size: 0.65rem; padding: 8px 10px; }
+    .attempt-table td { font-size: 0.72rem; padding: 9px 10px; }
+    .attempt-table tr.pass-attempt { background: #edf8f0; }
+    .attempt-table tr.refer-attempt { background: #fdf0f0; }
+    .attempt-empty { color: #777; font-size: 0.73rem; padding: 11px 0 2px; }
+    .add-attempt-button { background: #fff; border: 2px solid var(--gold); border-radius: 4px; color: #211b0d; cursor: pointer; font-size: 0.72rem; font-weight: 900; margin-top: 11px; min-height: 38px; padding: 7px 11px; }
+    .add-attempt-button:disabled { border-color: #ccc; color: #888; cursor: not-allowed; }
+    .manual-assessment-controls { align-items: end; background: #f8f6f0; border-left: 4px solid var(--gold); border-radius: 4px; display: grid; gap: 9px; grid-template-columns: 145px minmax(190px, 1fr) 120px auto; margin-top: 10px; padding: 12px; }
+    .manual-assessment-controls label { color: #555; display: block; font-size: 0.65rem; font-weight: 900; margin-bottom: 4px; }
+    .manual-assessment-controls input, .manual-assessment-controls select { border: 1px solid #aaa69d; border-radius: 4px; font-size: 0.72rem; min-height: 38px; padding: 7px; width: 100%; }
+    .manual-assessment-controls button { background: var(--ink); border: 0; border-radius: 4px; color: var(--gold); cursor: pointer; font-size: 0.7rem; font-weight: 900; min-height: 38px; padding: 7px 10px; }
+    .manual-assessment-controls button:disabled { background: #dedbd3; color: #777; cursor: not-allowed; }
+    .unit-confirmation-bar { align-items: center; background: #f1efe9; border-top: 1px solid #d8d3c7; display: flex; gap: 15px; justify-content: space-between; padding: 13px 15px; }
+    .unit-confirmation-bar.ready { background: #edf8f0; }
+    .unit-confirmation-bar strong { display: block; font-size: 0.8rem; }
+    .unit-confirmation-bar span { color: #666; display: block; font-size: 0.7rem; margin-top: 2px; }
+    .unit-confirmation-bar button { background: var(--green); border: 0; border-radius: 4px; color: #fff; cursor: pointer; font-size: 0.73rem; font-weight: 900; min-height: 40px; padding: 8px 13px; }
+    .unit-confirmation-bar button:disabled { background: #ccc8be; color: #666; cursor: not-allowed; }
+
+    .prepass-master-controls { align-items: end; background: #f6f2e8; border-left: 5px solid var(--gold); border-radius: 5px; display: grid; gap: 11px; grid-template-columns: minmax(230px, 1fr) auto; margin-top: 18px; padding: 15px; }
+    .prepass-master-controls label { display: block; font-size: 0.75rem; font-weight: 900; margin-bottom: 5px; }
+    .prepass-master-controls input { border: 1px solid #aaa69d; border-radius: 4px; min-height: 42px; padding: 8px 10px; width: 100%; }
+    .prepass-master-controls button, .prepass-gold-button { background: var(--gold); border: 0; border-radius: 4px; color: #111; cursor: pointer; font-size: 0.74rem; font-weight: 900; min-height: 40px; padding: 8px 13px; }
+    .prepass-master-controls p { color: #686868; font-size: 0.72rem; grid-column: 1 / -1; line-height: 1.45; margin: 0; }
+    .prepass-outcome-list { display: grid; gap: 12px; padding: 14px; }
+    .prepass-outcome-card { border-left: 4px solid #d9d9d9; border-radius: 4px; overflow: hidden; }
+    .prepass-outcome-card.status-pass { border-left-color: var(--green); }
+    .prepass-outcome-card.status-refer { border-left-color: var(--red); }
+    .prepass-outcome-heading { align-items: center; background: #f7f7f7; display: grid; gap: 10px; grid-template-columns: minmax(260px, 1fr) 165px 74px; padding: 11px 12px; }
+    .prepass-outcome-card.status-pass .prepass-outcome-heading { background: var(--green-soft); }
+    .prepass-outcome-card.status-refer .prepass-outcome-heading { background: var(--red-soft); }
+    .prepass-outcome-title { color: #292929; font-size: 0.78rem; line-height: 1.35; }
+    .prepass-assessor-input { background: #fff; border: 1px solid #c9c9c9; border-radius: 3px; min-height: 34px; padding: 6px 8px; text-align: center; width: 100%; }
+    .prepass-change-button { background: var(--gold); border: 0; border-radius: 3px; color: #111; cursor: pointer; font-size: 0.68rem; font-weight: 900; min-height: 34px; padding: 6px 9px; }
+    .prepass-attempt-list { display: grid; gap: 7px; padding: 8px 12px 0 25px; }
+    .prepass-attempt-row { align-items: center; background: #fff; border: 1px solid #d8d8d8; border-radius: 3px; display: grid; gap: 10px; grid-template-columns: 150px minmax(170px, 1fr) auto; padding: 9px; }
+    .prepass-attempt-row.pass { background: var(--green-soft); border-color: var(--green); }
+    .prepass-attempt-row.refer { background: var(--red-soft); border-color: var(--red); }
+    .prepass-attempt-row input[type="date"] { background: #fff; border: 1px solid #c8c8c8; border-radius: 3px; min-height: 35px; padding: 5px 7px; width: 100%; }
+    .prepass-attempt-meta { color: #626262; font-size: 0.68rem; line-height: 1.35; }
+    .prepass-attempt-buttons { display: flex; flex-wrap: wrap; gap: 6px; justify-content: flex-end; }
+    .prepass-attempt-buttons button { border: 0; border-radius: 3px; cursor: pointer; font-size: 0.67rem; font-weight: 900; min-height: 32px; min-width: 55px; padding: 5px 8px; }
+    .prepass-pass-button { background: var(--green); color: #fff; }
+    .prepass-refer-button { background: var(--red); color: #fff; }
+    .prepass-remove-button { background: #e2e2e2; color: #333; }
+    .prepass-add-date { background: #e2e2e2; border: 0; border-radius: 3px; color: #222; cursor: pointer; font-size: 0.72rem; font-weight: 900; margin: 8px 0 12px 25px; min-height: 35px; padding: 6px 13px; }
+    .prepass-observation { background: #f1f1f1; border-left: 4px solid var(--gold); border-radius: 3px; margin: 4px 14px 14px; padding: 14px; }
+    .prepass-observation strong { display: block; font-size: 0.77rem; line-height: 1.4; }
+    .prepass-observation span { color: #6b6b6b; display: block; font-size: 0.68rem; margin: 4px 0 8px; }
+    .prepass-observation input { border: 1px solid #c1c1c1; border-radius: 3px; min-height: 37px; padding: 6px 8px; width: 100%; }
+    .prepass-unit-actions { align-items: end; border-top: 1px solid #e0ddd4; display: flex; flex-wrap: wrap; gap: 9px; padding: 13px 14px; }
+    .prepass-unit-actions label { display: block; font-size: 0.65rem; font-weight: 900; margin-bottom: 4px; }
+    .prepass-unit-actions input { border: 1px solid #c1c1c1; border-radius: 3px; min-height: 39px; padding: 6px 8px; }
+    .prepass-unit-pass-button { background: #d7d7d7; border: 0; border-radius: 3px; color: #555; cursor: not-allowed; font-size: 0.72rem; font-weight: 900; min-height: 39px; padding: 7px 13px; }
+    .prepass-unit-pass-button.ready { background: var(--green); color: #fff; cursor: pointer; }
+    .prepass-clear-button { background: #e5e5e5; border: 0; border-radius: 3px; color: #222; cursor: pointer; font-size: 0.72rem; font-weight: 800; min-height: 39px; padding: 7px 13px; }
+    .legacy-achievement-panel { background: #fbfaf7; border: 1px dashed #c8bd9e; border-radius: 4px; grid-column: 1 / -1; }
+    .legacy-achievement-panel > summary { cursor: pointer; font-size: 0.75rem; font-weight: 900; padding: 11px 13px; }
+    .legacy-achievement-panel .prior-achievement-panel { border: 0; border-top: 1px dashed #c8bd9e; border-radius: 0; }
+
+    .assessment-status-register { margin-top: 20px; }
+    .assessment-status-register > h4 { font-size: 1.1rem; margin: 0 0 5px; }
+    .assessment-status-register > p { color: #666; font-size: 0.8rem; margin: 0 0 14px; }
+    .status-unit-card { background: #fff; border: 1px solid var(--line); border-radius: 6px; margin-top: 12px; overflow: hidden; }
+    .status-unit-heading { align-items: center; background: #f5f2e9; border-bottom: 1px solid var(--line); display: flex; gap: 14px; justify-content: space-between; padding: 13px 15px; }
+    .status-unit-heading h5 { font-size: 0.88rem; margin: 0; }
+    .assessment-status-table { overflow-x: auto; }
+    .assessment-status-table table { min-width: 920px; }
+    .assessment-status-table th { font-size: 0.67rem; padding: 10px 12px; }
+    .assessment-status-table td { font-size: 0.74rem; padding: 11px 12px; }
+    .assessment-status-table td:first-child { font-weight: 800; min-width: 245px; }
+    .assessment-attempt { display: block; line-height: 1.45; }
+    .assessment-attempt + .assessment-attempt { border-top: 1px solid #e5e1d8; margin-top: 5px; padding-top: 5px; }
+
     .plan-summary { background: #fff; border: 1px solid var(--line); border-top: 5px solid var(--gold); border-radius: 6px; padding: 20px; }
     .plan-summary-header { align-items: center; display: flex; gap: 15px; justify-content: space-between; margin-bottom: 16px; }
     .plan-summary-header h4 { font-size: 1.1rem; margin: 0; }
@@ -212,6 +305,13 @@
       .milestone-grid { grid-template-columns: 1fr 1fr; }
       .unit-control-row, .marking-row { align-items: stretch; grid-template-columns: 1fr; }
       .prior-achievement-fields { grid-template-columns: 1fr; }
+      .manual-status-panel > summary, .unit-confirmation-bar { align-items: flex-start; flex-direction: column; }
+      .manual-assessment-heading { grid-template-columns: 1fr; }
+      .manual-assessment-controls { grid-template-columns: 1fr 1fr; }
+      .prepass-master-controls, .prepass-outcome-heading, .prepass-attempt-row { grid-template-columns: 1fr; }
+      .prepass-master-controls button { width: 100%; }
+      .prepass-attempt-list { padding-left: 8px; }
+      .prepass-attempt-buttons { justify-content: flex-start; }
       .record-content { padding: 17px; }
     }
   </style>
@@ -331,6 +431,44 @@
     const HUB_STORE_KEY = 'cava_assessor_hub_v2';
     const ACTIVE_LEARNER_KEY = 'cava_active_assessor_learner_id';
     const LEARNER_PLAN_KEY = 'cava_assessment_plan_v2';
+    const ASSESSMENT_STRUCTURE = [
+      {
+        unit: 1,
+        title: 'Understanding the Principles and Practices of Assessment',
+        items: [
+          'Understand the principles and requirements of assessment',
+          'Understand different types of assessment method',
+          'Understand how to plan assessment',
+          'Understand how to involve learners and others in assessment',
+          'Understand how to make assessment decisions',
+          'Understand quality assurance of the assessment process',
+          'Understand how to manage information relating to assessment',
+          'Understand legal and good practice requirements in relation to assessment'
+        ]
+      },
+      {
+        unit: 2,
+        title: 'Preparing Assessments',
+        items: [
+          'Understand the principles and requirements of assessment in the work environment',
+          'Plan the assessment of occupational competence',
+          'Assess occupational competence in the work environment',
+          'Review assessment decisions'
+        ],
+        observation: 'Observation Unit 2: Preparing Assessments (1.1, 1.2, 1.3)'
+      },
+      {
+        unit: 3,
+        title: 'Carrying out Assessments and Information Management',
+        items: [
+          'Understand the principles and requirements of assessing vocational skills, knowledge and understanding',
+          'Plan the assessment of vocational skills, knowledge and understanding',
+          'Assess vocational skills, knowledge and understanding',
+          'Review assessment decisions'
+        ],
+        observation: 'Observation Unit 3: Carrying out Assessments and Information Management (2.2, 2.3, 2.4, 2.5, 2.6, 3.1, 3.2, 3.3, 4.1, 4.2)'
+      }
+    ];
 
     const DEFAULT_LEARNERS = [
       ['Michael Kplomedo', 'mike@yardleytrainingclub.co.uk', ['unit-1','unit-2','unit-3']],
@@ -351,6 +489,9 @@
 
     let learners = [];
     let selectedLearnerId = null;
+    let prepassDraftCounter = 0;
+    const prepassDraftRows = {};
+    const prepassOpenUnits = new Set([1]);
 
     function slug(value) {
       return String(value || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -395,6 +536,8 @@
         learner.level3Learner = saved.level3Learner || '';
         learner.unitSettings = saved.unitSettings || {};
         learner.priorAchievements = saved.priorAchievements || {};
+        learner.prepassAssessors = saved.prepassAssessors || {};
+        learner.prepassDefaultAssessor = saved.prepassDefaultAssessor || '';
         [1,2,3].forEach(function(unit) {
           const key = 'unit-' + unit;
           if (!learner.unitSettings[key]) learner.unitSettings[key] = learner.assignedUnits.includes(key) ? 'available' : 'locked';
@@ -412,13 +555,15 @@
         level2Learner: learner.level2Learner,
         level3Learner: learner.level3Learner,
         unitSettings: learner.unitSettings,
-        priorAchievements: learner.priorAchievements || {}
+        priorAchievements: learner.priorAchievements || {},
+        prepassAssessors: learner.prepassAssessors || {},
+        prepassDefaultAssessor: learner.prepassDefaultAssessor || ''
       };
       saveHubStore(store);
     }
 
     function emptyPlan() {
-      return { startDate:'', durationWeeks:12, status:'draft', targets:{}, records:{}, declaration:null, confirmation:null };
+      return { startDate:'', durationWeeks:12, status:'draft', targets:{}, records:{}, unitCompletions:{}, declaration:null, confirmation:null };
     }
 
     function normaliseName(value) {
@@ -477,7 +622,35 @@
     }
 
     function recordIsPassed(record) {
-      return record?.initial?.outcome === 'Pass' || (record?.progress || []).some(item => item.outcome === 'Pass');
+      const attempts=[record?.initial,...(record?.progress||[])].filter(Boolean);
+      return attempts.at(-1)?.outcome === 'Pass';
+    }
+
+    function assessmentCurrentStatus(record) {
+      const attempts=[record?.initial,...(record?.progress||[])].filter(Boolean);
+      const latest=attempts.at(-1)?.outcome||'';
+      if (latest === 'Pass') return 'Pass';
+      if (latest === 'Refer') return 'Refer';
+      return 'Not assessed';
+    }
+
+    function assessmentStatusClass(status) {
+      return status === 'Pass' ? 'pass' : status === 'Refer' ? 'refer' : 'draft';
+    }
+
+    function assessmentAttemptText(entry) {
+      if (!entry) return 'Not recorded';
+      return `${escapeHtml(entry.outcome)} &middot; ${formatDate(entry.date)} &middot; ${escapeHtml(entry.assessorName || entry.initials || 'Assessor not recorded')}`;
+    }
+
+    function getAssessorInitials(name) {
+      return String(name||'').trim().split(/\s+/).filter(Boolean).slice(0,3).map(part=>part[0]).join('').toUpperCase();
+    }
+
+    function getAssessmentDefinition(unitNumber, outcomeNumber) {
+      const unit = ASSESSMENT_STRUCTURE.find(item => item.unit === Number(unitNumber));
+      const title = unit?.items?.[Number(outcomeNumber) - 1] || `Learning Outcome ${outcomeNumber}`;
+      return { unit, title };
     }
 
     function getProgress(learner) {
@@ -619,13 +792,208 @@
     function priorAchievementMarkup(learner, unitNumber) {
       const unitKey='unit-'+unitNumber;
       const record=learner.priorAchievements?.[unitKey]||null;
-      const summary=record?`<div class="prior-achievement-summary">Previously achieved &middot; ${formatDate(record.date)} &middot; ${escapeHtml(record.initials)}</div>`:'';
-      return `<div class="prior-achievement-panel ${record?'recorded':''}"><h6>Prior achievement completed outside this platform</h6><p>Use this only where the complete unit has already been assessed through the manual or PDF process. The Pass will be added to the Assessment Plan and learner progress.</p>${summary}<div class="prior-achievement-fields"><div><label for="priorDate${unitNumber}">Unit completion date</label><input id="priorDate${unitNumber}" data-prior-date="${unitKey}" type="date" value="${escapeHtml(record?.date||'')}"></div><div><label for="priorInitials${unitNumber}">Assessor initials</label><input id="priorInitials${unitNumber}" data-prior-initials="${unitKey}" type="text" maxlength="6" value="${escapeHtml(record?.initials||'')}" placeholder="e.g. MK"></div><button class="prior-achievement-button" type="button" onclick="recordPriorAchievement(${unitNumber})">${record?'Update prior achievement':'Record prior achievement'}</button></div></div>`;
+      const summary=record?`<div class="prior-achievement-summary">Previously achieved &middot; ${formatDate(record.date)} &middot; ${escapeHtml(record.assessorName||record.initials||'Assessor not recorded')}</div>`:'';
+      return `<details class="legacy-achievement-panel"><summary>Optional legacy shortcut: complete unit achieved before this platform</summary><div class="prior-achievement-panel ${record?'recorded':''}"><h6>Complete unit achieved outside this platform</h6><p>Use this shortcut only when every learning outcome was completed on the same legacy record. To keep separate dates, referrals and reassessments, use the Learning Outcome Assessment Trail above.</p>${summary}<div class="prior-achievement-fields"><div><label for="priorDate${unitNumber}">Unit completion date</label><input id="priorDate${unitNumber}" data-prior-date="${unitKey}" type="date" value="${escapeHtml(record?.date||'')}"></div><div><label for="priorAssessor${unitNumber}">Assessor name</label><input id="priorAssessor${unitNumber}" data-prior-assessor="${unitKey}" type="text" value="${escapeHtml(record?.assessorName||record?.initials||'')}" placeholder="Full name"></div><button class="prior-achievement-button" type="button" onclick="recordPriorAchievement(${unitNumber})">${record?'Update legacy achievement':'Record legacy whole-unit achievement'}</button></div></div></details>`;
+    }
+
+    function recordAttempts(record) {
+      return [record?.initial,...(record?.progress||[])].filter(Boolean);
+    }
+
+    function replaceRecordAttempts(plan,key,attempts) {
+      if(!plan.records)plan.records={};
+      if(!attempts.length){delete plan.records[key];return;}
+      plan.records[key]={initial:attempts[0],progress:attempts.slice(1)};
+    }
+
+    function prepassDraftList(key) {
+      const storageKey=`${selectedLearnerId||'none'}:${key}`;
+      if(!prepassDraftRows[storageKey])prepassDraftRows[storageKey]=[];
+      return prepassDraftRows[storageKey];
+    }
+
+    function prepassAssessorName(learner,key,record) {
+      const attempts=recordAttempts(record);
+      const latest=attempts.at(-1)||null;
+      return learner.prepassAssessors?.[key]||latest?.assessorName||latest?.initials||learner.prepassDefaultAssessor||'';
+    }
+
+    function savedPrepassAttemptMarkup(key,entry,index) {
+      const status=String(entry.outcome||'').toLowerCase();
+      return `<div class="prepass-attempt-row ${status}" data-prepass-saved-attempt="${key}-${index}"><input type="date" value="${escapeHtml(entry.date||'')}" aria-label="Assessment date for attempt ${index+1}" onchange="updatePrepassAttemptDate('${key}',${index},this.value)"><div class="prepass-attempt-meta"><strong>Attempt ${index+1}</strong><br>${escapeHtml(entry.assessorName||entry.initials||'Assessor not recorded')} &middot; ${entry.outcome?escapeHtml(entry.outcome):'Outcome not selected'}</div><div class="prepass-attempt-buttons"><button class="prepass-pass-button" type="button" onclick="setPrepassAttemptStatus('${key}',${index},'Pass')">Pass</button><button class="prepass-refer-button" type="button" onclick="setPrepassAttemptStatus('${key}',${index},'Refer')">Refer</button><button class="prepass-remove-button" type="button" onclick="removePrepassAttempt('${key}',${index})">Remove</button></div></div>`;
+    }
+
+    function draftPrepassAttemptMarkup(key,draft,index) {
+      return `<div class="prepass-attempt-row" data-prepass-draft-row="${draft.id}"><input type="date" value="${escapeHtml(draft.date||'')}" data-prepass-draft-date="${draft.id}" aria-label="New assessment date"><div class="prepass-attempt-meta"><strong>New attempt ${index+1}</strong><br>Select Pass or Refer to add this dated attempt to the permanent trail.</div><div class="prepass-attempt-buttons"><button class="prepass-pass-button" type="button" onclick="savePrepassDraftAttempt('${key}',${draft.id},'Pass')">Pass</button><button class="prepass-refer-button" type="button" onclick="savePrepassDraftAttempt('${key}',${draft.id},'Refer')">Refer</button><button class="prepass-remove-button" type="button" onclick="removePrepassDraft('${key}',${draft.id})">Remove</button></div></div>`;
+    }
+
+    function manualAssessmentStatusMarkup(learner, unitNumber) {
+      const plan=getLearnerPlan(learner);
+      const structure=ASSESSMENT_STRUCTURE.find(item=>item.unit===Number(unitNumber));
+      if(!structure)return '';
+      const records=structure.items.map(function(title,index){
+        const outcome=index+1;
+        const key=`unit${unitNumber}-lo${outcome}`;
+        const record=plan.records?.[key]||null;
+        const status=assessmentCurrentStatus(record);
+        const attempts=recordAttempts(record);
+        const drafts=prepassDraftList(key);
+        const assessor=prepassAssessorName(learner,key,record);
+        const attemptRows=attempts.map((entry,attemptIndex)=>savedPrepassAttemptMarkup(key,entry,attemptIndex)).join('');
+        const draftRows=drafts.map((draft,draftIndex)=>draftPrepassAttemptMarkup(key,draft,attempts.length+draftIndex)).join('');
+        const statusClass=status==='Pass'?'status-pass':status==='Refer'?'status-refer':'';
+        return `<article class="prepass-outcome-card ${statusClass}" data-manual-assessment-row="${key}"><div class="prepass-outcome-heading"><strong class="prepass-outcome-title">LO${outcome}: ${escapeHtml(title)}</strong><input class="prepass-assessor-input" data-prepass-assessor="${key}" value="${escapeHtml(assessor)}" placeholder="Assessor name" aria-label="Assessor for Learning Outcome ${outcome}"><button class="prepass-change-button" type="button" onclick="savePrepassAssessor('${key}')">Change</button></div><div class="prepass-attempt-list">${attemptRows}${draftRows}</div><button class="prepass-add-date" type="button" onclick="addPrepassDate('${key}')">+ Add Date</button></article>`;
+      });
+      const passed=structure.items.filter((_,index)=>recordIsPassed(plan.records?.[`unit${unitNumber}-lo${index+1}`])).length;
+      const assessed=structure.items.filter((_,index)=>Boolean(plan.records?.[`unit${unitNumber}-lo${index+1}`]?.initial)).length;
+      const referred=structure.items.filter((_,index)=>assessmentCurrentStatus(plan.records?.[`unit${unitNumber}-lo${index+1}`])==='Refer').length;
+      const summary=passed===structure.items.length?`Unit passed &middot; ${passed} of ${structure.items.length} passed`:`${assessed} of ${structure.items.length} assessed &middot; ${passed} passed${referred?` &middot; ${referred} referred`:''}`;
+      const completion=plan.unitCompletions?.[`unit-${unitNumber}`]||null;
+      const ready=passed===structure.items.length;
+      const overallStatus=completion?'Passed':referred?'Refer':ready?'Ready to confirm':assessed?'In progress':'Not assessed';
+      const overallClass=completion?'pass':referred?'refer':ready||assessed?'awaiting':'draft';
+      const completionText=completion?`Confirmed ${formatDate(completion.date)} by ${escapeHtml(completion.assessorName||completion.initials||'assessor')}`:ready?'Every required assessment is passed. Confirm the overall unit result.':'The confirmation becomes available when every required assessment has passed.';
+      const observation=structure.observation?`<div class="prepass-observation"><strong>${escapeHtml(structure.observation)}</strong><span>Evidence of observation for this unit</span><input type="date" value="${escapeHtml(plan.observations?.[`unit-${unitNumber}`]?.date||'')}" onchange="savePrepassObservation(${unitNumber},this.value)"></div>`:'';
+      const open=prepassOpenUnits.has(Number(unitNumber))?'open':'';
+      return `<details class="manual-status-panel" ${open} ontoggle="rememberPrepassUnit(${unitNumber},this.open)"><summary><div class="manual-status-summary-copy"><strong>Unit ${unitNumber}: ${escapeHtml(structure.title)}</strong><span class="manual-status-summary-text">${summary}</span></div><span class="pill ${overallClass}">${overallStatus}</span></summary><p class="manual-status-intro">Record every dated Pass and Refer against the correct learning outcome. Earlier referrals remain visible when a later attempt is passed.</p><div class="prepass-outcome-list">${records.join('')}</div>${observation}<div class="prepass-unit-actions"><div><label for="prepassBulkDate${unitNumber}">Date for all learning outcomes</label><input id="prepassBulkDate${unitNumber}" type="date"></div><button class="prepass-gold-button" type="button" onclick="bulkLoadPrepassDates(${unitNumber})">Bulk Load Date</button><button class="prepass-unit-pass-button ${ready?'ready':''}" type="button" onclick="confirmOverallUnitPass(${unitNumber})" ${!ready||completion?'disabled':''}>${completion?'Overall Unit Passed':'Mark Unit as Passed'}</button><button class="prepass-clear-button" type="button" onclick="clearUnitPrepass(${unitNumber})">Clear Selection</button><span class="prepass-attempt-meta">${completionText}</span></div></details>`;
+    }
+
+    function rememberPrepassUnit(unitNumber,isOpen) {
+      if(isOpen)prepassOpenUnits.add(Number(unitNumber));else prepassOpenUnits.delete(Number(unitNumber));
+    }
+
+    function bulkLoadPrepassAssessor() {
+      const learner=learners.find(item=>item.id===selectedLearnerId);
+      const name=(document.getElementById('prepassBulkAssessor')?.value||'').trim();
+      if(!learner||!name){alert('Enter the assessor name before selecting Bulk Load Name.');return;}
+      learner.prepassDefaultAssessor=name;
+      learner.prepassAssessors=learner.prepassAssessors||{};
+      ASSESSMENT_STRUCTURE.forEach(structure=>structure.items.forEach((_,index)=>{learner.prepassAssessors[`unit${structure.unit}-lo${index+1}`]=name;}));
+      saveLearnerSettings(learner);renderRecordProgramme(learner);
+    }
+
+    function savePrepassAssessor(key) {
+      const learner=learners.find(item=>item.id===selectedLearnerId);
+      const name=(document.querySelector(`[data-prepass-assessor="${key}"]`)?.value||'').trim();
+      if(!learner||!name){alert('Enter the assessor name before selecting Change.');return;}
+      learner.prepassAssessors=learner.prepassAssessors||{};learner.prepassAssessors[key]=name;
+      saveLearnerSettings(learner);renderRecordProgramme(learner);
+    }
+
+    function addPrepassDate(key,date) {
+      const match=String(key).match(/^unit([1-3])-lo\d+$/);if(!match)return;
+      prepassOpenUnits.add(Number(match[1]));
+      prepassDraftList(key).push({id:++prepassDraftCounter,date:date||''});
+      const learner=learners.find(item=>item.id===selectedLearnerId);if(learner)renderRecordProgramme(learner);
+    }
+
+    function removePrepassDraft(key,draftId) {
+      const drafts=prepassDraftList(key);const index=drafts.findIndex(item=>item.id===Number(draftId));if(index>=0)drafts.splice(index,1);
+      const learner=learners.find(item=>item.id===selectedLearnerId);if(learner)renderRecordProgramme(learner);
+    }
+
+    function savePrepassDraftAttempt(key,draftId,outcome) {
+      const learner=learners.find(item=>item.id===selectedLearnerId);if(!learner)return;
+      const date=document.querySelector(`[data-prepass-draft-date="${draftId}"]`)?.value||'';
+      const assessorName=(document.querySelector(`[data-prepass-assessor="${key}"]`)?.value||prepassAssessorName(learner,key,getLearnerPlan(learner).records?.[key])||'').trim();
+      if(!date||!assessorName){alert('Enter the assessment date and assessor name before selecting Pass or Refer.');return;}
+      learner.prepassAssessors=learner.prepassAssessors||{};learner.prepassAssessors[key]=assessorName;
+      const plan=getLearnerPlan(learner);const attempts=recordAttempts(plan.records?.[key]);
+      attempts.push({outcome,date,assessorName,initials:getAssessorInitials(assessorName),source:'Assessor Hub – pre-pass learning outcome trail',sourceType:'assessor-hub-prepass',recordedAt:new Date().toISOString()});
+      replaceRecordAttempts(plan,key,attempts);if(plan.unitCompletions)delete plan.unitCompletions[`unit-${key.match(/^unit([1-3])-/)?.[1]}`];
+      const drafts=prepassDraftList(key);const draftIndex=drafts.findIndex(item=>item.id===Number(draftId));if(draftIndex>=0)drafts.splice(draftIndex,1);
+      saveLearnerSettings(learner);saveLearnerPlan(learner,plan);refreshSelectedLearnerRecord(learner);
+    }
+
+    function updatePrepassAttemptDate(key,index,date) {
+      const learner=learners.find(item=>item.id===selectedLearnerId);if(!learner||!date)return;
+      const plan=getLearnerPlan(learner);const attempts=recordAttempts(plan.records?.[key]);if(!attempts[index])return;
+      attempts[index].date=date;attempts[index].updatedAt=new Date().toISOString();replaceRecordAttempts(plan,key,attempts);saveLearnerPlan(learner,plan);refreshSelectedLearnerRecord(learner);
+    }
+
+    function setPrepassAttemptStatus(key,index,outcome) {
+      const learner=learners.find(item=>item.id===selectedLearnerId);if(!learner)return;
+      const plan=getLearnerPlan(learner);const attempts=recordAttempts(plan.records?.[key]);if(!attempts[index])return;
+      attempts[index].outcome=outcome;attempts[index].updatedAt=new Date().toISOString();replaceRecordAttempts(plan,key,attempts);
+      const unit=key.match(/^unit([1-3])-/)?.[1];if(plan.unitCompletions&&unit)delete plan.unitCompletions[`unit-${unit}`];
+      saveLearnerPlan(learner,plan);refreshSelectedLearnerRecord(learner);
+    }
+
+    function removePrepassAttempt(key,index) {
+      if(!window.confirm('Remove this assessment attempt from the learner audit trail?'))return;
+      const learner=learners.find(item=>item.id===selectedLearnerId);if(!learner)return;
+      const plan=getLearnerPlan(learner);const attempts=recordAttempts(plan.records?.[key]);if(!attempts[index])return;
+      attempts.splice(index,1);replaceRecordAttempts(plan,key,attempts);const unit=key.match(/^unit([1-3])-/)?.[1];if(plan.unitCompletions&&unit)delete plan.unitCompletions[`unit-${unit}`];
+      saveLearnerPlan(learner,plan);refreshSelectedLearnerRecord(learner);
+    }
+
+    function bulkLoadPrepassDates(unitNumber) {
+      const date=document.getElementById(`prepassBulkDate${unitNumber}`)?.value||'';if(!date){alert('Select the date to load across the learning outcomes.');return;}
+      const structure=ASSESSMENT_STRUCTURE.find(item=>item.unit===Number(unitNumber));if(!structure)return;prepassOpenUnits.add(Number(unitNumber));
+      structure.items.forEach((_,index)=>prepassDraftList(`unit${unitNumber}-lo${index+1}`).push({id:++prepassDraftCounter,date}));
+      const learner=learners.find(item=>item.id===selectedLearnerId);if(learner)renderRecordProgramme(learner);
+    }
+
+    function savePrepassObservation(unitNumber,date) {
+      const learner=learners.find(item=>item.id===selectedLearnerId);if(!learner)return;const plan=getLearnerPlan(learner);if(!plan.observations)plan.observations={};
+      if(date)plan.observations[`unit-${unitNumber}`]={date,recordedAt:new Date().toISOString()};else delete plan.observations[`unit-${unitNumber}`];
+      saveLearnerPlan(learner,plan);renderRecordPlan(learner);
+    }
+
+    function clearUnitPrepass(unitNumber) {
+      if(!window.confirm(`Clear every Unit ${unitNumber} assessment attempt, observation date and overall result for this learner?`))return;
+      const learner=learners.find(item=>item.id===selectedLearnerId);if(!learner)return;const plan=getLearnerPlan(learner);
+      Object.keys(plan.records||{}).filter(key=>key.startsWith(`unit${unitNumber}-lo`)).forEach(key=>delete plan.records[key]);
+      if(plan.unitCompletions)delete plan.unitCompletions[`unit-${unitNumber}`];if(plan.observations)delete plan.observations[`unit-${unitNumber}`];
+      Object.keys(prepassDraftRows).filter(key=>key.startsWith(`${learner.id}:unit${unitNumber}-lo`)).forEach(key=>delete prepassDraftRows[key]);
+      if(learner.priorAchievements)delete learner.priorAchievements[`unit-${unitNumber}`];saveLearnerSettings(learner);saveLearnerPlan(learner,plan);refreshSelectedLearnerRecord(learner);
+    }
+
+    function refreshSelectedLearnerRecord(learner) {
+      renderRecordOverview(learner);renderRecordProgramme(learner);renderRecordPlan(learner);renderRecordMarking(learner);renderAll();
+    }
+
+    function toggleManualAttemptEditor(key) {
+      const editor=document.getElementById(`manualEditor-${key}`);
+      if(!editor)return;
+      editor.hidden=!editor.hidden;
+      if(!editor.hidden)editor.querySelector('[data-manual-date]')?.focus();
+    }
+
+    function saveManualTargetDate(key) {
+      const learner=learners.find(item=>item.id===selectedLearnerId);
+      if(!learner)return;
+      const date=document.querySelector(`[data-manual-target="${key}"]`)?.value||'';
+      const plan=getLearnerPlan(learner);
+      if(!plan.targets)plan.targets={};
+      if(date)plan.targets[key]=date; else delete plan.targets[key];
+      saveLearnerPlan(learner,plan);
+      renderRecordPlan(learner);
+    }
+
+    function confirmOverallUnitPass(unitNumber) {
+      const learner=learners.find(item=>item.id===selectedLearnerId);
+      const structure=ASSESSMENT_STRUCTURE.find(item=>item.unit===Number(unitNumber));
+      if(!learner||!structure)return;
+      const plan=getLearnerPlan(learner);
+      const records=structure.items.map((_,index)=>plan.records?.[`unit${unitNumber}-lo${index+1}`]);
+      if(!records.every(recordIsPassed)){alert('Every required assessment must be passed before confirming the overall unit result.');return;}
+      const passEntries=records.map(record=>record.initial?.outcome==='Pass'?record.initial:[...(record.progress||[])].reverse().find(entry=>entry.outcome==='Pass')).filter(Boolean).sort((a,b)=>String(a.date||'').localeCompare(String(b.date||'')));
+      const latest=passEntries.at(-1)||{};
+      if(!plan.unitCompletions)plan.unitCompletions={};
+      plan.unitCompletions[`unit-${unitNumber}`]={date:latest.date||new Date().toISOString().slice(0,10),assessorName:latest.assessorName||'',initials:latest.initials||'',source:'All required assessments passed',recordedAt:new Date().toISOString()};
+      saveLearnerPlan(learner,plan);
+      renderRecordOverview(learner);
+      renderRecordProgramme(learner);
+      renderRecordPlan(learner);
+      renderRecordMarking(learner);
+      renderAll();
+      alert(`Unit ${unitNumber} Pass confirmed for ${learner.fullName}.`);
     }
 
     function renderRecordProgramme(learner) {
-      const unitNames=['Assessment Principles and Practice','Occupational Competence Assessment','Vocational Skills and Knowledge Assessment'];
-      document.getElementById('record-programme').innerHTML=`<h3>Units and Funding</h3><div class="detail-card"><div class="form-grid"><div class="field"><label for="programmeRoute">Learner type</label><select id="programmeRoute"><option value="unassigned">Select learner type</option><option value="funded">Funded learner</option><option value="commercial">Commercial learner</option></select><p class="field-help">This setting controls whether payment recording is available.</p></div><div class="field"><label for="level2Learner">Allocated Level 2 learner</label><input id="level2Learner" type="text" value="${learner.level2Learner}" placeholder="Gym Instructor learner name"></div><div class="field"><label for="level3Learner">Allocated Level 3 learner</label><input id="level3Learner" type="text" value="${learner.level3Learner}" placeholder="Personal Training learner name"></div></div><div id="fundingNote" class="funding-note"></div><div id="paymentControl" class="payment-control"><label class="switch-row"><input id="paymentTracking" type="checkbox"><strong>Show payment recording for this trainee assessor</strong></label><p class="field-help">This is an authorised assessor/admin control and is never displayed to the learner.</p></div><h4 style="margin-top:22px;">Unit Availability and Prior Achievement</h4><div class="unit-control-list">${unitNames.map((name,index)=>`<div class="unit-control-row"><div><h5>Unit ${index+1}: ${name}</h5><p>Control access or record a complete unit achieved before the learner joined this platform.</p></div><select data-unit-control="unit-${index+1}"><option value="available">Available</option><option value="locked">Locked</option><option value="previously-achieved">Previously achieved</option></select>${priorAchievementMarkup(learner,index+1)}</div>`).join('')}</div><button class="save-button" type="button" onclick="saveProgrammeSettings()">Save Units and Funding</button></div>`;
+      const unitNames=ASSESSMENT_STRUCTURE.map(item=>item.title);
+      document.getElementById('record-programme').innerHTML=`<h3>Units, Funding and Pre-Pass Records</h3><div class="detail-card"><div class="form-grid"><div class="field"><label for="programmeRoute">Learner type</label><select id="programmeRoute"><option value="unassigned">Select learner type</option><option value="funded">Funded learner</option><option value="commercial">Commercial learner</option></select><p class="field-help">This setting controls whether payment recording is available.</p></div><div class="field"><label for="level2Learner">Allocated Level 2 learner</label><input id="level2Learner" type="text" value="${learner.level2Learner}" placeholder="Gym Instructor learner name"></div><div class="field"><label for="level3Learner">Allocated Level 3 learner</label><input id="level3Learner" type="text" value="${learner.level3Learner}" placeholder="Personal Training learner name"></div></div><div id="fundingNote" class="funding-note"></div><div id="paymentControl" class="payment-control"><label class="switch-row"><input id="paymentTracking" type="checkbox"><strong>Show payment recording for this trainee assessor</strong></label><p class="field-help">This is an authorised assessor/admin control and is never displayed to the learner.</p></div><div class="prepass-master-controls"><div><label for="prepassBulkAssessor">Assessor Name</label><input id="prepassBulkAssessor" type="text" value="${escapeHtml(learner.prepassDefaultAssessor||'')}" placeholder="Enter assessor name or initials"></div><button type="button" onclick="bulkLoadPrepassAssessor()">Bulk Load Name</button><p>Use the learning-outcome records below to retain every assessment date, Refer and later Pass. The overall unit result is a summary only.</p></div><h4 style="margin-top:22px;">Learning Outcome Pre-Pass and Assessment Trail</h4><p class="field-help">Unit 1 contains eight learning outcomes. Units 2 and 3 contain four each. Add as many dated attempts as required—the earlier audit trail will remain visible.</p><div class="unit-control-list">${unitNames.map((name,index)=>`<div class="unit-control-row"><div><h5>Unit ${index+1}: ${name}</h5><p>Control unit access and maintain the complete assessment history.</p></div><select data-unit-control="unit-${index+1}"><option value="available">Available</option><option value="locked">Locked</option><option value="previously-achieved">Previously achieved</option></select>${manualAssessmentStatusMarkup(learner,index+1)}${priorAchievementMarkup(learner,index+1)}</div>`).join('')}</div><button class="save-button" type="button" onclick="saveProgrammeSettings()">Save Units and Funding</button></div>`;
       const route=document.getElementById('programmeRoute'); route.value=learner.route; document.getElementById('paymentTracking').checked=learner.paymentTracking;
       document.querySelectorAll('[data-unit-control]').forEach(select=>select.value=learner.unitSettings[select.dataset.unitControl]||'locked');
       route.addEventListener('change',updateFundingVisibility); updateFundingVisibility();
@@ -651,8 +1019,9 @@
       if(!learner||![1,2,3].includes(unit))return;
       const unitKey='unit-'+unit;
       const date=document.querySelector(`[data-prior-date="${unitKey}"]`)?.value||'';
-      const initials=(document.querySelector(`[data-prior-initials="${unitKey}"]`)?.value||'').trim().toUpperCase();
-      if(!date||!initials){alert('Enter the unit completion date and assessor initials before recording prior achievement.');return;}
+      const assessorName=(document.querySelector(`[data-prior-assessor="${unitKey}"]`)?.value||'').trim();
+      const initials=getAssessorInitials(assessorName);
+      if(!date||!assessorName){alert('Enter the unit completion date and assessor name before recording prior achievement.');return;}
       const plan=getLearnerPlan(learner);
       const totals=[8,4,4];
       const existing=Object.entries(plan.records||{}).filter(([key])=>key.startsWith('unit'+unit+'-lo'));
@@ -663,11 +1032,13 @@
         const key='unit'+unit+'-lo'+outcome;
         if(!plan.records[key])plan.records[key]={initial:null,progress:[]};
         if(!Array.isArray(plan.records[key].progress))plan.records[key].progress=[];
-        const entry={outcome:'Pass',date,initials,source:'Prior achievement – manual/PDF workbook',sourceType:'manual-prior-achievement',recordedAt};
+        const entry={outcome:'Pass',date,assessorName,initials,source:'Prior achievement – manual/PDF workbook',sourceType:'manual-prior-achievement',recordedAt};
         if(!plan.records[key].initial||plan.records[key].initial.sourceType==='manual-prior-achievement')plan.records[key].initial=entry;
       }
       learner.priorAchievements=learner.priorAchievements||{};
-      learner.priorAchievements[unitKey]={date,initials,source:'Manual/PDF workbook',recordedAt};
+      learner.priorAchievements[unitKey]={date,assessorName,initials,source:'Manual/PDF workbook',recordedAt};
+      if(!plan.unitCompletions)plan.unitCompletions={};
+      plan.unitCompletions[unitKey]={date,assessorName,initials,source:'Manual/PDF workbook',recordedAt};
       learner.unitSettings[unitKey]='previously-achieved';
       saveLearnerPlan(learner,plan);
       saveLearnerSettings(learner);
@@ -679,13 +1050,70 @@
       alert('Unit '+unit+' prior achievement recorded for '+learner.fullName+'.');
     }
 
+    function recordManualAssessmentDecision(key) {
+      const learner=learners.find(item=>item.id===selectedLearnerId);
+      const match=String(key).match(/^unit([1-3])-lo(\d+)$/);
+      if(!learner||!match)return;
+      const unit=Number(match[1]);
+      const outcomeNumber=Number(match[2]);
+      const structure=ASSESSMENT_STRUCTURE.find(item=>item.unit===unit);
+      if(!structure||outcomeNumber<1||outcomeNumber>structure.items.length)return;
+      const outcome=document.querySelector(`[data-manual-outcome="${key}"]`)?.value||'';
+      const date=document.querySelector(`[data-manual-date="${key}"]`)?.value||'';
+      const assessorName=(document.querySelector(`[data-manual-assessor="${key}"]`)?.value||'').trim();
+      const initials=getAssessorInitials(assessorName);
+      if(!['Pass','Refer'].includes(outcome)||!date||!assessorName){alert('Select Pass or Refer and enter the assessment date and assessor name.');return;}
+      const plan=getLearnerPlan(learner);
+      if(!plan.records)plan.records={};
+      if(!plan.records[key])plan.records[key]={initial:null,progress:[]};
+      const record=plan.records[key];
+      if(!Array.isArray(record.progress))record.progress=[];
+      if(recordIsPassed(record)){alert('This assessment has already been passed. The completed audit record cannot be overwritten.');return;}
+      const definition=getAssessmentDefinition(unit,outcomeNumber);
+      const entry={outcome,date,assessorName,initials,source:'Assessor Hub – pre-pass attempt register',sourceType:'assessor-hub-prepass',recordedAt:new Date().toISOString()};
+      if(!record.initial)record.initial=entry;
+      else if(record.initial.outcome==='Refer')record.progress.push(entry);
+      saveLearnerPlan(learner,plan);
+      renderRecordOverview(learner);
+      renderRecordProgramme(learner);
+      renderRecordPlan(learner);
+      renderRecordMarking(learner);
+      renderAll();
+      const current=assessmentCurrentStatus(record);
+      alert(`Unit ${unit}, Assessment ${outcomeNumber} recorded as ${outcome}. Current status: ${current}.`);
+    }
+
+    function assessmentPlanStatusMarkup(plan) {
+      const units=ASSESSMENT_STRUCTURE.map(function(structure){
+        const rows=structure.items.map(function(title,index){
+          const outcome=index+1;
+          const key=`unit${structure.unit}-lo${outcome}`;
+          const record=plan.records?.[key]||null;
+          const status=assessmentCurrentStatus(record);
+          const target=plan.targets?.[key]||'';
+          const progress=record?.progress?.length?(record.progress.map((entry,attempt)=>`<span class="assessment-attempt">Try ${attempt+2}: ${assessmentAttemptText(entry)}</span>`).join('')):(record?.initial?.outcome==='Pass'?'Not required':'Not recorded');
+          return `<tr><td>Assessment ${outcome} &middot; LO${outcome}<span class="subtext">${escapeHtml(title)}</span></td><td>${formatDate(target)}</td><td>${record?.initial?assessmentAttemptText(record.initial):'Not recorded'}</td><td>${progress}</td><td><span class="pill ${assessmentStatusClass(status)}">${status}</span></td></tr>`;
+        }).join('');
+        const passed=structure.items.filter((_,index)=>recordIsPassed(plan.records?.[`unit${structure.unit}-lo${index+1}`])).length;
+        const referred=structure.items.filter((_,index)=>assessmentCurrentStatus(plan.records?.[`unit${structure.unit}-lo${index+1}`])==='Refer').length;
+        const completion=plan.unitCompletions?.[`unit-${structure.unit}`]||null;
+        const observation=plan.observations?.[`unit-${structure.unit}`]||null;
+        const unitStatus=passed===structure.items.length?(completion?'Passed':'Ready to confirm'):referred?'Action needed':passed?'In progress':'Not assessed';
+        const unitClass=passed===structure.items.length?(completion?'pass':'awaiting'):referred?'refer':passed?'awaiting':'draft';
+        const completionText=completion?`<span class="subtext">Confirmed ${formatDate(completion.date)} by ${escapeHtml(completion.assessorName||completion.initials||'assessor')}</span>`:'';
+        const observationText=observation?`<span class="subtext">Observation evidence: ${formatDate(observation.date)}</span>`:'';
+        return `<section class="status-unit-card"><div class="status-unit-heading"><h5>Unit ${structure.unit}: ${escapeHtml(structure.title)}${completionText}${observationText}</h5><span class="pill ${unitClass}">${unitStatus} &middot; ${passed}/${structure.items.length} passed</span></div><div class="assessment-status-table"><table><thead><tr><th>Assessment</th><th>Planned date</th><th>Initial assessment</th><th>Final assessment / progress</th><th>Current status</th></tr></thead><tbody>${rows}</tbody></table></div></section>`;
+      }).join('');
+      return `<section class="assessment-status-register"><h4>Assessment Status and Audit Record</h4><p>Every Pass and Refer recorded in Learner Management appears here. A unit is only passed when all of its required assessments have achieved Pass.</p>${units}</section>`;
+    }
+
     function renderRecordPlan(learner) {
       const plan=getLearnerPlan(learner), status=planStatus(plan), scale=(Number(plan.durationWeeks)===8?8:12)/12;
       const milestones=[4,8,11].map(week=>plan.startDate?formatDate(addDays(plan.startDate,Math.round(week*scale*7))):'Not generated');
       const programmeTarget=plan.startDate?formatDate(addDays(plan.startDate,(Number(plan.durationWeeks)===8?8:12)*7)):'Not generated';
       const declaration=plan.declaration?'<strong>'+plan.declaration.name+'</strong><br>'+formatDate(plan.declaration.date):'Not submitted';
       const confirmation=plan.confirmation?'<strong>'+plan.confirmation.name+'</strong><br>'+formatDate(plan.confirmation.date):'Not confirmed';
-      document.getElementById('record-plan').innerHTML=`<h3>CAVA Assessment Plan</h3><div class="plan-summary"><div class="plan-summary-header"><h4>Planned Programme Schedule</h4><span class="pill ${status}">${planStatusLabel(status)}</span></div><div class="detail-grid" style="margin-bottom:16px;"><div class="detail-card"><div class="key-value"><span>Programme start</span><strong>${formatDate(plan.startDate)}</strong></div><div class="key-value"><span>Timeframe</span><strong>${plan.durationWeeks||12} weeks</strong></div></div><div class="detail-card"><div class="key-value"><span>Learner declaration</span><strong>${declaration}</strong></div><div class="key-value"><span>Assessor confirmation</span><strong>${confirmation}</strong></div></div></div><div class="milestone-grid"><div class="milestone"><span>Unit 1 target</span><strong>${milestones[0]}</strong></div><div class="milestone"><span>Unit 2 target</span><strong>${milestones[1]}</strong></div><div class="milestone"><span>Unit 3 target</span><strong>${milestones[2]}</strong></div><div class="milestone"><span>Programme target</span><strong>${programmeTarget}</strong></div></div><button class="save-button" type="button" onclick="openSharedAssessmentPlan()">Open Full Assessment Plan and Marking Record</button></div>${status==='awaiting'?`<div class="confirmation-box"><h4>Assessor Confirmation Required</h4><p>Review the learner&rsquo;s declared schedule. Enter your name only when the plan is ready to be agreed.</p><div class="field"><label for="planAssessorName">Assessor name</label><input id="planAssessorName" type="text" placeholder="Enter full name"></div><button class="save-button" type="button" onclick="confirmSelectedPlan()">Confirm Assessment Plan</button></div>`:''}`;
+      document.getElementById('record-plan').innerHTML=`<h3>CAVA Assessment Plan</h3><div class="plan-summary"><div class="plan-summary-header"><h4>Planned Programme Schedule</h4><span class="pill ${status}">${planStatusLabel(status)}</span></div><div class="detail-grid" style="margin-bottom:16px;"><div class="detail-card"><div class="key-value"><span>Programme start</span><strong>${formatDate(plan.startDate)}</strong></div><div class="key-value"><span>Timeframe</span><strong>${plan.durationWeeks||12} weeks</strong></div></div><div class="detail-card"><div class="key-value"><span>Learner declaration</span><strong>${declaration}</strong></div><div class="key-value"><span>Assessor confirmation</span><strong>${confirmation}</strong></div></div></div><div class="milestone-grid"><div class="milestone"><span>Unit 1 target</span><strong>${milestones[0]}</strong></div><div class="milestone"><span>Unit 2 target</span><strong>${milestones[1]}</strong></div><div class="milestone"><span>Unit 3 target</span><strong>${milestones[2]}</strong></div><div class="milestone"><span>Programme target</span><strong>${programmeTarget}</strong></div></div><button class="save-button" type="button" onclick="openSharedAssessmentPlan()">Open Full Assessment Plan and Marking Record</button></div>${assessmentPlanStatusMarkup(plan)}${status==='awaiting'?`<div class="confirmation-box"><h4>Assessor Confirmation Required</h4><p>Review the learner&rsquo;s declared schedule. Enter your name only when the plan is ready to be agreed.</p><div class="field"><label for="planAssessorName">Assessor name</label><input id="planAssessorName" type="text" placeholder="Enter full name"></div><button class="save-button" type="button" onclick="confirmSelectedPlan()">Confirm Assessment Plan</button></div>`:''}`;
     }
 
     function confirmSelectedPlan() {
@@ -708,7 +1136,7 @@
     function renderRecordMarking(learner) {
       const plan=getLearnerPlan(learner), unitNames=['Unit 1 · Principles and Practice','Unit 2 · Occupational Competence','Unit 3 · Vocational Skills and Knowledge'];
       const totals=[8,4,4];
-      const rows=unitNames.map(function(name,index){const unit=index+1,records=Object.entries(plan.records||{}).filter(([key])=>key.startsWith('unit'+unit+'-lo'));const passed=records.filter(([,record])=>recordIsPassed(record)).length;const open=records.filter(([,record])=>record?.initial?.outcome==='Refer'&&!recordIsPassed(record)).length;const prior=learner.priorAchievements?.['unit-'+unit];const complete=passed===totals[index];const status=open?'Action needed':prior?'Prior achievement':complete?'Passed':passed?'In progress':'Not assessed';return `<article class="marking-row"><div><h4>${name}</h4><p>${passed} outcomes passed${open?' · '+open+' open referral'+(open===1?'':'s'):''}${prior?' · manual/PDF record '+formatDate(prior.date):''}</p></div><span class="pill ${open?'refer':(prior||complete||passed)?'pass':'draft'}">${status}</span><button class="marking-action" type="button" onclick="openLearnerUnit(${unit})">Open unit</button></article>`;}).join('');
+      const rows=unitNames.map(function(name,index){const unit=index+1,records=Object.entries(plan.records||{}).filter(([key])=>key.startsWith('unit'+unit+'-lo'));const passed=records.filter(([,record])=>recordIsPassed(record)).length;const assessed=records.filter(([,record])=>Boolean(record?.initial)).length;const open=records.filter(([,record])=>record?.initial?.outcome==='Refer'&&!recordIsPassed(record)).length;const prior=learner.priorAchievements?.['unit-'+unit];const complete=passed===totals[index];const confirmed=Boolean(plan.unitCompletions?.['unit-'+unit]);const status=open?'Action needed':prior?'Prior achievement':complete?(confirmed?'Passed':'Ready to confirm'):passed?'In progress':'Not assessed';const statusClass=open?'refer':complete||prior?(confirmed||prior?'pass':'awaiting'):passed?'awaiting':'draft';return `<article class="marking-row"><div><h4>${name}</h4><p>${assessed} of ${totals[index]} assessed &middot; ${passed} passed${open?' &middot; '+open+' open referral'+(open===1?'':'s'):''}${prior?' &middot; manual/PDF record '+formatDate(prior.date):''}</p></div><span class="pill ${statusClass}">${status}</span><button class="marking-action" type="button" onclick="openLearnerUnit(${unit})">Open unit</button></article>`;}).join('');
       document.getElementById('record-marking').innerHTML=`<h3>Work and Marking</h3><p style="color:#666;font-size:.86rem;margin:-8px 0 17px;">Initial decisions and every reassessment are recorded in the learner&rsquo;s Assessment Plan. The first Refer is never overwritten.</p><div class="marking-list">${rows}</div>`;
     }
 
