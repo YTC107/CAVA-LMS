@@ -147,7 +147,7 @@
     .assessment-record-panel.progress { border-top: 4px solid #292929; }
     .assessment-record-panel h4 { color: #171717; font-size: 1rem; font-weight: 800; margin: 0 0 6px; }
     .assessment-record-panel > p { color: #666; font-size: 0.8rem; line-height: 1.45; margin: 0 0 14px; }
-    .assessment-entry-grid { align-items: end; display: grid; gap: 10px; grid-template-columns: minmax(110px, 1fr) minmax(130px, 1fr) minmax(90px, 0.65fr); }
+    .assessment-entry-grid { align-items: end; display: grid; gap: 10px; grid-template-columns: minmax(110px, 0.8fr) minmax(130px, 0.9fr) minmax(190px, 1.3fr); }
     .assessment-entry-grid label { color: #555; display: block; font-size: 0.7rem; font-weight: 800; letter-spacing: 0.03em; margin-bottom: 5px; text-transform: uppercase; }
     .assessment-entry-grid input, .assessment-entry-grid select { background: #fff; border: 1px solid #bbb; border-radius: 4px; font: inherit; font-size: 0.86rem; min-height: 42px; padding: 8px 9px; width: 100%; }
     .record-assessment-button { background: #c9a84c; border: 0; border-radius: 4px; color: #111; cursor: pointer; font: inherit; font-size: 0.82rem; font-weight: 800; margin-top: 11px; min-height: 40px; padding: 9px 13px; width: 100%; }
@@ -157,7 +157,7 @@
     .assessment-summary div span { color: #777; display: block; font-size: 0.66rem; font-weight: 800; margin-bottom: 3px; text-transform: uppercase; }
     .assessment-summary div strong { color: #222; font-size: 0.86rem; }
     .assessment-history { display: grid; gap: 8px; margin-bottom: 12px; }
-    .assessment-history-row { align-items: center; background: #fff; border-left: 4px solid #b53a3a; border-radius: 3px; display: grid; font-size: 0.79rem; gap: 7px; grid-template-columns: 46px 1fr 1fr 0.7fr; padding: 9px 10px; }
+    .assessment-history-row { align-items: center; background: #fff; border-left: 4px solid #b53a3a; border-radius: 3px; display: grid; font-size: 0.79rem; gap: 7px; grid-template-columns: 46px 0.8fr 0.9fr 1.3fr; padding: 9px 10px; }
     .assessment-history-row.pass { border-left-color: #27823f; }
     .assessment-history-row .attempt-number { color: #777; font-size: 0.69rem; font-weight: 800; text-transform: uppercase; }
     .record-outcome { border-radius: 999px; display: inline-block; font-size: 0.72rem; font-weight: 900; padding: 4px 8px; text-align: center; }
@@ -166,6 +166,28 @@
     .assessment-record-empty { background: #f1f1f1; border-radius: 4px; color: #727272; font-size: 0.8rem; line-height: 1.45; padding: 12px; }
     .assessment-editor-note { background: #f4f4f4; border-left: 4px solid #777; color: #555; font-size: 0.78rem; line-height: 1.45; margin-top: 11px; padding: 9px 11px; }
     .assessment-editor-note.assessor { background: #fff8e6; border-left-color: #c9a84c; color: #5c491a; }
+    .assessment-attempt-register { background: #fff; border: 1px solid #d8d8d8; border-radius: 5px; margin-top: 16px; overflow: hidden; }
+    .assessment-attempt-register-header { align-items: center; background: #f5f3ed; border-bottom: 1px solid #ddd8cc; display: flex; gap: 14px; justify-content: space-between; padding: 12px 14px; }
+    .assessment-attempt-register-header strong { color: #222; font-size: 0.82rem; }
+    .assessment-attempt-register-body { padding: 14px; }
+    .assessment-attempt-table { overflow-x: auto; }
+    .assessment-attempt-table table { border-collapse: collapse; min-width: 650px; width: 100%; }
+    .assessment-attempt-table th { background: #fff; border-bottom: 2px solid #c9a84c; color: #595959; font-size: 0.67rem; letter-spacing: 0.03em; padding: 8px 10px; text-align: left; text-transform: uppercase; }
+    .assessment-attempt-table td { border-bottom: 1px solid #e3e3e3; font-size: 0.8rem; padding: 10px; }
+    .assessment-attempt-table tr.pass { background: #edf8f0; }
+    .assessment-attempt-table tr.refer { background: #fdf0f0; }
+    .assessment-attempt-editor { background: #f8f6f0; border-left: 4px solid #c9a84c; border-radius: 4px; margin-top: 13px; padding: 12px; }
+
+    .worksheet-assessment-bridge { background: #fff; border: 2px solid #c9a84c; border-radius: 6px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); margin: 20px 0; padding: 18px; }
+    .worksheet-assessment-bridge h4 { color: #171717; font-size: 1rem; font-weight: 800; margin: 0 0 5px; }
+    .worksheet-assessment-bridge > p { color: #666; font-size: 0.8rem; line-height: 1.45; margin: 0 0 13px; }
+    .worksheet-assessment-current { align-items: center; background: #f5f3ed; border-radius: 4px; display: flex; gap: 10px; justify-content: space-between; margin-bottom: 12px; padding: 10px 12px; }
+    .worksheet-assessment-current span:first-child { color: #555; font-size: 0.74rem; font-weight: 800; }
+    .worksheet-assessment-fields { align-items: end; display: grid; gap: 10px; grid-template-columns: minmax(150px, 0.8fr) minmax(210px, 1.2fr) minmax(120px, 0.7fr) auto; }
+    .worksheet-assessment-fields label { color: #555; display: block; font-size: 0.68rem; font-weight: 800; margin-bottom: 5px; text-transform: uppercase; }
+    .worksheet-assessment-fields input, .worksheet-assessment-fields select { background: #fff; border: 1px solid #aaa; border-radius: 4px; font: inherit; font-size: 0.82rem; min-height: 42px; padding: 8px 9px; width: 100%; }
+    .worksheet-assessment-fields button { background: #171717; border: 0; border-radius: 4px; color: #c9a84c; cursor: pointer; font: inherit; font-size: 0.78rem; font-weight: 900; min-height: 42px; padding: 9px 13px; }
+    .worksheet-assessment-fields button:disabled { background: #d8d8d8; color: #777; cursor: not-allowed; }
 
     .plan-declaration-card { background: #fff; border: 1px solid #dedbd3; border-radius: 6px; box-shadow: 0 1px 4px rgba(0,0,0,0.08); margin-top: 30px; padding: 26px 28px; }
     .plan-declaration-card h3 { color: #171717; font-size: 1.25rem; font-weight: 800; margin: 0 0 8px; }
@@ -191,6 +213,7 @@
     }
     @media (max-width: 560px) {
       .assessment-entry-grid, .assessment-summary { grid-template-columns: 1fr; }
+      .worksheet-assessment-fields { grid-template-columns: 1fr; }
       .assessment-history-row { grid-template-columns: 42px 1fr; }
       .plan-milestones { grid-template-columns: 1fr; }
       .plan-milestone { border-left: 0; border-top: 1px solid #dedbd3; }
@@ -3758,11 +3781,12 @@
         status: ['draft', 'awaiting', 'confirmed'].includes(saved.status) ? saved.status : 'draft',
         targets: saved.targets || {},
         records: saved.records || {},
+        unitCompletions: saved.unitCompletions || {},
         declaration: saved.declaration || null,
         confirmation: saved.confirmation || null
       };
     } catch {
-      return { startDate: '', durationWeeks: 12, status: 'draft', targets: {}, records: {}, declaration: null, confirmation: null };
+      return { startDate: '', durationWeeks: 12, status: 'draft', targets: {}, records: {}, unitCompletions: {}, declaration: null, confirmation: null };
     }
   }
 
@@ -3771,7 +3795,7 @@
   }
 
   function isAssessorPlanEditor() {
-    return ['Assessor', 'Super Admin'].includes(localStorage.getItem('cava_role') || '');
+    return ['Assessor', 'Super Admin', 'Assessor preview'].includes(localStorage.getItem('cava_role') || '') || Boolean(localStorage.getItem('cava_active_assessor_learner_id'));
   }
 
   function addPlanDays(dateString, days) {
@@ -3810,19 +3834,11 @@
     if (!oldEntry) return;
     const oldHeaders = block.querySelector('.audit-headers');
     const wrapper = document.createElement('div');
-    wrapper.className = 'assessment-record-grid';
+    wrapper.className = 'assessment-attempt-register';
     wrapper.dataset.assessmentKey = key;
     wrapper.innerHTML = `
-      <section class="assessment-record-panel initial">
-        <h4>Initial Assessment</h4>
-        <p>The assessor&rsquo;s first decision is retained permanently. A first-time Pass completes this learning outcome.</p>
-        <div class="initial-record-content"></div>
-      </section>
-      <section class="assessment-record-panel progress">
-        <h4>Final Assessment / Progress</h4>
-        <p>Used after an initial Refer. Every reassessment is shown in date order until the final Pass is recorded.</p>
-        <div class="progress-record-content"></div>
-      </section>`;
+      <div class="assessment-attempt-register-header"><strong>Assessment Attempt History</strong><span class="assessment-current-status"></span></div>
+      <div class="assessment-attempt-register-body"><div class="assessment-attempt-content"></div><div class="assessment-attempt-entry"></div></div>`;
     oldEntry.replaceWith(wrapper);
     if (oldHeaders) oldHeaders.remove();
   }
@@ -3833,7 +3849,7 @@
       <div class="assessment-entry-grid">
         <div><label>Outcome</label><select data-field="outcome"><option value="">Select</option><option value="Pass">Pass</option><option value="Refer">Refer</option></select></div>
         <div><label>Assessment date</label><input data-field="date" type="date" value="${getTodayDateString()}"></div>
-        <div><label>Assessor initials</label><input data-field="initials" type="text" maxlength="6" autocomplete="off" placeholder="e.g. MK"></div>
+        <div><label>Assessor name</label><input data-field="assessorName" type="text" autocomplete="off" placeholder="Full assessor name"></div>
       </div>
       <button type="button" class="record-assessment-button" data-record-stage="${stage}">${isInitial ? 'Record Initial Assessment' : 'Add Reassessment'}</button>`;
   }
@@ -3843,7 +3859,7 @@
     return `<div class="assessment-summary">
       <div><span>Outcome</span><strong class="record-outcome ${outcomeClass}">${entry.outcome}</strong></div>
       <div><span>Assessment date</span><strong>${formatPlanDate(entry.date)}</strong></div>
-      <div><span>Assessor initials</span><strong>${entry.initials}</strong></div>
+      <div><span>Assessor name</span><strong>${escapePlanHtml(entry.assessorName || entry.initials || 'Not recorded')}</strong></div>
       ${entry.source ? `<div><span>Record source</span><strong>${entry.source}</strong></div>` : ''}
     </div>`;
   }
@@ -3853,42 +3869,21 @@
     if (!wrapper) return;
     const data = getAssessmentPlanData();
     const record = getAssessmentRecord(data, key);
-    const initialContent = wrapper.querySelector('.initial-record-content');
-    const progressContent = wrapper.querySelector('.progress-record-content');
+    const content = wrapper.querySelector('.assessment-attempt-content');
+    const entryContent = wrapper.querySelector('.assessment-attempt-entry');
+    const statusContent = wrapper.querySelector('.assessment-current-status');
     const assessorCanEdit = isAssessorPlanEditor();
-
-    if (record.initial) {
-      initialContent.innerHTML = assessmentSummaryMarkup(record.initial);
-    } else if (assessorCanEdit) {
-      initialContent.innerHTML = assessmentEntryFields('initial') + '<div class="assessment-editor-note assessor">Assessor entry: record the first formal assessment decision here.</div>';
-    } else {
-      initialContent.innerHTML = '<div class="assessment-record-empty">No initial assessment decision has been recorded.</div><div class="assessment-editor-note">Assessment decisions can only be entered through an authorised assessor account.</div>';
-    }
-
-    if (!record.initial) {
-      progressContent.innerHTML = '<div class="assessment-record-empty">This column becomes active only if the initial decision is Refer.</div>';
-    } else if (record.initial.outcome === 'Pass') {
-      progressContent.innerHTML = '<div class="assessment-record-empty"><strong>Not required.</strong> The learning outcome was passed at the initial assessment.</div>';
-    } else {
-      const history = record.progress.map(function(entry, index) {
-        const outcomeClass = String(entry.outcome || '').toLowerCase();
-        return `<div class="assessment-history-row ${outcomeClass}">
-          <span class="attempt-number">Try ${index + 2}</span>
-          <span class="record-outcome ${outcomeClass}">${entry.outcome}</span>
-          <span>${formatPlanDate(entry.date)}</span>
-          <strong>${entry.initials}</strong>
-        </div>`;
-      }).join('');
-      const achieved = record.progress.some(entry => entry.outcome === 'Pass');
-      progressContent.innerHTML = `<div class="assessment-history">${history || '<div class="assessment-record-empty">Awaiting reassessment.</div>'}</div>`;
-      if (achieved) {
-        progressContent.insertAdjacentHTML('beforeend', '<div class="assessment-record-empty"><strong>Learning outcome achieved.</strong> The final passing assessment is retained above.</div>');
-      } else if (assessorCanEdit) {
-        progressContent.insertAdjacentHTML('beforeend', assessmentEntryFields('progress') + '<div class="assessment-editor-note assessor">Record each further Refer and the eventual Pass. Earlier attempts will remain visible.</div>');
-      } else {
-        progressContent.insertAdjacentHTML('beforeend', '<div class="assessment-editor-note">Further assessment decisions can only be entered through an authorised assessor account.</div>');
-      }
-    }
+    const attempts=[record.initial,...record.progress].filter(Boolean);
+    const currentStatus=assessmentPlanCurrentStatus(record);
+    const statusClass=currentStatus==='Pass'?'pass':currentStatus==='Refer'?'refer':'';
+    statusContent.innerHTML=`<span class="record-outcome ${statusClass}">${currentStatus}</span>`;
+    if(attempts.length){
+      const rows=attempts.map(function(entry,index){const outcomeClass=String(entry.outcome||'').toLowerCase();return `<tr class="${outcomeClass}"><td>${index+1}</td><td>${formatPlanDate(entry.date)}</td><td>${escapePlanHtml(entry.assessorName||entry.initials||'Not recorded')}</td><td><span class="record-outcome ${outcomeClass}">${entry.outcome}</span></td></tr>`;}).join('');
+      content.innerHTML=`<div class="assessment-attempt-table"><table><thead><tr><th>Attempt</th><th>Assessment date</th><th>Assessor name</th><th>Outcome</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    } else content.innerHTML='<div class="assessment-record-empty">No assessment attempts have been recorded.</div>';
+    if(assessmentPlanRecordPassed(record))entryContent.innerHTML='<div class="assessment-record-empty" style="margin-top:12px;"><strong>Learning outcome achieved.</strong> The complete attempt history is retained above.</div>';
+    else if(assessorCanEdit){const stage=record.initial?'progress':'initial';entryContent.innerHTML=`<div class="assessment-attempt-editor">${assessmentEntryFields(stage)}<div class="assessment-editor-note assessor">${record.initial?'Add every further Refer and the eventual Pass. Earlier attempts cannot be overwritten.':'Record the first formal assessment decision. If it is Refer, further attempts will be added below it.'}</div></div>`;}
+    else entryContent.innerHTML='<div class="assessment-editor-note">Assessment decisions can only be entered through an authorised assessor account.</div>';
 
     wrapper.querySelectorAll('[data-record-stage]').forEach(function(button) {
       button.addEventListener('click', function() {
@@ -3907,26 +3902,131 @@
     const container = button?.parentElement;
     const outcome = container?.querySelector('[data-field="outcome"]')?.value || '';
     const date = container?.querySelector('[data-field="date"]')?.value || '';
-    const initials = (container?.querySelector('[data-field="initials"]')?.value || '').trim().toUpperCase();
+    const assessorName = (container?.querySelector('[data-field="assessorName"]')?.value || '').trim();
 
-    if (!['Pass', 'Refer'].includes(outcome) || !date || !initials) {
-      alert('Select Pass or Refer and enter the assessment date and assessor initials.');
+    if (!['Pass', 'Refer'].includes(outcome) || !date || !assessorName) {
+      alert('Select Pass or Refer and enter the assessment date and assessor name.');
       return;
     }
 
     const data = getAssessmentPlanData();
-    const record = getAssessmentRecord(data, key);
-    const entry = { outcome, date, initials, recordedAt: new Date().toISOString() };
-    if (stage === 'initial') {
-      if (record.initial) return;
-      record.initial = entry;
-    } else {
-      if (!record.initial || record.initial.outcome !== 'Refer' || record.progress.some(item => item.outcome === 'Pass')) return;
-      record.progress.push(entry);
+    const entry = { outcome, date, assessorName, initials: getPlanAssessorInitials(assessorName), source:'Assessment Plan marking record', sourceType:'assessment-plan-entry', recordedAt: new Date().toISOString() };
+    const result=appendAssessmentPlanAttempt(data,key,entry);
+    if(!result.saved)return;
+    saveAssessmentPlanData(data);
+    renderAssessmentRecord(key);
+    updateDashboardFromAssessmentPlan();
+  }
+
+  function getPlanAssessorInitials(name) {
+    return String(name||'').trim().split(/\s+/).filter(Boolean).slice(0,3).map(part=>part[0]).join('').toUpperCase();
+  }
+
+  function escapePlanHtml(value) {
+    return String(value||'').replace(/[&<>'"]/g,character=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[character]));
+  }
+
+  function assessmentPlanRecordPassed(record) {
+    return record?.initial?.outcome === 'Pass' || (record?.progress || []).some(entry=>entry.outcome === 'Pass');
+  }
+
+  function assessmentPlanCurrentStatus(record) {
+    if(assessmentPlanRecordPassed(record))return 'Pass';
+    if(record?.initial?.outcome==='Refer')return 'Refer';
+    return 'Not assessed';
+  }
+
+  function appendAssessmentPlanAttempt(data,key,entry) {
+    const record=getAssessmentRecord(data,key);
+    const allEntries=[record.initial,...record.progress].filter(Boolean);
+    if(entry.sourceId&&allEntries.some(existing=>existing.sourceId===entry.sourceId))return {saved:false,reason:'duplicate',record};
+    if(assessmentPlanRecordPassed(record))return {saved:false,reason:'passed',record};
+    if(!record.initial)record.initial=entry;
+    else if(record.initial.outcome==='Refer')record.progress.push(entry);
+    else return {saved:false,reason:'closed',record};
+    return {saved:true,record};
+  }
+
+  const WORKSHEET_ASSESSMENT_SECTIONS = [
+    ...Array.from({length:8},(_,index)=>({unit:1,outcome:index+1,selector:`#unit1WorksheetView #section-lo${index+1}`})),
+    ...Array.from({length:4},(_,index)=>({unit:2,outcome:index+1,selector:`#unit2WorksheetView #lo${index+1}`})),
+    ...Array.from({length:4},(_,index)=>({unit:3,outcome:index+1,selector:`#unit3WorksheetView #unit3-lo${index+1}`}))
+  ];
+
+  function getSuggestedAssessorName(record) {
+    const entries=[record?.initial,...(record?.progress||[])].filter(Boolean);
+    const last=entries.at(-1);
+    if(last?.assessorName)return last.assessorName;
+    try {
+      const user=JSON.parse(localStorage.getItem('cava_user')||'null');
+      return user?.user_metadata?.full_name||user?.user_metadata?.name||'';
+    } catch { return ''; }
+  }
+
+  function worksheetAssessmentPanelMarkup(key) {
+    const data=getAssessmentPlanData();
+    const record=data.records?.[key]||null;
+    const status=assessmentPlanCurrentStatus(record);
+    const attempts=[record?.initial,...(record?.progress||[])].filter(Boolean);
+    const passed=status==='Pass';
+    const statusClass=status==='Pass'?'pass':status==='Refer'?'refer':'';
+    return `<h4>Record Learning Outcome Assessment</h4><p>This decision writes directly to the Assessment Plan. Every Refer and reassessment remains in the audit trail.</p><div class="worksheet-assessment-current"><span>Current position &middot; ${attempts.length} attempt${attempts.length===1?'':'s'}</span><strong class="record-outcome ${statusClass}">${status}</strong></div><div class="worksheet-assessment-fields"><div><label for="worksheetDate-${key}">Assessment date</label><input id="worksheetDate-${key}" data-worksheet-date="${key}" type="date" value="${getTodayDateString()}" ${passed?'disabled':''}></div><div><label for="worksheetAssessor-${key}">Assessor name</label><input id="worksheetAssessor-${key}" data-worksheet-assessor="${key}" type="text" value="${escapePlanHtml(getSuggestedAssessorName(record))}" placeholder="Full assessor name" ${passed?'disabled':''}></div><div><label for="worksheetOutcome-${key}">Outcome</label><select id="worksheetOutcome-${key}" data-worksheet-outcome="${key}" ${passed?'disabled':''}><option value="">Select</option><option value="Pass">Pass</option><option value="Refer">Refer</option></select></div><button type="button" onclick="recordWorksheetAssessmentDecision('${key}')" ${passed?'disabled':''}>${passed?'Learning Outcome Passed':'Record Assessment Decision'}</button></div>`;
+  }
+
+  function enhanceWorksheetAssessmentDecisionPanels() {
+    if(!isAssessorPlanEditor())return;
+    WORKSHEET_ASSESSMENT_SECTIONS.forEach(function(definition){
+      const section=document.querySelector(definition.selector);
+      if(!section)return;
+      const key=`unit${definition.unit}-lo${definition.outcome}`;
+      let panel=section.querySelector(`.worksheet-assessment-bridge[data-assessment-key="${key}"]`);
+      if(!panel){
+        panel=document.createElement('section');
+        panel.className='worksheet-assessment-bridge';
+        panel.dataset.assessmentKey=key;
+        section.appendChild(panel);
+      }
+      panel.innerHTML=worksheetAssessmentPanelMarkup(key);
+    });
+  }
+
+  function recordWorksheetAssessmentDecision(key) {
+    if(!isAssessorPlanEditor()){alert('Only an authorised assessor can record an assessment decision.');return;}
+    const date=document.querySelector(`[data-worksheet-date="${key}"]`)?.value||'';
+    const assessorName=(document.querySelector(`[data-worksheet-assessor="${key}"]`)?.value||'').trim();
+    const outcome=document.querySelector(`[data-worksheet-outcome="${key}"]`)?.value||'';
+    if(!date||!assessorName||!['Pass','Refer'].includes(outcome)){alert('Enter the assessment date and assessor name, then select Pass or Refer.');return;}
+    const data=getAssessmentPlanData();
+    const entry={outcome,date,assessorName,initials:getPlanAssessorInitials(assessorName),source:'Learner work marking',sourceType:'worksheet-marking',recordedAt:new Date().toISOString()};
+    const result=appendAssessmentPlanAttempt(data,key,entry);
+    if(!result.saved){
+      if(result.reason==='passed')alert('This learning outcome has already been passed. The completed audit record cannot be overwritten.');
+      return;
     }
     saveAssessmentPlanData(data);
     renderAssessmentRecord(key);
     updateDashboardFromAssessmentPlan();
+    enhanceWorksheetAssessmentDecisionPanels();
+    alert(`${key.replace(/unit(\d)-lo(\d+)/,'Unit $1, Learning Outcome $2')} recorded as ${outcome}.`);
+  }
+
+  function importUnit1FeedbackDecision(row) {
+    const outcome=String(row?.outcome||'');
+    const loMatch=String(row?.lo||'').match(/(\d+)/);
+    if(!loMatch||!['Pass','Refer'].includes(outcome))return false;
+    const key=`unit1-lo${Number(loMatch[1])}`;
+    const assessorName=String(row.assessor_name||row.assessor||row.assessor_email||'Recorded assessor').trim();
+    const rawDate=String(row.assessment_date||row.feedback_date||row.updated_at||row.created_at||getTodayDateString());
+    const date=rawDate.slice(0,10);
+    const sourceId=row.id?`unit1-feedback-${row.id}-${outcome}`:`unit1-feedback-${loMatch[1]}-${outcome}-${row.updated_at||row.assessment_date||date}`;
+    const data=getAssessmentPlanData();
+    const entry={outcome,date,assessorName,initials:getPlanAssessorInitials(assessorName),source:'Unit 1 marking feedback',sourceType:'supabase-unit1-feedback',sourceId,recordedAt:new Date().toISOString()};
+    const result=appendAssessmentPlanAttempt(data,key,entry);
+    if(!result.saved)return false;
+    saveAssessmentPlanData(data);
+    renderAssessmentRecord(key);
+    updateDashboardFromAssessmentPlan();
+    return true;
   }
 
   function calculatePlanTargets() {
@@ -4131,6 +4231,7 @@
     document.querySelectorAll('[data-assessment-key]').forEach(wrapper => renderAssessmentRecord(wrapper.dataset.assessmentKey));
     renderPlanStatus();
     updateDashboardFromAssessmentPlan();
+    enhanceWorksheetAssessmentDecisionPanels();
   }
 
   document.addEventListener('DOMContentLoaded', initialiseAssessmentPlan);
@@ -4343,6 +4444,7 @@ async function loadSavedData() {
     .eq('user_id', currentUser.id);
 
   if (feedbackRows && feedbackRows.length > 0) {
+    let assessmentPlanUpdated = false;
     feedbackRows.forEach(row => {
       const lo = row.lo;
       const panel = document.getElementById('feedback-' + lo);
@@ -4356,7 +4458,9 @@ async function loadSavedData() {
         }
         if (textEl) textEl.textContent = row.feedback_text;
       }
+      if(importUnit1FeedbackDecision(row))assessmentPlanUpdated=true;
     });
+    if(assessmentPlanUpdated)enhanceWorksheetAssessmentDecisionPanels();
   }
 }
 
