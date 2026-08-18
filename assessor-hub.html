@@ -491,6 +491,24 @@
     </section>
   </div>
 
+  <div id="editLearnerOverlay" class="invite-overlay" aria-hidden="true">
+    <section class="invite-dialog" role="dialog" aria-modal="true" aria-labelledby="editLearnerTitle">
+      <div class="invite-heading"><div><h2 id="editLearnerTitle">Edit Learner Details</h2><p>Update the learner record and the linked Supabase login account together.</p></div><button class="invite-close" type="button" onclick="closeEditLearner()">Close</button></div>
+      <div id="editLearnerMessage" class="invite-message" role="status" aria-live="polite"></div>
+      <form id="editLearnerForm">
+        <input id="editLearnerId" name="learner_id" type="hidden">
+        <input id="editLearnerOldEmail" type="hidden">
+        <div class="invite-grid">
+          <div class="invite-field full"><label for="editFullName">Learner's full name</label><input id="editFullName" name="full_name" required maxlength="120" autocomplete="name"></div>
+          <div class="invite-field"><label for="editEmail">Login email address</label><input id="editEmail" name="email" type="email" required autocomplete="email"></div>
+          <div class="invite-field"><label for="editContact">Contact number</label><input id="editContact" name="contact_number" type="tel" maxlength="40" autocomplete="tel"></div>
+        </div>
+        <p style="color:#6b5b2a;font-size:.84rem;line-height:1.55;margin:18px 0 0;"><strong>Important:</strong> changing the email address changes the email the learner uses to log in. Confirm the new address with the learner before saving.</p>
+        <div class="invite-actions"><button class="invite-close" type="button" onclick="closeEditLearner()">Cancel</button><button id="saveLearnerDetailsButton" class="primary-link" type="submit">Save Learner Details</button></div>
+      </form>
+    </section>
+  </div>
+
   <div id="learnerRecordOverlay" class="record-overlay" aria-hidden="true">
     <article class="record-drawer" role="dialog" aria-modal="true" aria-labelledby="recordLearnerName">
       <header class="record-header">
@@ -614,7 +632,7 @@
       const assignedUnits = raw.assignedUnits || raw[2] || [];
       const id = raw.id || 'learner-' + (slug(email || fullName) || index + 1);
       const progress = raw.progress || {};
-      return { id, fullName, email, assignedUnits, progress, startDate: raw.startDate || raw.programme_start_date || '', submissions: raw.submissions || [], accountStatus: raw.accountStatus || raw.account_status || 'active', authUserId: raw.authUserId || raw.auth_user_id || null, invitedAt: raw.invitedAt || raw.invited_at || null, activatedAt: raw.activatedAt || raw.activated_at || null, route: raw.route || raw.learner_type || 'unassigned' };
+      return { id, fullName, email, contactNumber: raw.contactNumber || raw.contact_number || '', assignedUnits, progress, startDate: raw.startDate || raw.programme_start_date || '', submissions: raw.submissions || [], accountStatus: raw.accountStatus || raw.account_status || 'active', authUserId: raw.authUserId || raw.auth_user_id || null, invitedAt: raw.invitedAt || raw.invited_at || null, activatedAt: raw.activatedAt || raw.activated_at || null, route: raw.route || raw.learner_type || 'unassigned' };
     }
 
     function loadLearners() {
@@ -913,7 +931,8 @@
       const plan=getLearnerPlan(learner), progress=getProgress(learner), queue=getQueueItems().filter(item=>item.learner.id===learner.id);
       const accessLabel=learner.accountStatus==='active'?'Send password setup email':learner.authUserId?'Resend access email':'Send platform invitation';
       const accessAction=canInviteLearners&&learner.email?`<article class="detail-card"><h4>Learner Hub Access</h4><p>The email is sent to <strong>${escapeHtml(learner.email)}</strong>. It provides secure access to the Learner Hub and does not create a duplicate learner record.</p><button id="existingLearnerInviteButton" class="primary-link" type="button" onclick="sendExistingLearnerInvitation('${learner.id}')">${accessLabel}</button><div id="existingLearnerInviteMessage" class="invite-message" role="status" aria-live="polite"></div></article>`:'';
-      document.getElementById('record-overview').innerHTML=`<h3>Programme Overview</h3><div class="detail-grid"><article class="detail-card"><h4>Current Position</h4><div class="key-value"><span>Overall progress</span><strong>${progress.percentage}%</strong></div><div class="key-value"><span>Assessment Plan</span><strong>${planStatusLabel(planStatus(plan))}</strong></div><div class="key-value"><span>Outstanding actions</span><strong>${queue.length}</strong></div><div class="key-value"><span>Programme start</span><strong>${formatDate(plan.startDate||learner.startDate)}</strong></div></article><article class="detail-card"><h4>Allocated Live Learners</h4><div class="key-value"><span>Level 2 Gym Instructor</span><strong>${learner.level2Learner||'Not allocated'}</strong></div><div class="key-value"><span>Level 3 Personal Training</span><strong>${learner.level3Learner||'Not allocated'}</strong></div><div class="key-value"><span>Learner type</span><strong>${learner.route==='funded'?'Funded learner':learner.route==='commercial'?'Commercial learner':'Not selected'}</strong></div></article>${accessAction}</div>`;
+      const editAction=canInviteLearners?`<article class="detail-card"><h4>Learner Details</h4><div class="key-value"><span>Email address</span><strong>${escapeHtml(learner.email||'Not recorded')}</strong></div><div class="key-value"><span>Contact number</span><strong>${escapeHtml(learner.contactNumber||'Not recorded')}</strong></div><p>Changes made here update both the Assessor Hub record and the linked Supabase login account.</p><button class="primary-link" type="button" onclick="openEditLearner('${learner.id}')">Edit Learner Details</button></article>`:'';
+      document.getElementById('record-overview').innerHTML=`<h3>Programme Overview</h3><div class="detail-grid"><article class="detail-card"><h4>Current Position</h4><div class="key-value"><span>Overall progress</span><strong>${progress.percentage}%</strong></div><div class="key-value"><span>Assessment Plan</span><strong>${planStatusLabel(planStatus(plan))}</strong></div><div class="key-value"><span>Outstanding actions</span><strong>${queue.length}</strong></div><div class="key-value"><span>Programme start</span><strong>${formatDate(plan.startDate||learner.startDate)}</strong></div></article><article class="detail-card"><h4>Allocated Live Learners</h4><div class="key-value"><span>Level 2 Gym Instructor</span><strong>${learner.level2Learner||'Not allocated'}</strong></div><div class="key-value"><span>Level 3 Personal Training</span><strong>${learner.level3Learner||'Not allocated'}</strong></div><div class="key-value"><span>Learner type</span><strong>${learner.route==='funded'?'Funded learner':learner.route==='commercial'?'Commercial learner':'Not selected'}</strong></div></article>${editAction}${accessAction}</div>`;
     }
 
     function priorAchievementMarkup(learner, unitNumber) {
@@ -1273,11 +1292,78 @@
     }
 
     async function loadRemoteLearners() {
-      const {data,error}=await sb.from('learners').select('id,full_name,email,programme_start_date,learner_type,account_status,auth_user_id,invited_at,activated_at').order('full_name');
+      const {data,error}=await sb.from('learners').select('id,full_name,email,contact_number,programme_start_date,learner_type,account_status,auth_user_id,invited_at,activated_at').order('full_name');
       if(error){console.warn('Learner records could not be loaded.',error);remoteLearners=[];remoteLoadComplete=false;return;}
-      remoteLearners=(data||[]).map(row=>({id:row.id,fullName:row.full_name,email:row.email,startDate:row.programme_start_date,route:row.learner_type||'unassigned',accountStatus:row.account_status||'invited',authUserId:row.auth_user_id||null,invitedAt:row.invited_at||null,activatedAt:row.activated_at||null,assignedUnits:[],progress:{},submissions:[]}));
+      remoteLearners=(data||[]).map(row=>({id:row.id,fullName:row.full_name,email:row.email,contactNumber:row.contact_number||'',startDate:row.programme_start_date,route:row.learner_type||'unassigned',accountStatus:row.account_status||'invited',authUserId:row.auth_user_id||null,invitedAt:row.invited_at||null,activatedAt:row.activated_at||null,assignedUnits:[],progress:{},submissions:[]}));
       remoteLoadComplete=true;
     }
+
+    function openEditLearner(learnerId) {
+      if(!canInviteLearners)return;
+      const learner=learners.find(item=>item.id===learnerId);
+      if(!learner)return;
+      document.getElementById('editLearnerId').value=learner.id;
+      document.getElementById('editLearnerOldEmail').value=learner.email||'';
+      document.getElementById('editFullName').value=learner.fullName||'';
+      document.getElementById('editEmail').value=learner.email||'';
+      document.getElementById('editContact').value=learner.contactNumber||'';
+      const message=document.getElementById('editLearnerMessage');
+      message.textContent='';message.className='invite-message';
+      const overlay=document.getElementById('editLearnerOverlay');
+      overlay.classList.add('open');overlay.setAttribute('aria-hidden','false');
+      document.getElementById('editFullName').focus();
+    }
+
+    function closeEditLearner() {
+      const overlay=document.getElementById('editLearnerOverlay');
+      overlay.classList.remove('open');overlay.setAttribute('aria-hidden','true');
+    }
+
+    function migrateLearnerEmailStorage(learner,oldEmail,newEmail) {
+      const before=String(oldEmail||'').trim().toLowerCase();
+      const after=String(newEmail||'').trim().toLowerCase();
+      if(!before||!after||before===after)return;
+      const oldKey=LEARNER_PLAN_KEY+':email:'+before;
+      const newKey=LEARNER_PLAN_KEY+':email:'+after;
+      const savedPlan=localStorage.getItem(oldKey);
+      if(savedPlan&&!localStorage.getItem(newKey))localStorage.setItem(newKey,savedPlan);
+      localStorage.removeItem(oldKey);
+    }
+
+    document.getElementById('editLearnerForm').addEventListener('submit',async function(event){
+      event.preventDefault();
+      if(!canInviteLearners)return;
+      const form=event.currentTarget;
+      if(!form.checkValidity()){form.reportValidity();return;}
+      const learnerId=document.getElementById('editLearnerId').value;
+      const oldEmail=document.getElementById('editLearnerOldEmail').value;
+      const newEmail=document.getElementById('editEmail').value.trim().toLowerCase();
+      const emailChanged=oldEmail.trim().toLowerCase()!==newEmail;
+      if(emailChanged&&!window.confirm(`Change this learner's login email from ${oldEmail} to ${newEmail}? The learner must use the new address the next time they log in.`))return;
+      const button=document.getElementById('saveLearnerDetailsButton');
+      const message=document.getElementById('editLearnerMessage');
+      button.disabled=true;button.textContent='Saving…';message.textContent='';message.className='invite-message';
+      const body=Object.fromEntries(new FormData(form).entries());
+      const {data,error}=await sb.functions.invoke('update-learner-profile',{body});
+      button.disabled=false;button.textContent='Save Learner Details';
+      if(error||data?.error){
+        message.textContent=data?.error||'The learner details could not be updated. Please try again.';
+        message.className='invite-message error show';return;
+      }
+      const currentLearner=learners.find(item=>item.id===learnerId);
+      if(currentLearner)migrateLearnerEmailStorage(currentLearner,oldEmail,newEmail);
+      await loadRemoteLearners();loadLearners();renderAll();
+      const refreshed=learners.find(item=>item.id===learnerId);
+      if(refreshed){
+        selectedLearnerId=learnerId;
+        document.getElementById('recordLearnerName').textContent=refreshed.fullName;
+        document.getElementById('recordLearnerMeta').textContent=(refreshed.email||'No email recorded')+' · trainee assessor record';
+        renderRecordOverview(refreshed);
+      }
+      message.textContent=data?.message||'The learner details and login account have been updated.';
+      message.className='invite-message success show';
+      setTimeout(closeEditLearner,1200);
+    });
 
     async function sendExistingLearnerInvitation(learnerId) {
       if(!canInviteLearners)return;
@@ -1415,6 +1501,7 @@
     document.getElementById('planFilter').addEventListener('change',renderLearnerTable);
     document.getElementById('learnerRecordOverlay').addEventListener('click',event=>{if(event.target.id==='learnerRecordOverlay')closeLearnerRecord();});
     document.getElementById('inviteLearnerOverlay').addEventListener('click',event=>{if(event.target.id==='inviteLearnerOverlay')closeInviteLearner();});
+    document.getElementById('editLearnerOverlay').addEventListener('click',event=>{if(event.target.id==='editLearnerOverlay')closeEditLearner();});
     window.addEventListener('focus',()=>{syncActiveLearnerPlan();if(selectedLearnerId)openLearnerRecord(selectedLearnerId,document.querySelector('.record-tab.active')?.dataset.recordTab||'overview');renderAll();});
 
     document.addEventListener('DOMContentLoaded',async function(){
