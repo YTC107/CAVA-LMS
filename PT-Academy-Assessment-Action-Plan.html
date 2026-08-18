@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PT Academy | Learner Assessment Action Plan</title>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <style>
     :root {
       --gold: #c9a84c;
@@ -36,12 +36,12 @@
 
     .top-header {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      gap: 20px;
-      padding: 14px 24px;
+      gap: 16px;
+      padding: 15px 24px;
       color: white;
       background: var(--ink);
+      border-bottom: 3px solid var(--gold);
     }
 
     .brand {
@@ -70,46 +70,14 @@
       font-size: 12px;
     }
 
-    .header-meta {
-      flex-shrink: 0;
-      color: #c5c8d0;
-      font-size: 11px;
-      line-height: 1.6;
-      text-align: right;
-    }
-
-    .nav-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 24px;
-      color: white;
-      background: #292929;
-    }
-
-    .back-link {
-      padding: 7px 12px;
-      border-radius: 6px;
-      color: #121212;
-      background: var(--gold);
-      font-size: 12px;
-      font-weight: 800;
-      text-decoration: none;
-    }
-
-    .nav-label {
-      color: #d3d3d3;
-      font-size: 12px;
-    }
-
     .workspace {
       width: min(1120px, calc(100% - 28px));
-      margin: 22px auto 60px;
+      margin: 18px auto 72px;
     }
 
     .notice {
-      margin-bottom: 16px;
-      padding: 13px 16px;
+      margin-bottom: 12px;
+      padding: 10px 14px;
       border: 1px solid #e6cf88;
       border-radius: 8px;
       color: #5f4b16;
@@ -118,25 +86,63 @@
       line-height: 1.5;
     }
 
+    .notice summary { cursor: pointer; font-weight: 800; list-style-position: outside; margin-left: 14px; }
+    .notice p { margin: 9px 0 1px; }
+
     .record-toolbar {
-      display: grid;
-      grid-template-columns: minmax(260px, 1fr) auto;
-      gap: 12px;
-      align-items: end;
       margin-bottom: 16px;
-      padding: 15px;
+      padding: 16px;
       border: 1px solid var(--line);
       border-radius: 10px;
       background: white;
       box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06);
     }
 
+    .record-toolbar-top {
+      display: grid;
+      grid-template-columns: minmax(280px, 1fr) minmax(210px, 0.36fr);
+      gap: 14px;
+      align-items: end;
+    }
+
     .toolbar-actions {
       display: flex;
       flex-wrap: wrap;
-      justify-content: flex-end;
+      align-items: center;
       gap: 8px;
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #eceef2;
     }
+
+    .payment-choice {
+      padding-left: 14px;
+      border-left: 1px solid #e3e5e9;
+    }
+
+    .payment-choice .control { border-color: #d2ba71; background: #fffaf0; font-weight: 700; }
+
+    .record-options { position: relative; margin-left: auto; }
+    .record-options summary { list-style: none; user-select: none; }
+    .record-options summary::-webkit-details-marker { display: none; }
+    .record-options summary::after { content: " +"; }
+    .record-options[open] summary::after { content: " −"; }
+    .record-options-menu {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 7px);
+      z-index: 50;
+      display: grid;
+      gap: 7px;
+      min-width: 190px;
+      padding: 9px;
+      border: 1px solid #d8dbe2;
+      border-radius: 8px;
+      background: white;
+      box-shadow: 0 10px 28px rgba(16, 24, 40, 0.16);
+    }
+
+    .record-options-menu .btn { width: 100%; text-align: left; }
 
     .field-label {
       display: block;
@@ -219,7 +225,20 @@
       background: var(--ink);
     }
 
-    .plan-type-icon { font-size: 25px; }
+    .plan-type-index {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 34px;
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      color: var(--ink);
+      background: #e9edf4;
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .plan-type-btn.active .plan-type-index { background: var(--gold); }
     .plan-type-title { display: block; font-size: 14px; font-weight: 800; }
     .plan-type-sub { display: block; margin-top: 3px; color: #7a8190; font-size: 11px; font-weight: 500; }
     .plan-type-btn.active .plan-type-sub { color: #e5d397; }
@@ -329,8 +348,27 @@
       font-weight: 800;
     }
 
+    #programme-l2 { color: var(--l2); border-color: rgba(45,106,45,0.55); background: #f4faf4; }
+    #programme-l3 { color: var(--l3); border-color: rgba(107,63,160,0.55); background: #faf6fd; }
     .programme-btn.active-l2 { color: white; border-color: var(--l2); background: var(--l2); }
     .programme-btn.active-l3 { color: white; border-color: var(--l3); background: var(--l3); }
+    .programme-btn:focus-visible { outline: 3px solid rgba(201,168,76,0.45); outline-offset: 2px; }
+
+    .programme-components {
+      padding: 14px;
+      border: 1px solid #e0e3e9;
+      border-left: 5px solid #c7cbd3;
+      border-radius: 8px;
+      background: #fafbfc;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .programme-components[data-programme="l2"] { border-left-color: var(--l2); background: #f4faf4; }
+    .programme-components[data-programme="l3"] { border-left-color: var(--l3); background: #faf6fd; }
+
+    .programme-summary { margin: 0 0 11px; color: var(--muted); font-size: 12px; font-weight: 700; }
+    .programme-components[data-programme="l2"] .programme-summary { color: var(--l2); }
+    .programme-components[data-programme="l3"] .programme-summary { color: var(--l3); }
 
     .selection-grid {
       display: grid;
@@ -366,9 +404,16 @@
       font-weight: 700;
     }
 
+    .programme-components[data-programme="l2"] .component { color: var(--l2); }
+    .programme-components[data-programme="l3"] .component { color: var(--l3); }
+    .programme-components[data-programme="l2"] .check-card { border-left: 3px solid rgba(45,106,45,0.5); }
+    .programme-components[data-programme="l3"] .check-card { border-left: 3px solid rgba(107,63,160,0.5); }
+    .programme-components[data-programme="l2"] .check-card input { accent-color: var(--l2); }
+    .programme-components[data-programme="l3"] .check-card input { accent-color: var(--l3); }
+
     .methods-grid {
       display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
       gap: 7px;
     }
 
@@ -386,6 +431,11 @@
     .method-chip input {
       accent-color: var(--gold);
     }
+
+    .methods-grid[data-programme="l2"] .method-chip { border-left: 3px solid rgba(45,106,45,0.45); }
+    .methods-grid[data-programme="l3"] .method-chip { border-left: 3px solid rgba(107,63,160,0.45); }
+    .methods-grid[data-programme="l2"] .method-chip input { accent-color: var(--l2); }
+    .methods-grid[data-programme="l3"] .method-chip input { accent-color: var(--l3); }
 
     .review-only { display: none; }
     .review-only.visible { display: block; }
@@ -446,6 +496,50 @@
       border-top: 4px solid #d9dce3;
       background: #f8f9fb;
     }
+
+    .payment-section {
+      margin-top: 15px;
+      padding: 15px;
+      border: 1px solid #d8dbe2;
+      border-left: 4px solid var(--gold);
+      border-radius: 7px;
+      background: white;
+    }
+
+    .payment-section-title { margin: 0 0 5px; color: var(--ink); font-size: 12px; font-weight: 800; }
+
+    .payment-section-note {
+      margin: 0 0 12px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.45;
+    }
+
+    .payment-section[hidden] { display: none !important; }
+
+    .hub-return-link {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 1000;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 9px;
+      padding: 12px 18px;
+      border: 2px solid var(--gold);
+      border-radius: 999px;
+      color: white;
+      background: #111;
+      box-shadow: 0 7px 20px rgba(0,0,0,0.28);
+      font-size: 12px;
+      font-weight: 800;
+      text-decoration: none;
+      transition: transform 0.2s, background 0.2s, color 0.2s;
+    }
+    .hub-return-link:hover { color: #111; background: var(--gold); transform: translateY(-2px); }
+    .hub-return-icon { color: var(--gold); font-size: 16px; }
+    .hub-return-link:hover .hub-return-icon { color: #111; }
 
     .internal-badge {
       display: inline-block;
@@ -521,8 +615,8 @@
     .muted { color: var(--muted); }
 
     @media (max-width: 850px) {
-      .record-toolbar { grid-template-columns: 1fr; }
-      .toolbar-actions { justify-content: flex-start; }
+      .record-toolbar-top { grid-template-columns: 1fr; }
+      .payment-choice { padding: 0; border-left: 0; }
       .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
       .span-3 { grid-column: span 2; }
       .methods-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -532,8 +626,6 @@
       .top-header { align-items: flex-start; padding: 13px 15px; }
       .brand img { height: 36px; }
       .brand-title { font-size: 13px; }
-      .header-meta { display: none; }
-      .nav-bar { padding: 8px 15px; }
       .workspace { width: min(100% - 16px, 1120px); margin-top: 12px; }
       .plan-type-wrap { flex-direction: column; }
       .grid-2, .grid-3, .selection-grid, .activity-grid { grid-template-columns: 1fr; }
@@ -542,14 +634,105 @@
       .record-state { min-width: auto; }
       .methods-grid { grid-template-columns: 1fr 1fr; }
       .section { padding: 17px 14px; }
+      .record-options { margin-left: 0; width: 100%; }
+      .record-options summary { width: 100%; text-align: center; }
+      .record-options-menu { position: static; margin-top: 7px; box-shadow: none; }
+      .hub-return-link { left: 12px; right: 12px; bottom: 12px; }
     }
 
     @media print {
       body { background: white; }
-      .no-print, .editor-only, .notice, .record-toolbar, .plan-type-wrap, .output-actions, .footer, .toast { display: none !important; }
+      .no-print, .editor-only, .notice, .record-toolbar, .plan-type-wrap, .output-actions, .footer, .toast, .hub-return-link { display: none !important; }
       .workspace { width: 100%; margin: 0; }
       .plan-document { border: none; box-shadow: none; }
       .section { break-inside: avoid; }
+    }
+
+    /* Accessible learner-facing type scale aligned with the Learner and Assessor Hubs. */
+    body {
+      font-size: 16px;
+      line-height: 1.6;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+    .brand-title { font-size: 20px; line-height: 1.3; }
+    .brand-subtitle { color: #e0e2e7; font-size: 15px; line-height: 1.5; }
+    .notice { font-size: 15px; line-height: 1.65; padding: 13px 16px; }
+    .field-label {
+      color: #4f5665;
+      font-size: 14px;
+      line-height: 1.4;
+      margin-bottom: 7px;
+    }
+    .control {
+      font-size: 16px;
+      line-height: 1.5;
+      min-height: 46px;
+      padding: 10px 12px;
+    }
+    textarea.control { min-height: 120px; line-height: 1.6; }
+    .btn, .btn-small {
+      font-size: 15px;
+      line-height: 1.35;
+      min-height: 44px;
+      padding: 10px 14px;
+    }
+    .plan-type-btn { min-height: 90px; padding: 17px 18px; }
+    .plan-type-title { font-size: 18px; line-height: 1.35; }
+    .plan-type-sub { color: #5e6574; font-size: 15px; line-height: 1.5; }
+    .document-title { font-size: 24px; line-height: 1.3; }
+    .document-qualification { color: #d5d8df; font-size: 15px; line-height: 1.5; }
+    .status-pill, .save-status { font-size: 13px; line-height: 1.4; }
+    .section { padding: 26px 28px; }
+    .section-title {
+      font-size: 20px;
+      line-height: 1.35;
+      margin-bottom: 18px;
+      padding-bottom: 11px;
+    }
+    .section-note {
+      color: #505767;
+      font-size: 16px;
+      line-height: 1.65;
+      margin-bottom: 18px;
+    }
+    .programme-btn { font-size: 16px; min-height: 46px; padding: 10px 18px; }
+    .programme-summary { font-size: 16px; line-height: 1.5; }
+    .check-card {
+      font-size: 16px;
+      gap: 10px;
+      line-height: 1.5;
+      padding: 12px 13px;
+    }
+    .check-card input { height: 18px; width: 18px; }
+    .component { font-size: 14px; line-height: 1.45; }
+    .method-chip {
+      font-size: 16px;
+      line-height: 1.45;
+      min-height: 46px;
+      padding: 10px 12px;
+    }
+    .task-card, .previous-task-card { padding: 19px; }
+    .task-number { font-size: 14px; line-height: 1.4; }
+    .remove-button { font-size: 14px; min-height: 38px; padding: 7px 10px; }
+    .payment-section-title { font-size: 17px; line-height: 1.4; }
+    .payment-section-note { font-size: 15px; line-height: 1.6; }
+    .hub-return-link { font-size: 16px; min-height: 48px; padding: 11px 18px; }
+    .internal-badge { font-size: 12px; }
+    .footer { font-size: 14px; line-height: 1.5; }
+    .toast, .validation { font-size: 15px; line-height: 1.55; }
+    .muted { font-size: 15px !important; line-height: 1.55; }
+    :where(a, button, input, select, textarea, summary):focus-visible {
+      outline: 3px solid #1f6feb;
+      outline-offset: 3px;
+    }
+
+    @media (max-width: 620px) {
+      .brand-title { font-size: 18px; }
+      .section { padding: 21px 17px; }
+      .section-title { font-size: 18px; }
+      .document-title { font-size: 21px; }
+      .methods-grid { grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -559,52 +742,60 @@
       <img src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy">
       <div>
         <div class="brand-title">Learner Assessment Action Plan</div>
-        <div class="brand-subtitle">Supervised trainee assessor record</div>
+        <div class="brand-subtitle">Initial plans, progress reviews and agreed learner actions</div>
       </div>
-    </div>
-    <div class="header-meta">
-      <div>Focus Awards Level 3 Certificate in Assessing Vocational Achievement</div>
-      <div>Qualification Code: R/616/2834</div>
-      <div>PT Academy</div>
     </div>
   </header>
 
-  <nav class="nav-bar no-print">
-    <a class="back-link" href="index.html?tab=documents">← Back to Hub</a>
-    <span class="nav-label">Assessment Documents</span>
-  </nav>
+  <a id="assessment-documents-return" class="hub-return-link no-print" href="./?tab=documents"><span class="hub-return-icon" aria-hidden="true">&#8592;</span><span>Back to Assessment Documents</span></a>
 
   <main class="workspace">
-    <div class="notice no-print">
-      <strong>Secure record reminder:</strong> Drafts are stored in this browser on this device. Download the approved PDF and save it in the authorised PT Academy learner record. Use the JSON backup when transferring a draft between approved devices. Do not use personal email or messaging accounts.
-    </div>
+    <details class="notice no-print">
+      <summary>Secure record handling</summary>
+      <p>Drafts are stored in this browser on this device. Save the approved PDF in the authorised PT Academy learner record. Use the JSON backup only when transferring a draft between approved devices. Do not use personal email or messaging accounts.</p>
+    </details>
 
     <section class="record-toolbar no-print">
-      <div>
-        <label class="field-label" for="record-selector">Saved learner records on this device</label>
-        <select id="record-selector" class="control" aria-label="Saved learner records"></select>
+      <div class="record-toolbar-top">
+        <div>
+          <label class="field-label" for="record-selector">Selected Learner Record</label>
+          <select id="record-selector" class="control" aria-label="Saved learner records"></select>
+        </div>
+        <div class="payment-choice">
+          <label class="field-label" for="learner-route">Learner Funding Route (Internal)</label>
+          <select id="learner-route" class="control" data-bind="internal.learnerRoute">
+            <option value="">Select learner type</option>
+            <option value="funded">Funded Programme Learner</option>
+            <option value="commercial">Commercially Paid Learner</option>
+          </select>
+        </div>
       </div>
       <div class="toolbar-actions">
         <button class="btn btn-gold" type="button" onclick="createNewRecord('initial')">New Initial Plan</button>
         <button class="btn btn-primary" type="button" onclick="createNextReview()">Create Next Review</button>
         <button class="btn btn-light" type="button" onclick="manualSave()">Save Record</button>
-        <button class="btn btn-light" type="button" onclick="exportRecord()">Export Backup</button>
-        <button class="btn btn-light" type="button" onclick="document.getElementById('import-file').click()">Import Backup</button>
-        <button class="btn btn-danger" type="button" onclick="deleteCurrentRecord()">Delete</button>
+        <details class="record-options">
+          <summary class="btn btn-light">More record options</summary>
+          <div class="record-options-menu">
+            <button class="btn btn-light" type="button" onclick="exportRecord()">Export Backup</button>
+            <button class="btn btn-light" type="button" onclick="document.getElementById('import-file').click()">Import Backup</button>
+            <button class="btn btn-danger" type="button" onclick="deleteCurrentRecord()">Delete Record</button>
+          </div>
+        </details>
         <input id="import-file" type="file" accept=".json,application/json" hidden>
       </div>
     </section>
 
     <div class="plan-type-wrap no-print" role="group" aria-label="Plan type">
       <button id="type-initial" class="plan-type-btn active" type="button" onclick="changePlanType('initial')">
-        <span class="plan-type-icon">📋</span>
+        <span class="plan-type-index" aria-hidden="true">01</span>
         <span>
           <span class="plan-type-title">Initial Action Plan</span>
           <span class="plan-type-sub">First learner contact, assessment planning and agreed work</span>
         </span>
       </button>
       <button id="type-review" class="plan-type-btn" type="button" onclick="changePlanType('review')">
-        <span class="plan-type-icon">🔄</span>
+        <span class="plan-type-index" aria-hidden="true">02</span>
         <span>
           <span class="plan-type-title">Session Review and Action Plan</span>
           <span class="plan-type-sub">Review previous work, record progress and agree next actions</span>
@@ -715,14 +906,16 @@
           <button id="programme-l2" class="programme-btn" type="button" onclick="selectProgramme('l2')">Level 2 Gym Instructor</button>
           <button id="programme-l3" class="programme-btn" type="button" onclick="selectProgramme('l3')">Level 3 Personal Training</button>
         </div>
-        <div id="programme-display" class="section-note"></div>
-        <div id="units-grid" class="selection-grid"></div>
+        <div id="programme-components" class="programme-components">
+          <div id="programme-display" class="programme-summary">Select Level 2 or Level 3 to display the relevant assessment components.</div>
+          <div id="units-grid" class="selection-grid"><div class="muted" style="font-size:12px;">Select the learner programme to display its assessment components.</div></div>
+        </div>
       </section>
 
       <section class="section">
         <h2 class="section-title">Assessment Methods</h2>
-        <p class="section-note">Select only the methods that will genuinely be used during this assessment period.</p>
-        <div id="methods-grid" class="methods-grid"></div>
+        <p class="section-note">Select every method that will genuinely be used during this assessment period. Simulation is not permitted for this programme.</p>
+        <div id="methods-grid" class="methods-grid"><div class="muted" style="font-size:12px;">Select the learner programme before choosing assessment methods.</div></div>
       </section>
 
       <section id="review-section" class="section review-only">
@@ -820,31 +1013,35 @@
       </section>
 
       <section id="internal-section" class="section internal-section">
-        <h2 class="section-title">Internal Activity and Payment Verification <span class="internal-badge">Not included in learner copy</span></h2>
-        <p class="section-note">This section supports internal monitoring and payment administration. It is not a replacement for the formal payment approval process.</p>
+        <h2 class="section-title">Internal Activity Verification <span class="internal-badge">Not included in learner copy</span></h2>
+        <p class="section-note">This section supports internal monitoring and is excluded from the learner copy.</p>
         <div id="activity-grid" class="activity-grid"></div>
-        <div class="grid grid-3">
-          <div>
-            <label class="field-label" for="payment-status">Payment Status</label>
-            <select id="payment-status" class="control" data-bind="internal.paymentStatus">
-              <option value="not-applicable">Not Yet Applicable</option>
-              <option value="pending-completion">Pending Learner Completion</option>
-              <option value="ready-for-approval">Ready for Approval</option>
-              <option value="approved">Approved</option>
-              <option value="paid">Paid</option>
-            </select>
-          </div>
-          <div>
-            <label class="field-label" for="payment-confirmed-by">Confirmed By</label>
-            <input id="payment-confirmed-by" class="control" type="text" data-bind="internal.paymentConfirmedBy" placeholder="Authorised staff member">
-          </div>
-          <div>
-            <label class="field-label" for="payment-confirmed-date">Confirmation Date</label>
-            <input id="payment-confirmed-date" class="control" type="date" data-bind="internal.paymentConfirmedDate">
-          </div>
-          <div class="span-3">
-            <label class="field-label" for="internal-notes">Internal Notes</label>
-            <textarea id="internal-notes" class="control" data-bind="internal.notes" placeholder="Internal record only. Do not include unnecessary personal or sensitive information."></textarea>
+        <div id="payment-section" class="payment-section" hidden>
+          <h3 class="payment-section-title">Payment Verification</h3>
+          <p class="payment-section-note">Shown because payment tracking is enabled for the selected learner allocation. Only authorised staff should update payment status.</p>
+          <div class="grid grid-3">
+            <div>
+              <label class="field-label" for="payment-status">Payment Status</label>
+              <select id="payment-status" class="control" data-bind="internal.paymentStatus">
+                <option value="not-applicable">Not Yet Applicable</option>
+                <option value="pending-completion">Pending Learner Completion</option>
+                <option value="ready-for-approval">Ready for Approval</option>
+                <option value="approved">Approved</option>
+                <option value="paid">Paid</option>
+              </select>
+            </div>
+            <div>
+              <label class="field-label" for="payment-confirmed-by">Confirmed By</label>
+              <input id="payment-confirmed-by" class="control" type="text" data-bind="internal.paymentConfirmedBy" placeholder="Authorised staff member">
+            </div>
+            <div>
+              <label class="field-label" for="payment-confirmed-date">Confirmation Date</label>
+              <input id="payment-confirmed-date" class="control" type="date" data-bind="internal.paymentConfirmedDate">
+            </div>
+            <div class="span-3">
+              <label class="field-label" for="internal-notes">Internal Payment Notes</label>
+              <textarea id="internal-notes" class="control" data-bind="internal.notes" placeholder="Internal record only. Do not include unnecessary personal or sensitive information."></textarea>
+            </div>
           </div>
         </div>
       </section>
@@ -894,12 +1091,20 @@
 
     const assessmentMethods = [
       "Observation",
+      "Practical Demonstration",
       "Verbal Question and Answer",
       "Written Question and Answer",
+      "Multiple Choice Questions",
+      "Short Answer Questions",
       "Professional Discussion",
       "Witness Testimony",
       "Work Product",
       "Portfolio Evidence",
+      "Assignment or Project",
+      "Learner Statement",
+      "Reflective Account or Self-Reflection",
+      "Audio or Video Evidence",
+      "Document Review",
       "Recognition of Prior Learning",
       "Case Study"
     ];
@@ -917,6 +1122,53 @@
     let currentId = null;
     let saveTimer = null;
     let toastTimer = null;
+    let durableStorageAvailable = true;
+    const sessionStorageFallback = {};
+
+    function readStoredValue(key) {
+      try {
+        return window.localStorage.getItem(key);
+      } catch (error) {
+        durableStorageAvailable = false;
+        return Object.prototype.hasOwnProperty.call(sessionStorageFallback, key) ? sessionStorageFallback[key] : null;
+      }
+    }
+
+    function writeStoredValue(key, value) {
+      sessionStorageFallback[key] = value;
+      try {
+        window.localStorage.setItem(key, value);
+      } catch (error) {
+        durableStorageAvailable = false;
+      }
+    }
+
+    function configureAssessmentDocumentsReturnLink() {
+      const link = document.getElementById("assessment-documents-return");
+      if (!link) return;
+
+      const fallback = window.location.protocol === "file:"
+        ? new URL("learner-hub.html?tab=documents", window.location.href)
+        : new URL("./?tab=documents", window.location.href);
+      const requestedReturn = new URLSearchParams(window.location.search).get("return");
+      let destination = fallback;
+
+      if (requestedReturn) {
+        try {
+          const candidate = new URL(requestedReturn, window.location.href);
+          const allowedDestination = window.location.protocol === "file:"
+            ? candidate.protocol === "file:"
+            : candidate.origin === window.location.origin;
+          if (allowedDestination) destination = candidate;
+        } catch (error) {
+          destination = fallback;
+        }
+      }
+
+      destination.searchParams.set("tab", "documents");
+      destination.hash = "";
+      link.href = destination.href;
+    }
 
     function uid(prefix) {
       const random = Math.random().toString(36).slice(2, 8).toUpperCase();
@@ -978,6 +1230,8 @@
         verification: { status: "pending", name: "", date: "", comments: "" },
         internal: {
           activity: {},
+          learnerRoute: "",
+          paymentTracking: "disabled",
           paymentStatus: "not-applicable",
           paymentConfirmedBy: "",
           paymentConfirmedDate: "",
@@ -1009,13 +1263,14 @@
 
     function loadRecords() {
       try {
-        records = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        const storedRecords = JSON.parse(readStoredValue(STORAGE_KEY) || "{}");
+        records = storedRecords && typeof storedRecords === "object" && !Array.isArray(storedRecords) ? storedRecords : {};
       } catch (error) {
         records = {};
       }
 
-      const ids = Object.keys(records);
-      currentId = localStorage.getItem(CURRENT_KEY);
+      const ids = Object.keys(records).filter(id => records[id] && typeof records[id] === "object" && !Array.isArray(records[id]));
+      currentId = readStoredValue(CURRENT_KEY);
       if (!currentId || !records[currentId]) currentId = ids[0] || null;
 
       if (!currentId) {
@@ -1025,8 +1280,11 @@
         persistRecords();
       }
 
-      ensureRecordShape(getCurrent());
+      records[currentId] = ensureRecordShape(getCurrent());
       renderAll();
+      if (!durableStorageAvailable) {
+        setSaveStatus("Session copy • use Export Backup before closing", "saving");
+      }
     }
 
     function ensureRecordShape(record) {
@@ -1043,12 +1301,15 @@
       record.selectedUnits = Array.isArray(record.selectedUnits) ? record.selectedUnits : [];
       record.selectedMethods = Array.isArray(record.selectedMethods) ? record.selectedMethods : [];
       record.internal.activity = record.internal.activity || {};
+      if (!record.internal.learnerRoute && record.internal.paymentTracking === "enabled") {
+        record.internal.learnerRoute = "commercial";
+      }
       return record;
     }
 
     function persistRecords() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(records));
-      localStorage.setItem(CURRENT_KEY, currentId);
+      writeStoredValue(STORAGE_KEY, JSON.stringify(records));
+      writeStoredValue(CURRENT_KEY, currentId);
     }
 
     function scheduleSave() {
@@ -1060,7 +1321,10 @@
       saveTimer = setTimeout(() => {
         persistRecords();
         renderRecordSelector();
-        setSaveStatus("Saved on this device", "saved");
+        setSaveStatus(
+          durableStorageAvailable ? "Saved on this device" : "Session copy • use Export Backup before closing",
+          durableStorageAvailable ? "saved" : "saving"
+        );
       }, 350);
     }
 
@@ -1070,8 +1334,11 @@
       record.updatedAt = new Date().toISOString();
       persistRecords();
       renderRecordSelector();
-      setSaveStatus(`Saved • revision ${record.revision}`, "saved");
-      showToast("Record saved on this device.");
+      setSaveStatus(
+        durableStorageAvailable ? `Saved • revision ${record.revision}` : "Session copy • use Export Backup before closing",
+        durableStorageAvailable ? "saved" : "saving"
+      );
+      showToast(durableStorageAvailable ? "Record saved on this device." : "Browser storage is unavailable. Export a backup before closing this page.");
     }
 
     function setSaveStatus(text, className = "") {
@@ -1101,6 +1368,7 @@
       renderTasks();
       renderPreviousActions();
       renderActivities();
+      renderPaymentTracking();
       renderRecordSelector();
       renderStatus();
       setSaveStatus(`Saved • revision ${record.revision || 1}`, "saved");
@@ -1120,12 +1388,14 @@
       const record = getCurrent();
       const l2 = document.getElementById("programme-l2");
       const l3 = document.getElementById("programme-l3");
+      const panel = document.getElementById("programme-components");
       l2.className = `programme-btn ${record.programme === "l2" ? "active-l2" : ""}`.trim();
       l3.className = `programme-btn ${record.programme === "l3" ? "active-l3" : ""}`.trim();
+      panel.dataset.programme = record.programme || "";
       document.getElementById("programme-display").textContent =
-        record.programme === "l2" ? "Selected programme: Level 2 Gym Instructor" :
-        record.programme === "l3" ? "Selected programme: Level 3 Personal Training" :
-        "No programme selected.";
+        record.programme === "l2" ? `Level 2 Gym Instructor • ${units.l2.length} assessment components` :
+        record.programme === "l3" ? `Level 3 Personal Training • ${units.l3.length} assessment components` :
+        "Select Level 2 or Level 3 to display the relevant assessment components.";
     }
 
     function renderUnits() {
@@ -1150,6 +1420,11 @@
       const record = getCurrent();
       const grid = document.getElementById("methods-grid");
       grid.innerHTML = "";
+      grid.dataset.programme = record.programme || "";
+      if (!record.programme) {
+        grid.innerHTML = '<div class="muted" style="font-size:12px;">Select the learner programme before choosing assessment methods.</div>';
+        return;
+      }
       assessmentMethods.forEach(method => {
         const label = document.createElement("label");
         label.className = "method-chip";
@@ -1274,6 +1549,19 @@
       });
     }
 
+    function renderPaymentTracking() {
+      const record = getCurrent();
+      const enabled = record.internal.learnerRoute === "commercial";
+      record.internal.paymentTracking = enabled ? "enabled" : "disabled";
+      const section = document.getElementById("payment-section");
+      section.hidden = !enabled;
+      section.setAttribute("aria-hidden", String(!enabled));
+      if (!enabled) {
+        record.internal.paymentStatus = "not-applicable";
+        document.getElementById("payment-status").value = "not-applicable";
+      }
+    }
+
     function renderRecordSelector() {
       const select = document.getElementById("record-selector");
       const sorted = Object.values(records).sort((a, b) => (b.updatedAt || "").localeCompare(a.updatedAt || ""));
@@ -1324,6 +1612,7 @@
       record.programme = programme;
       renderProgramme();
       renderUnits();
+      renderMethods();
       renderTasks();
       renderPreviousActions();
       scheduleSave();
@@ -1380,6 +1669,8 @@
       review.selectedUnits = [...source.selectedUnits];
       review.selectedMethods = [...source.selectedMethods];
       review.communicationRoute = source.communicationRoute;
+      review.internal.learnerRoute = source.internal.learnerRoute;
+      review.internal.paymentTracking = source.internal.paymentTracking;
       review.review.previousActions = source.tasks
         .filter(task => task.description.trim())
         .map(task => ({
@@ -1466,6 +1757,7 @@
       if (!record.meeting.nextDate) errors.push("The next meeting date and time are required.");
       if (!record.assessor.name.trim()) errors.push("Trainee assessor name is required.");
       if (!record.supervisor.name.trim()) errors.push("Supervising assessor name is required.");
+      if (!record.internal.learnerRoute) errors.push("Select whether the learner is on the funded programme or commercially paid.");
       if (!record.programme) errors.push("A learner programme must be selected.");
       if (!record.selectedUnits.length) errors.push("Select at least one assessment component.");
       if (!record.selectedMethods.length) errors.push("Select at least one assessment method.");
@@ -1702,6 +1994,11 @@
 
     document.addEventListener("change", event => {
       const record = getCurrent();
+      if (event.target.id === "learner-route") {
+        record.internal.learnerRoute = event.target.value;
+        renderPaymentTracking();
+        scheduleSave();
+      }
       if (event.target.dataset.unitId) {
         const id = event.target.dataset.unitId;
         const linkedToAction = record.tasks.some(task => task.unitId === id) ||
@@ -1734,7 +2031,7 @@
       clearTimeout(saveTimer);
       persistRecords();
       currentId = event.target.value;
-      localStorage.setItem(CURRENT_KEY, currentId);
+      writeStoredValue(CURRENT_KEY, currentId);
       renderAll();
     });
 
@@ -1744,7 +2041,8 @@
     });
 
     window.addEventListener("beforeunload", persistRecords);
-    window.addEventListener("load", loadRecords);
+    configureAssessmentDocumentsReturnLink();
+    loadRecords();
   </script>
 </body>
 </html>
