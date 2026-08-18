@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Paste the Calendar ID from Google Calendar > Settings and sharing > Integrate calendar into the content attribute below. -->
+  <meta name="cava-calendar-id" content="c_01147ef0f210e65d6cbda09421df4b22ebad590a41b34a9e9e3580dac1f15213@group.calendar.google.com">
   <title>Focus Awards Level 3 Certificate in Assessing Vocational Achievement | PT Academy Learner Hub</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.tailwindcss.com"></script>
@@ -747,9 +749,314 @@ body.auth-required .tabs,
 body.auth-required .content,
 body.auth-required .footer { display: none !important; }
 
+/* Learner Hub accessibility and typography baseline — aligned with Assessor Hub */
+:root {
+  --pt-black: #171717;
+  --pt-gold: #c9a84c;
+  --pt-gold-dark: #725711;
+  --pt-text: #252525;
+  --pt-muted: #545454;
+  --pt-focus: #1f6feb;
+  font-size: 100%;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  color: var(--pt-text);
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+.skip-link {
+  background: #fff;
+  border: 3px solid var(--pt-gold);
+  border-radius: 4px;
+  color: #111;
+  font-size: 1rem;
+  font-weight: 800;
+  left: 16px;
+  padding: 10px 16px;
+  position: fixed;
+  top: 12px;
+  transform: translateY(-160%);
+  transition: transform .15s ease;
+  z-index: 100000;
+}
+.skip-link:focus { transform: translateY(0); }
+
+.header-kicker,
+.welcome-label { font-size: .875rem; }
+.header h1 { font-size: clamp(1.25rem, 2vw, 1.55rem); line-height: 1.35; }
+.header p { color: #d0d0d0; font-size: 1rem; line-height: 1.5; }
+.welcome-name { font-size: 1.125rem; }
+.account-status { color: #d0d0d0; font-size: .875rem; }
+.account-button { font-size: 1rem; min-height: 44px; padding: 9px 16px; }
+
+.tab-btn {
+  font-size: 1rem;
+  min-height: 52px;
+  padding: 14px 20px;
+}
+.tab-btn[aria-selected="true"] { color: var(--pt-gold); }
+
+.content { font-size: 1rem; }
+.hub-page-heading { font-size: clamp(1.65rem, 3vw, 2rem); }
+.hub-section-heading,
+.intro-card h3 { font-size: clamp(1.25rem, 2vw, 1.45rem); }
+.intro-card p,
+.action-plan-card p,
+.plan-schedule-header p,
+.plan-declaration-card > p { color: #3f3f3f; font-size: 1rem; line-height: 1.7; }
+.action-plan-card p { color: #f2f2f2; }
+.unit-card h4,
+.lo-title,
+.obs-title,
+.signoff-card h3 { font-size: 1.0625rem; line-height: 1.45; }
+.unit-card .progress-text,
+.lo-description,
+.audit-row,
+.obs-row { color: var(--pt-muted); font-size: 1rem; line-height: 1.55; }
+.lo-item { font-size: 1rem; line-height: 1.5; min-height: 44px; }
+
+#main-content :where(p, li, label) {
+  font-size: 1rem !important;
+  line-height: 1.6;
+}
+#main-content :where(.saved-indicator, .account-status, .plan-help, .warn-text, .filename-display) {
+  font-size: .875rem !important;
+  line-height: 1.5;
+}
+
+.planned-date-box label,
+.manual-entry-title,
+.audit-headers,
+.plan-field label,
+.plan-help,
+.plan-milestone span,
+.assessment-entry-grid label,
+.worksheet-assessment-fields label,
+.sig-section label { font-size: .875rem; line-height: 1.4; }
+.plan-milestone strong,
+.assessment-record-panel h4,
+.worksheet-assessment-bridge h4,
+.assessment-attempt-register-header strong { font-size: 1rem; }
+.assessment-record-panel > p,
+.worksheet-assessment-bridge > p,
+.assessment-record-empty,
+.assessment-editor-note,
+.assessment-attempt-table td,
+.confirmation-meta { font-size: .9375rem; line-height: 1.55; }
+.assessment-attempt-table th,
+.assessment-summary div span,
+.assessment-history-row .attempt-number,
+.record-outcome { font-size: .8125rem; }
+.assessment-history-row { font-size: .9375rem; }
+
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea,
+button { font-family: inherit; }
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea { font-size: 1rem; line-height: 1.45; min-height: 44px; }
+textarea { min-height: 140px; }
+button,
+[role="button"],
+.action-plan-launch,
+.plan-primary-button,
+.record-assessment-button,
+.worksheet-assessment-fields button,
+.plan-workspace-link,
+.embedded-back-button { font-size: 1rem; min-height: 44px; }
+#main-content :where(input:not([type="checkbox"]):not([type="radio"]), select, textarea, button) {
+  font-size: 1rem !important;
+}
+
+a { text-underline-offset: .18em; }
+.intro-card a { color: var(--pt-gold-dark); text-decoration: underline; }
+
+:where(a, button, input, select, textarea, [tabindex]):focus-visible {
+  border-radius: 3px;
+  outline: 3px solid var(--pt-focus) !important;
+  outline-offset: 3px !important;
+}
+.header :where(a, button):focus-visible,
+.action-plan-card :where(a, button):focus-visible,
+.tabs button:focus-visible {
+  outline-color: #fff !important;
+}
+
+/* Keep the three embedded worksheets readable and visually consistent. */
+#unit1WorksheetView,
+#unit2WorksheetView,
+#unit3WorksheetView {
+  color: var(--pt-text);
+  font-family: "Segoe UI", Arial, sans-serif;
+  font-size: 1rem;
+  line-height: 1.6;
+}
+#unit1WorksheetView :where(input, select, textarea, button),
+#unit2WorksheetView :where(input, select, textarea, button),
+#unit3WorksheetView :where(input, select, textarea, button) {
+  font-family: inherit;
+  font-size: 1rem;
+}
+#unit1WorksheetView :where(label, p, li, .ac-description, .lo-description, .info-box, .cross-ref-note, .filename-display),
+#unit2WorksheetView :where(label, p, li, .ac-description, .lo-description, .info-box, .cross-ref-note, .filename-display),
+#unit3WorksheetView :where(label, p, li, .ac-description, .lo-description, .info-box, .cross-ref-note, .filename-display) {
+  font-size: 1rem !important;
+  line-height: 1.6;
+}
+#unit1WorksheetView :where(.header-titles h1, .lo-header h2),
+#unit2WorksheetView :where(.header-titles h1, .lo-header h2),
+#unit3WorksheetView :where(.header-titles h1, .lo-header h2) {
+  line-height: 1.35;
+}
+#unit1WorksheetView :where(.nav-tab, .pdf-btn, .submit-btn, .toggle-btn, .embedded-back-button),
+#unit2WorksheetView :where(.nav-tab, .pdf-btn, .submit-btn, .toggle-btn, .embedded-back-button),
+#unit3WorksheetView :where(.nav-tab, .pdf-btn, .submit-btn, .toggle-btn, .embedded-back-button) {
+  font-size: 1rem !important;
+  min-height: 44px;
+}
+
+[aria-disabled="true"],
+button:disabled,
+input:disabled,
+select:disabled,
+textarea:disabled { cursor: not-allowed; opacity: .72; }
+
+@media (max-width: 700px) {
+  .header h1 { font-size: 1.2rem; }
+  .header p { font-size: .9375rem; }
+  .tab-btn { min-height: 48px; padding: 12px 16px; }
+  .content { padding: 28px 16px; }
+  .intro-card { padding: 24px 20px; }
+  .hub-page-heading { font-size: 1.55rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: .01ms !important;
+  }
+}
+
+.live-sessions-card {
+  background: #fff;
+  border-left: 7px solid var(--pt-gold);
+  border-radius: 7px;
+  box-shadow: 0 3px 12px rgba(0,0,0,.10);
+  margin: 0 0 30px;
+  overflow: hidden;
+}
+.live-sessions-heading {
+  align-items: flex-start;
+  background: var(--pt-black);
+  color: #fff;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  padding: 22px 24px;
+}
+.live-sessions-kicker {
+  color: var(--pt-gold);
+  font-size: .875rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  margin: 0 0 5px;
+  text-transform: uppercase;
+}
+.live-sessions-heading h3 {
+  color: #fff;
+  font-size: clamp(1.25rem, 2vw, 1.5rem);
+  line-height: 1.3;
+  margin: 0;
+}
+.live-sessions-heading p {
+  color: #e5e5e5;
+  font-size: 1rem !important;
+  line-height: 1.6;
+  margin: 8px 0 0;
+  max-width: 760px;
+}
+.live-sessions-status {
+  background: #f7efd6;
+  border: 1px solid var(--pt-gold);
+  border-radius: 999px;
+  color: #5c460e;
+  flex: 0 0 auto;
+  font-size: .875rem;
+  font-weight: 800;
+  padding: 7px 12px;
+}
+.live-sessions-body { padding: 22px 24px 24px; }
+.calendar-frame-wrap {
+  background: #f6f6f4;
+  border: 1px solid #d8d8d4;
+  border-radius: 5px;
+  min-height: 430px;
+  overflow: hidden;
+}
+.calendar-frame {
+  border: 0;
+  display: block;
+  height: 500px;
+  width: 100%;
+}
+.calendar-pending {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 430px;
+  padding: 34px;
+  text-align: center;
+}
+.calendar-pending h4 { color: #1d1d1d; font-size: 1.15rem; margin: 0 0 8px; }
+.calendar-pending p { color: #555; margin: 0; max-width: 620px; }
+.live-sessions-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 18px; }
+.live-session-button {
+  align-items: center;
+  background: var(--pt-black);
+  border: 2px solid var(--pt-black);
+  border-radius: 4px;
+  color: #fff;
+  display: inline-flex;
+  font-size: 1rem;
+  font-weight: 800;
+  justify-content: center;
+  min-height: 44px;
+  padding: 9px 16px;
+  text-decoration: none;
+}
+.live-session-button.primary { background: var(--pt-gold); border-color: var(--pt-gold); color: #111; }
+.live-session-button:hover { background: #fff; color: #111; }
+.live-session-note {
+  border-top: 1px solid #e2e2df;
+  color: #555;
+  font-size: .9375rem;
+  line-height: 1.55;
+  margin: 20px 0 0;
+  padding-top: 15px;
+}
+@media (max-width: 700px) {
+  .live-sessions-heading { flex-direction: column; gap: 14px; padding: 20px; }
+  .live-sessions-body { padding: 18px; }
+  .calendar-frame, .calendar-frame-wrap, .calendar-pending { height: 520px; min-height: 520px; }
+  .live-session-button { width: 100%; }
+}
+
   </style>
 </head>
 <body class="auth-pending">
+
+<a class="skip-link" href="#main-content">Skip to main content</a>
 
 <div id="learnerAuthGate" class="learner-auth-gate" role="status" aria-live="polite">
   <section class="learner-auth-card" aria-labelledby="learnerAuthTitle">
@@ -802,18 +1109,18 @@ body.auth-required .footer { display: none !important; }
   </script>
 </div>
 
-<div class="tabs">
-  <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard', this)">Dashboard</button>
-  <button class="tab-btn" data-tab="introduction" onclick="switchTab('introduction', this)">Introduction</button>
-  <button class="tab-btn" data-tab="assessment" onclick="switchTab('assessment', this)">Assessment Plan</button>
-  <button class="tab-btn" data-tab="documents" onclick="switchTab('documents', this)">Assessment Documents</button>
+<div class="tabs" role="tablist" aria-label="Learner Hub sections">
+  <button id="dashboard-tab" class="tab-btn active" role="tab" aria-selected="true" aria-controls="dashboard" data-tab="dashboard" onclick="switchTab('dashboard', this)">Dashboard</button>
+  <button id="introduction-tab" class="tab-btn" role="tab" aria-selected="false" aria-controls="introduction" data-tab="introduction" onclick="switchTab('introduction', this)">Introduction</button>
+  <button id="assessment-tab" class="tab-btn" role="tab" aria-selected="false" aria-controls="assessment" data-tab="assessment" onclick="switchTab('assessment', this)">Assessment Plan</button>
+  <button id="documents-tab" class="tab-btn" role="tab" aria-selected="false" aria-controls="documents" data-tab="documents" onclick="switchTab('documents', this)">Assessment Documents</button>
   <button class="tab-btn" onclick="openActionPlanWorkspace()">Action Plans &amp; Reviews</button>
 </div>
 
-<div class="content">
+<main id="main-content" class="content" tabindex="-1">
 
   <!-- DASHBOARD TAB -->
-  <div id="dashboard" class="tab-pane active">
+  <div id="dashboard" class="tab-pane active" role="tabpanel" aria-labelledby="dashboard-tab">
     <h2 class="hub-page-heading">Your Progress</h2>
     
     <div class="intro-card">
@@ -823,6 +1130,31 @@ body.auth-required .footer { display: none !important; }
       <p>You can expand each unit card to see all the individual learning outcomes and understand what skills and knowledge you need to demonstrate. As you complete more assessments, your progress will update automatically.</p>
       <p><strong>Key points:</strong> Each learning outcome must be assessed separately. You progress through a unit as you complete each outcome. Your assessor will record when you have achieved the required standard. Review the Assessment Plan tab to see all your assessment attempts and outcomes.</p>
     </div>
+
+    <section class="live-sessions-card" aria-labelledby="liveSessionsTitle">
+      <div class="live-sessions-heading">
+        <div>
+          <div class="live-sessions-kicker">Programme calendar</div>
+          <h3 id="liveSessionsTitle">Upcoming Live Sessions</h3>
+          <p>View confirmed CAVA briefings, standardisation sessions, progress reviews and programme events. Sessions are arranged by PT Academy; learners cannot book additional appointments through this calendar.</p>
+        </div>
+        <span id="liveSessionsStatus" class="live-sessions-status">Calendar connection pending</span>
+      </div>
+      <div class="live-sessions-body">
+        <div id="calendarFrameWrap" class="calendar-frame-wrap">
+          <div id="calendarPending" class="calendar-pending" role="status">
+            <h4>The programme calendar is being connected</h4>
+            <p>Confirmed sessions will appear here automatically once the PT Academy CAVA calendar has been connected.</p>
+          </div>
+        </div>
+        <div class="live-sessions-actions">
+          <a id="openProgrammeCalendar" class="live-session-button primary" href="#" target="_blank" rel="noopener" hidden>Open Full Programme Calendar</a>
+          <a class="live-session-button" href="cava-scheme-of-work.html" target="_blank" rel="noopener">View Scheme of Work</a>
+          <button class="live-session-button" type="button" onclick="openActionPlanWorkspace()">Open Action Plans &amp; Reviews</button>
+        </div>
+        <p class="live-session-note"><strong>Joining a session:</strong> Open the relevant event and follow the approved joining instructions. Only confirmed programme sessions are displayed here.</p>
+      </div>
+    </section>
     
     <div class="dashboard-grid">
       <div class="chart-container">
@@ -836,7 +1168,7 @@ body.auth-required .footer { display: none !important; }
           <div class="progress-bar"><div class="progress-fill" style="width: 75%;"></div></div>
           <div class="progress-text">6 of 8 learning outcomes complete</div>
           <div style="margin-top: 12px;">
-            <button onclick="toggleLOs('unit1')" style="background: #c9a84c; color: #1a1a1a; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: 600;">View Learning Outcomes</button>
+            <button data-lo-toggle="unit1" aria-expanded="false" aria-controls="unit1-los" onclick="toggleLOs('unit1')" style="background: #c9a84c; color: #1a1a1a; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: 600;">View Learning Outcomes</button>
             <div id="unit1-los" style="display: none; margin-top: 12px;">
               <div class="lo-item">LO1: Understand principles and requirements</div>
               <div class="lo-item">LO2: Understand assessment methods</div>
@@ -855,7 +1187,7 @@ body.auth-required .footer { display: none !important; }
           <div class="progress-bar"><div class="progress-fill" style="width: 50%;"></div></div>
           <div class="progress-text">2 of 4 learning outcomes complete</div>
           <div style="margin-top: 12px;">
-            <button onclick="toggleLOs('unit2')" style="background: #c9a84c; color: #1a1a1a; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: 600;">View Learning Outcomes</button>
+            <button data-lo-toggle="unit2" aria-expanded="false" aria-controls="unit2-los" onclick="toggleLOs('unit2')" style="background: #c9a84c; color: #1a1a1a; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: 600;">View Learning Outcomes</button>
             <div id="unit2-los" style="display: none; margin-top: 12px;">
               <div class="lo-item">LO1: Plan assessments of occupational competence</div>
               <div class="lo-item">LO2: Make assessment decisions</div>
@@ -870,7 +1202,7 @@ body.auth-required .footer { display: none !important; }
           <div class="progress-bar"><div class="progress-fill" style="width: 0%;"></div></div>
           <div class="progress-text">0 of 4 learning outcomes complete</div>
           <div style="margin-top: 12px;">
-            <button onclick="toggleLOs('unit3')" style="background: #c9a84c; color: #1a1a1a; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: 600;">View Learning Outcomes</button>
+            <button data-lo-toggle="unit3" aria-expanded="false" aria-controls="unit3-los" onclick="toggleLOs('unit3')" style="background: #c9a84c; color: #1a1a1a; border: none; padding: 8px 12px; border-radius: 4px; cursor: pointer; font-weight: 600;">View Learning Outcomes</button>
             <div id="unit3-los" style="display: none; margin-top: 12px;">
               <div class="lo-item">LO1: Plan assessments of vocational skills</div>
               <div class="lo-item">LO2: Make assessment decisions</div>
@@ -884,7 +1216,7 @@ body.auth-required .footer { display: none !important; }
   </div>
 
   <!-- INTRODUCTION TAB -->
-  <div id="introduction" class="tab-pane">
+  <div id="introduction" class="tab-pane" role="tabpanel" aria-labelledby="introduction-tab">
     <h2 class="hub-page-heading">About Your Programme</h2>
     
     <div class="intro-card">
@@ -936,7 +1268,7 @@ body.auth-required .footer { display: none !important; }
   </div>
 
   <!-- ASSESSMENT PLAN TAB -->
-  <div id="assessment" class="tab-pane">
+  <div id="assessment" class="tab-pane" role="tabpanel" aria-labelledby="assessment-tab">
     <h2 class="hub-page-heading">Assessment Plan &amp; Tracking Document</h2>
     
     <div class="intro-card">
@@ -1550,7 +1882,7 @@ body.auth-required .footer { display: none !important; }
   </div>
 
   <!-- ASSESSMENT DOCUMENTS TAB -->
-  <div id="documents" class="tab-pane">
+  <div id="documents" class="tab-pane" role="tabpanel" aria-labelledby="documents-tab">
     <div id="unitFolderList">
     <h2 class="hub-page-heading">Assessment Tasks to Complete</h2>
     <p style="margin-bottom: 24px; color: #666; font-size: 0.95rem;">Click on each unit to access your assessment worksheets. Complete all learning outcomes and submit your work for marking.</p>
@@ -3641,7 +3973,7 @@ body.auth-required .footer { display: none !important; }
 </div>
   </div>
 
-</div>
+</main>
 
 <div class="footer">
   <p>PT Academy | Level 3 Certificate in Assessing Vocational Achievement | QRN: 601/6104/8</p>
@@ -3778,15 +4110,48 @@ body.auth-required .footer { display: none !important; }
   document.addEventListener('DOMContentLoaded', enhanceActionPlanEvidenceLinks);
 
   function switchTab(tab, trigger) {
-    document.querySelectorAll('.tab-pane').forEach(pane => pane.classList.remove('active'));
-    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(function(pane) {
+      pane.classList.remove('active');
+      pane.setAttribute('aria-hidden', 'true');
+    });
+    document.querySelectorAll('.tab-btn[role="tab"]').forEach(function(btn) {
+      btn.classList.remove('active');
+      btn.setAttribute('aria-selected', 'false');
+      btn.setAttribute('tabindex', '-1');
+    });
     const pane = document.getElementById(tab);
     const button = trigger || document.querySelector('.tab-btn[data-tab="' + tab + '"]');
-    if (pane) pane.classList.add('active');
-    if (button) button.classList.add('active');
+    if (pane) {
+      pane.classList.add('active');
+      pane.setAttribute('aria-hidden', 'false');
+    }
+    if (button) {
+      button.classList.add('active');
+      button.setAttribute('aria-selected', 'true');
+      button.setAttribute('tabindex', '0');
+    }
   }
 
   document.addEventListener('DOMContentLoaded', function() {
+    initialiseCavaProgrammeCalendar();
+    document.querySelectorAll('.tab-pane').forEach(function(pane) {
+      pane.setAttribute('aria-hidden', pane.classList.contains('active') ? 'false' : 'true');
+    });
+    const hubTabs = Array.from(document.querySelectorAll('.tab-btn[role="tab"]'));
+    hubTabs.forEach(function(tabButton, index) {
+      tabButton.setAttribute('tabindex', tabButton.classList.contains('active') ? '0' : '-1');
+      tabButton.addEventListener('keydown', function(event) {
+        if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+        event.preventDefault();
+        let nextIndex = index;
+        if (event.key === 'ArrowRight') nextIndex = (index + 1) % hubTabs.length;
+        if (event.key === 'ArrowLeft') nextIndex = (index - 1 + hubTabs.length) % hubTabs.length;
+        if (event.key === 'Home') nextIndex = 0;
+        if (event.key === 'End') nextIndex = hubTabs.length - 1;
+        hubTabs[nextIndex].focus();
+        hubTabs[nextIndex].click();
+      });
+    });
     const params = new URLSearchParams(window.location.search);
     const requestedTab = params.get('tab');
     if (['dashboard', 'introduction', 'assessment', 'documents'].includes(requestedTab)) {
@@ -3799,9 +4164,45 @@ body.auth-required .footer { display: none !important; }
     }
   });
 
+  function initialiseCavaProgrammeCalendar() {
+    const calendarId = document.querySelector('meta[name="cava-calendar-id"]')?.content.trim() || '';
+    const wrap = document.getElementById('calendarFrameWrap');
+    const pending = document.getElementById('calendarPending');
+    const status = document.getElementById('liveSessionsStatus');
+    const openLink = document.getElementById('openProgrammeCalendar');
+    if (!calendarId || !wrap) return;
+
+    const embedUrl = new URL('https://calendar.google.com/calendar/embed');
+    embedUrl.searchParams.set('src', calendarId);
+    embedUrl.searchParams.set('ctz', 'Europe/London');
+    embedUrl.searchParams.set('mode', 'AGENDA');
+    embedUrl.searchParams.set('showTitle', '0');
+    embedUrl.searchParams.set('showPrint', '0');
+    embedUrl.searchParams.set('showCalendars', '0');
+    embedUrl.searchParams.set('showTz', '0');
+    embedUrl.searchParams.set('wkst', '2');
+
+    const iframe = document.createElement('iframe');
+    iframe.className = 'calendar-frame';
+    iframe.src = embedUrl.href;
+    iframe.title = 'PT Academy CAVA upcoming live sessions';
+    iframe.loading = 'lazy';
+    iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+    if (pending) pending.remove();
+    wrap.appendChild(iframe);
+    if (status) status.textContent = 'Live calendar';
+    if (openLink) {
+      openLink.href = embedUrl.href;
+      openLink.hidden = false;
+    }
+  }
+
   function toggleLOs(unit) {
     const element = document.getElementById(unit + '-los');
-    element.style.display = element.style.display === 'none' ? 'block' : 'none';
+    const isOpening = element.style.display === 'none';
+    element.style.display = isOpening ? 'block' : 'none';
+    const button = document.querySelector('[data-lo-toggle="' + unit + '"]');
+    if (button) button.setAttribute('aria-expanded', String(isOpening));
   }
 
   const ASSESSMENT_PLAN_STORAGE_KEY = 'cava_assessment_plan_v2';

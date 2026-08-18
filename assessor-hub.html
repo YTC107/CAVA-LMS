@@ -31,6 +31,22 @@
     button, input, select { font: inherit; }
     button, a { -webkit-tap-highlight-color: transparent; }
     [hidden] { display: none !important; }
+    body.auth-pending .primary-nav, body.auth-pending .page,
+    body.auth-locked .primary-nav, body.auth-locked .page { display: none; }
+    .hub-auth-gate { display: none; margin: 48px auto; max-width: 560px; padding: 0 20px; }
+    body.auth-locked .hub-auth-gate { display: block; }
+    .hub-auth-card { background: #fff; border: 1px solid var(--line); border-top: 6px solid var(--gold); border-radius: 7px; box-shadow: 0 10px 28px rgba(0,0,0,.1); padding: 30px; }
+    .hub-auth-card h2 { font-size: 1.7rem; margin: 0 0 8px; }
+    .hub-auth-card > p { color: var(--muted); font-size: .9rem; margin: 0 0 22px; }
+    .hub-auth-field { margin-bottom: 17px; }
+    .hub-auth-field label { display: block; font-size: .82rem; font-weight: 900; margin-bottom: 7px; }
+    .hub-auth-field input { border: 1px solid #aaa69d; border-radius: 4px; min-height: 49px; padding: 10px 12px; width: 100%; }
+    .hub-auth-submit { background: var(--gold); border: 2px solid var(--gold); border-radius: 4px; color: #111; cursor: pointer; font-weight: 900; min-height: 49px; padding: 10px 17px; width: 100%; }
+    .hub-auth-submit:disabled { cursor: wait; opacity: .68; }
+    .hub-auth-message { background: var(--red-soft); border-left: 5px solid var(--red); color: var(--red); display: none; font-size: .84rem; margin-bottom: 17px; padding: 11px 13px; }
+    .hub-auth-message.show { display: block; }
+    .hub-auth-help { font-size: .78rem !important; margin: 18px 0 0 !important; text-align: center; }
+    .hub-auth-help a { color: #6d5310; font-weight: 900; }
 
     .site-header { align-items: center; background: var(--ink); border-bottom: 4px solid var(--gold); color: #fff; display: flex; gap: 26px; justify-content: space-between; padding: 18px 34px; }
     .brand { align-items: center; display: flex; gap: 16px; min-width: 0; }
@@ -59,6 +75,25 @@
     .page-heading p { color: var(--muted); font-size: 0.95rem; margin: 9px 0 0 23px; max-width: 780px; }
     .primary-link { align-items: center; background: var(--gold); border: 2px solid var(--gold); border-radius: 4px; color: #111; display: inline-flex; flex: 0 0 auto; font-size: 0.86rem; font-weight: 900; justify-content: center; min-height: 46px; padding: 10px 17px; text-decoration: none; }
     .primary-link:hover { background: #fff; border-color: var(--gold-dark); }
+    button.primary-link { cursor: pointer; }
+    .invite-overlay { align-items: center; background: rgba(0,0,0,.72); display: none; inset: 0; justify-content: center; padding: 20px; position: fixed; z-index: 1200; }
+    .invite-overlay.open { display: flex; }
+    .invite-dialog { background: #fff; border-top: 6px solid var(--gold); border-radius: 7px; max-height: 92vh; max-width: 760px; overflow-y: auto; padding: 28px; width: 100%; }
+    .invite-heading { align-items: flex-start; display: flex; gap: 18px; justify-content: space-between; }
+    .invite-heading h2 { font-size: 1.6rem; margin: 0; }
+    .invite-heading p { color: var(--muted); font-size: .86rem; margin: 5px 0 0; }
+    .invite-close { background: transparent; border: 1px solid #aaa; border-radius: 4px; cursor: pointer; font-weight: 800; padding: 7px 11px; }
+    .invite-grid { display: grid; gap: 16px; grid-template-columns: repeat(2,minmax(0,1fr)); margin-top: 24px; }
+    .invite-field.full { grid-column: 1/-1; }
+    .invite-field label { display: block; font-size: .8rem; font-weight: 900; margin-bottom: 7px; }
+    .invite-field input, .invite-field select { border: 1px solid #aaa69d; border-radius: 4px; min-height: 48px; padding: 10px 12px; width: 100%; }
+    .invite-actions { align-items: center; border-top: 1px solid var(--line); display: flex; gap: 14px; justify-content: flex-end; margin-top: 24px; padding-top: 20px; }
+    .invite-message { border-radius: 4px; display: none; font-size: .84rem; margin-top: 18px; padding: 12px 14px; }
+    .invite-message.show { display: block; }
+    .invite-message.error { background: var(--red-soft); color: var(--red); }
+    .invite-message.success { background: var(--green-soft); color: var(--green); }
+    .pill.invited { background: var(--amber-soft); color: var(--amber); }
+    .pill.active { background: var(--green-soft); color: var(--green); }
 
     .stat-grid { display: grid; gap: 17px; grid-template-columns: repeat(4, minmax(0, 1fr)); margin-bottom: 24px; }
     .stat-card { background: var(--card); border: 1px solid var(--line); border-top: 5px solid var(--gold); border-radius: 6px; box-shadow: 0 2px 7px rgba(0,0,0,0.06); padding: 20px; }
@@ -284,12 +319,22 @@
     .secondary-link { background: #fff; border: 2px solid var(--gold); border-radius: 4px; color: #111; display: inline-flex; font-size: 0.82rem; font-weight: 900; margin-right: 9px; margin-top: 12px; padding: 9px 13px; text-decoration: none; }
 
     .analytics-grid { display: grid; gap: 18px; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+    .calendar-layout { display: grid; gap: 20px; grid-template-columns: minmax(0,1.45fr) minmax(280px,.55fr); }
+    .calendar-frame-card { background: #fff; border: 1px solid var(--line); border-top: 5px solid var(--gold); border-radius: 6px; overflow: hidden; }
+    .calendar-frame { border: 0; display: block; min-height: 650px; width: 100%; }
+    .calendar-controls { display: grid; gap: 14px; }
+    .calendar-control-card { background: #fff; border: 1px solid var(--line); border-left: 5px solid var(--gold); border-radius: 6px; padding: 19px; }
+    .calendar-control-card h3 { font-size: 1.05rem; margin: 0 0 7px; }
+    .calendar-control-card p { color: var(--muted); font-size: .82rem; margin: 0 0 14px; }
+    .calendar-action { align-items: center; background: var(--ink); border: 2px solid var(--ink); border-radius: 4px; color: var(--gold); display: inline-flex; font-size: .8rem; font-weight: 900; justify-content: center; min-height: 43px; padding: 8px 12px; text-decoration: none; width: 100%; }
+    .calendar-action:hover { background: #fff; color: #6d5310; }
     .analytics-card { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 20px; }
     .analytics-card h3 { font-size: 1.05rem; margin: 0 0 15px; }
 
     @media (max-width: 980px) {
       .stat-grid { grid-template-columns: repeat(2, 1fr); }
       .layout-grid { grid-template-columns: 1fr; }
+      .calendar-layout { grid-template-columns: 1fr; }
       .analytics-grid { grid-template-columns: 1fr 1fr; }
     }
     @media (max-width: 720px) {
@@ -315,7 +360,7 @@
     }
   </style>
 </head>
-<body>
+<body class="auth-pending">
   <header class="site-header">
     <div class="brand">
       <img class="brand-logo" src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy">
@@ -338,12 +383,27 @@
     <button class="nav-button active" type="button" data-section="dashboard">Dashboard</button>
     <button class="nav-button" type="button" data-section="learners">Learner Management</button>
     <button class="nav-button" type="button" data-section="queue">Work Awaiting Assessment</button>
+    <button class="nav-button" type="button" data-section="sessions">Live Sessions &amp; Calendar</button>
     <button class="nav-button" type="button" data-section="reports">Records and Reports</button>
   </nav>
 
   <div id="previewNotice" class="preview-notice" role="status" hidden>
-    <strong>Preview mode:</strong> the Assessor Hub is open without a live account. Records are saved only in this browser. Do not enter live learner information until protected accounts and database security are enabled.
+    <strong>Login required:</strong> assessment records and learner information are protected. Use the secure form below to open the authorised Assessor Hub.
   </div>
+
+  <section id="hubAuthGate" class="hub-auth-gate" aria-labelledby="hubAuthTitle">
+    <div class="hub-auth-card">
+      <h2 id="hubAuthTitle">Assessor Hub Login</h2>
+      <p>Enter the details linked to your approved PT Academy assessor or administrator account.</p>
+      <div id="hubAuthMessage" class="hub-auth-message" role="alert" aria-live="assertive"></div>
+      <form id="hubAuthForm">
+        <div class="hub-auth-field"><label for="hubAuthEmail">Email address</label><input id="hubAuthEmail" name="email" type="email" required autocomplete="email"></div>
+        <div class="hub-auth-field"><label for="hubAuthPassword">Password</label><input id="hubAuthPassword" name="password" type="password" required autocomplete="current-password"></div>
+        <button id="hubAuthSubmit" class="hub-auth-submit" type="submit">Login securely</button>
+      </form>
+      <p class="hub-auth-help"><a href="https://ytc107.github.io/CAVA-LMS/account-access.html">Forgotten your password?</a></p>
+    </div>
+  </section>
 
   <main class="page">
     <section id="dashboard" class="page-section active">
@@ -371,7 +431,7 @@
     <section id="learners" class="page-section">
       <div class="page-heading">
         <div><h2>Learner Management</h2><p>Control learner type, unit availability, live learner allocations, payment visibility and assessment records.</p></div>
-        <a class="primary-link" href="learner-management-dashboard.html">Add or Manage Learners</a>
+        <button id="inviteLearnerButton" class="primary-link" type="button" onclick="openInviteLearner()" hidden>Invite New Learner</button>
       </div>
       <div class="toolbar">
         <input id="learnerSearch" class="search-input" type="search" placeholder="Search by learner name or email" aria-label="Search learners">
@@ -381,7 +441,7 @@
       <section class="panel">
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Trainee assessor</th><th>Learner type</th><th>Units</th><th>Assessment Plan</th><th>Progress</th><th>Next action</th></tr></thead>
+            <thead><tr><th>Trainee assessor</th><th>Account</th><th>Learner type</th><th>Units</th><th>Assessment Plan</th><th>Progress</th><th>Next action</th></tr></thead>
             <tbody id="learnerTableBody"></tbody>
           </table>
         </div>
@@ -393,11 +453,43 @@
       <section class="panel"><div id="assessmentQueue" class="panel-body action-list"></div></section>
     </section>
 
+    <section id="sessions" class="page-section">
+      <div class="page-heading"><div><h2>Live Sessions &amp; Calendar</h2><p>Manage the programme schedule in one Google Calendar. Updates made there automatically feed the learner-facing calendar.</p></div></div>
+      <div class="calendar-layout">
+        <section class="calendar-frame-card" aria-labelledby="assessorCalendarHeading">
+          <div class="panel-header"><div><h3 id="assessorCalendarHeading">PT Academy – Assessor Qualification Live Sessions</h3><p>Upcoming training, standardisation and learner-support sessions</p></div></div>
+          <iframe id="assessorCalendarFrame" class="calendar-frame" title="PT Academy Assessor Qualification calendar" loading="lazy" src="about:blank" data-src="https://calendar.google.com/calendar/embed?src=c_01147ef0f210e65d6cbda09421df4b22ebad590a41b34a9e9e3580dac1f15213%40group.calendar.google.com&amp;ctz=Europe%2FLondon&amp;mode=AGENDA&amp;showTitle=0&amp;showPrint=0&amp;showCalendars=0&amp;showTz=0"></iframe>
+        </section>
+        <aside class="calendar-controls">
+          <article class="calendar-control-card"><h3>Create or update sessions</h3><p>Open the dedicated Google Calendar to add, edit, cancel or repeat events. Learners see the updated schedule automatically.</p><a class="calendar-action" href="https://calendar.google.com/calendar/u/0?cid=Y18wMTE0N2VmMGYyMTBlNjVkNmNiZGEwOTQyMWRmNGIyMmViYWQ1OTBhNDFiMzRhOWU5ZTM1ODBkYWMxZjE1MjEzQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20" target="_blank" rel="noopener">Manage Google Calendar</a></article>
+          <article class="calendar-control-card"><h3>Check the learner view</h3><p>Open the Learner Hub to confirm how upcoming live sessions appear to learners.</p><a class="calendar-action" href="https://ytc107.github.io/CAVA-LMS/" target="_blank" rel="noopener">Open Learner Hub</a></article>
+          <article class="calendar-control-card"><h3>Programme delivery plan</h3><p>Use the scheme of work alongside the live calendar when deciding the content and timing of sessions.</p><a class="calendar-action" href="https://ytc107.github.io/CAVA-LMS/cava-scheme-of-work.html" target="_blank" rel="noopener">Open Scheme of Work</a></article>
+        </aside>
+      </div>
+    </section>
+
     <section id="reports" class="page-section">
       <div class="page-heading"><div><h2>Records and Reports</h2><p>Programme analytics calculated from the learner records currently available to this hub.</p></div></div>
       <div id="analyticsGrid" class="analytics-grid"></div>
     </section>
   </main>
+
+  <div id="inviteLearnerOverlay" class="invite-overlay" aria-hidden="true">
+    <section class="invite-dialog" role="dialog" aria-modal="true" aria-labelledby="inviteLearnerTitle">
+      <div class="invite-heading"><div><h2 id="inviteLearnerTitle">Invite New Learner</h2><p>Create the approved account and email the learner a secure activation link.</p></div><button class="invite-close" type="button" onclick="closeInviteLearner()">Close</button></div>
+      <div id="inviteLearnerMessage" class="invite-message" role="status" aria-live="polite"></div>
+      <form id="inviteLearnerForm">
+        <div class="invite-grid">
+          <div class="invite-field full"><label for="inviteFullName">Learner's full name</label><input id="inviteFullName" name="full_name" required maxlength="120" autocomplete="name"></div>
+          <div class="invite-field"><label for="inviteEmail">Email address</label><input id="inviteEmail" name="email" type="email" required autocomplete="email"></div>
+          <div class="invite-field"><label for="inviteContact">Contact number</label><input id="inviteContact" name="contact_number" type="tel" autocomplete="tel"></div>
+          <div class="invite-field"><label for="inviteLearnerType">Learner type</label><select id="inviteLearnerType" name="learner_type" required><option value="">Select learner type</option><option value="funded">Funded Learner</option><option value="commercial">Commercial Learner</option></select></div>
+          <div class="invite-field"><label for="inviteStartDate">Programme start date</label><input id="inviteStartDate" name="programme_start_date" type="date"></div>
+        </div>
+        <div class="invite-actions"><button class="invite-close" type="button" onclick="closeInviteLearner()">Cancel</button><button id="sendInviteButton" class="primary-link" type="submit">Send Invitation</button></div>
+      </form>
+    </section>
+  </div>
 
   <div id="learnerRecordOverlay" class="record-overlay" aria-hidden="true">
     <article class="record-drawer" role="dialog" aria-modal="true" aria-labelledby="recordLearnerName">
@@ -487,6 +579,9 @@
     ];
 
     let learners = [];
+    let remoteLearners = [];
+    let remoteLoadComplete = false;
+    let canInviteLearners = false;
     let selectedLearnerId = null;
     let prepassDraftCounter = 0;
     const prepassDraftRows = {};
@@ -519,17 +614,17 @@
       const assignedUnits = raw.assignedUnits || raw[2] || [];
       const id = raw.id || 'learner-' + (slug(email || fullName) || index + 1);
       const progress = raw.progress || {};
-      return { id, fullName, email, assignedUnits, progress, startDate: raw.startDate || '', submissions: raw.submissions || [] };
+      return { id, fullName, email, assignedUnits, progress, startDate: raw.startDate || raw.programme_start_date || '', submissions: raw.submissions || [], accountStatus: raw.accountStatus || raw.account_status || 'active', route: raw.route || raw.learner_type || 'unassigned' };
     }
 
     function loadLearners() {
       const management = safeParse(localStorage.getItem('ptAcademyLearners') || '[]', []);
-      const source = management.length ? management : DEFAULT_LEARNERS;
+      const source = remoteLoadComplete ? remoteLearners : (management.length ? management : DEFAULT_LEARNERS);
       const store = getHubStore();
       learners = source.map(function(raw, index) {
         const learner = createLearner(raw, index);
         const saved = store.settings[learner.id] || {};
-        learner.route = saved.route || 'unassigned';
+        learner.route = saved.route || learner.route || 'unassigned';
         learner.paymentTracking = Boolean(saved.paymentTracking);
         learner.level2Learner = saved.level2Learner || '';
         learner.level3Learner = saved.level3Learner || '';
@@ -745,8 +840,10 @@
         const plan = getLearnerPlan(learner); const status = planStatus(plan); const progress = getProgress(learner);
         const units = [1,2,3].map(function(unit){const state=learner.unitSettings['unit-'+unit];return '<span class="unit-dot '+(state==='previously-achieved'?'achieved':state)+'" title="Unit '+unit+': '+state+'">'+unit+'</span>';}).join('');
         const next = status === 'awaiting' ? 'Confirm plan' : status === 'draft' ? 'Plan not submitted' : progress.percentage === 100 ? 'Complete' : 'Review progress';
-        return '<tr><td><button class="learner-button" type="button" onclick="openLearnerRecord(\''+learner.id+'\')">'+learner.fullName+'</button><span class="subtext">'+(learner.email||'No email recorded')+'</span></td><td>'+routePill(learner)+'</td><td><div class="unit-dots">'+units+'</div></td><td><span class="pill '+status+'">'+planStatusLabel(status)+'</span></td><td><strong>'+progress.percentage+'%</strong><span class="subtext">'+progress.complete+' of '+progress.total+' outcomes</span></td><td><button class="row-action" type="button" onclick="openLearnerRecord(\''+learner.id+'\',\''+(status==='awaiting'?'plan':'overview')+'\')">'+next+'</button></td></tr>';
-      }).join('') || '<tr><td colspan="6" class="empty-state">No learners match the selected filters.</td></tr>';
+        const accountStatus=learner.accountStatus==='invited'?'invited':'active';
+        const accountLabel=accountStatus==='invited'?'Awaiting activation':'Account active';
+        return '<tr><td><button class="learner-button" type="button" onclick="openLearnerRecord(\''+learner.id+'\')">'+learner.fullName+'</button><span class="subtext">'+(learner.email||'No email recorded')+'</span></td><td><span class="pill '+accountStatus+'">'+accountLabel+'</span></td><td>'+routePill(learner)+'</td><td><div class="unit-dots">'+units+'</div></td><td><span class="pill '+status+'">'+planStatusLabel(status)+'</span></td><td><strong>'+progress.percentage+'%</strong><span class="subtext">'+progress.complete+' of '+progress.total+' outcomes</span></td><td><button class="row-action" type="button" onclick="openLearnerRecord(\''+learner.id+'\',\''+(status==='awaiting'?'plan':'overview')+'\')">'+next+'</button></td></tr>';
+      }).join('') || '<tr><td colspan="7" class="empty-state">No learners match the selected filters.</td></tr>';
     }
 
     function renderQueue() {
@@ -771,8 +868,14 @@
       document.querySelectorAll('.nav-button').forEach(button=>button.classList.toggle('active',button.dataset.section===sectionId));
       if (sectionId==='learners') renderLearnerTable();
       if (sectionId==='queue') renderQueue();
+      if (sectionId==='sessions') loadAssessorCalendar();
       if (sectionId==='reports') renderReports();
       window.scrollTo(0,0);
+    }
+
+    function loadAssessorCalendar() {
+      const frame=document.getElementById('assessorCalendarFrame');
+      if(frame&&frame.src==='about:blank')frame.src=frame.dataset.src;
     }
 
     function openLearnerRecord(learnerId, tab) {
@@ -1167,40 +1270,121 @@
       document.getElementById('record-actions').innerHTML=`<h3>Action Plans and Reviews</h3><div class="detail-card"><h4>Shared learner-working record</h4><p>Use the Action Plan whenever the trainee assessor plans or reviews work with an allocated Level 2 or Level 3 learner. Funding and payment settings remain in Units and Funding and are not duplicated here.</p><a class="secondary-link" href="${actionUrl.href}" target="_blank" rel="noopener">Open Action Plan Workspace</a></div>`;
     }
 
+    async function loadRemoteLearners() {
+      const {data,error}=await sb.from('learners').select('id,full_name,email,programme_start_date,learner_type,account_status').order('full_name');
+      if(error){console.warn('Learner records could not be loaded.',error);remoteLearners=[];remoteLoadComplete=false;return;}
+      remoteLearners=(data||[]).map(row=>({id:row.id,fullName:row.full_name,email:row.email,startDate:row.programme_start_date,route:row.learner_type||'unassigned',accountStatus:row.account_status||'invited',assignedUnits:[],progress:{},submissions:[]}));
+      remoteLoadComplete=true;
+    }
+
+    function openInviteLearner() {
+      if(!canInviteLearners)return;
+      const overlay=document.getElementById('inviteLearnerOverlay');
+      document.getElementById('inviteLearnerMessage').className='invite-message';
+      document.getElementById('inviteLearnerMessage').textContent='';
+      overlay.classList.add('open');overlay.setAttribute('aria-hidden','false');
+      document.getElementById('inviteFullName').focus();
+    }
+
+    function closeInviteLearner() {
+      const overlay=document.getElementById('inviteLearnerOverlay');
+      overlay.classList.remove('open');overlay.setAttribute('aria-hidden','true');
+    }
+
+    document.getElementById('inviteLearnerForm').addEventListener('submit',async function(event){
+      event.preventDefault();
+      const form=event.currentTarget;const button=document.getElementById('sendInviteButton');const message=document.getElementById('inviteLearnerMessage');
+      if(!form.checkValidity()){form.reportValidity();return;}
+      button.disabled=true;button.textContent='Sending Invitation…';message.className='invite-message';
+      const body=Object.fromEntries(new FormData(form).entries());
+      const {data,error}=await sb.functions.invoke('invite-learner',{body});
+      button.disabled=false;button.textContent='Send Invitation';
+      if(error||data?.error){message.textContent=data?.error||'The invitation could not be sent. Please try again.';message.className='invite-message error show';return;}
+      message.textContent='Invitation sent. The learner is now awaiting account activation.';message.className='invite-message success show';
+      form.reset();await loadRemoteLearners();loadLearners();renderAll();
+    });
+
     async function initialiseSession() {
       let session=null;
       try { const response=await sb.auth.getSession(); session=response.data?.session||null; } catch {}
-      const legacyToken=localStorage.getItem('cava_token');
       const accountButton=document.getElementById('accountActionButton');
       const previewNotice=document.getElementById('previewNotice');
-      if(!session&&!legacyToken){
-        document.getElementById('accountEmail').textContent='Local prototype';
-        document.getElementById('accountRole').textContent='Assessor preview';
+      if(!session){
+        document.body.classList.remove('auth-pending');document.body.classList.add('auth-locked');
+        document.getElementById('accountEmail').textContent='Protected assessor records';
+        document.getElementById('accountRole').textContent='Login required';
         accountButton.textContent='Login';
         accountButton.dataset.action='login';
         previewNotice.hidden=false;
-        return true;
+        return false;
       }
-      const user=session?.user||safeParse(localStorage.getItem('cava_user')||'null',null);
+      const verified=await sb.auth.getUser();
+      if(verified.error||!verified.data?.user){
+        await sb.auth.signOut({scope:'local'});
+        document.body.classList.remove('auth-pending');document.body.classList.add('auth-locked');
+        document.getElementById('accountEmail').textContent='Your session has expired';
+        document.getElementById('accountRole').textContent='Login required';
+        accountButton.textContent='Login';accountButton.dataset.action='login';previewNotice.hidden=false;
+        return false;
+      }
+      const user=verified.data.user;
+      const {data:adminRecord}=await sb.from('super_admins').select('user_id').eq('user_id',user.id).maybeSingle();
+      canInviteLearners=Boolean(adminRecord);
+      if(!canInviteLearners){
+        const {data:assignment}=await sb.from('assessor_assignments table').select('id').eq('assessor_id',user.id).limit(1).maybeSingle();
+        if(!assignment){
+          document.body.classList.remove('auth-pending');document.body.classList.add('auth-locked');
+          document.getElementById('accountEmail').textContent=user.email||'Authorised account';
+          document.getElementById('accountRole').textContent='Access not allocated';
+          accountButton.textContent='Log out';accountButton.dataset.action='logout';previewNotice.hidden=true;
+          const authMessage=document.getElementById('hubAuthMessage');authMessage.textContent='This account has not been allocated Assessor Hub access. Contact the programme administrator.';authMessage.classList.add('show');
+          document.getElementById('hubAuthForm').hidden=true;
+          return false;
+        }
+      }
+      document.getElementById('inviteLearnerButton').hidden=!canInviteLearners;
       document.getElementById('accountEmail').textContent=user?.email||'Authorised account';
-      document.getElementById('accountRole').textContent=localStorage.getItem('cava_role')||'Assessor';
+      document.getElementById('accountRole').textContent=canInviteLearners?'Administrator':'Assessor';
       accountButton.textContent='Log out';
       accountButton.dataset.action='logout';
       previewNotice.hidden=true;
+      document.body.classList.remove('auth-pending','auth-locked');
       return true;
     }
 
     function handleAccountAction() {
       const action=document.getElementById('accountActionButton').dataset.action;
       if(action==='logout'){logoutAssessor();return;}
-      window.location.assign('login.html?return=assessor-hub.html');
+      document.body.classList.remove('auth-pending');document.body.classList.add('auth-locked');
+      document.getElementById('hubAuthEmail').focus();
     }
 
     async function logoutAssessor() {
       try { await sb.auth.signOut({scope:'local'}); } catch {}
       ['cava_token','cava_user','cava_role',ACTIVE_LEARNER_KEY].forEach(key=>localStorage.removeItem(key));
-      window.location.assign('login.html');
+      learners=[];remoteLearners=[];remoteLoadComplete=false;canInviteLearners=false;
+      document.getElementById('inviteLearnerButton').hidden=true;
+      document.getElementById('accountEmail').textContent='Protected assessor records';
+      document.getElementById('accountRole').textContent='Login required';
+      const button=document.getElementById('accountActionButton');button.textContent='Login';button.dataset.action='login';
+      document.getElementById('hubAuthForm').hidden=false;
+      document.getElementById('hubAuthForm').reset();
+      document.getElementById('hubAuthMessage').classList.remove('show');
+      document.getElementById('previewNotice').hidden=false;
+      document.body.classList.remove('auth-pending');document.body.classList.add('auth-locked');
     }
+
+    document.getElementById('hubAuthForm').addEventListener('submit',async function(event){
+      event.preventDefault();
+      const submit=document.getElementById('hubAuthSubmit');const message=document.getElementById('hubAuthMessage');
+      submit.disabled=true;submit.textContent='Logging in…';message.classList.remove('show');
+      const {error}=await sb.auth.signInWithPassword({email:document.getElementById('hubAuthEmail').value.trim(),password:document.getElementById('hubAuthPassword').value});
+      if(error){submit.disabled=false;submit.textContent='Login securely';message.textContent='The email address or password was not recognised. Please check your details and try again.';message.classList.add('show');return;}
+      const authorised=await initialiseSession();
+      submit.disabled=false;submit.textContent='Login securely';
+      if(!authorised)return;
+      await loadRemoteLearners();loadLearners();renderAll();
+    });
 
     function renderAll() { syncActiveLearnerPlan(); renderDashboard(); renderLearnerTable(); renderQueue(); renderReports(); }
 
@@ -1210,11 +1394,12 @@
     document.getElementById('routeFilter').addEventListener('change',renderLearnerTable);
     document.getElementById('planFilter').addEventListener('change',renderLearnerTable);
     document.getElementById('learnerRecordOverlay').addEventListener('click',event=>{if(event.target.id==='learnerRecordOverlay')closeLearnerRecord();});
+    document.getElementById('inviteLearnerOverlay').addEventListener('click',event=>{if(event.target.id==='inviteLearnerOverlay')closeInviteLearner();});
     window.addEventListener('focus',()=>{syncActiveLearnerPlan();if(selectedLearnerId)openLearnerRecord(selectedLearnerId,document.querySelector('.record-tab.active')?.dataset.recordTab||'overview');renderAll();});
 
     document.addEventListener('DOMContentLoaded',async function(){
       if(!await initialiseSession())return;
-      loadLearners(); renderAll();
+      await loadRemoteLearners();loadLearners();renderAll();
     });
   </script>
 </body>
