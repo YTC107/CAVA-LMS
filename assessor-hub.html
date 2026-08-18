@@ -614,7 +614,7 @@
       const assignedUnits = raw.assignedUnits || raw[2] || [];
       const id = raw.id || 'learner-' + (slug(email || fullName) || index + 1);
       const progress = raw.progress || {};
-      return { id, fullName, email, assignedUnits, progress, startDate: raw.startDate || raw.programme_start_date || '', submissions: raw.submissions || [], accountStatus: raw.accountStatus || raw.account_status || 'active', route: raw.route || raw.learner_type || 'unassigned' };
+      return { id, fullName, email, assignedUnits, progress, startDate: raw.startDate || raw.programme_start_date || '', submissions: raw.submissions || [], accountStatus: raw.accountStatus || raw.account_status || 'active', authUserId: raw.authUserId || raw.auth_user_id || null, invitedAt: raw.invitedAt || raw.invited_at || null, activatedAt: raw.activatedAt || raw.activated_at || null, route: raw.route || raw.learner_type || 'unassigned' };
     }
 
     function loadLearners() {
@@ -911,7 +911,9 @@
 
     function renderRecordOverview(learner) {
       const plan=getLearnerPlan(learner), progress=getProgress(learner), queue=getQueueItems().filter(item=>item.learner.id===learner.id);
-      document.getElementById('record-overview').innerHTML=`<h3>Programme Overview</h3><div class="detail-grid"><article class="detail-card"><h4>Current Position</h4><div class="key-value"><span>Overall progress</span><strong>${progress.percentage}%</strong></div><div class="key-value"><span>Assessment Plan</span><strong>${planStatusLabel(planStatus(plan))}</strong></div><div class="key-value"><span>Outstanding actions</span><strong>${queue.length}</strong></div><div class="key-value"><span>Programme start</span><strong>${formatDate(plan.startDate||learner.startDate)}</strong></div></article><article class="detail-card"><h4>Allocated Live Learners</h4><div class="key-value"><span>Level 2 Gym Instructor</span><strong>${learner.level2Learner||'Not allocated'}</strong></div><div class="key-value"><span>Level 3 Personal Training</span><strong>${learner.level3Learner||'Not allocated'}</strong></div><div class="key-value"><span>Learner type</span><strong>${learner.route==='funded'?'Funded learner':learner.route==='commercial'?'Commercial learner':'Not selected'}</strong></div></article></div>`;
+      const accessLabel=learner.accountStatus==='active'?'Send password setup email':learner.authUserId?'Resend access email':'Send platform invitation';
+      const accessAction=canInviteLearners&&learner.email?`<article class="detail-card"><h4>Learner Hub Access</h4><p>The email is sent to <strong>${escapeHtml(learner.email)}</strong>. It provides secure access to the Learner Hub and does not create a duplicate learner record.</p><button id="existingLearnerInviteButton" class="primary-link" type="button" onclick="sendExistingLearnerInvitation('${learner.id}')">${accessLabel}</button><div id="existingLearnerInviteMessage" class="invite-message" role="status" aria-live="polite"></div></article>`:'';
+      document.getElementById('record-overview').innerHTML=`<h3>Programme Overview</h3><div class="detail-grid"><article class="detail-card"><h4>Current Position</h4><div class="key-value"><span>Overall progress</span><strong>${progress.percentage}%</strong></div><div class="key-value"><span>Assessment Plan</span><strong>${planStatusLabel(planStatus(plan))}</strong></div><div class="key-value"><span>Outstanding actions</span><strong>${queue.length}</strong></div><div class="key-value"><span>Programme start</span><strong>${formatDate(plan.startDate||learner.startDate)}</strong></div></article><article class="detail-card"><h4>Allocated Live Learners</h4><div class="key-value"><span>Level 2 Gym Instructor</span><strong>${learner.level2Learner||'Not allocated'}</strong></div><div class="key-value"><span>Level 3 Personal Training</span><strong>${learner.level3Learner||'Not allocated'}</strong></div><div class="key-value"><span>Learner type</span><strong>${learner.route==='funded'?'Funded learner':learner.route==='commercial'?'Commercial learner':'Not selected'}</strong></div></article>${accessAction}</div>`;
     }
 
     function priorAchievementMarkup(learner, unitNumber) {
@@ -1271,10 +1273,28 @@
     }
 
     async function loadRemoteLearners() {
-      const {data,error}=await sb.from('learners').select('id,full_name,email,programme_start_date,learner_type,account_status').order('full_name');
+      const {data,error}=await sb.from('learners').select('id,full_name,email,programme_start_date,learner_type,account_status,auth_user_id,invited_at,activated_at').order('full_name');
       if(error){console.warn('Learner records could not be loaded.',error);remoteLearners=[];remoteLoadComplete=false;return;}
-      remoteLearners=(data||[]).map(row=>({id:row.id,fullName:row.full_name,email:row.email,startDate:row.programme_start_date,route:row.learner_type||'unassigned',accountStatus:row.account_status||'invited',assignedUnits:[],progress:{},submissions:[]}));
+      remoteLearners=(data||[]).map(row=>({id:row.id,fullName:row.full_name,email:row.email,startDate:row.programme_start_date,route:row.learner_type||'unassigned',accountStatus:row.account_status||'invited',authUserId:row.auth_user_id||null,invitedAt:row.invited_at||null,activatedAt:row.activated_at||null,assignedUnits:[],progress:{},submissions:[]}));
       remoteLoadComplete=true;
+    }
+
+    async function sendExistingLearnerInvitation(learnerId) {
+      if(!canInviteLearners)return;
+      const learner=learners.find(item=>item.id===learnerId);
+      const button=document.getElementById('existingLearnerInviteButton');
+      const message=document.getElementById('existingLearnerInviteMessage');
+      if(!learner||!learner.email||!button||!message)return;
+      const action=learner.accountStatus==='active'?'send a password setup email to':'send a Learner Hub invitation to';
+      if(!window.confirm(`Confirm you want to ${action} ${learner.fullName} at ${learner.email}.`))return;
+      button.disabled=true;button.textContent='Sending email…';message.className='invite-message';message.textContent='';
+      const {data,error}=await sb.functions.invoke('invite-learner',{body:{learner_id:learner.id,mode:'existing'}});
+      button.disabled=false;
+      if(error||data?.error){message.textContent=data?.error||'The access email could not be sent. Please try again.';message.className='invite-message error show';button.textContent=learner.authUserId?'Resend access email':'Send platform invitation';return;}
+      message.textContent=data?.message||'The Learner Hub access email has been sent.';message.className='invite-message success show';
+      await loadRemoteLearners();loadLearners();
+      const refreshed=learners.find(item=>item.id===learnerId);
+      if(refreshed){selectedLearnerId=learnerId;renderRecordOverview(refreshed);renderLearnerTable();}
     }
 
     function openInviteLearner() {
