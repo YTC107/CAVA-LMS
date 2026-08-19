@@ -1414,6 +1414,8 @@ textarea:disabled { cursor: not-allowed; opacity: .72; }
       <p><strong>To create your plan:</strong> enter your programme start date below. The platform will calculate the planned completion dates automatically.</p>
     </div>
 
+    <div id="assessmentPlanActionNotice" class="intro-card" style="display:none;border-left-color:#6f42c1;background:#f7f2ff;" role="status" aria-live="polite"></div>
+
     <section class="plan-schedule-card" aria-labelledby="programmeScheduleHeading">
       <div class="plan-schedule-header">
         <div>
@@ -4706,6 +4708,8 @@ textarea:disabled { cursor: not-allowed; opacity: .72; }
     const learnerPlanLocked = data.status !== 'draft';
     if (startInput) startInput.disabled = learnerPlanLocked;
     if (durationInput) durationInput.disabled = learnerPlanLocked;
+    if (startInput && sharedAssessmentSchedule && sharedAssessmentSchedule.start_date_source !== 'learner') startInput.disabled = true;
+    if (durationInput) durationInput.disabled = true;
     if (checkbox) {
       checkbox.checked = Boolean(data.declaration);
       checkbox.disabled = learnerPlanLocked;
@@ -4729,7 +4733,7 @@ textarea:disabled { cursor: not-allowed; opacity: .72; }
     }
   }
 
-  function submitAssessmentPlan() {
+  async function submitAssessmentPlan() {
     const data = getAssessmentPlanData();
     const checkbox = document.getElementById('confirmCheckbox');
     const declarationName = document.getElementById('declarationName')?.value.trim() || '';
@@ -4746,11 +4750,14 @@ textarea:disabled { cursor: not-allowed; opacity: .72; }
       alert('Enter the learner name before submitting the plan.');
       return;
     }
-    data.startDate = startDate;
-    data.durationWeeks = Number(document.getElementById('programmeDuration')?.value) === 8 ? 8 : 12;
-    data.status = 'awaiting';
-    data.declaration = { name: declarationName, date: getTodayDateString(), recordedAt: new Date().toISOString() };
-    saveAssessmentPlanData(data);
+    const button=document.getElementById('submitPlanButton');if(button){button.disabled=true;button.textContent='Submitting declaration…';}
+    if(!sharedAssessmentSchedule||sharedAssessmentSchedule.programme_start_date!==startDate){
+      const created=await invokeAssessmentPlanWorkflow({mode:'learner_set_schedule',programme_start_date:startDate});
+      if(!created){renderPlanStatus();return;}
+    }
+    const declared=await invokeAssessmentPlanWorkflow({mode:'declare',learner_declaration_name:declarationName});
+    if(!declared){renderPlanStatus();return;}
+    applySharedAssessmentSchedule(declared);
     renderPlanStatus();
     alert('Assessment Plan submitted for assessor confirmation.');
   }
@@ -4881,6 +4888,54 @@ const SUPABASE_URL = 'https://qwjejqqgkvkroqhmfglg.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_D9A-jP6vvE6OhTm8cpxhPA_hR25r8tj';
 const { createClient } = supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let currentLearnerRecord = null;
+let sharedAssessmentSchedule = null;
+
+function sharedScheduleToLocalPlan(schedule) {
+  const local = getAssessmentPlanData();
+  local.startDate = schedule?.programme_start_date || '';
+  local.durationWeeks = 12;
+  local.status = schedule?.status === 'awaiting_assessor' ? 'awaiting' : schedule?.status === 'confirmed' ? 'confirmed' : 'draft';
+  local.declaration = schedule?.learner_declaration_name ? { name: schedule.learner_declaration_name, date: String(schedule.learner_declared_at || '').slice(0,10), recordedAt: schedule.learner_declared_at } : null;
+  local.confirmation = schedule?.assessor_confirmation_name ? { name: schedule.assessor_confirmation_name, date: String(schedule.assessor_confirmed_at || '').slice(0,10), recordedAt: schedule.assessor_confirmed_at } : null;
+  return local;
+}
+
+function applySharedAssessmentSchedule(schedule) {
+  sharedAssessmentSchedule = schedule || null;
+  if (!schedule) return;
+  saveAssessmentPlanData(sharedScheduleToLocalPlan(schedule));
+  const start=document.getElementById('programmeStartDate');if(start)start.value=schedule.programme_start_date||'';
+  const duration=document.getElementById('programmeDuration');if(duration)duration.value='12';
+  if(start)calculatePlanTargets();
+  const notice=document.getElementById('assessmentPlanActionNotice');
+  if(notice){
+    if(schedule.status==='awaiting_learner'){
+      notice.style.display='block';notice.innerHTML='<h3>Action Required: Review Your Programme Plan</h3><p>Your programme start date and 12-week target dates are ready. Review them below, tick the declaration and enter your full name.</p>';
+    }else if(schedule.status==='awaiting_assessor'){
+      notice.style.display='block';notice.innerHTML='<h3>Declaration Submitted</h3><p>Your Assessment Plan has been sent to your assessor for confirmation.</p>';
+    }else if(schedule.status==='confirmed'){
+      notice.style.display='block';notice.innerHTML='<h3>Assessment Plan Confirmed</h3><p>Your learner declaration and assessor confirmation are complete.</p>';
+    }else notice.style.display='none';
+  }
+}
+
+async function invokeAssessmentPlanWorkflow(body) {
+  const {data,error}=await sb.functions.invoke('assessment-plan-workflow',{body});
+  if(error||data?.error){alert(data?.error||'The Assessment Plan could not be updated. Please try again.');return null;}
+  if(data?.schedule)sharedAssessmentSchedule=data.schedule;
+  return data?.schedule||null;
+}
+
+async function loadSharedAssessmentPlanForLearner() {
+  const {data:learner,error:learnerError}=await sb.from('learners').select('id,full_name,email,programme_start_date').eq('auth_user_id',currentUser.id).maybeSingle();
+  if(learnerError||!learner){console.warn('No learner profile is linked to this login.',learnerError);return;}
+  currentLearnerRecord=learner;
+  localStorage.setItem('learnerName',learner.full_name||getUserDisplayName(currentUser));
+  const {data:schedule,error}=await sb.from('assessment_plan_schedules').select('*').eq('learner_id',learner.id).maybeSingle();
+  if(error){console.warn('The shared Assessment Plan could not be loaded.',error);return;}
+  if(schedule){sharedAssessmentSchedule=schedule;saveAssessmentPlanData(sharedScheduleToLocalPlan(schedule));}
+}
 
 function getHubPageName() {
   const pageName = window.location.pathname.split('/').filter(Boolean).pop();
@@ -5016,7 +5071,9 @@ async function init() {
   unlockLearnerHub();
   document.getElementById('authCheck').style.display = 'none';
   document.getElementById('worksheetContent').style.display = 'block';
+  await loadSharedAssessmentPlanForLearner();
   initialiseAssessmentPlan();
+  applySharedAssessmentSchedule(sharedAssessmentSchedule);
   await loadSavedData();
   updateProgress();
 }

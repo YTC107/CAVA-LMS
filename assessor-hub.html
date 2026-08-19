@@ -601,6 +601,7 @@
     let learners = [];
     let remoteLearners = [];
     let remoteLoadComplete = false;
+    let sharedSchedules = {};
     let canInviteLearners = false;
     let selectedLearnerId = null;
     let prepassDraftCounter = 0;
@@ -707,7 +708,16 @@
       const currentName = currentPlan?.declaration?.name || localStorage.getItem('learnerName') || '';
       const isActive = localStorage.getItem(ACTIVE_LEARNER_KEY) === learner.id;
       if (currentPlan && (isActive || normaliseName(currentName) === normaliseName(learner.fullName))) return currentPlan;
-      return linkedPlan || storedPlan || emptyPlan();
+      const plan = linkedPlan || storedPlan || emptyPlan();
+      const shared = sharedSchedules[learner.id];
+      if (shared) {
+        plan.startDate = shared.programme_start_date || '';
+        plan.durationWeeks = 12;
+        plan.status = shared.status === 'awaiting_assessor' ? 'awaiting' : shared.status === 'confirmed' ? 'confirmed' : 'draft';
+        plan.declaration = shared.learner_declaration_name ? { name: shared.learner_declaration_name, date: String(shared.learner_declared_at || '').slice(0,10), recordedAt: shared.learner_declared_at } : null;
+        plan.confirmation = shared.assessor_confirmation_name ? { name: shared.assessor_confirmation_name, date: String(shared.assessor_confirmed_at || '').slice(0,10), recordedAt: shared.assessor_confirmed_at } : null;
+      }
+      return plan;
     }
 
     function saveLearnerPlan(learner, plan) {
@@ -1142,6 +1152,9 @@
     function renderRecordProgramme(learner) {
       const unitNames=ASSESSMENT_STRUCTURE.map(item=>item.title);
       document.getElementById('record-programme').innerHTML=`<h3>Units, Funding and Pre-Pass Records</h3><div class="detail-card"><div class="form-grid"><div class="field"><label for="programmeRoute">Learner type</label><select id="programmeRoute"><option value="unassigned">Select learner type</option><option value="funded">Funded learner</option><option value="commercial">Commercial learner</option><option value="mentor">PT Academy Mentor</option></select><p class="field-help">This setting controls whether payment recording is available.</p></div><div class="field"><label for="level2Learner">Allocated Level 2 learner</label><input id="level2Learner" type="text" value="${learner.level2Learner}" placeholder="Gym Instructor learner name"></div><div class="field"><label for="level3Learner">Allocated Level 3 learner</label><input id="level3Learner" type="text" value="${learner.level3Learner}" placeholder="Personal Training learner name"></div></div><div id="fundingNote" class="funding-note"></div><div id="paymentControl" class="payment-control"><label class="switch-row"><input id="paymentTracking" type="checkbox"><strong>Show payment recording for this trainee assessor</strong></label><p class="field-help">This is an authorised assessor/admin control and is never displayed to the learner.</p></div><div class="prepass-master-controls"><div><label for="prepassBulkAssessor">Assessor Name</label><input id="prepassBulkAssessor" type="text" value="${escapeHtml(learner.prepassDefaultAssessor||'')}" placeholder="Enter assessor name or initials"></div><button type="button" onclick="bulkLoadPrepassAssessor()">Bulk Load Name</button><p>Use the learning-outcome records below to retain every assessment date, Refer and later Pass. The overall unit result is a summary only.</p></div><h4 style="margin-top:22px;">Learning Outcome Pre-Pass and Assessment Trail</h4><p class="field-help">Unit 1 contains eight learning outcomes. Units 2 and 3 contain four each. Add as many dated attempts as required—the earlier audit trail will remain visible.</p><div class="unit-control-list">${unitNames.map((name,index)=>`<div class="unit-control-row"><div><h5>Unit ${index+1}: ${name}</h5><p>Control unit access and maintain the complete assessment history.</p></div><select data-unit-control="unit-${index+1}"><option value="available">Available</option><option value="locked">Locked</option><option value="previously-achieved">Previously achieved</option></select>${manualAssessmentStatusMarkup(learner,index+1)}${priorAchievementMarkup(learner,index+1)}</div>`).join('')}</div><button class="save-button" type="button" onclick="saveProgrammeSettings()">Save Units and Funding</button></div>`;
+      const shared=sharedSchedules[learner.id]||null;
+      const scheduleStatus=shared?.status==='awaiting_learner'?'Awaiting learner declaration':shared?.status==='awaiting_assessor'?'Awaiting assessor confirmation':shared?.status==='confirmed'?'Confirmed':'Not created';
+      document.querySelector('#record-programme > .detail-card')?.insertAdjacentHTML('beforebegin',`<section class="detail-card confirmation-box"><h4>Programme Start Date and 12-Week Plan</h4><p>Enter the verified start date from the learner&rsquo;s existing PDF record, or enter it administratively. This generates all programme target dates and asks the learner to complete their declaration.</p><div class="form-grid"><div class="field"><label for="adminProgrammeStartDate">Programme start date</label><input id="adminProgrammeStartDate" type="date" value="${escapeHtml(shared?.programme_start_date||learner.startDate||'')}"></div><div class="field"><label for="adminStartDateSource">Record source</label><select id="adminStartDateSource"><option value="existing_pdf">Existing PDF assessment plan</option><option value="administrator">Administrator entered</option></select></div><div class="field"><label for="adminStartDateReason">Record note (optional)</label><input id="adminStartDateReason" type="text" placeholder="For example: transferred from signed PDF"></div></div><div class="key-value"><span>Current workflow status</span><strong>${scheduleStatus}</strong></div><button id="saveProgrammeScheduleButton" class="save-button" type="button" onclick="saveSharedProgrammeSchedule()">Save Date and Request Learner Declaration</button><div id="programmeScheduleMessage" class="invite-message" role="status" aria-live="polite"></div></section>`);
       const route=document.getElementById('programmeRoute'); route.value=learner.route; document.getElementById('paymentTracking').checked=learner.paymentTracking;
       document.querySelectorAll('[data-unit-control]').forEach(select=>select.value=learner.unitSettings[select.dataset.unitControl]||'locked');
       route.addEventListener('change',updateFundingVisibility); updateFundingVisibility();
@@ -1153,6 +1166,22 @@
       else if(route==='commercial'){note.className='funding-note commercial';note.textContent='Commercial learner: this learner has paid for the course, so payment recording for assessment activity is hidden.';payment.hidden=true;document.getElementById('paymentTracking').checked=false;}
       else if(route==='mentor'){note.className='funding-note mentor';note.textContent='PT Academy Mentor: completing the qualification as part of their PT Academy mentoring or assessment role. Payment recording is hidden.';payment.hidden=true;document.getElementById('paymentTracking').checked=false;}
       else{note.className='funding-note';note.textContent='Select the learner type before configuring payment visibility.';payment.hidden=true;document.getElementById('paymentTracking').checked=false;}
+    }
+
+    async function saveSharedProgrammeSchedule() {
+      const learner=learners.find(item=>item.id===selectedLearnerId);if(!learner)return;
+      const startDate=document.getElementById('adminProgrammeStartDate')?.value||'';
+      const source=document.getElementById('adminStartDateSource')?.value||'existing_pdf';
+      const reason=(document.getElementById('adminStartDateReason')?.value||'').trim();
+      const button=document.getElementById('saveProgrammeScheduleButton');
+      const message=document.getElementById('programmeScheduleMessage');
+      if(!startDate){alert('Enter the programme start date.');return;}
+      if(button){button.disabled=true;button.textContent='Saving programme plan…';}
+      const {data,error}=await sb.functions.invoke('assessment-plan-workflow',{body:{mode:'set_schedule',learner_id:learner.id,programme_start_date:startDate,start_date_source:source,reason}});
+      if(error||data?.error){if(button){button.disabled=false;button.textContent='Save Date and Request Learner Declaration';}if(message){message.textContent=data?.error||'The programme plan could not be saved.';message.className='invite-message error show';}return;}
+      sharedSchedules[learner.id]=data.schedule;learner.startDate=data.schedule.programme_start_date;
+      const plan=getLearnerPlan(learner);saveLearnerPlan(learner,plan);renderRecordProgramme(learner);renderRecordPlan(learner);renderRecordOverview(learner);renderAll();
+      alert('The 12-week plan has been saved. The learner will see a declaration request in their Learner Hub.');
     }
 
     async function saveProgrammeSettings() {
@@ -1269,8 +1298,11 @@
       document.getElementById('record-plan').innerHTML=`<h3>CAVA Assessment Plan</h3><div class="plan-summary"><div class="plan-summary-header"><h4>Planned Programme Schedule</h4><span class="pill ${status}">${planStatusLabel(status)}</span></div><div class="detail-grid" style="margin-bottom:16px;"><div class="detail-card"><div class="key-value"><span>Programme start</span><strong>${formatDate(plan.startDate)}</strong></div><div class="key-value"><span>Timeframe</span><strong>${plan.durationWeeks||12} weeks</strong></div></div><div class="detail-card"><div class="key-value"><span>Learner declaration</span><strong>${declaration}</strong></div><div class="key-value"><span>Assessor confirmation</span><strong>${confirmation}</strong></div></div></div><div class="milestone-grid"><div class="milestone"><span>Unit 1 target</span><strong>${milestones[0]}</strong></div><div class="milestone"><span>Unit 2 target</span><strong>${milestones[1]}</strong></div><div class="milestone"><span>Unit 3 target</span><strong>${milestones[2]}</strong></div><div class="milestone"><span>Programme target</span><strong>${programmeTarget}</strong></div></div><button class="save-button" type="button" onclick="openSharedAssessmentPlan()">Open Full Assessment Plan and Marking Record</button></div>${assessmentPlanStatusMarkup(plan)}${status==='awaiting'?`<div class="confirmation-box"><h4>Assessor Confirmation Required</h4><p>Review the learner&rsquo;s declared schedule. Enter your name only when the plan is ready to be agreed.</p><div class="field"><label for="planAssessorName">Assessor name</label><input id="planAssessorName" type="text" placeholder="Enter full name"></div><button class="save-button" type="button" onclick="confirmSelectedPlan()">Confirm Assessment Plan</button></div>`:''}`;
     }
 
-    function confirmSelectedPlan() {
-      const learner=learners.find(item=>item.id===selectedLearnerId); if(!learner)return; const plan=getLearnerPlan(learner); const name=document.getElementById('planAssessorName')?.value.trim()||''; if(!name){alert('Enter the assessor name before confirming the plan.');return;} plan.status='confirmed'; plan.confirmation={name,date:new Date().toISOString().slice(0,10),recordedAt:new Date().toISOString()}; saveLearnerPlan(learner,plan); renderRecordPlan(learner); renderRecordOverview(learner); renderAll(); alert('Assessment Plan confirmed for '+learner.fullName+'.');
+    async function confirmSelectedPlan() {
+      const learner=learners.find(item=>item.id===selectedLearnerId); if(!learner)return; const name=document.getElementById('planAssessorName')?.value.trim()||''; if(!name){alert('Enter the assessor name before confirming the plan.');return;}
+      const {data,error}=await sb.functions.invoke('assessment-plan-workflow',{body:{mode:'confirm',learner_id:learner.id,assessor_confirmation_name:name}});
+      if(error||data?.error){alert(data?.error||'The Assessment Plan could not be confirmed.');return;}
+      sharedSchedules[learner.id]=data.schedule;const plan=getLearnerPlan(learner);saveLearnerPlan(learner,plan);renderRecordPlan(learner);renderRecordOverview(learner);renderAll();alert('Assessment Plan confirmed for '+learner.fullName+'.');
     }
 
     function openSharedAssessmentPlan() {
@@ -1303,6 +1335,12 @@
       if(error){console.warn('Learner records could not be loaded.',error);remoteLearners=[];remoteLoadComplete=false;return;}
       remoteLearners=(data||[]).map(row=>({id:row.id,fullName:row.full_name,email:row.email,contactNumber:row.contact_number||'',startDate:row.programme_start_date,route:row.learner_type||'unassigned',accountStatus:row.account_status||'invited',authUserId:row.auth_user_id||null,invitedAt:row.invited_at||null,activatedAt:row.activated_at||null,assignedUnits:[],progress:{},submissions:[]}));
       remoteLoadComplete=true;
+    }
+
+    async function loadSharedSchedules() {
+      const {data,error}=await sb.from('assessment_plan_schedules').select('*');
+      if(error){console.warn('Shared programme schedules could not be loaded.',error);sharedSchedules={};return;}
+      sharedSchedules=Object.fromEntries((data||[]).map(row=>[row.learner_id,row]));
     }
 
     function openEditLearner(learnerId) {
@@ -1359,7 +1397,7 @@
       }
       const currentLearner=learners.find(item=>item.id===learnerId);
       if(currentLearner)migrateLearnerEmailStorage(currentLearner,oldEmail,newEmail);
-      await loadRemoteLearners();loadLearners();renderAll();
+      await Promise.all([loadRemoteLearners(),loadSharedSchedules()]);loadLearners();renderAll();
       const refreshed=learners.find(item=>item.id===learnerId);
       if(refreshed){
         selectedLearnerId=learnerId;
@@ -1496,7 +1534,7 @@
       const authorised=await initialiseSession();
       submit.disabled=false;submit.textContent='Login securely';
       if(!authorised)return;
-      await loadRemoteLearners();loadLearners();renderAll();
+      await Promise.all([loadRemoteLearners(),loadSharedSchedules()]);loadLearners();renderAll();
     });
 
     function renderAll() { syncActiveLearnerPlan(); renderDashboard(); renderLearnerTable(); renderQueue(); renderReports(); }
