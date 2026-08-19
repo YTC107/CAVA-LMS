@@ -145,6 +145,7 @@
     .pill.refer { background: var(--red-soft); color: var(--red); }
     .pill.funded { background: #e5f1fb; color: #205e8c; }
     .pill.commercial { background: var(--purple-soft); color: var(--purple); }
+    .pill.mentor { background: #e8f4eb; color: #236b3b; }
     .unit-dots { display: flex; gap: 5px; }
     .unit-dot { align-items: center; background: #ddd; border-radius: 50%; color: #555; display: inline-flex; font-size: 0.68rem; font-weight: 900; height: 27px; justify-content: center; width: 27px; }
     .unit-dot.available { background: var(--gold); color: #111; }
@@ -187,6 +188,7 @@
     .funding-note { border-left: 5px solid var(--purple); border-radius: 4px; font-size: 0.82rem; line-height: 1.5; margin-top: 16px; padding: 13px 15px; }
     .funding-note.funded { background: #eef7ff; border-left-color: #2c75a9; color: #244b68; }
     .funding-note.commercial { background: var(--purple-soft); color: #513279; }
+    .funding-note.mentor { background: #edf8f0; border-left-color: #2f7d4a; color: #245c36; }
     .payment-control { background: #fff8e8; border: 1px solid #e1c46e; border-radius: 5px; margin-top: 16px; padding: 15px; }
     .switch-row { align-items: center; display: flex; gap: 10px; }
     .switch-row input { height: 20px; width: 20px; }
@@ -435,7 +437,7 @@
       </div>
       <div class="toolbar">
         <input id="learnerSearch" class="search-input" type="search" placeholder="Search by learner name or email" aria-label="Search learners">
-        <select id="routeFilter" class="filter-select" aria-label="Filter by learner type"><option value="all">All learner types</option><option value="funded">Funded learner</option><option value="commercial">Commercial learner</option><option value="unassigned">Learner type not selected</option></select>
+        <select id="routeFilter" class="filter-select" aria-label="Filter by learner type"><option value="all">All learner types</option><option value="funded">Funded learner</option><option value="commercial">Commercial learner</option><option value="mentor">PT Academy Mentor</option><option value="unassigned">Learner type not selected</option></select>
         <select id="planFilter" class="filter-select" aria-label="Filter by plan status"><option value="all">All plan statuses</option><option value="draft">Draft plans</option><option value="awaiting">Awaiting confirmation</option><option value="confirmed">Confirmed plans</option></select>
       </div>
       <section class="panel">
@@ -483,7 +485,7 @@
           <div class="invite-field full"><label for="inviteFullName">Learner's full name</label><input id="inviteFullName" name="full_name" required maxlength="120" autocomplete="name"></div>
           <div class="invite-field"><label for="inviteEmail">Email address</label><input id="inviteEmail" name="email" type="email" required autocomplete="email"></div>
           <div class="invite-field"><label for="inviteContact">Contact number</label><input id="inviteContact" name="contact_number" type="tel" autocomplete="tel"></div>
-          <div class="invite-field"><label for="inviteLearnerType">Learner type</label><select id="inviteLearnerType" name="learner_type" required><option value="">Select learner type</option><option value="funded">Funded Learner</option><option value="commercial">Commercial Learner</option></select></div>
+          <div class="invite-field"><label for="inviteLearnerType">Learner type</label><select id="inviteLearnerType" name="learner_type" required><option value="">Select learner type</option><option value="funded">Funded learner</option><option value="commercial">Commercial learner</option><option value="mentor">PT Academy Mentor</option></select></div>
           <div class="invite-field"><label for="inviteStartDate">Programme start date</label><input id="inviteStartDate" name="programme_start_date" type="date"></div>
         </div>
         <div class="invite-actions"><button class="invite-close" type="button" onclick="closeInviteLearner()">Cancel</button><button id="sendInviteButton" class="primary-link" type="submit">Send Invitation</button></div>
@@ -822,7 +824,7 @@
     }
 
     function routePill(learner) {
-      const label = learner.route === 'funded' ? 'Funded learner' : learner.route === 'commercial' ? 'Commercial learner' : 'Not selected';
+      const label = learner.route === 'funded' ? 'Funded learner' : learner.route === 'commercial' ? 'Commercial learner' : learner.route === 'mentor' ? 'PT Academy Mentor' : 'Not selected';
       return '<span class="pill '+learner.route+'">'+label+'</span>';
     }
 
@@ -872,11 +874,11 @@
     }
 
     function renderReports() {
-      const routes = {funded:learners.filter(x=>x.route==='funded').length,commercial:learners.filter(x=>x.route==='commercial').length,unassigned:learners.filter(x=>x.route==='unassigned').length};
+      const routes = {funded:learners.filter(x=>x.route==='funded').length,commercial:learners.filter(x=>x.route==='commercial').length,mentor:learners.filter(x=>x.route==='mentor').length,unassigned:learners.filter(x=>x.route==='unassigned').length};
       const passed = learners.reduce((sum,learner)=>sum+getProgress(learner).complete,0);
       const openReferrals = getQueueItems().filter(item=>item.urgent).length;
       document.getElementById('analyticsGrid').innerHTML = `
-        <article class="analytics-card"><h3>Learner Types</h3><div class="key-value"><span>Funded learner</span><strong>${routes.funded}</strong></div><div class="key-value"><span>Commercial learner</span><strong>${routes.commercial}</strong></div><div class="key-value"><span>Not selected</span><strong>${routes.unassigned}</strong></div></article>
+        <article class="analytics-card"><h3>Learner Types</h3><div class="key-value"><span>Funded learner</span><strong>${routes.funded}</strong></div><div class="key-value"><span>Commercial learner</span><strong>${routes.commercial}</strong></div><div class="key-value"><span>PT Academy Mentor</span><strong>${routes.mentor}</strong></div><div class="key-value"><span>Not selected</span><strong>${routes.unassigned}</strong></div></article>
         <article class="analytics-card"><h3>Assessment Activity</h3><div class="key-value"><span>Learning outcomes passed</span><strong>${passed}</strong></div><div class="key-value"><span>Open referrals</span><strong>${openReferrals}</strong></div><div class="key-value"><span>Items awaiting action</span><strong>${getQueueItems().length}</strong></div></article>
         <article class="analytics-card"><h3>Planning</h3><div class="key-value"><span>Confirmed plans</span><strong>${learners.filter(x=>planStatus(getLearnerPlan(x))==='confirmed').length}</strong></div><div class="key-value"><span>Awaiting confirmation</span><strong>${learners.filter(x=>planStatus(getLearnerPlan(x))==='awaiting').length}</strong></div><div class="key-value"><span>Draft plans</span><strong>${learners.filter(x=>planStatus(getLearnerPlan(x))==='draft').length}</strong></div></article>`;
     }
@@ -932,7 +934,7 @@
       const accessLabel=learner.accountStatus==='active'?'Send password setup email':learner.authUserId?'Resend access email':'Send platform invitation';
       const accessAction=canInviteLearners&&learner.email?`<article class="detail-card"><h4>Learner Hub Access</h4><p>The email is sent to <strong>${escapeHtml(learner.email)}</strong>. It provides secure access to the Learner Hub and does not create a duplicate learner record.</p><button id="existingLearnerInviteButton" class="primary-link" type="button" onclick="sendExistingLearnerInvitation('${learner.id}')">${accessLabel}</button><div id="existingLearnerInviteMessage" class="invite-message" role="status" aria-live="polite"></div></article>`:'';
       const editAction=canInviteLearners?`<article class="detail-card"><h4>Learner Details</h4><div class="key-value"><span>Email address</span><strong>${escapeHtml(learner.email||'Not recorded')}</strong></div><div class="key-value"><span>Contact number</span><strong>${escapeHtml(learner.contactNumber||'Not recorded')}</strong></div><p>Changes made here update both the Assessor Hub record and the linked Supabase login account.</p><button class="primary-link" type="button" onclick="openEditLearner('${learner.id}')">Edit Learner Details</button></article>`:'';
-      document.getElementById('record-overview').innerHTML=`<h3>Programme Overview</h3><div class="detail-grid"><article class="detail-card"><h4>Current Position</h4><div class="key-value"><span>Overall progress</span><strong>${progress.percentage}%</strong></div><div class="key-value"><span>Assessment Plan</span><strong>${planStatusLabel(planStatus(plan))}</strong></div><div class="key-value"><span>Outstanding actions</span><strong>${queue.length}</strong></div><div class="key-value"><span>Programme start</span><strong>${formatDate(plan.startDate||learner.startDate)}</strong></div></article><article class="detail-card"><h4>Allocated Live Learners</h4><div class="key-value"><span>Level 2 Gym Instructor</span><strong>${learner.level2Learner||'Not allocated'}</strong></div><div class="key-value"><span>Level 3 Personal Training</span><strong>${learner.level3Learner||'Not allocated'}</strong></div><div class="key-value"><span>Learner type</span><strong>${learner.route==='funded'?'Funded learner':learner.route==='commercial'?'Commercial learner':'Not selected'}</strong></div></article>${editAction}${accessAction}</div>`;
+      document.getElementById('record-overview').innerHTML=`<h3>Programme Overview</h3><div class="detail-grid"><article class="detail-card"><h4>Current Position</h4><div class="key-value"><span>Overall progress</span><strong>${progress.percentage}%</strong></div><div class="key-value"><span>Assessment Plan</span><strong>${planStatusLabel(planStatus(plan))}</strong></div><div class="key-value"><span>Outstanding actions</span><strong>${queue.length}</strong></div><div class="key-value"><span>Programme start</span><strong>${formatDate(plan.startDate||learner.startDate)}</strong></div></article><article class="detail-card"><h4>Allocated Live Learners</h4><div class="key-value"><span>Level 2 Gym Instructor</span><strong>${learner.level2Learner||'Not allocated'}</strong></div><div class="key-value"><span>Level 3 Personal Training</span><strong>${learner.level3Learner||'Not allocated'}</strong></div><div class="key-value"><span>Learner type</span><strong>${learner.route==='funded'?'Funded learner':learner.route==='commercial'?'Commercial learner':learner.route==='mentor'?'PT Academy Mentor':'Not selected'}</strong></div></article>${editAction}${accessAction}</div>`;
     }
 
     function priorAchievementMarkup(learner, unitNumber) {
@@ -1139,7 +1141,7 @@
 
     function renderRecordProgramme(learner) {
       const unitNames=ASSESSMENT_STRUCTURE.map(item=>item.title);
-      document.getElementById('record-programme').innerHTML=`<h3>Units, Funding and Pre-Pass Records</h3><div class="detail-card"><div class="form-grid"><div class="field"><label for="programmeRoute">Learner type</label><select id="programmeRoute"><option value="unassigned">Select learner type</option><option value="funded">Funded learner</option><option value="commercial">Commercial learner</option></select><p class="field-help">This setting controls whether payment recording is available.</p></div><div class="field"><label for="level2Learner">Allocated Level 2 learner</label><input id="level2Learner" type="text" value="${learner.level2Learner}" placeholder="Gym Instructor learner name"></div><div class="field"><label for="level3Learner">Allocated Level 3 learner</label><input id="level3Learner" type="text" value="${learner.level3Learner}" placeholder="Personal Training learner name"></div></div><div id="fundingNote" class="funding-note"></div><div id="paymentControl" class="payment-control"><label class="switch-row"><input id="paymentTracking" type="checkbox"><strong>Show payment recording for this trainee assessor</strong></label><p class="field-help">This is an authorised assessor/admin control and is never displayed to the learner.</p></div><div class="prepass-master-controls"><div><label for="prepassBulkAssessor">Assessor Name</label><input id="prepassBulkAssessor" type="text" value="${escapeHtml(learner.prepassDefaultAssessor||'')}" placeholder="Enter assessor name or initials"></div><button type="button" onclick="bulkLoadPrepassAssessor()">Bulk Load Name</button><p>Use the learning-outcome records below to retain every assessment date, Refer and later Pass. The overall unit result is a summary only.</p></div><h4 style="margin-top:22px;">Learning Outcome Pre-Pass and Assessment Trail</h4><p class="field-help">Unit 1 contains eight learning outcomes. Units 2 and 3 contain four each. Add as many dated attempts as required—the earlier audit trail will remain visible.</p><div class="unit-control-list">${unitNames.map((name,index)=>`<div class="unit-control-row"><div><h5>Unit ${index+1}: ${name}</h5><p>Control unit access and maintain the complete assessment history.</p></div><select data-unit-control="unit-${index+1}"><option value="available">Available</option><option value="locked">Locked</option><option value="previously-achieved">Previously achieved</option></select>${manualAssessmentStatusMarkup(learner,index+1)}${priorAchievementMarkup(learner,index+1)}</div>`).join('')}</div><button class="save-button" type="button" onclick="saveProgrammeSettings()">Save Units and Funding</button></div>`;
+      document.getElementById('record-programme').innerHTML=`<h3>Units, Funding and Pre-Pass Records</h3><div class="detail-card"><div class="form-grid"><div class="field"><label for="programmeRoute">Learner type</label><select id="programmeRoute"><option value="unassigned">Select learner type</option><option value="funded">Funded learner</option><option value="commercial">Commercial learner</option><option value="mentor">PT Academy Mentor</option></select><p class="field-help">This setting controls whether payment recording is available.</p></div><div class="field"><label for="level2Learner">Allocated Level 2 learner</label><input id="level2Learner" type="text" value="${learner.level2Learner}" placeholder="Gym Instructor learner name"></div><div class="field"><label for="level3Learner">Allocated Level 3 learner</label><input id="level3Learner" type="text" value="${learner.level3Learner}" placeholder="Personal Training learner name"></div></div><div id="fundingNote" class="funding-note"></div><div id="paymentControl" class="payment-control"><label class="switch-row"><input id="paymentTracking" type="checkbox"><strong>Show payment recording for this trainee assessor</strong></label><p class="field-help">This is an authorised assessor/admin control and is never displayed to the learner.</p></div><div class="prepass-master-controls"><div><label for="prepassBulkAssessor">Assessor Name</label><input id="prepassBulkAssessor" type="text" value="${escapeHtml(learner.prepassDefaultAssessor||'')}" placeholder="Enter assessor name or initials"></div><button type="button" onclick="bulkLoadPrepassAssessor()">Bulk Load Name</button><p>Use the learning-outcome records below to retain every assessment date, Refer and later Pass. The overall unit result is a summary only.</p></div><h4 style="margin-top:22px;">Learning Outcome Pre-Pass and Assessment Trail</h4><p class="field-help">Unit 1 contains eight learning outcomes. Units 2 and 3 contain four each. Add as many dated attempts as required—the earlier audit trail will remain visible.</p><div class="unit-control-list">${unitNames.map((name,index)=>`<div class="unit-control-row"><div><h5>Unit ${index+1}: ${name}</h5><p>Control unit access and maintain the complete assessment history.</p></div><select data-unit-control="unit-${index+1}"><option value="available">Available</option><option value="locked">Locked</option><option value="previously-achieved">Previously achieved</option></select>${manualAssessmentStatusMarkup(learner,index+1)}${priorAchievementMarkup(learner,index+1)}</div>`).join('')}</div><button class="save-button" type="button" onclick="saveProgrammeSettings()">Save Units and Funding</button></div>`;
       const route=document.getElementById('programmeRoute'); route.value=learner.route; document.getElementById('paymentTracking').checked=learner.paymentTracking;
       document.querySelectorAll('[data-unit-control]').forEach(select=>select.value=learner.unitSettings[select.dataset.unitControl]||'locked');
       route.addEventListener('change',updateFundingVisibility); updateFundingVisibility();
@@ -1149,14 +1151,19 @@
       const route=document.getElementById('programmeRoute')?.value||'unassigned'; const note=document.getElementById('fundingNote'); const payment=document.getElementById('paymentControl'); if(!note||!payment)return;
       if(route==='funded'){note.className='funding-note funded';note.textContent='Funded learner: authorised staff may enable payment recording for completed learner-assessment activity.';payment.hidden=false;}
       else if(route==='commercial'){note.className='funding-note commercial';note.textContent='Commercial learner: this learner has paid for the course, so payment recording for assessment activity is hidden.';payment.hidden=true;document.getElementById('paymentTracking').checked=false;}
+      else if(route==='mentor'){note.className='funding-note mentor';note.textContent='PT Academy Mentor: completing the qualification as part of their PT Academy mentoring or assessment role. Payment recording is hidden.';payment.hidden=true;document.getElementById('paymentTracking').checked=false;}
       else{note.className='funding-note';note.textContent='Select the learner type before configuring payment visibility.';payment.hidden=true;document.getElementById('paymentTracking').checked=false;}
     }
 
-    function saveProgrammeSettings() {
+    async function saveProgrammeSettings() {
       const learner=learners.find(item=>item.id===selectedLearnerId); if(!learner)return;
       learner.route=document.getElementById('programmeRoute').value; learner.paymentTracking=learner.route==='funded'&&document.getElementById('paymentTracking').checked; learner.level2Learner=document.getElementById('level2Learner').value.trim(); learner.level3Learner=document.getElementById('level3Learner').value.trim();
       document.querySelectorAll('[data-unit-control]').forEach(select=>learner.unitSettings[select.dataset.unitControl]=select.value);
-      saveLearnerSettings(learner); renderRecordOverview(learner); renderRecordProgramme(learner); renderAll(); alert('Units and funding saved for '+learner.fullName+'.');
+      if(canInviteLearners&&remoteLoadComplete){
+        const {data,error}=await sb.functions.invoke('update-learner-profile',{body:{learner_id:learner.id,full_name:learner.fullName,email:learner.email,contact_number:learner.contactNumber||'',learner_type:learner.route}});
+        if(error||data?.error){alert(data?.error||'The learner type could not be saved to Supabase. Please try again.');return;}
+      }
+      saveLearnerSettings(learner); renderRecordOverview(learner); renderRecordProgramme(learner); renderAll(); alert('Units and learner type saved for '+learner.fullName+'.');
     }
 
     function recordPriorAchievement(unitNumber) {
