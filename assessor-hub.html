@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- BUILD: UNIT-STATUS-V2-2026-08-19 -->
 <html lang="en-GB">
 <head>
   <meta charset="UTF-8">
@@ -148,8 +149,16 @@
     .pill.mentor { background: #e8f4eb; color: #236b3b; }
     .unit-dots { display: flex; gap: 5px; }
     .unit-dot { align-items: center; background: #ddd; border-radius: 50%; color: #555; display: inline-flex; font-size: 0.68rem; font-weight: 900; height: 27px; justify-content: center; width: 27px; }
-    .unit-dot.available { background: var(--gold); color: #111; }
-    .unit-dot.achieved { background: var(--green); color: #fff; }
+    .unit-dot.not-started { background: #dedede; color: #4f4f4f; }
+    .unit-dot.in-progress { background: #2f6fad; color: #fff; }
+    .unit-dot.action-required { background: #c23b3b; color: #fff; }
+    .unit-dot.ready-confirm { background: var(--gold); color: #111; }
+    .unit-dot.passed { background: var(--green); color: #fff; }
+    .unit-status-key { align-items:center; background:#fff; border:1px solid var(--line); border-radius:5px; display:flex; flex-wrap:wrap; gap:10px 18px; margin:0 0 14px; padding:11px 14px; }
+    .unit-status-key strong { font-size:.78rem; }
+    .unit-status-key span { align-items:center; display:inline-flex; font-size:.72rem; font-weight:800; gap:6px; }
+    .unit-status-key i { border-radius:50%; display:inline-block; height:12px; width:12px; }
+    .unit-status-key .not-started { background:#dedede; }.unit-status-key .in-progress { background:#2f6fad; }.unit-status-key .action-required { background:#c23b3b; }.unit-status-key .ready-confirm { background:var(--gold); }.unit-status-key .passed { background:var(--green); }
     .row-action { background: var(--ink); border: 0; border-radius: 4px; color: var(--gold); cursor: pointer; font-size: 0.75rem; font-weight: 900; padding: 8px 11px; }
 
     .empty-state { color: #6d6d6d; font-size: 0.9rem; padding: 30px; text-align: center; }
@@ -440,6 +449,7 @@
         <select id="routeFilter" class="filter-select" aria-label="Filter by learner type"><option value="all">All learner types</option><option value="funded">Funded learner</option><option value="commercial">Commercial learner</option><option value="mentor">PT Academy Mentor</option><option value="unassigned">Learner type not selected</option></select>
         <select id="planFilter" class="filter-select" aria-label="Filter by plan status"><option value="all">All plan statuses</option><option value="draft">Draft plans</option><option value="awaiting">Awaiting confirmation</option><option value="confirmed">Confirmed plans</option></select>
       </div>
+      <div class="unit-status-key" aria-label="Unit status key"><strong>Unit status key</strong><span><i class="not-started"></i>Not started</span><span><i class="in-progress"></i>In progress</span><span><i class="action-required"></i>Action required</span><span><i class="ready-confirm"></i>Ready to confirm</span><span><i class="passed"></i>Passed</span></div>
       <section class="panel">
         <div class="table-wrap">
           <table>
@@ -818,6 +828,21 @@
       return { total:totalByUnit.reduce((a,b)=>a+b,0), complete, percentage, unitPercentages, completeByUnit, totalByUnit };
     }
 
+    function getUnitDisplayStatus(learner, unit) {
+      const plan=getLearnerPlan(learner);const total=[8,4,4][unit-1];
+      const records=Array.from({length:total},(_,index)=>plan.records?.[`unit${unit}-lo${index+1}`]).filter(Boolean);
+      const passed=records.filter(recordIsPassed).length;
+      const unresolvedRefer=records.some(record=>assessmentCurrentStatus(record)==='Refer');
+      const started=records.some(record=>Boolean(record?.initial));
+      const prior=Boolean(learner.priorAchievements?.[`unit-${unit}`]);
+      const confirmed=Boolean(plan.unitCompletions?.[`unit-${unit}`]);
+      if(prior||confirmed)return {key:'passed',label:'Passed'};
+      if(unresolvedRefer)return {key:'action-required',label:'Action required'};
+      if(passed===total)return {key:'ready-confirm',label:'Ready to confirm'};
+      if(started||passed>0)return {key:'in-progress',label:'In progress'};
+      return {key:'not-started',label:'Not started'};
+    }
+
     function getQueueItems() {
       const items = [];
       learners.forEach(function(learner) {
@@ -868,7 +893,7 @@
       }).sort((a,b)=>a.fullName.localeCompare(b.fullName));
       document.getElementById('learnerTableBody').innerHTML = filtered.map(function(learner) {
         const plan = getLearnerPlan(learner); const status = planStatus(plan); const progress = getProgress(learner);
-        const units = [1,2,3].map(function(unit){const state=learner.unitSettings['unit-'+unit];return '<span class="unit-dot '+(state==='previously-achieved'?'achieved':state)+'" title="Unit '+unit+': '+state+'">'+unit+'</span>';}).join('');
+        const units = [1,2,3].map(function(unit){const state=getUnitDisplayStatus(learner,unit);return '<span class="unit-dot '+state.key+'" title="Unit '+unit+': '+state.label+'" aria-label="Unit '+unit+': '+state.label+'">'+unit+'</span>';}).join('');
         const next = status === 'awaiting' ? 'Confirm plan' : status === 'draft' ? 'Plan not submitted' : progress.percentage === 100 ? 'Complete' : 'Review progress';
         const accountStatus=learner.accountStatus==='invited'?'invited':'active';
         const accountLabel=accountStatus==='invited'?'Awaiting activation':'Account active';
