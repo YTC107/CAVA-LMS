@@ -1199,11 +1199,69 @@ textarea:disabled { cursor: not-allowed; opacity: .72; }
   #unit3WorksheetView .ac-title { font-size: 1.0625rem; }
 }
 
+  
+  /* Assessment Documents workspace shell — UX refresh */
+  :root { --ux-gold: #c9a227; --ux-ink: #111111; --ux-muted: #6a6a6a; --ux-line: #eae7e2; --ux-surface: #ffffff; --ux-ground: #faf9f7; }
+  .learner-sidebar, .documents-mobile-toggle, .documents-footer-bar { display: none; }
+  body.documents-active { background: var(--ux-ground); }
+  body.documents-active > .header,
+  body.documents-active > .tabs { display: none !important; }
+  body.documents-active > .content { background: var(--ux-ground); margin-left: 260px; max-width: none; min-height: 100vh; padding: 28px 32px 88px; width: auto; }
+  body.documents-active #documents { margin: 0 auto; max-width: 1000px; }
+  body.documents-active #unitFolderList { margin: 0 auto; max-width: 1000px; }
+  .learner-sidebar { background: var(--ux-ink); bottom: 0; color: #fff; display: flex; flex-direction: column; left: 0; position: fixed; top: 0; width: 260px; z-index: 200; }
+  .learner-sidebar__brand { align-items: center; border-bottom: 1px solid #2a2a2a; display: flex; gap: 12px; padding: 24px; }
+  .learner-sidebar__tile { align-items: center; background: var(--ux-gold); border-radius: 8px; color: #111; display: flex; flex: 0 0 40px; font-size: 15px; font-weight: 800; height: 40px; justify-content: center; width: 40px; }
+  .learner-sidebar__kicker, .learner-sidebar__title { display: block; font-size: 10px; letter-spacing: .08em; line-height: 1.5; text-transform: uppercase; }
+  .learner-sidebar__kicker { color: var(--ux-gold); font-weight: 700; } .learner-sidebar__title { color: #8a8a8a; }
+  .learner-sidebar__nav { display: grid; gap: 4px; padding: 12px; }
+  .learner-sidebar__nav button { align-items: center; background: transparent; border: 0; border-radius: 6px; color: #9a9a9a; cursor: pointer; display: flex; font: 500 14px/1.2 'Segoe UI', Arial, sans-serif; gap: 12px; height: 42px; padding: 0 12px; position: relative; text-align: left; width: 100%; }
+  .learner-sidebar__nav button:hover, .learner-sidebar__nav button:focus-visible, .learner-sidebar__nav button[aria-current="page"] { background: #1e1e1e; color: #fff; outline: none; }
+  .learner-sidebar__nav button:focus-visible { box-shadow: 0 0 0 3px rgba(201,162,39,.45); }
+  .learner-sidebar__nav button[aria-current="page"] { font-weight: 700; }
+  .learner-sidebar__nav button[aria-current="page"]::before { background: var(--ux-gold); border-radius: 0 3px 3px 0; content: ''; height: 42px; left: 0; position: absolute; top: 0; width: 3px; }
+  .learner-sidebar__icon { font-size: 18px; text-align: center; width: 18px; }
+  .learner-sidebar__account { border-top: 1px solid #2a2a2a; margin-top: auto; padding: 16px; }
+  .learner-sidebar__identity { align-items: center; display: flex; gap: 10px; margin-bottom: 14px; }
+  .learner-sidebar__avatar { align-items: center; background: #3a3a3a; border-radius: 50%; color: #e8e5e0; display: flex; flex: 0 0 32px; font-size: 12px; font-weight: 700; height: 32px; justify-content: center; width: 32px; }
+  .learner-sidebar__name { display: block; font-size: 13px; font-weight: 600; } .learner-sidebar__role { color: #8a8a8a; display: block; font-size: 11px; margin-top: 2px; }
+  .learner-sidebar__logout { background: transparent; border: 1px solid #3a3a3a; border-radius: 6px; color: #c4c4c4; cursor: pointer; font-size: 13px; height: 34px; width: 100%; } .learner-sidebar__logout:hover, .learner-sidebar__logout:focus-visible { border-color: var(--ux-gold); color: #fff; outline: none; }
+  .documents-breadcrumb { color: #8a8a8a; font-size: 13px; margin: 0 0 12px; } .documents-breadcrumb span { color: #4a4a4a; } .documents-breadcrumb a { color: inherit; text-decoration: none; } .documents-breadcrumb a:hover { text-decoration: underline; }
+  body.documents-active #unit2WorksheetView .worksheet-unit-strip, body.documents-active #unit3WorksheetView .worksheet-unit-strip { align-items: flex-start; background: var(--ux-surface); border: 1px solid var(--ux-line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.04); display: flex; justify-content: space-between; margin-bottom: 16px; padding: 24px; }
+  body.documents-active .worksheet-unit-eyebrow, body.documents-active .candidate-box > .label { color: var(--ux-gold); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+  body.documents-active .worksheet-unit-title { color: #1a1a1a; font-size: 19px; line-height: 1.35; margin: 5px 0; } body.documents-active .worksheet-unit-type, body.documents-active .worksheet-unit-meta { color: #8a8a8a; font-size: 13px; }
+  body.documents-active .worksheet-unit-meta strong { color: #3a3a3a; } body.documents-active .embedded-back-button { display: none; }
+  .documents-progress { align-items: center; color: #6a6a6a; display: flex; font-size: 12px; gap: 12px; margin-top: 20px; } .documents-progress__track { background: var(--ux-line); border-radius: 99px; height: 6px; overflow: hidden; width: 240px; } .documents-progress__fill { background: var(--ux-gold); display: block; height: 100%; width: 25%; }
+  body.documents-active #unit2WorksheetView .top-nav, body.documents-active #unit3WorksheetView .top-nav { align-items: stretch; background: var(--ux-surface); border: 1px solid var(--ux-line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.04); display: block; margin-bottom: 16px; padding: 12px; position: static; }
+  body.documents-active .lo-nav-group { display: flex; gap: 4px; } body.documents-active .nav-tab { align-items: center; background: transparent; border: 0; color: #5a5a5a; display: flex; flex: 1; font-size: 13px; font-weight: 600; gap: 8px; justify-content: flex-start; min-height: 52px; padding: 8px; text-align: left; } body.documents-active .nav-tab::before { align-items: center; background: #f0eeea; border-radius: 50%; color: #8a8a8a; content: attr(data-step); display: flex; flex: 0 0 26px; font-size: 11px; height: 26px; justify-content: center; width: 26px; } body.documents-active .nav-tab.active-tab { background: #fffdf5; border: 1px solid var(--ux-gold); border-radius: 8px; color: #1a1a1a; } body.documents-active .nav-tab.active-tab::before { background: var(--ux-gold); color: #fff; content: '✓'; } body.documents-active .worksheet-nav-tools { display: none; }
+  body.documents-active .candidate-wrap, body.documents-active .lo-header, body.documents-active .learner-block { background: var(--ux-surface); border: 1px solid var(--ux-line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.04); margin-bottom: 16px; } body.documents-active .candidate-wrap { padding: 24px; } body.documents-active .candidate-box { border: 0; padding: 0; } body.documents-active .candidate-grid { gap: 18px 24px; grid-template-columns: repeat(2,minmax(0,1fr)); margin-top: 16px; } body.documents-active .candidate-grid label, body.documents-active .learner-body label { color: #4a4a4a; font-size: 12px; font-weight: 600; } body.documents-active .candidate-grid input, body.documents-active .learner-body input, body.documents-active .learner-body select, body.documents-active .learner-body textarea { border: 1px solid #ddd9d3; border-radius: 6px; color: #1a1a1a; font: 14px/1.5 'Segoe UI',Arial,sans-serif; text-align: left; } body.documents-active .candidate-grid input { height: 40px; } body.documents-active input:focus, body.documents-active select:focus, body.documents-active textarea:focus { border-color: var(--ux-gold); box-shadow: 0 0 0 3px rgba(201,162,39,.15); outline: none; }
+  body.documents-active .lo-header { border-left: 4px solid var(--ux-gold); padding: 24px; } body.documents-active .lo-header h2 { color: #1a1a1a; font-size: 17px; line-height: 1.4; } body.documents-active .ac-list { color: #4a4a4a; font-size: 12px; margin: 12px 0; } body.documents-active .lo-description { background: #fffdf3; border: 1px solid #f0e6c8; border-radius: 8px; color: #4a4a4a; font-size: 13px; line-height: 1.6; padding: 16px; }
+  body.documents-active .learner-block { overflow: hidden; } body.documents-active .learner-header { background: #f7f6f4; color: #1a1a1a; font-size: 14px; font-weight: 700; padding: 14px 16px; } body.documents-active .learner-body { padding: 16px; } body.documents-active .plan-disclosure, body.documents-active .ac-disclosure { border: 1px solid var(--ux-line); border-radius: 8px; margin: 12px 0; overflow: hidden; } body.documents-active .plan-disclosure > summary, body.documents-active .ac-disclosure > summary { color: #1a1a1a; cursor: pointer; font-size: 14px; font-weight: 700; list-style: none; padding: 14px 16px; } body.documents-active .plan-disclosure > summary::-webkit-details-marker, body.documents-active .ac-disclosure > summary::-webkit-details-marker { display:none; } body.documents-active .plan-disclosure > summary::after, body.documents-active .ac-disclosure > summary::after { color:#6a6a6a; content:'⌄'; float:right; } body.documents-active details[open] > summary::after { transform:rotate(180deg); } body.documents-active .ac-body, body.documents-active .plan-block > :not(h3) { padding: 0 16px 16px; } body.documents-active .plan-block { margin: 0; }
+  .documents-footer-bar { align-items: center; background: #fff; border-top: 1px solid var(--ux-line); bottom: 0; height: 60px; justify-content: space-between; left: 260px; padding: 0 32px; position: fixed; right: 0; z-index: 190; } .documents-footer-bar__left, .documents-footer-bar__right { align-items: center; display: flex; gap: 14px; } .documents-footer-bar button { border-radius: 6px; cursor: pointer; font-size: 13px; height: 38px; padding: 0 14px; } .documents-footer-bar__back { background: #fff; border: 1px solid #ddd9d3; color: #3a3a3a; } .documents-footer-bar__continue { background: var(--ux-gold); border: 0; color: #fff; font-weight: 700; } .documents-footer-bar__continue:hover { background: #b08f1f; } .documents-footer-bar__save { color: #6a6a6a; font-size: 12px; }
+  body.documents-active .documents-footer-bar { display: flex; }
+  @media (max-width: 1200px) and (min-width: 900px) { body.documents-active > .content { margin-left:68px; } .learner-sidebar { width:68px; } .learner-sidebar__brand { padding:14px; } .learner-sidebar__brand > :not(.learner-sidebar__tile), .learner-sidebar__account { display:none; } .learner-sidebar__nav button { justify-content:center; padding:0; } .learner-sidebar__nav button span:last-child { display:none; } .documents-footer-bar { left:68px; } }
+  @media (max-width: 899px) { body.documents-active > .content { margin-left:0; padding:72px 16px 88px; } .learner-sidebar { box-shadow: 8px 0 26px rgba(0,0,0,.28); transform:translateX(-100%); transition:transform .2s ease; } body.documents-sidebar-open .learner-sidebar { transform:translateX(0); } .documents-mobile-toggle { background:#111; border:0; border-radius:6px; color:#fff; display:block; font-size:20px; height:40px; left:16px; position:fixed; top:16px; width:40px; z-index:210; } .documents-footer-bar { left:0; padding:0 16px; } .documents-footer-bar__save { display:none; } .lo-nav-group { min-width:680px; } body.documents-active #unit2WorksheetView .top-nav, body.documents-active #unit3WorksheetView .top-nav { overflow-x:auto; } body.documents-active .candidate-grid { grid-template-columns:1fr; } body.documents-active #unit2WorksheetView .worksheet-unit-strip, body.documents-active #unit3WorksheetView .worksheet-unit-strip { display:block; } .documents-progress__track { width:150px; } }
+  @media (prefers-reduced-motion: reduce) { .learner-sidebar { transition:none; } }
+
   </style>
 </head>
 <body class="auth-pending">
 
 <a class="skip-link" href="#main-content">Skip to main content</a>
+
+<aside id="learnerSidebar" class="learner-sidebar" aria-label="Learner Hub navigation">
+  <div class="learner-sidebar__brand"><div class="learner-sidebar__tile">PT</div><div><span class="learner-sidebar__kicker">PT Academy</span><span class="learner-sidebar__title">Learner Hub</span></div></div>
+  <nav class="learner-sidebar__nav" aria-label="Learner Hub sections">
+    <button type="button" data-docs-nav="dashboard" onclick="switchTab('dashboard', document.getElementById('dashboard-tab'))"><span class="learner-sidebar__icon" aria-hidden="true">⌂</span><span>Dashboard</span></button>
+    <button type="button" data-docs-nav="introduction" onclick="switchTab('introduction', document.getElementById('introduction-tab'))"><span class="learner-sidebar__icon" aria-hidden="true">▤</span><span>Introduction</span></button>
+    <button type="button" data-docs-nav="assessment" onclick="switchTab('assessment', document.getElementById('assessment-tab'))"><span class="learner-sidebar__icon" aria-hidden="true">▣</span><span>Assessment Plan</span></button>
+    <button type="button" data-docs-nav="documents" onclick="switchTab('documents', document.getElementById('documents-tab'))"><span class="learner-sidebar__icon" aria-hidden="true">▧</span><span>Assessment Documents</span></button>
+    <button type="button" data-docs-nav="action" onclick="openActionPlanWorkspace()"><span class="learner-sidebar__icon" aria-hidden="true">✓</span><span>Action Plans &amp; Reviews</span></button>
+  </nav>
+  <div class="learner-sidebar__account"><div class="learner-sidebar__identity"><span class="learner-sidebar__avatar">MK</span><span><span id="sidebarLearnerName" class="learner-sidebar__name">Learner</span><span class="learner-sidebar__role">Learner</span></span></div><button class="learner-sidebar__logout" type="button" onclick="document.getElementById('logoutButton')?.click()">Log out</button></div>
+</aside>
+<button id="documentsMobileToggle" class="documents-mobile-toggle" type="button" aria-label="Open navigation" aria-expanded="false">☰</button>
+<div class="documents-footer-bar" aria-label="Worksheet actions"><div class="documents-footer-bar__left"><button class="documents-footer-bar__back" type="button" onclick="closeUnit2Worksheet()">← Back to Assessment Documents</button></div><div class="documents-footer-bar__right"><span id="documentsSaveStatus" class="documents-footer-bar__save">Draft not yet submitted</span><button class="documents-footer-bar__continue" type="button" onclick="showLO(2)">Continue to LO2 →</button></div></div>
 
 <div id="learnerAuthGate" class="learner-auth-gate" role="status" aria-live="polite">
   <section class="learner-auth-card" aria-labelledby="learnerAuthTitle">
@@ -4281,6 +4339,7 @@ textarea:disabled { cursor: not-allowed; opacity: .72; }
       button.setAttribute('aria-selected', 'true');
       button.setAttribute('tabindex', '0');
     }
+    if (typeof window.__syncDocumentsShell === 'function') window.__syncDocumentsShell();
   }
 
   document.addEventListener('DOMContentLoaded', function() {
@@ -5340,6 +5399,70 @@ function submitForm() {
   alert('Form submitted for marking.');
 }
 
+</script>
+
+<script>
+(function () {
+  function setDocumentShell(active) {
+    document.body.classList.toggle('documents-active', active);
+    document.querySelectorAll('[data-docs-nav]').forEach(function (button) {
+      var selected = active && button.getAttribute('data-docs-nav') === 'documents';
+      if (selected) button.setAttribute('aria-current', 'page'); else button.removeAttribute('aria-current');
+    });
+    var name = document.getElementById('learnerNameDisplay');
+    var sidebarName = document.getElementById('sidebarLearnerName');
+    if (name && sidebarName) sidebarName.textContent = name.textContent || 'Learner';
+  }
+  function enhanceWorksheet(viewId, unitNumber) {
+    var view = document.getElementById(viewId);
+    if (!view || view.dataset.uxEnhanced) return;
+    view.dataset.uxEnhanced = 'true';
+    var strip = view.querySelector('.worksheet-unit-strip');
+    if (strip) {
+      var crumb = document.createElement('p');
+      crumb.className = 'documents-breadcrumb';
+      crumb.innerHTML = '<a href="#" onclick="closeUnit' + unitNumber + 'Worksheet(); return false;">Assessment Documents</a> <span aria-hidden="true">›</span> <a href="#" onclick="closeUnit' + unitNumber + 'Worksheet(); return false;">Unit ' + unitNumber + '</a> <span aria-hidden="true">›</span> <span>Learning Outcome 1</span>';
+      strip.parentNode.insertBefore(crumb, strip);
+      var progress = document.createElement('div');
+      progress.className = 'documents-progress';
+      progress.setAttribute('role', 'status');
+      progress.innerHTML = '<span class="documents-progress__track" aria-hidden="true"><span class="documents-progress__fill"></span></span><span>1 of 4 outcomes complete</span>';
+      strip.querySelector('.worksheet-unit-copy')?.appendChild(progress);
+    }
+    view.querySelectorAll('.nav-tab').forEach(function (button, index) { button.setAttribute('data-step', String(index + 1)); });
+    view.querySelectorAll('.plan-block').forEach(function (block) {
+      if (block.closest('details')) return;
+      var heading = block.querySelector('h3'); if (!heading) return;
+      var details = document.createElement('details'); details.className = 'plan-disclosure';
+      var summary = document.createElement('summary'); summary.textContent = heading.textContent;
+      heading.remove(); details.appendChild(summary); block.parentNode.insertBefore(details, block); details.appendChild(block);
+    });
+    view.querySelectorAll('.ac-block').forEach(function (block, index) {
+      if (block.querySelector('details')) return;
+      var title = block.querySelector('.ac-title'); var body = block.querySelector('.ac-body'); if (!title || !body) return;
+      var details = document.createElement('details'); details.className = 'ac-disclosure'; if (index === 0) details.open = true;
+      var summary = document.createElement('summary'); summary.textContent = title.textContent;
+      title.remove(); body.remove(); details.appendChild(summary); details.appendChild(body); block.appendChild(details);
+    });
+  }
+  window.__syncDocumentsShell = function () {
+    var active = document.getElementById('documents')?.classList.contains('active');
+    setDocumentShell(Boolean(active));
+    if (active) { enhanceWorksheet('unit2WorksheetView', 2); enhanceWorksheet('unit3WorksheetView', 3); }
+  };
+  document.addEventListener('DOMContentLoaded', function () {
+    window.__syncDocumentsShell();
+    var toggle = document.getElementById('documentsMobileToggle');
+    toggle?.addEventListener('click', function () {
+      var open = document.body.classList.toggle('documents-sidebar-open');
+      toggle.setAttribute('aria-expanded', String(open));
+      toggle.setAttribute('aria-label', open ? 'Close navigation' : 'Open navigation');
+    });
+    var display = document.getElementById('learnerNameDisplay');
+    new MutationObserver(function () { window.__syncDocumentsShell(); }).observe(document.getElementById('documents'), { attributes: true, attributeFilter: ['class'] });
+    if (display) new MutationObserver(window.__syncDocumentsShell).observe(display, { childList: true, characterData: true, subtree: true });
+  });
+})();
 </script>
 </body>
 </html>
