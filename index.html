@@ -5464,5 +5464,117 @@ function submitForm() {
   });
 })();
 </script>
+
+<script>
+/*
+  PT Academy Learner Hub engagement + In-Hub notification bridge.
+  Add after the Learner Hub has created its signed-in Supabase client as `sb`.
+  It records only short visible/non-idle time intervals. It does not capture
+  clicks, typed content, page content, or browsing outside the Learner Hub.
+*/
+(function startLearnerEngagementBridge() {
+  const IDLE_AFTER_MS = 5 * 60 * 1000;
+  const HEARTBEAT_MS = 60 * 1000;
+  let lastInteractionAt = Date.now();
+  let lastHeartbeatAt = Date.now();
+
+  ['pointerdown', 'keydown', 'scroll', 'touchstart'].forEach((eventName) => {
+    window.addEventListener(eventName, () => { lastInteractionAt = Date.now(); }, { passive: true });
+  });
+
+  async function heartbeat() {
+    const now = Date.now();
+    const visible = document.visibilityState === 'visible';
+    const active = now - lastInteractionAt < IDLE_AFTER_MS;
+    const elapsedSeconds = Math.min(60, Math.max(0, Math.round((now - lastHeartbeatAt) / 1000)));
+    lastHeartbeatAt = now;
+    if (!visible || !active || !elapsedSeconds) return;
+    try {
+      await sb.functions.invoke('learner-engagement', {
+        body: { action: 'heartbeat', active_seconds: elapsedSeconds },
+      });
+    } catch (error) {
+      console.info('Engagement heartbeat unavailable.', error);
+    }
+  }
+
+  function ensureNotificationStyles() {
+    if (document.getElementById('cavaNotificationStyles')) return;
+    const style = document.createElement('style');
+    style.id = 'cavaNotificationStyles';
+    style.textContent = `
+      .cava-notifications{display:grid;gap:10px;margin:16px auto;max-width:1180px;padding:0 18px}
+      .cava-notification{background:#fff8e6;border:1px solid #eae7e2;border-left:5px solid #c9a227;border-radius:8px;box-shadow:0 5px 18px rgba(17,17,17,.07);color:#111;padding:14px 16px}
+      .cava-notification h2{font-size:.95rem;margin:0 0 4px}.cava-notification p{font-size:.82rem;line-height:1.5;margin:0;white-space:pre-line}
+      .cava-notification__actions{align-items:center;display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
+      .cava-notification a,.cava-notification button{border-radius:6px;cursor:pointer;font-size:.78rem;font-weight:800;padding:7px 10px;text-decoration:none}
+      .cava-notification a{background:#c9a227;color:#111}.cava-notification button{background:#111;border:0;color:#fff}
+    `;
+    document.head.appendChild(style);
+  }
+
+  async function markRead(id, element) {
+    const { error } = await sb.functions.invoke('learner-engagement', {
+      body: { action: 'read', notification_id: id },
+    });
+    if (!error) element.remove();
+  }
+
+  async function loadNotifications() {
+    try {
+      const { data, error } = await sb.functions.invoke('learner-engagement', {
+        body: { action: 'notifications' },
+      });
+      if (error || !Array.isArray(data?.notifications) || !data.notifications.length) return;
+      ensureNotificationStyles();
+      let container = document.getElementById('cavaNotifications');
+      if (!container) {
+        container = document.createElement('section');
+        container.id = 'cavaNotifications';
+        container.className = 'cava-notifications';
+        container.setAttribute('aria-label', 'Messages from PT Academy');
+        const header = document.querySelector('.header');
+        if (header) header.insertAdjacentElement('afterend', container);
+        else document.body.insertBefore(container, document.body.firstChild);
+      }
+      container.replaceChildren();
+      data.notifications.forEach((notification) => {
+        const article = document.createElement('article');
+        article.className = 'cava-notification';
+        const heading = document.createElement('h2');
+        heading.textContent = notification.subject;
+        const copy = document.createElement('p');
+        copy.textContent = notification.body;
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.textContent = 'Mark as read';
+        button.addEventListener('click', () => markRead(notification.id, article));
+        const actions = document.createElement('div');
+        actions.className = 'cava-notification__actions';
+        if (notification.action_url) {
+          const link = document.createElement('a');
+          link.href = notification.action_url;
+          link.textContent = 'Open';
+          actions.appendChild(link);
+        }
+        actions.appendChild(button);
+        article.append(heading, copy, actions);
+        container.appendChild(article);
+      });
+    } catch (error) {
+      console.info('Learner notifications unavailable.', error);
+    }
+  }
+
+  setInterval(heartbeat, HEARTBEAT_MS);
+  setInterval(loadNotifications, 5 * 60 * 1000);
+  window.addEventListener('pagehide', heartbeat);
+  sb.auth.onAuthStateChange((_event, session) => {
+    if (session?.user) setTimeout(loadNotifications, 0);
+  });
+  setTimeout(loadNotifications, 1500);
+}());
+
+</script>
 </body>
 </html>
