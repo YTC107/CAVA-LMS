@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- BUILD: UNIT-STATUS-V2-2026-08-19 -->
+<!-- BUILD: ASSESSOR-WORKSPACE-V4-2026-09-02 -->
 <html lang="en-GB">
 <head>
   <meta charset="UTF-8">
@@ -370,15 +370,163 @@
       .record-content { padding: 17px; }
     }
   </style>
+  <style id="assessorUxRefresh">
+    /* Assessor Hub UX refresh: a calm workspace, shared navigation language and clear priorities. */
+    :root {
+      --gold: #c9a227;
+      --gold-dark: #8a6d10;
+      --ink: #111111;
+      --ink-soft: #1a1a1a;
+      --paper: #faf9f7;
+      --card: #ffffff;
+      --line: #eae7e2;
+      --muted: #6a6a6a;
+    }
+    body { background: var(--paper); color: var(--ink); font-family: "Segoe UI", Arial, sans-serif; -moz-osx-font-smoothing: grayscale; -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+    .site-header {
+      align-items: stretch; background: var(--ink); border: 0; border-right: 1px solid #2a2a2a;
+      box-shadow: none; color: #fff; display: flex;
+      flex-direction: column; gap: 0; inset: 0 auto 0 0; justify-content: flex-start;
+      padding: 24px 16px 18px; position: fixed; width: 260px; z-index: 100;
+    }
+    .brand { align-items: center; border-bottom: 1px solid #2a2a2a; gap: 12px; padding: 0 8px 22px; }
+    .brand-logo { height: 44px; image-rendering: auto; object-fit: contain; width: 44px; }
+    .brand-kicker { color: var(--gold); font-size: .67rem; letter-spacing: .1em; }
+    .brand h1 { color: #fff; font-size: 1.05rem; line-height: 1.25; margin: 3px 0; }
+    .brand p { color: #8a8a8a; font-size: .67rem; line-height: 1.4; }
+    .account { border-left: 0; border-top: 1px solid #2a2a2a; bottom: 18px; gap: 10px; left: 16px; padding: 15px 8px 0; position: absolute; right: 16px; }
+    .account-copy { text-align: left; }
+    .account-copy strong { color: #fff; font-size: .78rem; }
+    .account-copy span { color: #8a8a8a; font-size: .67rem; max-width: 136px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .logout-button { border-color: #3a3a3a; color: #c4c4c4; font-size: .7rem; min-height: 36px; padding: 7px 10px; }
+    .logout-button:hover { background: transparent; border-color: var(--gold); color: #fff; }
+    .primary-nav {
+      background: transparent; display: flex; flex-direction: column; gap: 4px; inset: 142px auto 88px 0;
+      overflow-y: auto; padding: 16px 12px; position: fixed; scrollbar-color: #4a4a4a transparent; scrollbar-width: thin; width: 260px; z-index: 101;
+    }
+    .primary-nav::before { content: none; }
+    .nav-group { display: grid; gap: 4px; margin-bottom: 17px; }
+    .nav-group-label { color: #747474; font-size: .61rem; font-weight: 800; letter-spacing: .12em; padding: 0 12px 5px; text-transform: uppercase; }
+    .nav-button { align-items: center; border: 0; border-radius: 6px; color: #9a9a9a; display: flex; font-size: .82rem; font-weight: 600; gap: 12px; min-height: 42px; padding: 0 12px; position: relative; text-align: left; width: 100%; }
+    .nav-button > span:first-of-type { flex: 1; }
+    .nav-button::before { align-items: center; background: transparent; border-radius: 0; color: #9a9a9a; content: attr(data-icon); display: inline-flex; font-size: 1rem; height: 24px; justify-content: center; width: 20px; }
+    .nav-button:hover, .nav-button:focus-visible { background: #1e1e1e; border: 0; color: #fff; outline: none; }
+    .nav-button:focus-visible { box-shadow: 0 0 0 3px rgba(201,162,39,.45); }
+    .nav-button.active { background: #1e1e1e; border: 0; color: #fff; font-weight: 700; }
+    .nav-button.active::before { background: transparent; color: var(--gold); }
+    .nav-button.active::after { background: var(--gold); border-radius: 0 3px 3px 0; content: ''; height: 42px; left: 0; position: absolute; top: 0; width: 3px; }
+    .nav-count { align-items: center; background: #333; border-radius: 999px; color: #ddd; display: inline-flex; flex: 0 0 auto !important; font-size: .64rem; height: 22px; justify-content: center; min-width: 22px; padding: 0 7px; }
+    .nav-button.active .nav-count { background: var(--gold); color: #111; }
+    .page { margin-left: 260px; max-width: 1580px; padding: 28px 32px 72px; }
+    .assessor-workspace-bar { align-items: center; border-bottom: 1px solid var(--line); color: var(--muted); display: flex; font-size: .76rem; font-weight: 800; gap: 12px; justify-content: space-between; margin: -8px 0 27px; padding: 0 0 15px; }
+    .workspace-breadcrumb, .workspace-actions { align-items: center; display: flex; gap: 9px; }
+    .assessor-workspace-bar .workspace-mark { background: var(--gold); border-radius: 50%; height: 8px; width: 8px; }
+    .assessor-workspace-bar strong { color: var(--ink); }
+    .workspace-sync { align-items: center; color: #52705b; display: inline-flex; font-size: .7rem; gap: 6px; }
+    .workspace-sync i { background: var(--green); border-radius: 50%; height: 7px; width: 7px; }
+    .quick-search-button { background: #fff; border: 1px solid var(--line); border-radius: 7px; color: var(--ink); cursor: pointer; font-size: .72rem; font-weight: 900; padding: 8px 11px; }
+    .hub-menu-toggle, .assessor-nav-backdrop { display: none; }
+    .page-heading { align-items: flex-start; border-bottom: 1px solid var(--line); margin-bottom: 24px; padding-bottom: 20px; }
+    .page-heading h2 { border-left: 0; color: var(--ink); font-size: clamp(1.72rem, 3vw, 2.3rem); font-weight: 750; letter-spacing: -.035em; padding-left: 0; }
+    .page-heading h2::before { background: var(--gold); border-radius: 3px; content: ''; display: inline-block; height: 28px; margin: 0 12px 2px 0; vertical-align: middle; width: 5px; }
+    .page-heading p { color: var(--muted); margin-left: 17px; }
+    .eyebrow, .panel-kicker { color: var(--gold-dark); display: block; font-size: .66rem; font-weight: 900; letter-spacing: .12em; margin: 0 0 7px; text-transform: uppercase; }
+    .panel-kicker { font-size: .61rem; margin-bottom: 4px; }
+    .primary-link, .save-button { background: var(--ink); border-color: var(--ink); border-radius: 7px; color: #fff; }
+    .primary-link:hover { background: #fff; border-color: var(--ink); color: var(--ink); }
+    .stat-grid { gap: 15px; }
+    .stat-card { border: 1px solid var(--line); border-top: 0; border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.04); padding: 20px; position: relative; }
+    .stat-card::before { background: var(--gold); border-radius: 8px 0 0 8px; content: ''; height: 42px; left: 0; position: absolute; top: 20px; width: 4px; }
+    .stat-card span, .stat-card strong, .stat-card small { margin-left: 12px; }
+    .stat-card span { color: #66737f; }
+    .stat-card strong { color: var(--ink); }
+    .stat-card-button { cursor: pointer; font-family: inherit; text-align: left; transition: border-color .18s ease, box-shadow .18s ease, transform .18s ease; }
+    .stat-card-button:hover { border-color: #c8a64b; box-shadow: 0 8px 22px rgba(28,44,60,.1); transform: translateY(-2px); }
+    .stat-card-button:focus-visible { box-shadow: 0 0 0 4px rgba(168,120,24,.18); outline: 2px solid var(--gold-dark); outline-offset: 2px; }
+    .stat-card b { color: var(--gold-dark); display: block; font-size: .69rem; margin: 12px 0 0 12px; }
+    .stat-card.support::before { background: var(--amber); }
+    .stat-card.quiet::before { background: #aeb7bf; }
+    .panel, .toolbar, .unit-status-key { border-color: var(--line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+    .panel-header { padding: 18px 20px; }
+    .panel-body { padding: 18px 20px; }
+    .action-item { background: #fffdfa; border-left-color: var(--gold); border-radius: 7px; padding: 14px 15px; }
+    .action-item:hover { background: #fffdf5; box-shadow: inset 0 0 0 1px #eee8da; }
+    .action-item button, .row-action { background: var(--ink); border-radius: 6px; color: #fff; }
+    .section-link { color: var(--gold-dark); }
+    .mini-progress span { background: var(--gold); }
+    th { background: #1a1a1a; border-bottom: 3px solid var(--gold); color: var(--gold); }
+    tbody tr:hover { background: #fffdf5; }
+    .record-header { background: var(--ink); border-bottom-color: var(--gold); }
+    .record-nav { padding: 0 24px; }
+    .record-tab.active { border-bottom-color: var(--gold); color: var(--ink); }
+    .calendar-control-card { border-color: var(--line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.04); }
+    .record-context-banner { align-items: flex-start; background: #f6f8f9; border: 1px solid var(--line); border-left: 4px solid var(--gold); border-radius: 8px; display: flex; gap: 12px; margin: 0 0 20px; padding: 14px 16px; }
+    .record-context-banner strong { color: var(--ink); display: block; font-size: .86rem; }
+    .record-context-banner p { color: var(--muted); font-size: .78rem; line-height: 1.45; margin: 3px 0 0; }
+    .record-context-banner button { background: var(--ink); border: 0; border-radius: 6px; color: #fff; cursor: pointer; flex: 0 0 auto; font-size: .75rem; font-weight: 900; padding: 9px 11px; }
+    .record-quick-actions { align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 9px; display: flex; flex-wrap: wrap; gap: 9px; margin: 0 0 20px; padding: 11px; }
+    .record-quick-actions strong { color: var(--muted); font-size: .7rem; letter-spacing: .08em; margin-right: 4px; text-transform: uppercase; }
+    .record-quick-actions button { background: #f3f5f6; border: 1px solid #e1e6e9; border-radius: 6px; color: var(--ink); cursor: pointer; font-size: .73rem; font-weight: 900; padding: 8px 10px; }
+    .record-quick-actions button.primary { background: var(--ink); border-color: var(--ink); color: #fff; }
+    .activity-status { align-items: center; display: inline-flex; gap: 6px; }
+    .activity-status::before { background: #aeb7bf; border-radius: 50%; content: ''; height: 7px; width: 7px; }
+    .activity-status.today::before { background: var(--green); }
+    .activity-status.recent::before { background: var(--gold); }
+    .activity-status.inactive::before { background: var(--red); }
+    .activity-privacy { background: #f7f9fa; border: 1px solid var(--line); border-radius: 7px; color: var(--muted); font-size: .74rem; line-height: 1.5; margin-top: 13px; padding: 10px 12px; }
+    .notification-dialog { max-width: 680px; }
+    .invite-field textarea { border: 1px solid #aaa69d; border-radius: 4px; font: inherit; padding: 10px 12px; resize: vertical; width: 100%; }
+    .invite-field textarea:focus { border-color: var(--gold-dark); box-shadow: 0 0 0 4px rgba(201,168,76,0.15); outline: none; }
+    .configuration-note { align-items: flex-start; background: #fff8e6; border: 1px solid #ecdca9; border-left: 4px solid var(--gold); border-radius: 7px; color: #64501a; display: flex; font-size: .76rem; gap: 9px; line-height: 1.5; margin-bottom: 16px; padding: 11px 13px; }
+    .queue-guidance { background: #f8fafb; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); font-size: .8rem; line-height: 1.5; margin: 0 0 16px; padding: 12px 14px; }
+    .preview-notice { margin-left: 260px; padding: 12px 32px; }
+    @media (max-width: 1200px) and (min-width: 901px) {
+      .site-header { padding: 14px; width: 72px; }
+      .brand { border-bottom: 0; justify-content: center; padding: 0; }
+      .brand > div, .account, .nav-group-label, .nav-count { display: none !important; }
+      .brand-logo { height: 42px; width: 42px; }
+      .primary-nav { inset: 74px auto 0 0; padding: 10px 12px; width: 72px; }
+      .nav-group { margin-bottom: 5px; }
+      .nav-button { justify-content: center; padding: 0; }
+      .nav-button > span { display: none; }
+      .page { margin-left: 72px; }
+      .preview-notice { margin-left: 72px; }
+    }
+    @media (max-width: 900px) {
+      .site-header { box-shadow: 8px 0 26px rgba(0,0,0,.28); transform: translateX(-104%); transition: transform .22s ease; width: 260px; }
+      .primary-nav { transform: translateX(-104%); transition: transform .22s ease; width: 260px; }
+      body.assessor-sidebar-open .site-header, body.assessor-sidebar-open .primary-nav { transform: translateX(0); }
+      .assessor-nav-backdrop { background: rgba(19,30,40,.38); inset: 0; position: fixed; z-index: 90; }
+      body.assessor-sidebar-open .assessor-nav-backdrop { display: block; }
+      .hub-menu-toggle { align-items: center; background: #fff; border: 1px solid var(--line); border-radius: 8px; color: var(--ink); cursor: pointer; display: inline-flex; font-size: .78rem; font-weight: 900; gap: 8px; padding: 9px 11px; }
+      .hub-menu-toggle span { font-size: 1.1rem; line-height: 1; }
+      .page { margin-left: 0; padding: 20px 18px 48px; }
+      .assessor-workspace-bar { justify-content: space-between; }
+      .workspace-sync { display: none; }
+      .preview-notice { margin-left: 0; padding: 12px 18px; }
+    }
+    @media (max-width: 620px) {
+      .page-heading { gap: 12px; }
+      .page-heading h2 { font-size: 1.65rem; }
+      .page-heading p { margin-left: 0; }
+      .page-heading h2::before { height: 23px; margin-right: 9px; }
+      .stat-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .stat-card { padding: 16px 10px; }
+      .stat-card::before { top: 16px; }
+      .stat-card strong { font-size: 1.65rem; }
+      .layout-grid { grid-template-columns: 1fr; }
+      .workspace-breadcrumb > span:not(.workspace-mark):not(#workspaceLocation), .quick-search-button { display: none; }
+    }
+  </style>
 </head>
 <body class="auth-pending">
   <header class="site-header">
     <div class="brand">
       <img class="brand-logo" src="https://ytc107.github.io/CAVA-LMS/pt-academy-logo.png" alt="PT Academy">
       <div>
-        <div class="brand-kicker">PT Academy Assessor Hub</div>
-        <h1>Focus Awards Level 3 Certificate in Assessing Vocational Achievement (RQF) (CAVA)</h1>
-        <p>Learner management, assessment decisions and programme oversight</p>
+        <div class="brand-kicker">PT Academy</div>
+        <h1>Assessor Hub</h1>
+        <p>Level 3 Certificate in Assessing Vocational Achievement</p>
       </div>
     </div>
     <div class="account">
@@ -391,12 +539,26 @@
   </header>
 
   <nav class="primary-nav" aria-label="Assessor Hub">
-    <button class="nav-button active" type="button" data-section="dashboard">Dashboard</button>
-    <button class="nav-button" type="button" data-section="learners">Learner Management</button>
-    <button class="nav-button" type="button" data-section="queue">Work Awaiting Assessment</button>
-    <button class="nav-button" type="button" data-section="sessions">Live Sessions &amp; Calendar</button>
-    <button class="nav-button" type="button" data-section="reports">Records and Reports</button>
+    <div class="nav-group">
+      <span class="nav-group-label">Today</span>
+      <button class="nav-button active" type="button" data-section="dashboard" data-icon="⌂"><span>Home</span><span id="homeNavCount" class="nav-count" hidden>0</span></button>
+      <button class="nav-button" type="button" data-section="queue" data-icon="✓"><span>Work to Review</span><span id="queueNavCount" class="nav-count" hidden>0</span></button>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">Learners</span>
+      <button class="nav-button" type="button" data-section="learners" data-icon="◎"><span>Trainee Assessors</span></button>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">Support</span>
+      <button class="nav-button" type="button" data-section="sessions" data-icon="□"><span>Calendar &amp; Support</span></button>
+    </div>
+    <div class="nav-group">
+      <span class="nav-group-label">Quality</span>
+      <button class="nav-button" type="button" data-section="reports" data-icon="◇"><span>Quality &amp; Reports</span></button>
+    </div>
   </nav>
+
+  <div class="assessor-nav-backdrop" aria-hidden="true"></div>
 
   <div id="previewNotice" class="preview-notice" role="status" hidden>
     <strong>Login required:</strong> assessment records and learner information are protected. Use the secure form below to open the authorised Assessor Hub.
@@ -417,23 +579,24 @@
   </section>
 
   <main class="page">
+    <div class="assessor-workspace-bar"><button class="hub-menu-toggle" type="button" aria-label="Open assessor navigation" aria-expanded="false"><span aria-hidden="true">☰</span> Menu</button><div class="workspace-breadcrumb"><span class="workspace-mark" aria-hidden="true"></span><strong>Assessor workspace</strong><span aria-hidden="true">/</span><span id="workspaceLocation">Home</span></div><div class="workspace-actions"><span id="workspaceSync" class="workspace-sync"><i></i> Securely connected</span><button class="quick-search-button" type="button" onclick="showSection('learners');setTimeout(()=>document.getElementById('learnerSearch').focus(),0)">Find a learner</button></div></div>
     <section id="dashboard" class="page-section active">
       <div class="page-heading">
-        <div><h2>Assessor Dashboard</h2><p>See the work requiring attention and open each trainee assessor&rsquo;s complete programme record.</p></div>
+        <div><span class="eyebrow">Your working day</span><h2>Good to see you</h2><p>Start with the work that needs a decision, then check learners who may need support.</p></div>
       </div>
       <div class="stat-grid">
-        <article class="stat-card"><span>Active trainee assessors</span><strong id="activeLearnerCount">0</strong><small>Currently on programme</small></article>
-        <article class="stat-card"><span>Plans awaiting confirmation</span><strong id="awaitingPlanCount">0</strong><small>Require assessor agreement</small></article>
-        <article class="stat-card"><span>Work awaiting assessment</span><strong id="awaitingWorkCount">0</strong><small>Submissions and reassessments</small></article>
-        <article class="stat-card"><span>Programme completion</span><strong id="completionRate">0%</strong><small>Across allocated units</small></article>
+        <button class="stat-card stat-card-button" type="button" onclick="showSection('queue')"><span>Work to review</span><strong id="awaitingWorkCount">0</strong><small>Submissions and reassessments</small><b>Open queue →</b></button>
+        <button class="stat-card stat-card-button" type="button" onclick="showSection('learners');document.getElementById('planFilter').value='awaiting';renderLearnerTable()"><span>Plans awaiting approval</span><strong id="awaitingPlanCount">0</strong><small>Require assessor confirmation</small><b>View plans →</b></button>
+        <button class="stat-card stat-card-button support" type="button" onclick="showSection('learners');document.getElementById('activityFilter').value='inactive';renderLearnerTable()"><span>Learners needing support</span><strong id="supportLearnerCount">—</strong><small>No activity for seven days</small><b>View learners →</b></button>
+        <article class="stat-card quiet"><span>Active trainee assessors</span><strong id="activeLearnerCount">0</strong><small>Currently on programme</small></article>
       </div>
       <div class="layout-grid">
         <section class="panel">
-          <div class="panel-header"><div><h3>Priority Actions</h3><p>Items that need an assessor response</p></div><button class="section-link" type="button" onclick="showSection('queue')">Open full list</button></div>
+          <div class="panel-header"><div><span class="panel-kicker">Do next</span><h3>Priority worklist</h3><p>Ordered around decisions and learner progress</p></div><button class="section-link" type="button" onclick="showSection('queue')">View all work</button></div>
           <div id="priorityActions" class="panel-body action-list"></div>
         </section>
         <aside class="panel">
-          <div class="panel-header"><div><h3>Programme Overview</h3><p>Current cohort status</p></div></div>
+          <div class="panel-header"><div><span class="panel-kicker">Cohort health</span><h3>Programme overview</h3><p>Current position at a glance</p></div><button class="section-link" type="button" onclick="showSection('reports')">Reports</button></div>
           <div id="programmeOverview" class="panel-body status-list"></div>
         </aside>
       </div>
@@ -441,19 +604,20 @@
 
     <section id="learners" class="page-section">
       <div class="page-heading">
-        <div><h2>Learner Management</h2><p>Control learner type, unit availability, live learner allocations, payment visibility and assessment records.</p></div>
+        <div><h2>Trainee Assessors</h2><p>Manage learner routes, unit availability, live learner allocations, payment visibility and assessment records.</p></div>
         <button id="inviteLearnerButton" class="primary-link" type="button" onclick="openInviteLearner()" hidden>Invite New Learner</button>
       </div>
       <div class="toolbar">
         <input id="learnerSearch" class="search-input" type="search" placeholder="Search by learner name or email" aria-label="Search learners">
         <select id="routeFilter" class="filter-select" aria-label="Filter by learner type"><option value="all">All learner types</option><option value="funded">Funded learner</option><option value="commercial">Commercial learner</option><option value="mentor">PT Academy Mentor</option><option value="unassigned">Learner type not selected</option></select>
         <select id="planFilter" class="filter-select" aria-label="Filter by plan status"><option value="all">All plan statuses</option><option value="draft">Draft plans</option><option value="awaiting">Awaiting confirmation</option><option value="confirmed">Confirmed plans</option></select>
+        <select id="activityFilter" class="filter-select" aria-label="Filter by platform activity"><option value="all">All activity</option><option value="today">Active today</option><option value="inactive">No activity for 7 days</option><option value="unknown">Activity not available</option></select>
       </div>
       <div class="unit-status-key" aria-label="Unit status key"><strong>Unit status key</strong><span><i class="not-started"></i>Not started</span><span><i class="in-progress"></i>In progress</span><span><i class="action-required"></i>Action required</span><span><i class="ready-confirm"></i>Ready to confirm</span><span><i class="passed"></i>Passed</span></div>
       <section class="panel">
         <div class="table-wrap">
           <table>
-            <thead><tr><th>Trainee assessor</th><th>Account</th><th>Learner type</th><th>Units</th><th>Assessment Plan</th><th>Progress</th><th>Next action</th></tr></thead>
+            <thead><tr><th>Trainee assessor</th><th>Last active</th><th>Learner type</th><th>Units</th><th>Assessment Plan</th><th>Progress</th><th>Next action</th></tr></thead>
             <tbody id="learnerTableBody"></tbody>
           </table>
         </div>
@@ -461,19 +625,22 @@
     </section>
 
     <section id="queue" class="page-section">
-      <div class="page-heading"><div><h2>Work Awaiting Assessment</h2><p>This is a working list, not another copy of the learner&rsquo;s evidence. Each item opens the correct learner record.</p></div></div>
+      <div class="page-heading"><div><span class="eyebrow">Your working list</span><h2>Work to Review</h2><p>Open the correct trainee assessor record to review evidence, record a decision and give feedback.</p></div></div>
+      <p class="queue-guidance"><strong>Working rule:</strong> record the assessor decision in the learner record. A Refer stays visible until the reassessment achieves Pass, protecting the assessment audit trail.</p>
       <section class="panel"><div id="assessmentQueue" class="panel-body action-list"></div></section>
     </section>
 
     <section id="sessions" class="page-section">
-      <div class="page-heading"><div><h2>Live Sessions &amp; Calendar</h2><p>Manage the programme schedule in one Google Calendar. Updates made there automatically feed the learner-facing calendar.</p></div></div>
+      <div class="page-heading"><div><span class="eyebrow">One communication centre</span><h2>Calendar and Support</h2><p>Manage sessions, learner appointments and communications through the PT Academy CAVA Support account.</p></div><a class="primary-link" href="mailto:ptacademy.cava.support@gmail.com">Email CAVA Support</a></div>
       <div class="calendar-layout">
         <section class="calendar-frame-card" aria-labelledby="assessorCalendarHeading">
           <div class="panel-header"><div><h3 id="assessorCalendarHeading">PT Academy – Assessor Qualification Live Sessions</h3><p>Upcoming training, standardisation and learner-support sessions</p></div></div>
           <iframe id="assessorCalendarFrame" class="calendar-frame" title="PT Academy Assessor Qualification calendar" loading="lazy" src="about:blank" data-src="https://calendar.google.com/calendar/embed?src=c_01147ef0f210e65d6cbda09421df4b22ebad590a41b34a9e9e3580dac1f15213%40group.calendar.google.com&amp;ctz=Europe%2FLondon&amp;mode=AGENDA&amp;showTitle=0&amp;showPrint=0&amp;showCalendars=0&amp;showTz=0"></iframe>
         </section>
         <aside class="calendar-controls">
-          <article class="calendar-control-card"><h3>Create or update sessions</h3><p>Open the dedicated Google Calendar to add, edit, cancel or repeat events. Learners see the updated schedule automatically.</p><a class="calendar-action" href="https://calendar.google.com/calendar/u/0?cid=Y18wMTE0N2VmMGYyMTBlNjVkNmNiZGEwOTQyMWRmNGIyMmViYWQ1OTBhNDFiMzRhOWU5ZTM1ODBkYWMxZjE1MjEzQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20" target="_blank" rel="noopener">Manage Google Calendar</a></article>
+          <article class="calendar-control-card"><h3>Create or update sessions</h3><p>Open the dedicated calendar using <strong>ptacademy.cava.support@gmail.com</strong>. Learners see published changes automatically.</p><a class="calendar-action" href="https://calendar.google.com/calendar/u/0?authuser=ptacademy.cava.support%40gmail.com&amp;cid=Y18wMTE0N2VmMGYyMTBlNjVkNmNiZGEwOTQyMWRmNGIyMmViYWQ1OTBhNDFiMzRhOWU5ZTM1ODBkYWMxZjE1MjEzQGdyb3VwLmNhbGVuZGFyLmdvb2dsZS5jb20" target="_blank" rel="noopener">Manage support calendar</a></article>
+          <article class="calendar-control-card"><h3>Learner support appointments</h3><p>Open the learner booking page to check the exact experience before publishing availability or sharing support links.</p><a class="calendar-action" href="https://calendar.app.google/P2m4gXg9JHaP2oqW9" target="_blank" rel="noopener">Open learner booking page</a></article>
+          <article class="calendar-control-card"><h3>Learner communications</h3><p>Use one recognisable address for learner questions, support follow-ups and calendar correspondence.</p><a class="calendar-action" href="mailto:ptacademy.cava.support@gmail.com?subject=CAVA%20learner%20support">Open support email</a></article>
           <article class="calendar-control-card"><h3>Check the learner view</h3><p>Open the Learner Hub to confirm how upcoming live sessions appear to learners.</p><a class="calendar-action" href="https://ytc107.github.io/CAVA-LMS/" target="_blank" rel="noopener">Open Learner Hub</a></article>
           <article class="calendar-control-card"><h3>Programme delivery plan</h3><p>Use the scheme of work alongside the live calendar when deciding the content and timing of sessions.</p><a class="calendar-action" href="https://ytc107.github.io/CAVA-LMS/cava-scheme-of-work.html" target="_blank" rel="noopener">Open Scheme of Work</a></article>
         </aside>
@@ -481,7 +648,7 @@
     </section>
 
     <section id="reports" class="page-section">
-      <div class="page-heading"><div><h2>Records and Reports</h2><p>Programme analytics calculated from the learner records currently available to this hub.</p></div></div>
+      <div class="page-heading"><div><h2>Quality and Reports</h2><p>Programme oversight, completion insight and quality records calculated from current learner data.</p></div></div>
       <div id="analyticsGrid" class="analytics-grid"></div>
     </section>
   </main>
@@ -529,10 +696,10 @@
       </header>
       <nav class="record-nav" aria-label="Learner record">
         <button class="record-tab active" type="button" data-record-tab="overview">Overview</button>
-        <button class="record-tab" type="button" data-record-tab="programme">Units and Funding</button>
-        <button class="record-tab" type="button" data-record-tab="plan">CAVA Assessment Plan</button>
-        <button class="record-tab" type="button" data-record-tab="marking">Work and Marking</button>
-        <button class="record-tab" type="button" data-record-tab="actions">Action Plans and Reviews</button>
+        <button class="record-tab" type="button" data-record-tab="plan">Plan</button>
+        <button class="record-tab" type="button" data-record-tab="marking">Assessment</button>
+        <button class="record-tab" type="button" data-record-tab="actions">Reviews</button>
+        <button class="record-tab" type="button" data-record-tab="programme">Programme</button>
       </nav>
       <div class="record-content">
         <section id="record-overview" class="record-pane active"></section>
@@ -542,6 +709,22 @@
         <section id="record-actions" class="record-pane"></section>
       </div>
     </article>
+  </div>
+
+  <div id="notificationOverlay" class="invite-overlay" aria-hidden="true">
+    <section class="invite-dialog notification-dialog" role="dialog" aria-modal="true" aria-labelledby="notificationTitle">
+      <div class="invite-heading"><div><span class="eyebrow">Learner communication</span><h2 id="notificationTitle">Send a support message</h2><p id="notificationRecipient">Choose an approved message and check it before sending.</p></div><button class="invite-close" type="button" onclick="closeNotificationDialog()">Close</button></div>
+      <div id="notificationMessage" class="invite-message" role="status" aria-live="polite"></div>
+      <form id="notificationForm">
+        <div class="invite-grid">
+          <div class="invite-field"><label for="notificationChannel">Delivery method</label><select id="notificationChannel" required><option value="in_app">In-Hub notification</option><option value="email">Email reminder</option></select></div>
+          <div class="invite-field"><label for="notificationTemplate">Approved message</label><select id="notificationTemplate" required><option value="support">Support check-in</option><option value="inactive">We have not seen you recently</option><option value="plan">Assessment plan reminder</option><option value="resubmission">Resubmission reminder</option></select></div>
+          <div class="invite-field full"><label for="notificationSubject">Subject</label><input id="notificationSubject" maxlength="120" required></div>
+          <div class="invite-field full"><label for="notificationBody">Message</label><textarea id="notificationBody" rows="7" maxlength="1600" required></textarea><p class="field-help">Do not include sensitive assessment feedback or unnecessary personal information.</p></div>
+        </div>
+        <div class="invite-actions"><button class="invite-close" type="button" onclick="closeNotificationDialog()">Cancel</button><button id="sendNotificationButton" class="primary-link" type="submit">Send message</button></div>
+      </form>
+    </section>
   </div>
 
   <script>
@@ -591,22 +774,9 @@
       }
     ];
 
-    const DEFAULT_LEARNERS = [
-      ['Michael Kplomedo', 'mike@yardleytrainingclub.co.uk', ['unit-1','unit-2','unit-3']],
-      ['Ahmad Masto', 'ahmadmasto@gmail.com', ['unit-1','unit-2']],
-      ['Natalia Jefimenko', 'nataliajefimenko@gmail.com', ['unit-2']],
-      ['Tal Halden-Mckeown', 'tajhaldenmckeown@gmail.com', ['unit-1','unit-2','unit-3']],
-      ['Mark Hamilton', 'markhamilton@gmail.com', ['unit-1','unit-3']],
-      ['Anthony Bevan', 'anthonybevan@gmail.com', ['unit-2','unit-3']],
-      ['David Ompreon', 'davidompreon@gmail.com', ['unit-1','unit-3']],
-      ['Francesca Tuozzo', 'francescatuozzo@gmail.com', ['unit-2','unit-3']],
-      ['Luca Panayiotou', 'lucapanayiotou@gmail.com', ['unit-2','unit-3']],
-      ['Shadman Khan', 'shadmankhan@gmail.com', ['unit-1','unit-2']],
-      ['Laura Garnier', 'lauragarnier@gmail.com', ['unit-1','unit-2']],
-      ['Irsalan Qayyum', 'irsalanqayyum@gmail.com', ['unit-1','unit-2','unit-3']],
-      ['Shera Thind', 'sherathind@gmail.com', ['unit-3']],
-      ['Aaron Finn', 'aaronfinn@gmail.com', ['unit-1','unit-2','unit-3']]
-    ];
+    // Learner data must come from the protected data service. Never embed
+    // names, email addresses or assessment records in a public HTML fallback.
+    const DEFAULT_LEARNERS = [];
 
     let learners = [];
     let remoteLearners = [];
@@ -614,6 +784,9 @@
     let sharedSchedules = {};
     let canInviteLearners = false;
     let selectedLearnerId = null;
+    let selectedNotificationLearnerId = null;
+    let learnerActivity = {};
+    let activityAvailable = false;
     let prepassDraftCounter = 0;
     const prepassDraftRows = {};
     const prepassOpenUnits = new Set([1]);
@@ -649,8 +822,7 @@
     }
 
     function loadLearners() {
-      const management = safeParse(localStorage.getItem('ptAcademyLearners') || '[]', []);
-      const source = remoteLoadComplete ? remoteLearners : (management.length ? management : DEFAULT_LEARNERS);
+      const source = remoteLoadComplete ? remoteLearners : DEFAULT_LEARNERS;
       const store = getHubStore();
       learners = source.map(function(raw, index) {
         const learner = createLearner(raw, index);
@@ -756,6 +928,42 @@
       if (!dateString) return 'Not set';
       const parts = dateString.split('-').map(Number);
       return new Intl.DateTimeFormat('en-GB',{day:'2-digit',month:'short',year:'numeric',timeZone:'UTC'}).format(new Date(Date.UTC(parts[0],parts[1]-1,parts[2])));
+    }
+
+    function formatRelativeActivity(value) {
+      if (!value) return 'Not available';
+      const timestamp = new Date(value).getTime();
+      if (!Number.isFinite(timestamp)) return 'Not available';
+      const minutes = Math.max(0, Math.floor((Date.now() - timestamp) / 60000));
+      if (minutes < 2) return 'Active now';
+      if (minutes < 60) return `${minutes} minutes ago`;
+      const hours = Math.floor(minutes / 60);
+      if (hours < 24) return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+      const days = Math.floor(hours / 24);
+      if (days < 14) return `${days} day${days === 1 ? '' : 's'} ago`;
+      return new Intl.DateTimeFormat('en-GB',{day:'2-digit',month:'short',year:'numeric'}).format(new Date(timestamp));
+    }
+
+    function formatActiveDuration(seconds) {
+      const total = Math.max(0, Number(seconds) || 0);
+      if (!total) return 'No engaged time recorded';
+      const hours = Math.floor(total / 3600);
+      const minutes = Math.round((total % 3600) / 60);
+      if (!hours) return `${Math.max(1, minutes)} min active this week`;
+      return `${hours}h ${minutes}m active this week`;
+    }
+
+    function getLearnerActivity(learner) {
+      const record = learnerActivity[learner.id] || (learner.authUserId ? learnerActivity[learner.authUserId] : null) || null;
+      if (!record) return {key:'unknown',label:'Not available',detail:'Engagement tracking has no record for this learner.',lastSeen:null,activeSeconds7d:0};
+      const lastSeen = record.last_seen_at || record.lastSeenAt || null;
+      const ageDays = lastSeen ? (Date.now() - new Date(lastSeen).getTime()) / 86400000 : Infinity;
+      const key = ageDays < 1 ? 'today' : ageDays < 7 ? 'recent' : 'inactive';
+      return {key,label:formatRelativeActivity(lastSeen),detail:formatActiveDuration(record.active_seconds_7d ?? record.activeSeconds7d),lastSeen,activeSeconds7d:Number(record.active_seconds_7d ?? record.activeSeconds7d) || 0};
+    }
+
+    function learnerNeedsSupport(learner) {
+      return getLearnerActivity(learner).key === 'inactive';
     }
 
     function addDays(dateString, days) {
@@ -870,12 +1078,14 @@
       document.getElementById('activeLearnerCount').textContent = learners.length;
       document.getElementById('awaitingPlanCount').textContent = learners.filter(item => planStatus(getLearnerPlan(item)) === 'awaiting').length;
       document.getElementById('awaitingWorkCount').textContent = queue.filter(item => item.type === 'marking').length;
-      document.getElementById('completionRate').textContent = overall+'%';
+      document.getElementById('supportLearnerCount').textContent = activityAvailable ? learners.filter(learnerNeedsSupport).length : '—';
+      ['homeNavCount','queueNavCount'].forEach(function(id){const badge=document.getElementById(id);badge.textContent=queue.length;badge.hidden=!queue.length;});
       const actions = document.getElementById('priorityActions');
       actions.innerHTML = queue.slice(0,6).map(function(item) {
-        return '<article class="action-item '+(item.urgent?'urgent':'')+'"><div><h4>'+item.title+'</h4><p>'+item.learner.fullName+' &middot; '+item.detail+'</p></div><button type="button" onclick="openLearnerRecord(\''+item.learner.id+'\',\''+(item.type==='plan'?'plan':'marking')+'\')">Open</button></article>';
-      }).join('') || '<div class="empty-state">There are no priority actions in the records currently available.</div>';
+        return '<article class="action-item '+(item.urgent?'urgent':'')+'"><div><span class="panel-kicker">'+(item.urgent?'Action required':'Ready to review')+'</span><h4>'+item.title+'</h4><p>'+item.learner.fullName+' &middot; '+item.detail+'</p></div><button type="button" onclick="openLearnerRecord(\''+item.learner.id+'\',\''+(item.type==='plan'?'plan':'marking')+'\')">Review now</button></article>';
+      }).join('') || '<div class="empty-state"><strong>You are up to date.</strong><br>There are no priority actions in the records currently available.</div>';
       document.getElementById('programmeOverview').innerHTML = [
+        ['Overall programme progress',overall,100],
         ['Confirmed plans',confirmed,learners.length],
         ['Learner types selected',learners.filter(item=>item.route!=='unassigned').length,learners.length],
         ['Level 2 learners allocated',learners.filter(item=>item.level2Learner).length,learners.length],
@@ -887,17 +1097,18 @@
       const search = document.getElementById('learnerSearch').value.trim().toLowerCase();
       const route = document.getElementById('routeFilter').value;
       const planFilter = document.getElementById('planFilter').value;
+      const activityFilter = document.getElementById('activityFilter').value;
       const filtered = learners.filter(function(learner) {
         const matchesSearch = !search || learner.fullName.toLowerCase().includes(search) || learner.email.toLowerCase().includes(search);
-        return matchesSearch && (route === 'all' || learner.route === route) && (planFilter === 'all' || planStatus(getLearnerPlan(learner)) === planFilter);
+        const activity = getLearnerActivity(learner);
+        return matchesSearch && (route === 'all' || learner.route === route) && (planFilter === 'all' || planStatus(getLearnerPlan(learner)) === planFilter) && (activityFilter === 'all' || activity.key === activityFilter);
       }).sort((a,b)=>a.fullName.localeCompare(b.fullName));
       document.getElementById('learnerTableBody').innerHTML = filtered.map(function(learner) {
         const plan = getLearnerPlan(learner); const status = planStatus(plan); const progress = getProgress(learner);
+        const activity = getLearnerActivity(learner);
         const units = [1,2,3].map(function(unit){const state=getUnitDisplayStatus(learner,unit);return '<span class="unit-dot '+state.key+'" title="Unit '+unit+': '+state.label+'" aria-label="Unit '+unit+': '+state.label+'">'+unit+'</span>';}).join('');
         const next = status === 'awaiting' ? 'Confirm plan' : status === 'draft' ? 'Plan not submitted' : progress.percentage === 100 ? 'Complete' : 'Review progress';
-        const accountStatus=learner.accountStatus==='invited'?'invited':'active';
-        const accountLabel=accountStatus==='invited'?'Awaiting activation':'Account active';
-        return '<tr><td><button class="learner-button" type="button" onclick="openLearnerRecord(\''+learner.id+'\')">'+learner.fullName+'</button><span class="subtext">'+(learner.email||'No email recorded')+'</span></td><td><span class="pill '+accountStatus+'">'+accountLabel+'</span></td><td>'+routePill(learner)+'</td><td><div class="unit-dots">'+units+'</div></td><td><span class="pill '+status+'">'+planStatusLabel(status)+'</span></td><td><strong>'+progress.percentage+'%</strong><span class="subtext">'+progress.complete+' of '+progress.total+' outcomes</span></td><td><button class="row-action" type="button" onclick="openLearnerRecord(\''+learner.id+'\',\''+(status==='awaiting'?'plan':'overview')+'\')">'+next+'</button></td></tr>';
+        return '<tr><td><button class="learner-button" type="button" onclick="openLearnerRecord(\''+learner.id+'\')">'+learner.fullName+'</button><span class="subtext">'+(learner.email||'No email recorded')+'</span></td><td><span class="activity-status '+activity.key+'">'+activity.label+'</span><span class="subtext">'+activity.detail+'</span></td><td>'+routePill(learner)+'</td><td><div class="unit-dots">'+units+'</div></td><td><span class="pill '+status+'">'+planStatusLabel(status)+'</span></td><td><strong>'+progress.percentage+'%</strong><span class="subtext">'+progress.complete+' of '+progress.total+' outcomes</span></td><td><button class="row-action" type="button" onclick="openLearnerRecord(\''+learner.id+'\',\''+(status==='awaiting'?'plan':'overview')+'\')">'+next+'</button></td></tr>';
       }).join('') || '<tr><td colspan="7" class="empty-state">No learners match the selected filters.</td></tr>';
     }
 
@@ -912,15 +1123,20 @@
       const routes = {funded:learners.filter(x=>x.route==='funded').length,commercial:learners.filter(x=>x.route==='commercial').length,mentor:learners.filter(x=>x.route==='mentor').length,unassigned:learners.filter(x=>x.route==='unassigned').length};
       const passed = learners.reduce((sum,learner)=>sum+getProgress(learner).complete,0);
       const openReferrals = getQueueItems().filter(item=>item.urgent).length;
+      const inactive = activityAvailable ? learners.filter(learnerNeedsSupport).length : null;
       document.getElementById('analyticsGrid').innerHTML = `
         <article class="analytics-card"><h3>Learner Types</h3><div class="key-value"><span>Funded learner</span><strong>${routes.funded}</strong></div><div class="key-value"><span>Commercial learner</span><strong>${routes.commercial}</strong></div><div class="key-value"><span>PT Academy Mentor</span><strong>${routes.mentor}</strong></div><div class="key-value"><span>Not selected</span><strong>${routes.unassigned}</strong></div></article>
-        <article class="analytics-card"><h3>Assessment Activity</h3><div class="key-value"><span>Learning outcomes passed</span><strong>${passed}</strong></div><div class="key-value"><span>Open referrals</span><strong>${openReferrals}</strong></div><div class="key-value"><span>Items awaiting action</span><strong>${getQueueItems().length}</strong></div></article>
+        <article class="analytics-card"><h3>Assessment Activity</h3><div class="key-value"><span>Learning outcomes passed</span><strong>${passed}</strong></div><div class="key-value"><span>Open referrals</span><strong>${openReferrals}</strong></div><div class="key-value"><span>Items awaiting action</span><strong>${getQueueItems().length}</strong></div><div class="key-value"><span>Inactive for 7+ days</span><strong>${inactive === null ? 'Not connected' : inactive}</strong></div></article>
         <article class="analytics-card"><h3>Planning</h3><div class="key-value"><span>Confirmed plans</span><strong>${learners.filter(x=>planStatus(getLearnerPlan(x))==='confirmed').length}</strong></div><div class="key-value"><span>Awaiting confirmation</span><strong>${learners.filter(x=>planStatus(getLearnerPlan(x))==='awaiting').length}</strong></div><div class="key-value"><span>Draft plans</span><strong>${learners.filter(x=>planStatus(getLearnerPlan(x))==='draft').length}</strong></div></article>`;
     }
 
     function showSection(sectionId) {
       document.querySelectorAll('.page-section').forEach(section=>section.classList.toggle('active',section.id===sectionId));
       document.querySelectorAll('.nav-button').forEach(button=>button.classList.toggle('active',button.dataset.section===sectionId));
+      const labels={dashboard:'Home',learners:'Trainee Assessors',queue:'Work to Review',sessions:'Calendar & Support',reports:'Quality & Reports'};
+      document.getElementById('workspaceLocation').textContent=labels[sectionId]||'Home';
+      document.body.classList.remove('assessor-sidebar-open');
+      document.querySelector('.hub-menu-toggle')?.setAttribute('aria-expanded','false');
       if (sectionId==='learners') renderLearnerTable();
       if (sectionId==='queue') renderQueue();
       if (sectionId==='sessions') loadAssessorCalendar();
@@ -966,10 +1182,12 @@
 
     function renderRecordOverview(learner) {
       const plan=getLearnerPlan(learner), progress=getProgress(learner), queue=getQueueItems().filter(item=>item.learner.id===learner.id);
+      const activity=getLearnerActivity(learner);
       const accessLabel=learner.accountStatus==='active'?'Send password setup email':learner.authUserId?'Resend access email':'Send platform invitation';
       const accessAction=canInviteLearners&&learner.email?`<article class="detail-card"><h4>Learner Hub Access</h4><p>The email is sent to <strong>${escapeHtml(learner.email)}</strong>. It provides secure access to the Learner Hub and does not create a duplicate learner record.</p><button id="existingLearnerInviteButton" class="primary-link" type="button" onclick="sendExistingLearnerInvitation('${learner.id}')">${accessLabel}</button><div id="existingLearnerInviteMessage" class="invite-message" role="status" aria-live="polite"></div></article>`:'';
       const editAction=canInviteLearners?`<article class="detail-card"><h4>Learner Details</h4><div class="key-value"><span>Email address</span><strong>${escapeHtml(learner.email||'Not recorded')}</strong></div><div class="key-value"><span>Contact number</span><strong>${escapeHtml(learner.contactNumber||'Not recorded')}</strong></div><p>Changes made here update both the Assessor Hub record and the linked Supabase login account.</p><button class="primary-link" type="button" onclick="openEditLearner('${learner.id}')">Edit Learner Details</button></article>`:'';
-      document.getElementById('record-overview').innerHTML=`<h3>Programme Overview</h3><div class="detail-grid"><article class="detail-card"><h4>Current Position</h4><div class="key-value"><span>Overall progress</span><strong>${progress.percentage}%</strong></div><div class="key-value"><span>Assessment Plan</span><strong>${planStatusLabel(planStatus(plan))}</strong></div><div class="key-value"><span>Outstanding actions</span><strong>${queue.length}</strong></div><div class="key-value"><span>Programme start</span><strong>${formatDate(plan.startDate||learner.startDate)}</strong></div></article><article class="detail-card"><h4>Allocated Live Learners</h4><div class="key-value"><span>Level 2 Gym Instructor</span><strong>${learner.level2Learner||'Not allocated'}</strong></div><div class="key-value"><span>Level 3 Personal Training</span><strong>${learner.level3Learner||'Not allocated'}</strong></div><div class="key-value"><span>Learner type</span><strong>${learner.route==='funded'?'Funded learner':learner.route==='commercial'?'Commercial learner':learner.route==='mentor'?'PT Academy Mentor':'Not selected'}</strong></div></article>${editAction}${accessAction}</div>`;
+      const trackingNote=activityAvailable?'Engagement information is an indicator for timely support, not a measure of learner effort or achievement.':'Engagement tracking is ready in this interface and will appear after the secure activity service is deployed.';
+      document.getElementById('record-overview').innerHTML=`<h3>Programme Overview</h3><div class="record-quick-actions"><strong>Quick actions</strong><button class="primary" type="button" onclick="showRecordTab('marking')">Review work</button><button type="button" onclick="openNotificationDialog('${learner.id}')">Contact learner</button><button type="button" onclick="showSection('sessions');closeLearnerRecord()">Schedule support</button><button type="button" onclick="showRecordTab('plan')">Open plan</button></div><div class="detail-grid"><article class="detail-card"><h4>Current Position</h4><div class="key-value"><span>Overall progress</span><strong>${progress.percentage}%</strong></div><div class="key-value"><span>Assessment Plan</span><strong>${planStatusLabel(planStatus(plan))}</strong></div><div class="key-value"><span>Outstanding actions</span><strong>${queue.length}</strong></div><div class="key-value"><span>Programme start</span><strong>${formatDate(plan.startDate||learner.startDate)}</strong></div></article><article class="detail-card"><h4>Platform Engagement</h4><div class="key-value"><span>Last active</span><strong class="activity-status ${activity.key}">${activity.label}</strong></div><div class="key-value"><span>Engaged time</span><strong>${activity.detail}</strong></div><div class="key-value"><span>Support status</span><strong>${activity.key==='inactive'?'Check in recommended':activity.key==='unknown'?'Awaiting data':'No inactivity flag'}</strong></div><p class="activity-privacy">${trackingNote}</p><button class="primary-link" type="button" onclick="openNotificationDialog('${learner.id}')">Send support message</button></article><article class="detail-card"><h4>Allocated Live Learners</h4><div class="key-value"><span>Level 2 Gym Instructor</span><strong>${learner.level2Learner||'Not allocated'}</strong></div><div class="key-value"><span>Level 3 Personal Training</span><strong>${learner.level3Learner||'Not allocated'}</strong></div><div class="key-value"><span>Learner type</span><strong>${learner.route==='funded'?'Funded learner':learner.route==='commercial'?'Commercial learner':learner.route==='mentor'?'PT Academy Mentor':'Not selected'}</strong></div></article>${editAction}${accessAction}</div>`;
     }
 
     function priorAchievementMarkup(learner, unitNumber) {
@@ -1355,6 +1573,69 @@
       document.getElementById('record-actions').innerHTML=`<h3>Action Plans and Reviews</h3><div class="detail-card"><h4>Shared learner-working record</h4><p>Use the Action Plan whenever the trainee assessor plans or reviews work with an allocated Level 2 or Level 3 learner. Funding and payment settings remain in Units and Funding and are not duplicated here.</p><a class="secondary-link" href="${actionUrl.href}" target="_blank" rel="noopener">Open Action Plan Workspace</a></div>`;
     }
 
+    async function loadLearnerActivity() {
+      learnerActivity={};activityAvailable=false;
+      try {
+        const {data,error}=await sb.functions.invoke('assessor-engagement',{body:{window_days:7}});
+        if(error||data?.error)throw error||new Error(data.error);
+        const rows=Array.isArray(data?.activity)?data.activity:[];
+        rows.forEach(function(row){
+          if(row.learner_id)learnerActivity[row.learner_id]=row;
+          if(row.user_id)learnerActivity[row.user_id]=row;
+        });
+        activityAvailable=true;
+      } catch(error) {
+        console.info('Learner engagement is not connected yet.',error);
+      }
+    }
+
+    const notificationTemplates={
+      support:{subject:'How can we support you?',body:'Hello {{name}},\n\nI am checking in to see how you are getting on with your CAVA programme. If anything is preventing you from progressing, please reply or book a support appointment so we can help.\n\nKind regards,\nPT Academy'},
+      inactive:{subject:'Your CAVA programme – support check-in',body:'Hello {{name}},\n\nWe have not seen recent activity in your Learner Hub. Please sign in when you can and check your next action. If you need support, reply to this message or book an appointment.\n\nKind regards,\nPT Academy'},
+      plan:{subject:'Reminder: complete your CAVA Assessment Plan',body:'Hello {{name}},\n\nYour CAVA Assessment Plan still needs attention. Please open the Learner Hub, review the plan and complete the required declaration. Contact us if you need help.\n\nKind regards,\nPT Academy'},
+      resubmission:{subject:'Reminder: CAVA work awaiting resubmission',body:'Hello {{name}},\n\nYour learner record shows an action awaiting resubmission. Please review the feedback in your Learner Hub and submit the updated evidence when ready. Contact us if you would like support.\n\nKind regards,\nPT Academy'}
+    };
+
+    function applyNotificationTemplate() {
+      const learner=learners.find(item=>item.id===selectedNotificationLearnerId);
+      const template=notificationTemplates[document.getElementById('notificationTemplate').value]||notificationTemplates.support;
+      document.getElementById('notificationSubject').value=template.subject;
+      document.getElementById('notificationBody').value=template.body.replace('{{name}}',learner?.fullName||'');
+    }
+
+    function openNotificationDialog(learnerId) {
+      const learner=learners.find(item=>item.id===learnerId);
+      if(!learner)return;
+      selectedNotificationLearnerId=learnerId;
+      document.getElementById('notificationRecipient').textContent=`To ${learner.fullName} · ${learner.email||'no email recorded'} · replies to ptacademy.cava.support@gmail.com`;
+      document.getElementById('notificationTemplate').value=getLearnerActivity(learner).key==='inactive'?'inactive':'support';
+      document.getElementById('notificationMessage').className='invite-message';
+      document.getElementById('notificationMessage').textContent='';
+      applyNotificationTemplate();
+      const overlay=document.getElementById('notificationOverlay');overlay.classList.add('open');overlay.setAttribute('aria-hidden','false');
+      document.getElementById('notificationChannel').focus();
+    }
+
+    function closeNotificationDialog() {
+      const overlay=document.getElementById('notificationOverlay');overlay.classList.remove('open');overlay.setAttribute('aria-hidden','true');
+      selectedNotificationLearnerId=null;
+    }
+
+    document.getElementById('notificationTemplate').addEventListener('change',applyNotificationTemplate);
+    document.getElementById('notificationForm').addEventListener('submit',async function(event){
+      event.preventDefault();
+      const learner=learners.find(item=>item.id===selectedNotificationLearnerId);
+      if(!learner)return;
+      const button=document.getElementById('sendNotificationButton');const message=document.getElementById('notificationMessage');
+      button.disabled=true;button.textContent='Sending…';message.className='invite-message';message.textContent='';
+      const payload={learner_id:learner.id,channel:document.getElementById('notificationChannel').value,template:document.getElementById('notificationTemplate').value,subject:document.getElementById('notificationSubject').value.trim(),body:document.getElementById('notificationBody').value.trim()};
+      const {data,error}=await sb.functions.invoke('send-learner-notification',{body:payload});
+      button.disabled=false;button.textContent='Send message';
+      if(error||data?.error){message.textContent=data?.error||'Notifications are not connected yet. Complete the supplied Supabase setup before sending.';message.className='invite-message error show';return;}
+      message.textContent=data?.message||'The support message has been sent and recorded.';message.className='invite-message success show';
+      setTimeout(closeNotificationDialog,1500);
+    });
+
     async function loadRemoteLearners() {
       const {data,error}=await sb.from('learners').select('id,full_name,email,contact_number,programme_start_date,learner_type,account_status,auth_user_id,invited_at,activated_at').order('full_name');
       if(error){console.warn('Learner records could not be loaded.',error);remoteLearners=[];remoteLoadComplete=false;return;}
@@ -1422,7 +1703,7 @@
       }
       const currentLearner=learners.find(item=>item.id===learnerId);
       if(currentLearner)migrateLearnerEmailStorage(currentLearner,oldEmail,newEmail);
-      await Promise.all([loadRemoteLearners(),loadSharedSchedules()]);loadLearners();renderAll();
+      await Promise.all([loadRemoteLearners(),loadSharedSchedules(),loadLearnerActivity()]);loadLearners();renderAll();
       const refreshed=learners.find(item=>item.id===learnerId);
       if(refreshed){
         selectedLearnerId=learnerId;
@@ -1559,7 +1840,7 @@
       const authorised=await initialiseSession();
       submit.disabled=false;submit.textContent='Login securely';
       if(!authorised)return;
-      await Promise.all([loadRemoteLearners(),loadSharedSchedules()]);loadLearners();renderAll();
+      await Promise.all([loadRemoteLearners(),loadSharedSchedules(),loadLearnerActivity()]);loadLearners();renderAll();
     });
 
     function renderAll() { syncActiveLearnerPlan(); renderDashboard(); renderLearnerTable(); renderQueue(); renderReports(); }
@@ -1569,15 +1850,86 @@
     document.getElementById('learnerSearch').addEventListener('input',renderLearnerTable);
     document.getElementById('routeFilter').addEventListener('change',renderLearnerTable);
     document.getElementById('planFilter').addEventListener('change',renderLearnerTable);
+    document.getElementById('activityFilter').addEventListener('change',renderLearnerTable);
     document.getElementById('learnerRecordOverlay').addEventListener('click',event=>{if(event.target.id==='learnerRecordOverlay')closeLearnerRecord();});
     document.getElementById('inviteLearnerOverlay').addEventListener('click',event=>{if(event.target.id==='inviteLearnerOverlay')closeInviteLearner();});
     document.getElementById('editLearnerOverlay').addEventListener('click',event=>{if(event.target.id==='editLearnerOverlay')closeEditLearner();});
+    document.getElementById('notificationOverlay').addEventListener('click',event=>{if(event.target.id==='notificationOverlay')closeNotificationDialog();});
     window.addEventListener('focus',()=>{syncActiveLearnerPlan();if(selectedLearnerId)openLearnerRecord(selectedLearnerId,document.querySelector('.record-tab.active')?.dataset.recordTab||'overview');renderAll();});
 
     document.addEventListener('DOMContentLoaded',async function(){
       if(!await initialiseSession())return;
-      await loadRemoteLearners();loadLearners();renderAll();
+      await Promise.all([loadRemoteLearners(),loadSharedSchedules(),loadLearnerActivity()]);loadLearners();renderAll();
     });
+  </script>
+  <script>
+    /* Navigation enhancement only. It leaves the existing assessor routing and records untouched. */
+    (function () {
+      const navLabels = {
+        dashboard: ['⌂', 'Home'],
+        learners: ['◎', 'Trainee Assessors'],
+        queue: ['✓', 'Work to Review'],
+        sessions: ['□', 'Calendar & Support'],
+        reports: ['◇', 'Quality & Reports']
+      };
+      function setWorkspaceLabel(section) {
+        const item = navLabels[section];
+        const label = document.getElementById('workspaceLocation');
+        if (label && item) label.textContent = item[1];
+      }
+      document.querySelectorAll('.nav-button').forEach(function (button) {
+        const item = navLabels[button.dataset.section];
+        if (item) {
+          button.dataset.icon = item[0];
+          button.title = item[1];
+          button.setAttribute('aria-label', item[1]);
+          button.addEventListener('click', function () {
+            setWorkspaceLabel(button.dataset.section);
+            document.body.classList.remove('assessor-sidebar-open');
+            const toggle = document.querySelector('.hub-menu-toggle');
+            if (toggle) toggle.setAttribute('aria-expanded', 'false');
+          });
+        }
+      });
+      const toggle = document.querySelector('.hub-menu-toggle');
+      const backdrop = document.querySelector('.assessor-nav-backdrop');
+      function closeNavigation() {
+        document.body.classList.remove('assessor-sidebar-open');
+        if (toggle) toggle.setAttribute('aria-expanded', 'false');
+      }
+      if (toggle) toggle.addEventListener('click', function () {
+        const open = document.body.classList.toggle('assessor-sidebar-open');
+        toggle.setAttribute('aria-expanded', String(open));
+      });
+      if (backdrop) backdrop.addEventListener('click', closeNavigation);
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') closeNavigation();
+      });
+
+      function addRecordContext() {
+        const overview = document.getElementById('record-overview');
+        if (!overview || overview.querySelector('.record-context-banner') || typeof selectedLearnerId === 'undefined' || !selectedLearnerId) return;
+        const learner = typeof learners !== 'undefined' && Array.isArray(learners) ? learners.find(function (item) { return item.id === selectedLearnerId; }) : null;
+        if (!learner) return;
+        const plan = typeof getLearnerPlan === 'function' ? getLearnerPlan(learner) : {};
+        const status = typeof planStatus === 'function' ? planStatus(plan) : 'draft';
+        const openReferral = Object.values(plan.records || {}).some(function (record) {
+          return record && record.initial && record.initial.outcome === 'Refer' && !(typeof recordIsPassed === 'function' && recordIsPassed(record));
+        });
+        const target = openReferral ? 'marking' : status === 'awaiting' ? 'plan' : 'actions';
+        const heading = openReferral ? 'Action needed: reassessment is outstanding' : status === 'awaiting' ? 'Action needed: assessment plan awaits confirmation' : 'Next step: keep the learner journey moving';
+        const copy = openReferral ? 'Open Assessment to review the evidence and preserve the original Refer decision.' : status === 'awaiting' ? 'Review the learner declaration and confirm the assessment plan when it is ready.' : 'Use Reviews after a support discussion or when a learner needs a clear agreed target.';
+        const button = openReferral ? 'Open assessment' : status === 'awaiting' ? 'Review plan' : 'Open reviews';
+        overview.insertAdjacentHTML('afterbegin', '<div class="record-context-banner"><div><strong>' + heading + '</strong><p>' + copy + '</p></div><button type="button" data-open-record-tab="' + target + '">' + button + '</button></div>');
+      }
+      document.addEventListener('click', function (event) {
+        const target = event.target.closest('[data-open-record-tab]');
+        if (target && typeof showRecordTab === 'function') showRecordTab(target.dataset.openRecordTab);
+      });
+      const overview = document.getElementById('record-overview');
+      if (overview) new MutationObserver(addRecordContext).observe(overview, { childList: true });
+      addRecordContext();
+    }());
   </script>
 </body>
 </html>
