@@ -479,6 +479,10 @@
     .invite-field textarea:focus { border-color: var(--gold-dark); box-shadow: 0 0 0 4px rgba(201,168,76,0.15); outline: none; }
     .configuration-note { align-items: flex-start; background: #fff8e6; border: 1px solid #ecdca9; border-left: 4px solid var(--gold); border-radius: 7px; color: #64501a; display: flex; font-size: .76rem; gap: 9px; line-height: 1.5; margin-bottom: 16px; padding: 11px 13px; }
     .queue-guidance { background: #f8fafb; border: 1px solid var(--line); border-radius: 8px; color: var(--muted); font-size: .8rem; line-height: 1.5; margin: 0 0 16px; padding: 12px 14px; }
+    .assessor-floating-return { align-items: center; background: #111; border: 2px solid var(--gold); border-radius: 999px; bottom: 22px; box-shadow: 0 12px 30px rgba(0,0,0,.28); color: #fff; cursor: pointer; display: inline-flex; font-size: .88rem; font-weight: 900; gap: 11px; left: 292px; min-height: 48px; padding: 0 22px; position: fixed; transform: translateY(0); transition: opacity .18s ease, transform .18s ease; z-index: 1120; }
+    .assessor-floating-return span { color: var(--gold); font-size: 1.15rem; line-height: 1; }
+    .assessor-floating-return:hover, .assessor-floating-return:focus-visible { background: #fff; color: #111; outline: none; }
+    .assessor-floating-return[hidden] { display: none; }
     .preview-notice { margin-left: 260px; padding: 12px 32px; }
     @media (max-width: 1200px) and (min-width: 901px) {
       .site-header { padding: 14px; width: 72px; }
@@ -490,6 +494,7 @@
       .nav-button { justify-content: center; padding: 0; }
       .nav-button > span { display: none; }
       .page { margin-left: 72px; }
+      .assessor-floating-return { left: 104px; }
       .preview-notice { margin-left: 72px; }
     }
     @media (max-width: 900px) {
@@ -503,6 +508,7 @@
       .page { margin-left: 0; padding: 20px 18px 48px; }
       .assessor-workspace-bar { justify-content: space-between; }
       .workspace-sync { display: none; }
+      .assessor-floating-return { bottom: 16px; left: 16px; max-width: calc(100vw - 32px); }
       .preview-notice { margin-left: 0; padding: 12px 18px; }
     }
     @media (max-width: 620px) {
@@ -653,6 +659,11 @@
     </section>
   </main>
 
+  <button id="assessorFloatingBack" class="assessor-floating-return" type="button" onclick="handleAssessorFloatingBack()" hidden>
+    <span aria-hidden="true">&larr;</span>
+    <strong id="assessorFloatingBackLabel">Back to Home</strong>
+  </button>
+
   <div id="inviteLearnerOverlay" class="invite-overlay" aria-hidden="true">
     <section class="invite-dialog" role="dialog" aria-modal="true" aria-labelledby="inviteLearnerTitle">
       <div class="invite-heading"><div><h2 id="inviteLearnerTitle">Invite New Learner</h2><p>Create the approved account and email the learner a secure activation link.</p></div><button class="invite-close" type="button" onclick="closeInviteLearner()">Close</button></div>
@@ -785,6 +796,8 @@
     let canInviteLearners = false;
     let selectedLearnerId = null;
     let selectedNotificationLearnerId = null;
+    let currentAssessorSectionId = 'dashboard';
+    let learnerRecordReturnSectionId = 'dashboard';
     let learnerActivity = {};
     let activityAvailable = false;
     let prepassDraftCounter = 0;
@@ -1130,11 +1143,43 @@
         <article class="analytics-card"><h3>Planning</h3><div class="key-value"><span>Confirmed plans</span><strong>${learners.filter(x=>planStatus(getLearnerPlan(x))==='confirmed').length}</strong></div><div class="key-value"><span>Awaiting confirmation</span><strong>${learners.filter(x=>planStatus(getLearnerPlan(x))==='awaiting').length}</strong></div><div class="key-value"><span>Draft plans</span><strong>${learners.filter(x=>planStatus(getLearnerPlan(x))==='draft').length}</strong></div></article>`;
     }
 
+    function getAssessorSectionLabel(sectionId) {
+      const labels = {dashboard:'Home',learners:'Trainee Assessors',queue:'Work to Review',sessions:'Calendar & Support',reports:'Quality & Reports'};
+      return labels[sectionId] || 'Home';
+    }
+
+    function updateAssessorFloatingBack() {
+      const button = document.getElementById('assessorFloatingBack');
+      const label = document.getElementById('assessorFloatingBackLabel');
+      if (!button || !label || document.body.classList.contains('auth-pending') || document.body.classList.contains('auth-locked')) return;
+      const recordOpen = document.getElementById('learnerRecordOverlay')?.classList.contains('open');
+      if (recordOpen) {
+        label.textContent = 'Back to ' + getAssessorSectionLabel(learnerRecordReturnSectionId);
+        button.hidden = false;
+        return;
+      }
+      label.textContent = 'Back to ' + getAssessorSectionLabel(currentAssessorSectionId);
+      button.hidden = window.scrollY < 220;
+    }
+
+    function handleAssessorFloatingBack() {
+      const recordOpen = document.getElementById('learnerRecordOverlay')?.classList.contains('open');
+      if (recordOpen) {
+        closeLearnerRecord();
+        const section = document.getElementById(learnerRecordReturnSectionId);
+        if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
+      }
+      const section = document.getElementById(currentAssessorSectionId);
+      if (section) section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      else window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
     function showSection(sectionId) {
       document.querySelectorAll('.page-section').forEach(section=>section.classList.toggle('active',section.id===sectionId));
       document.querySelectorAll('.nav-button').forEach(button=>button.classList.toggle('active',button.dataset.section===sectionId));
-      const labels={dashboard:'Home',learners:'Trainee Assessors',queue:'Work to Review',sessions:'Calendar & Support',reports:'Quality & Reports'};
-      document.getElementById('workspaceLocation').textContent=labels[sectionId]||'Home';
+      currentAssessorSectionId = sectionId || 'dashboard';
+      document.getElementById('workspaceLocation').textContent=getAssessorSectionLabel(currentAssessorSectionId);
       document.body.classList.remove('assessor-sidebar-open');
       document.querySelector('.hub-menu-toggle')?.setAttribute('aria-expanded','false');
       if (sectionId==='learners') renderLearnerTable();
@@ -1142,6 +1187,7 @@
       if (sectionId==='sessions') loadAssessorCalendar();
       if (sectionId==='reports') renderReports();
       window.scrollTo(0,0);
+      updateAssessorFloatingBack();
     }
 
     function loadAssessorCalendar() {
@@ -1151,6 +1197,7 @@
 
     function openLearnerRecord(learnerId, tab) {
       syncActiveLearnerPlan();
+      learnerRecordReturnSectionId = currentAssessorSectionId || document.querySelector('.page-section.active')?.id || 'dashboard';
       selectedLearnerId = learnerId;
       const learner = learners.find(item=>item.id===learnerId);
       if (!learner) return;
@@ -1167,12 +1214,14 @@
       renderRecordActions(learner);
       showRecordTab(tab||'overview');
       const overlay=document.getElementById('learnerRecordOverlay'); overlay.classList.add('open'); overlay.setAttribute('aria-hidden','false');
+      updateAssessorFloatingBack();
     }
 
     function closeLearnerRecord() {
       document.getElementById('learnerRecordOverlay').classList.remove('open');
       document.getElementById('learnerRecordOverlay').setAttribute('aria-hidden','true');
       selectedLearnerId=null; renderAll();
+      updateAssessorFloatingBack();
     }
 
     function showRecordTab(tab) {
@@ -1590,17 +1639,21 @@
     }
 
     const notificationTemplates={
-      support:{subject:'How can we support you?',body:'Hello {{name}},\n\nI am checking in to see how you are getting on with your CAVA programme. If anything is preventing you from progressing, please reply or book a support appointment so we can help.\n\nKind regards,\nPT Academy'},
-      inactive:{subject:'Your CAVA programme – support check-in',body:'Hello {{name}},\n\nWe have not seen recent activity in your Learner Hub. Please sign in when you can and check your next action. If you need support, reply to this message or book an appointment.\n\nKind regards,\nPT Academy'},
-      plan:{subject:'Reminder: complete your CAVA Assessment Plan',body:'Hello {{name}},\n\nYour CAVA Assessment Plan still needs attention. Please open the Learner Hub, review the plan and complete the required declaration. Contact us if you need help.\n\nKind regards,\nPT Academy'},
-      resubmission:{subject:'Reminder: CAVA work awaiting resubmission',body:'Hello {{name}},\n\nYour learner record shows an action awaiting resubmission. Please review the feedback in your Learner Hub and submit the updated evidence when ready. Contact us if you would like support.\n\nKind regards,\nPT Academy'}
+      support:{subject:'How can we support you?',body:'Hello {{firstName}},\n\nI am checking in to see how you are getting on with your CAVA programme. If anything is preventing you from progressing, please reply or book a support appointment so we can help.\n\nKind regards,\nMikey'},
+      inactive:{subject:'Your CAVA programme - support check-in',body:'Hello {{firstName}},\n\nI have not seen recent activity in your Learner Hub. Please sign in when you can and check your next action. If you need support, reply to this message or book an appointment.\n\nKind regards,\nMikey'},
+      plan:{subject:'Reminder: complete your CAVA Assessment Plan',body:'Hello {{firstName}},\n\nYour CAVA Assessment Plan still needs attention. Please open the Learner Hub, review the plan and complete the required declaration. Contact me if you need help.\n\nKind regards,\nMikey'},
+      resubmission:{subject:'Reminder: CAVA work awaiting resubmission',body:'Hello {{firstName}},\n\nYour learner record shows an action awaiting resubmission. Please review the feedback in your Learner Hub and submit the updated evidence when ready. Contact me if you would like support.\n\nKind regards,\nMikey'}
     };
+
+    function learnerFirstName(learner) {
+      return String(learner?.fullName || learner?.email || 'there').trim().split(/\s+/)[0] || 'there';
+    }
 
     function applyNotificationTemplate() {
       const learner=learners.find(item=>item.id===selectedNotificationLearnerId);
       const template=notificationTemplates[document.getElementById('notificationTemplate').value]||notificationTemplates.support;
       document.getElementById('notificationSubject').value=template.subject;
-      document.getElementById('notificationBody').value=template.body.replace('{{name}}',learner?.fullName||'');
+      document.getElementById('notificationBody').value=template.body.replace('{{firstName}}',learnerFirstName(learner));
     }
 
     function openNotificationDialog(learnerId) {
@@ -1788,7 +1841,7 @@
       const {data:adminRecord}=await sb.from('super_admins').select('user_id').eq('user_id',user.id).maybeSingle();
       canInviteLearners=Boolean(adminRecord);
       if(!canInviteLearners){
-        const {data:assignment}=await sb.from('assessor_assignments table').select('id').eq('assessor_id',user.id).limit(1).maybeSingle();
+        const {data:assignment}=await sb.from('assessor_assignments').select('id').eq('assessor_id',user.id).limit(1).maybeSingle();
         if(!assignment){
           document.body.classList.remove('auth-pending');document.body.classList.add('auth-locked');
           document.getElementById('accountEmail').textContent=user.email||'Authorised account';
@@ -1855,11 +1908,12 @@
     document.getElementById('inviteLearnerOverlay').addEventListener('click',event=>{if(event.target.id==='inviteLearnerOverlay')closeInviteLearner();});
     document.getElementById('editLearnerOverlay').addEventListener('click',event=>{if(event.target.id==='editLearnerOverlay')closeEditLearner();});
     document.getElementById('notificationOverlay').addEventListener('click',event=>{if(event.target.id==='notificationOverlay')closeNotificationDialog();});
+    window.addEventListener('scroll',updateAssessorFloatingBack,{passive:true});
     window.addEventListener('focus',()=>{syncActiveLearnerPlan();if(selectedLearnerId)openLearnerRecord(selectedLearnerId,document.querySelector('.record-tab.active')?.dataset.recordTab||'overview');renderAll();});
 
     document.addEventListener('DOMContentLoaded',async function(){
       if(!await initialiseSession())return;
-      await Promise.all([loadRemoteLearners(),loadSharedSchedules(),loadLearnerActivity()]);loadLearners();renderAll();
+      await Promise.all([loadRemoteLearners(),loadSharedSchedules(),loadLearnerActivity()]);loadLearners();renderAll();updateAssessorFloatingBack();
     });
   </script>
   <script>
