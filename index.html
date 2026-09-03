@@ -7169,6 +7169,12 @@ function submitForm() {
     for (var index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
     return bytes;
   }
+  window.ptAcademyPdfHelpers = Object.assign({}, window.ptAcademyPdfHelpers || {}, {
+    safeText: pdfSafeText,
+    decodeFont: decodeActionPdfFont,
+    regularFont: PTACADEMY_PDF_FONT_REGULAR,
+    boldFont: PTACADEMY_PDF_FONT_BOLD
+  });
   function collectActionPdfData() {
     var draft = saveActionDraft(false) || collectActionDraft();
     var values = draft.values || {};
@@ -8039,6 +8045,24 @@ function submitForm() {
     catch (error) { /* Existing form behaviour must continue if storage is unavailable. */ }
   }
   function clean(value) { return String(value || '').replace(/\s+/g, ' ').trim(); }
+  var sharedPdfHelpers = window.ptAcademyPdfHelpers || {};
+  var pdfSafeText = sharedPdfHelpers.safeText || function (value) {
+    return String(value == null ? '' : value)
+      .replace(/[\u2018\u2019]/g, "'")
+      .replace(/[\u201c\u201d]/g, '"')
+      .replace(/[\u2013\u2014]/g, '-')
+      .replace(/[\u2022\u00b7]/g, '-')
+      .replace(/\u2026/g, '...')
+      .replace(/[^\x09\x0a\x0d\x20-\x7e\u00a0-\u00ff]/g, '');
+  };
+  var decodeActionPdfFont = sharedPdfHelpers.decodeFont || function (base64Value) {
+    var binary = window.atob(base64Value || '');
+    var bytes = new Uint8Array(binary.length);
+    for (var index = 0; index < binary.length; index += 1) bytes[index] = binary.charCodeAt(index);
+    return bytes;
+  };
+  var PTACADEMY_PDF_FONT_REGULAR = sharedPdfHelpers.regularFont || '';
+  var PTACADEMY_PDF_FONT_BOLD = sharedPdfHelpers.boldFont || '';
   function learnerName() { return clean(localStorage.getItem('learnerName')) || clean(document.getElementById('cand-name')?.value) || clean(document.getElementById('u3-candidate-name')?.value) || 'Learner'; }
   function criterion(block) {
     var title = clean(block.querySelector('.ac-title')?.textContent);
@@ -8046,8 +8070,11 @@ function submitForm() {
     return match ? 'AC ' + match[1] : 'Assessment criterion';
   }
   function outcome(panel) {
+    if (!panel) return '';
     var selected = panel.querySelector('.toggle-btn.active');
-    return selected ? clean(selected.textContent).toLowerCase() : '';
+    if (selected) return clean(selected.textContent).toLowerCase();
+    var savedOutcome = state[attemptKey(panel)]?.currentOutcome || '';
+    return clean(savedOutcome).toLowerCase();
   }
   function feedback(panel) {
     var boxes = Array.from(panel.querySelectorAll('textarea'));
@@ -8222,6 +8249,8 @@ function submitForm() {
       var value = clean(toggle.textContent).toLowerCase();
       if (state[key]?.currentOutcome === value) toggle.classList.add('active');
       toggle.addEventListener('click', function () {
+        panel.querySelectorAll('.toggle-btn').forEach(function (item) { item.classList.remove('active'); });
+        toggle.classList.add('active');
         panel.classList.toggle('has-referral', value === 'refer');
         state[key] = state[key] || { attempts:[] };
         state[key].currentOutcome = value;
@@ -8424,6 +8453,11 @@ function submitForm() {
     });
     return records;
   }
+  function joinWorksheetRecordSections(sections) {
+    return sections.filter(function (section) { return section && clean(section.value); }).map(function (section) {
+      return section.label + ':\n' + section.value;
+    }).join('\n\n');
+  }
   function collectWorksheetPdfData(view) {
     var unit = view.id.indexOf('unit3') >= 0 ? '3' : '2';
     var candidateBox = view.querySelector('.candidate-box');
@@ -8444,17 +8478,31 @@ function submitForm() {
             actionPlan:actionPlan ? collectControls(actionPlan).concat(collectUploadRecords(actionPlan)) : [],
             criteria:Array.from(learner.querySelectorAll('.ac-block')).map(function (block) {
               var panel = block.querySelector('.judgement-panel');
-              var reflection = Array.from(block.querySelectorAll('textarea')).find(function (item) { return !item.closest('.judgement-panel') && !item.classList.contains('assisted-summary-text'); });
+              var reflectionField = Array.from(block.querySelectorAll('textarea')).find(function (item) { return !item.closest('.judgement-panel') && !item.classList.contains('assisted-summary-text'); });
               var evidenceSelect = block.querySelector('select[multiple]');
               var assessorName = panel?.querySelector('input[type="text"]');
               var feedbackDate = panel?.querySelector('input[type="date"]');
               var attemptRecords = panel ? (state[attemptKey(panel)]?.attempts || []) : [];
+              var title = clean(block.querySelector('.ac-title')?.textContent);
+              var guidance = clean(block.querySelector('.ac-description')?.textContent);
+              var evidence = evidenceSelect ? controlValue(evidenceSelect) : '';
+              var uploads = collectUploadRecords(block);
+              var reflection = reflectionField?.value || '';
               return {
-                title:clean(block.querySelector('.ac-title')?.textContent),
-                guidance:clean(block.querySelector('.ac-description')?.textContent),
-                evidence:evidenceSelect ? controlValue(evidenceSelect) : '',
-                uploads:collectUploadRecords(block),
-                reflection:reflection?.value || '',
+                title:title,
+                guidance:guidance,
+                question:joinWorksheetRecordSections([
+                  { label:'Assessment criterion', value:title },
+                  { label:'What the learner must demonstrate', value:guidance }
+                ]),
+                evidence:evidence,
+                uploads:uploads,
+                reflection:reflection,
+                learnerRecord:joinWorksheetRecordSections([
+                  { label:'Selected evidence', value:evidence },
+                  { label:'Uploaded evidence files', value:uploads.map(function (item) { return item.value; }).join('\n') },
+                  { label:'Learner reflective account / answer', value:reflection }
+                ]),
                 assessorName:assessorName?.value || '',
                 outcome:panel ? outcome(panel) : '',
                 feedbackDate:feedbackDate ? controlValue(feedbackDate) : '',
@@ -8500,13 +8548,11 @@ function submitForm() {
     return 'PT-Academy-Unit-' + data.unit + '-' + (candidate || 'Trainee-Assessor') + '-' + date + (editable ? '-Editable.pdf' : '-Final-Record.pdf');
   }
   async function buildWorksheetPdf(view,editable) {
-    if (!window.PDFLib) throw new Error('The PDF service could not be loaded. Check your connection and try again.');
-    if (!window.fontkit) throw new Error('The PDF font service could not be loaded. Check your connection and try again.');
+    if (!window.PDFLib) throw new Error('The PDF tool could not load. Refresh the Learner Hub and try again. If it still fails, use Print or download a backup copy and contact PT Academy CAVA Support.');
     var PDFLib = window.PDFLib;
     var pdfDoc = await PDFLib.PDFDocument.create();
-    pdfDoc.registerFontkit(window.fontkit);
-    var regular = await pdfDoc.embedFont(decodeActionPdfFont(PTACADEMY_PDF_FONT_REGULAR),{ subset:true });
-    var bold = await pdfDoc.embedFont(decodeActionPdfFont(PTACADEMY_PDF_FONT_BOLD),{ subset:true });
+    var regular = await pdfDoc.embedFont(PDFLib.StandardFonts.Helvetica);
+    var bold = await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold);
     var form = editable ? pdfDoc.getForm() : null;
     var data = collectWorksheetPdfData(view);
     var pageWidth = 595.28, pageHeight = 841.89, margin = 40, contentWidth = pageWidth - (margin * 2);
@@ -8592,7 +8638,7 @@ function submitForm() {
         var x = margin + (index * (width + gap));
         page.drawText(pdfSafeText(item.label).toUpperCase(),{ x:x,y:y - 8,size:7.3,font:bold,color:colours.muted });
         var boxY = y - 43;
-        var value = pdfSafeText(item.value || '');
+        var value = pdfSafeText(item.value || (editable ? '' : 'Not recorded yet'));
         var outcomeValue = value.toLowerCase();
         var border = outcomeValue === 'pass' ? colours.green : outcomeValue === 'refer' ? colours.red : colours.line;
         var fill = outcomeValue === 'pass' ? colours.greenSoft : outcomeValue === 'refer' ? colours.redSoft : colours.white;
@@ -8611,7 +8657,7 @@ function submitForm() {
     }
     function longField(label,key,value,options) {
       options = options || {};
-      var lines = wrap(value || '',regular,9,contentWidth - 16);
+      var lines = wrap(value || (editable ? '' : 'Not recorded yet'),regular,9,contentWidth - 16);
       var cursor = 0, part = 1;
       do {
         ensure(64);
@@ -8657,10 +8703,12 @@ function submitForm() {
           learner.actionPlan.forEach(function (item) { longField(item.label,'lo' + lo.number + '-learner' + learner.number + '-action-' + item.key,item.value,{ minHeight:30,maxHeight:120 }); });
         }
         learner.criteria.forEach(function (criterion,criterionIndex) {
-          heading(criterion.title,criterion.guidance);
+          heading(criterion.title || 'Assessment criterion');
+          longField('Assessment question / criterion','lo' + lo.number + '-learner' + learner.number + '-criterion' + criterionIndex + '-question',criterion.question,{ minHeight:58,maxHeight:165 });
+          longField('Learner evidence and response submitted','lo' + lo.number + '-learner' + learner.number + '-criterion' + criterionIndex + '-learner-record',criterion.learnerRecord,{ minHeight:92,maxHeight:230 });
           longField('Selected evidence','lo' + lo.number + '-learner' + learner.number + '-criterion' + criterionIndex + '-evidence',criterion.evidence,{ minHeight:38,maxHeight:130 });
           staticList('Uploaded evidence files',criterion.uploads);
-          longField('Learner reflective account','lo' + lo.number + '-learner' + learner.number + '-criterion' + criterionIndex + '-reflection',criterion.reflection,{ minHeight:70 });
+          longField('Learner reflective account / submitted answer','lo' + lo.number + '-learner' + learner.number + '-criterion' + criterionIndex + '-reflection',criterion.reflection,{ minHeight:70 });
           fieldRow([
             { label:'Assessor name',key:'lo' + lo.number + '-learner' + learner.number + '-criterion' + criterionIndex + '-assessor',value:criterion.assessorName },
             { label:'Feedback date',key:'lo' + lo.number + '-learner' + learner.number + '-criterion' + criterionIndex + '-date',value:criterion.feedbackDate },
@@ -8774,11 +8822,25 @@ function submitForm() {
     var activeStatus = document.querySelector('.documents-footer-bar .worksheet-pdf-status');
     if (activeStatus) { activeStatus.className = 'worksheet-pdf-status success'; activeStatus.textContent = 'Draft backup downloaded. The complete current Learner Hub can be reopened from this HTML file.'; }
   }
+  function bindWorksheetFooterActions(group, view) {
+    if (!group || !view) return;
+    group.querySelectorAll('.worksheet-pdf-btn').forEach(function (button) {
+      var isFinal = /final record/i.test(button.textContent || '');
+      button.onclick = function () { downloadWorksheetPdf(view,!isFinal); };
+    });
+    var backup = group.querySelector('.backup-html-btn');
+    if (backup) backup.onclick = downloadHubBackup;
+    var print = group.querySelector('.print-view');
+    if (print) print.onclick = function () { window.print(); };
+    group.dataset.boundWorksheetActions = 'true';
+  }
   function addBackupControls(view) {
     var tools = view.querySelector('.worksheet-nav-tools');
     var unit = view.id.indexOf('unit3') >= 0 ? '3' : '2';
     var footerRight = document.querySelector('.documents-footer-bar__right');
-    if (!tools || !footerRight || footerRight.querySelector('.worksheet-footer-actions[data-worksheet-unit="' + unit + '"]')) return;
+    var existingGroup = footerRight?.querySelector('.worksheet-footer-actions[data-worksheet-unit="' + unit + '"]');
+    if (existingGroup) { bindWorksheetFooterActions(existingGroup,view); return; }
+    if (!tools || !footerRight) return;
     tools.hidden = true;
     var printButton = tools.querySelector('.pdf-btn');
     if (printButton) {
@@ -8791,22 +8853,23 @@ function submitForm() {
     var editablePdf = document.createElement('button');
     editablePdf.type = 'button'; editablePdf.className = 'action-button action-button--secondary worksheet-pdf-btn'; editablePdf.textContent = 'Download editable PDF';
     editablePdf.title = 'Downloads an Adobe Acrobat compatible PDF with editable form fields.';
-    editablePdf.addEventListener('click',function () { downloadWorksheetPdf(view,true); });
+    editablePdf.onclick = function () { downloadWorksheetPdf(view,true); };
     var finalPdf = document.createElement('button');
     finalPdf.type = 'button'; finalPdf.className = 'action-button action-button--secondary worksheet-pdf-btn'; finalPdf.textContent = 'Download final record PDF';
     finalPdf.title = 'Downloads a fixed PDF record containing all currently entered assessment information.';
-    finalPdf.addEventListener('click',function () { downloadWorksheetPdf(view,false); });
+    finalPdf.onclick = function () { downloadWorksheetPdf(view,false); };
     var backup = document.createElement('button');
     backup.type = 'button';
     backup.className = 'action-button action-button--secondary save-draft backup-html-btn';
     backup.textContent = 'Save draft';
     backup.title = 'Downloads the current Learner Hub directly as a complete HTML draft backup.';
-    backup.addEventListener('click',downloadHubBackup);
+    backup.onclick = downloadHubBackup;
     var print = document.createElement('button');
     print.type = 'button'; print.className = 'action-button action-button--secondary print-view'; print.textContent = 'Print';
     print.title = 'Opens the browser print dialogue for the complete assessment document.';
-    print.addEventListener('click',function () { window.print(); });
+    print.onclick = function () { window.print(); };
     group.append(editablePdf,finalPdf,backup,print);
+    bindWorksheetFooterActions(group,view);
     footerRight.insertBefore(group,footerRight.querySelector('.documents-footer-bar__previous') || footerRight.firstChild);
     if (typeof syncAssessmentControls === 'function') syncAssessmentControls();
   }
