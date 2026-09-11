@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- BUILD: LEARNER-HUB-ACTION-PLAN-UX-SUPABASE-2026-09-03 -->
+<!-- BUILD: ACTION-PLAN-RECORDS-2026-09-09 -->
 <html lang="en-GB">
 <head>
   <meta charset="UTF-8">
@@ -2907,7 +2907,7 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
         <div>
           <div class="action-workspace__eyebrow">Trainee assessor workspace</div>
           <h2>Action Plans &amp; Reviews</h2>
-          <p>Plan work or review progress with your allocated Level 2 Gym Instructor or Level 3 Personal Training learner. Your draft saves on this device as you work.</p>
+          <p>Plan work or review progress with your allocated Level 2 Gym Instructor or Level 3 Personal Training learner. Check the save status before leaving this page.</p>
         </div>
         <span id="actionSaveState" class="action-save-state" role="status" aria-live="polite">Draft ready</span>
       </header>
@@ -2923,6 +2923,16 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
         </nav>
 
         <div class="action-workspace__main">
+          <details class="action-section action-tutorial" open>
+            <summary><span class="action-tutorial__play" aria-hidden="true">▶</span><span><small>Video tutorial</small>How to complete your Action Plan</span><span class="action-tutorial__prompt">Watch tutorial</span></summary>
+            <div class="action-section__body"><p>This tutorial walks you through creating an Initial Action Plan or Session Review, recording meeting details, selecting assessment components, agreeing actions and confirming the record.</p><div id="actionTutorialPlayer"><div class="action-tutorial__placeholder">Video tutorial: completing your Action Plan</div></div></div>
+          </details>
+          <section class="action-section"><div class="action-section__body action-record-tools">
+            <button type="button" class="action-button action-button--secondary" id="actionNewPlan">New action plan</button>
+            <button type="button" class="action-button action-button--secondary" id="actionNewReview">Create review from this plan</button>
+            <button type="button" class="action-button action-button--secondary" id="actionRecordBackup">Download plan backup</button>
+            <label class="action-button action-button--secondary">Import plan backup<input id="actionRecordImport" type="file" accept="application/json,.json" hidden></label>
+          </div></section>
           <div class="action-plan-types" role="group" aria-label="Choose action plan type">
             <button type="button" class="action-plan-type is-selected" data-action-plan-type="Initial Action Plan" aria-pressed="true"><strong>Initial Action Plan</strong><span>Use when agreeing the learner's first planned work and evidence.</span></button>
             <button type="button" class="action-plan-type" data-action-plan-type="Session Review and Action Plan" aria-pressed="false"><strong>Session Review &amp; Action Plan</strong><span>Use after a session to review progress and agree the next actions.</span></button>
@@ -2930,11 +2940,11 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
           </div>
 
           <section id="action-part-1" class="action-section" aria-labelledby="action-part-1-title">
-            <div class="action-section__heading"><span>1</span><div><h3 id="action-part-1-title">Record identification</h3><p>The reference is created automatically. Confirm the record status and meeting number.</p></div></div>
+            <div class="action-section__heading"><span>1</span><div><h3 id="action-part-1-title">Record identification</h3><p>Edit the reference while this is a draft. IP identifies an initial plan; RP identifies a review. Dates use day-month-year.</p></div></div>
             <div class="action-section__body">
               <div class="action-grid action-grid--three">
-                <div class="action-field"><label for="actionRecordRef">Record reference</label><input id="actionRecordRef" type="text" data-action-field="recordRef" readonly></div>
-                <div class="action-field"><label for="actionRecordStatus">Record status</label><select id="actionRecordStatus" data-action-field="recordStatus"><option>Draft</option><option>Submitted</option></select></div>
+                <div class="action-field"><label for="actionRecordRef">Record reference</label><input id="actionRecordRef" type="text" data-action-field="recordRef"></div>
+                <div class="action-field"><label for="actionRecordStatus">Record status</label><select id="actionRecordStatus" data-action-field="recordStatus" disabled><option>Draft</option><option>Finalised</option><option hidden>Submitted</option></select></div>
                 <div class="action-field"><label for="actionMeetingNumber">Meeting or review number</label><input id="actionMeetingNumber" type="number" min="1" data-action-field="meetingNumber" value="1"></div>
               </div>
             </div>
@@ -3062,6 +3072,12 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
             </div>
           </section>
 
+          <section class="action-section" aria-labelledby="action-mailbox-title"><div class="action-section__body">
+            <h3 id="action-mailbox-title">Send from your own mailbox</h3>
+            <p id="actionMailboxStatus" role="status">Checking your mailbox connection…</p>
+            <div class="action-record-tools"><button type="button" id="actionConnectMailbox" class="action-button action-button--secondary">Connect Google mailbox</button><button type="button" id="actionEmailLearner" class="action-button action-button--secondary" disabled>Email finalised plan to learner</button></div>
+            <p id="actionEmailStatus" role="status">After finalising, send the final PDF from the connected assessor mailbox to the learner email recorded in this plan.</p>
+          </div></section>
           <section class="action-section" aria-labelledby="action-history-title">
             <div class="action-section__heading"><span aria-hidden="true">↺</span><div><h3 id="action-history-title">Saved action plans and reviews</h3><p>Finalised records appear here as evidence for the trainee assessor's Level 3 qualification.</p></div></div>
             <div class="action-section__body"><div id="actionPlanHistory" class="action-history"><div class="action-history__empty">No finalised action plans yet.</div></div></div>
@@ -3069,7 +3085,7 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
 
           <footer class="action-workspace__footer">
             <p id="actionDraftMessage">Changes save automatically on this device.</p>
-            <div><button id="actionEditablePdf" type="button" class="action-button action-button--secondary">Download editable PDF</button><button id="actionFinalPdf" type="button" class="action-button action-button--secondary">Download final record PDF</button><button id="actionSaveDraft" type="button" class="action-button action-button--secondary">Save draft</button><button id="actionFinalise" type="button" class="action-button action-button--primary">Finalise and submit</button></div>
+            <div><button id="actionEditablePdf" type="button" class="action-button action-button--secondary">Download editable PDF</button><button id="actionFinalPdf" type="button" class="action-button action-button--secondary">Download final record PDF</button><button id="actionSaveDraft" type="button" class="action-button action-button--secondary">Save draft</button><button id="actionCreateCorrection" type="button" class="action-button action-button--secondary" hidden>Create correction copy</button><button id="actionEmailLearnerFooter" type="button" class="action-button action-button--secondary" hidden>Email finalised plan</button><button id="actionFinalise" type="button" class="action-button action-button--primary">Finalise and save</button></div>
           </footer>
         </div>
       </div>
@@ -6986,6 +7002,7 @@ function submitForm() {
     if (note && saved) note.textContent = 'Saved on this device. You can safely return to this plan.';
   }
   function saveActionDraft(showConfirmation) {
+    if (window.actionRecords) return window.actionRecords.save(showConfirmation);
     try {
       var draft = collectActionDraft();
       localStorage.setItem(actionOwnerKey(), JSON.stringify(draft));
@@ -7105,10 +7122,13 @@ function submitForm() {
     var first = container?.querySelector('.action-item');
     if (!container || !first) return null;
     var item = first.cloneNode(true);
+    item.querySelectorAll('[data-action-bound]').forEach(function (control) { delete control.dataset.actionBound; });
+    item.querySelectorAll('.dictation-tools').forEach(function (control) { control.remove(); });
     var index = container.querySelectorAll('.action-item').length;
     prepareActionItem(item, index, true);
     container.appendChild(item);
     item.querySelectorAll('[data-action-field]').forEach(bindActionControl);
+    window.addActionPlanDictation?.(item);
     updateActionComponentOptions();
     if (save !== false) scheduleSave();
     return item;
@@ -7131,6 +7151,7 @@ function submitForm() {
     } catch (error) { return []; }
   }
   function renderHistory() {
+    if (window.actionRecords) { window.actionRecords.renderHistory(); return; }
     var container = document.getElementById('actionPlanHistory');
     if (!container) return;
     var records = loadHistory();
@@ -7225,7 +7246,7 @@ function submitForm() {
     if (!window.fontkit) throw new Error('The PDF font service could not be loaded. Check your connection and try again.');
     var pdfDoc = await PDFLib.PDFDocument.create();
     pdfDoc.registerFontkit(window.fontkit);
-    var regular = await pdfDoc.embedFont(decodeActionPdfFont(PTACADEMY_PDF_FONT_REGULAR), { subset: true });
+    var regular = await pdfDoc.embedFont(decodeActionPdfFont(PTACADEMY_PDF_FONT_REGULAR), { subset: !editable });
     var bold = await pdfDoc.embedFont(decodeActionPdfFont(PTACADEMY_PDF_FONT_BOLD), { subset: true });
     var form = editable ? pdfDoc.getForm() : null;
     var data = collectActionPdfData();
@@ -7307,7 +7328,7 @@ function submitForm() {
       page.drawText(pdfSafeText(data.programme), { x: margin, y: pageHeight - 67, size: 10, font: regular, color: colours.white });
       var reference = pdfSafeText(values.recordRef || 'Draft record');
       var refWidth = regular.widthOfTextAtSize(reference, 9);
-      page.drawText(reference, { x: pageWidth - margin - refWidth, y: pageHeight - 48, size: 9, font: regular, color: colours.white });
+      page.drawText(reference, { x: pageWidth - margin - refWidth, y: pageHeight - 83, size: 9, font: regular, color: colours.white });
       y = pageHeight - 120;
     }
     function ensure(height) {
@@ -7359,15 +7380,29 @@ function submitForm() {
     function textField(label, key, value, options) {
       options = options || {};
       var width = options.width || contentWidth;
-      var height = fieldHeight(value, width, options);
-      ensure(height + 36);
-      renderFieldAt(label, key, value, margin, y, width, height, options);
-      y -= height + 34;
+      var lines = wrap(value || '', regular, 9, width - 16);
+      var offset = 0, part = 0;
+      do {
+        ensure(Math.max(options.minHeight || 54, 54) + 36);
+        var capacity = Math.max(1, Math.floor((y - 100) / 12));
+        var chunk = lines.slice(offset, offset + capacity);
+        var height = Math.max(options.minHeight || (options.multiline === false ? 30 : 54), chunk.length * 12 + 18);
+        var fieldOptions = Object.assign({}, options, { multiline: options.multiline !== false || chunk.length > 1 });
+        renderFieldAt(label + (part ? ' (continued)' : ''), key + (part ? 'Part' + part : ''), chunk.join('\n'), margin, y, width, height, fieldOptions);
+        y -= height + 34;
+        offset += chunk.length; part++;
+        if (offset < lines.length) addPage();
+      } while (offset < lines.length);
     }
     function fieldPair(left, right, options) {
       options = options || {};
       var gap = 16;
       var width = (contentWidth - gap) / 2;
+      if (wrap(left.value || '', regular, 9, width - 16).length > 9 || wrap(right.value || '', regular, 9, width - 16).length > 9) {
+        textField(left.label, left.key, left.value, left.options || options);
+        textField(right.label, right.key, right.value, right.options || options);
+        return;
+      }
       var leftHeight = fieldHeight(left.value, width, left.options || options);
       var rightHeight = fieldHeight(right.value, width, right.options || options);
       var height = Math.max(leftHeight, rightHeight);
@@ -7390,10 +7425,15 @@ function submitForm() {
       var gap = 14;
       var width = (contentWidth - gap) / 2;
       var column = 0;
+      var rowHeight = 0;
       items.forEach(function (item, index) {
         var lines = wrap(item.label, regular, 8.5, width - 24);
         var itemHeight = Math.max(22, (lines.length * 11) + 8);
-        if (column === 0) ensure(itemHeight + 4);
+        if (column === 0) {
+          var next = items[index + 1];
+          rowHeight = Math.max(itemHeight, next ? wrap(next.label, regular, 8.5, width - 24).length * 11 + 8 : 0);
+          ensure(rowHeight + 4);
+        }
         var x = margin + (column * (width + gap));
         var top = y;
         if (editable) {
@@ -7408,7 +7448,7 @@ function submitForm() {
           }
         }
         drawLines(lines, x + 19, top, { size: 8.5, lineHeight: 11, color: item.checked ? accent : colours.ink });
-        if (column === 1 || index === items.length - 1) y -= itemHeight;
+        if (column === 1 || index === items.length - 1) y -= rowHeight;
         column = column === 0 ? 1 : 0;
       });
       y -= 12;
@@ -7490,6 +7530,7 @@ function submitForm() {
       var footer = 'PT Academy CAVA | ' + (editable ? 'Editable working copy' : 'Final record copy') + ' | Page ' + (index + 1) + ' of ' + pages.length;
       pdfPage.drawLine({ start: { x: margin, y: 31 }, end: { x: pageWidth - margin, y: 31 }, thickness: 0.6, color: colours.line });
       pdfPage.drawText(footer, { x: margin, y: 18, size: 7.5, font: regular, color: colours.muted });
+      pdfPage.drawText('Exported ' + new Date().toLocaleString('en-GB'), { x: margin, y: 8, size: 6, font: regular, color: colours.muted });
     });
     if (editable) {
       form.updateFieldAppearances(regular);
@@ -7528,6 +7569,7 @@ function submitForm() {
     }
   }
   function finaliseSnapshot() {
+    if (window.actionRecords) { window.actionRecords.finalise(); return; }
     var learnerName = document.getElementById('actionLearnerName')?.value.trim();
     var assessorName = document.getElementById('actionAssessorName')?.value.trim();
     var hasComponent = selectedComponentLabels().length > 0;
@@ -7562,13 +7604,18 @@ function submitForm() {
     if (traineeAssessorAgreement && !traineeAssessorAgreement.value) { traineeAssessorAgreement.value = hubName; changed = true; }
     if (changed) scheduleSave();
   }
-  function initialiseActionWorkspace() {
+  async function initialiseActionWorkspace() {
     var form = document.getElementById('actionPlanForm');
     if (!form) return;
     var saved;
-    try { saved = JSON.parse(localStorage.getItem(actionOwnerKey()) || 'null'); } catch (error) { saved = null; }
-    if (!saved) saved = migratePreviousDraft();
-    if (!saved) saved = migrateLegacyDraft();
+    if (window.actionRecords) {
+      saved = await window.actionRecords.prepare();
+      if (saved === false) return;
+    } else {
+      try { saved = JSON.parse(localStorage.getItem(actionOwnerKey()) || 'null'); } catch (error) { saved = null; }
+      if (!saved) saved = migratePreviousDraft();
+      if (!saved) saved = migrateLegacyDraft();
+    }
     ensureActionCount(saved?.actionCount || 1);
     if (saved?.values) applyValues(saved.values);
     var reference = document.getElementById('actionRecordRef');
@@ -7593,7 +7640,18 @@ function submitForm() {
     document.getElementById('actionFinalise')?.addEventListener('click', finaliseSnapshot);
     renderHistory();
     saveActionDraft(false);
+    window.actionRecords?.bind();
   }
+  window.actionPlanBridge = {
+    collect: collectActionDraft, apply: applyValues, count: ensureActionCount,
+    buildPdf: buildActionPlanPdf, filename: actionPdfFileName,
+    localDraft: function () { try { return JSON.parse(localStorage.getItem(actionOwnerKey()) || 'null') || migratePreviousDraft() || migrateLegacyDraft(); } catch (_) { return null; } },
+    legacyHistory: loadHistory,
+    reset: function () {
+      document.querySelectorAll('#actionItemsContainer .action-item').forEach(function (item,index) { if(index) item.remove(); });
+      actionControls().forEach(function (control) { if (control.type === 'checkbox') control.checked=false; else control.value=''; });
+    }
+  };
   document.addEventListener('DOMContentLoaded', initialiseActionWorkspace);
 })();
 </script>
@@ -8065,7 +8123,7 @@ function submitForm() {
   var PTACADEMY_PDF_FONT_BOLD = sharedPdfHelpers.boldFont || '';
   function learnerName() { return clean(localStorage.getItem('learnerName')) || clean(document.getElementById('cand-name')?.value) || clean(document.getElementById('u3-candidate-name')?.value) || 'Learner'; }
   function criterion(block) {
-    var title = clean(block.querySelector('.ac-title')?.textContent);
+    var title = clean(block.querySelector('.ac-title,.ac-disclosure>summary')?.textContent);
     var match = title.match(/AC\s*([0-9]+(?:\.[0-9]+)?)/i);
     return match ? 'AC ' + match[1] : 'Assessment criterion';
   }
@@ -8152,7 +8210,7 @@ function submitForm() {
       '<div class="referral-action-panel" hidden></div>' +
       '<label>Summary feedback for this learner and learning outcome</label>' +
       '<textarea class="assisted-summary-text" placeholder="Write the assessor summary feedback here, or draft it from the assessment criterion feedback recorded above."></textarea>' +
-      '<div class="feedback-assistant__actions"><button type="button" class="feedback-assistant__button generate-summary">Draft assessor summary</button><button type="button" class="feedback-assistant__button secondary save-summary">Save assessor summary</button></div>' +
+      '<div class="feedback-assistant__actions"><button type="button" class="feedback-assistant__button generate-summary">Create assessor summary</button><span class="feedback-assistant__save-note">Saves automatically as you type.</span></div>' +
       '<div class="feedback-assistant__status" role="status" aria-live="polite"></div>';
     var textarea = wrap.querySelector('textarea');
     if (state[key]?.summary && !clean(textarea.value)) textarea.value = state[key].summary;
@@ -8167,17 +8225,19 @@ function submitForm() {
       state[key] = Object.assign({}, state[key], { summary:result.text, outcome:result.outcome, updatedAt:new Date().toISOString() });
       saveState();
       status.className = 'feedback-assistant__status success';
-      status.textContent = 'Draft created. Review and edit it before confirming the assessment.';
+      status.textContent = 'Summary created and saved. Review and edit it before confirming the assessment.';
       if (summary) setSummaryOutcome(summary, result.outcome);
     });
-    wrap.querySelector('.save-summary').addEventListener('click', function () {
-      var value = clean(textarea.value);
-      var status = wrap.querySelector('.feedback-assistant__status');
-      if (!value) { status.className = 'feedback-assistant__status error'; status.textContent = 'Draft or enter the summary before saving it.'; return; }
-      state[key] = Object.assign({}, state[key], { summary:textarea.value, reviewed:true, updatedAt:new Date().toISOString() });
-      saveState();
-      status.className = 'feedback-assistant__status success';
-      status.textContent = 'Reviewed summary saved on this device.';
+    var saveTimer;
+    textarea.addEventListener('input', function () {
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(function () {
+        state[key] = Object.assign({}, state[key], { summary:textarea.value, updatedAt:new Date().toISOString() });
+        saveState();
+        var status = wrap.querySelector('.feedback-assistant__status');
+        status.className = 'feedback-assistant__status success';
+        status.textContent = 'Summary saved.';
+      }, 450);
     });
     if (state[key]?.outcome) { setSummaryOutcome(wrap, state[key].outcome); renderReferral(wrap.querySelector('.referral-action-panel'), buildSummary(view, section, learner)); }
   }
@@ -8298,6 +8358,7 @@ function submitForm() {
       status.className = 'feedback-assistant__status success'; status.textContent = 'Overall draft created. Review and edit it before confirming the unit outcome.';
     });
   }
+  window.addActionPlanDictation = addDictationControls;
   function addDictationControls(container) {
     if (!container) return;
     var Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -8316,7 +8377,7 @@ function submitForm() {
       button.innerHTML = '<span aria-hidden="true">&#127908;</span><span>Start voice typing</span>';
       var status = document.createElement('span');
       status.className = 'dictation-status';
-      status.id = 'dictation-status-' + scopeToken + '-' + index;
+      status.id = 'dictation-status-' + scopeToken + '-' + index + '-' + Math.random().toString(36).slice(2,8);
       status.setAttribute('role','status');
       status.setAttribute('aria-live','polite');
       button.setAttribute('aria-describedby',status.id);
@@ -8389,6 +8450,7 @@ function submitForm() {
         catch (error) { setStopped('Voice typing could not start. Please try again.'); }
       }
       button.addEventListener('click', function () {
+        if (textarea.disabled || textarea.readOnly) return;
         if (keepListening) {
           keepListening = false;
           if (restartTimer) clearTimeout(restartTimer);
@@ -8478,14 +8540,15 @@ function submitForm() {
             actionPlan:actionPlan ? collectControls(actionPlan).concat(collectUploadRecords(actionPlan)) : [],
             criteria:Array.from(learner.querySelectorAll('.ac-block')).map(function (block) {
               var panel = block.querySelector('.judgement-panel');
-              var reflectionField = Array.from(block.querySelectorAll('textarea')).find(function (item) { return !item.closest('.judgement-panel') && !item.classList.contains('assisted-summary-text'); });
+              var reflectionField = Array.from(block.querySelectorAll('textarea')).find(function (item) { return !item.closest('.judgement-panel,.other-evidence') && !item.classList.contains('assisted-summary-text'); });
               var evidenceSelect = block.querySelector('select[multiple]');
               var assessorName = panel?.querySelector('input[type="text"]');
               var feedbackDate = panel?.querySelector('input[type="date"]');
               var attemptRecords = panel ? (state[attemptKey(panel)]?.attempts || []) : [];
-              var title = clean(block.querySelector('.ac-title')?.textContent);
+              var title = clean(block.querySelector('.ac-title,.ac-disclosure>summary')?.textContent);
               var guidance = clean(block.querySelector('.ac-description')?.textContent);
               var evidence = evidenceSelect ? controlValue(evidenceSelect) : '';
+              if (evidenceSelect && Array.from(evidenceSelect.selectedOptions).some(function (o) { return o.value === 'Other relevant evidence'; })) evidence += '\nOther evidence description: ' + (block.querySelector('.other-evidence-description')?.value || 'Not described');
               var uploads = collectUploadRecords(block);
               var reflection = reflectionField?.value || '';
               return {
@@ -8997,5 +9060,394 @@ function submitForm() {
 }());
 
 </script>
+<style id="action-records-and-evidence-support">
+.action-record-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.action-record-tools label{cursor:pointer;margin:0}
+.action-tutorial{border:1px solid #c9a84c!important;border-left:7px solid #c9a84c!important;border-radius:10px!important;box-shadow:0 7px 18px rgba(0,0,0,.13);overflow:hidden}.action-tutorial summary{align-items:center;background:linear-gradient(135deg,#1c1c1c,#353535);color:#fff;cursor:pointer;display:grid!important;gap:14px;grid-template-columns:auto 1fr auto;list-style:none;min-height:84px;padding:16px 20px}.action-tutorial summary::-webkit-details-marker{display:none}.action-tutorial__play{align-items:center;background:#c9a84c;border-radius:50%;color:#171717;display:flex;font-size:15px;height:42px;justify-content:center;padding-left:2px;width:42px}.action-tutorial summary small{color:#e2c66f;display:block;font-size:.7rem;font-weight:800;letter-spacing:.08em;margin-bottom:4px;text-transform:uppercase}.action-tutorial summary span:nth-child(2){font-size:1.08rem;font-weight:800;line-height:1.3}.action-tutorial__prompt{border:1px solid #e2c66f;border-radius:999px;color:#fff;font-size:.8rem;font-weight:800;padding:8px 11px}.action-tutorial[open] .action-tutorial__prompt{font-size:0}.action-tutorial[open] .action-tutorial__prompt:before{content:'Close tutorial';font-size:.8rem}.action-tutorial .action-section__body{background:#fff;padding:22px!important}.action-tutorial p{color:#3c3c3c;font-size:.94rem;line-height:1.65;margin:0 0 18px;max-width:800px}.action-tutorial__placeholder{align-items:center;aspect-ratio:16/7;background:#ece9e2;border:1px dashed #bdb7aa;border-radius:8px;color:#555;display:flex;font-size:.9rem;justify-content:center;min-height:170px;padding:16px;text-align:center}#actionTutorialPlayer iframe{aspect-ratio:16/9;border:0;display:block;width:100%}
+.action-tutorial p,#actionMailboxStatus,#actionEmailStatus{line-height:1.65;margin:0 0 12px}
+.reflection-support.worksheet-inline-support{display:block!important;background:#fff;border:1px solid #d5d3ce;border-radius:12px;box-shadow:0 5px 16px rgba(24,24,24,.08);margin:20px 0;overflow:hidden}
+.reflection-support>summary{align-items:center;background:linear-gradient(135deg,#fffaf0,#f6f1e5);border-left:6px solid #c9a84c;cursor:pointer;display:grid;gap:3px;grid-template-columns:1fr auto;padding:17px 22px}.reflection-support>summary::-webkit-details-marker{display:none}.support-summary__eyebrow{color:#74590f;font-size:.72rem;font-weight:800;grid-column:1;letter-spacing:.07em;text-transform:uppercase}.support-summary__title{color:#1d1d1d;font-size:1.12rem;font-weight:800;grid-column:1}.support-summary__hint{align-self:center;color:#604d19;font-size:.83rem;font-weight:700;grid-column:2;grid-row:1 / span 2;text-decoration:underline;text-underline-offset:3px}
+.reflection-support__body{color:#303030;line-height:1.65;padding:22px;max-width:100%}.reflection-intro{align-items:start;display:flex;gap:22px;justify-content:space-between;margin:0 0 18px}.reflection-intro h3{color:#1e1e1e;font-size:1.08rem;margin:0 0 5px}.reflection-intro p{margin:0;max-width:620px}.reflection-sequence{background:#f3f4f3;border-left:3px solid #c9a84c;border-radius:5px;color:#343434;font-size:.84rem;font-weight:700;line-height:1.6;max-width:460px;padding:10px 12px}.reflection-sequence span{color:#96731c;padding:0 3px}.reflection-content-grid{display:grid;gap:22px;grid-template-columns:minmax(0,1.15fr) minmax(250px,.85fr)}.reflection-support__body ol{margin:0;padding-left:24px;list-style:decimal}.reflection-support__body li{margin:0 0 9px}.reflection-resources{display:grid;gap:12px}.reflection-handout,.reflection-video{background:#f6f6f4;border:1px solid #deded9;border-radius:8px;margin:0;padding:16px}.reflection-video{background:#1f1f1f;border-color:#1f1f1f;color:#fff}.reflection-video h4{color:#fff;font-size:1rem;margin:4px 0 7px}.reflection-video p{color:#f0f0f0;margin:0 0 14px}.resource-kicker{color:#755a0b;display:block;font-size:.7rem;font-weight:800;letter-spacing:.07em;text-transform:uppercase}.reflection-video .resource-kicker{color:#e2c66f}.reflection-handout strong{display:block;color:#202020;margin:4px 0 6px}.reflection-handout p{margin:0}.video-placeholder{align-items:center;background:#c9a84c;border-radius:5px;color:#171717;display:inline-flex;font-size:.82rem;font-weight:800;padding:8px 10px}.reflection-video iframe{width:100%;aspect-ratio:16/9;border:0;margin-top:16px}
+.hub-tour-card{align-items:center;background:linear-gradient(135deg,#202020,#343434);border:1px solid #c9a84c;border-left:7px solid #c9a84c;border-radius:10px;box-shadow:0 8px 18px rgba(0,0,0,.14);color:#fff;display:grid;gap:17px;grid-template-columns:auto 1fr auto;margin:0 0 25px;padding:20px 22px}.hub-tour-card__icon{align-items:center;background:#c9a84c;border-radius:50%;color:#161616;display:flex;font-size:1rem;height:44px;justify-content:center;padding-left:3px;width:44px}.hub-tour-card__eyebrow{color:#e5c86d;display:block;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.hub-tour-card h3{color:#fff;font-size:1.18rem;margin:3px 0 5px}.hub-tour-card p{color:#f1f1f1;line-height:1.55;margin:0;max-width:680px}.hub-tour-card__action{align-items:flex-end;display:flex;flex-direction:column;gap:6px}.hub-tour-card__tag{background:#fff;color:#222;border-radius:999px;font-size:.72rem;font-weight:800;padding:6px 9px}.hub-tour-card__status{color:#ddd;font-size:.78rem}.hub-tour-card__watch{background:#c9a84c;border-radius:5px;color:#161616!important;font-size:.85rem;font-weight:800;padding:10px 12px;text-decoration:none!important}
+.feedback-assistant__save-note{align-self:center;color:#5e5e5e;font-size:.82rem;line-height:1.35}
+/* Reflective account support: a written guide and video guide are deliberately separate. */
+:is(#unit2WorksheetView,#unit3WorksheetView).assessment-document .reflection-support{display:block!important;font-size:14px!important;margin:16px 0!important;padding:0!important}
+:is(#unit2WorksheetView,#unit3WorksheetView).assessment-document .reflection-guide{background:#fff;border:1px solid #ded7c6;border-radius:10px;display:block!important;margin:0 0 12px!important;overflow:hidden}.reflection-guide>summary{align-items:center;background:linear-gradient(135deg,#1d1d1d,#333);border-left:6px solid #c9a84c;color:#fff;cursor:pointer;display:grid!important;gap:14px;grid-template-columns:auto 1fr auto;list-style:none;min-height:76px;padding:14px 19px}.reflection-guide>summary::-webkit-details-marker{display:none}.reflection-guide__icon{align-items:center;background:#c9a84c;border-radius:50%;color:#171717;display:flex;font-size:19px;font-weight:800;height:39px;justify-content:center;width:39px}.reflection-guide>summary small,.reflection-video-guidance>summary small{color:#e2c66f;display:block;font-size:.68rem;font-weight:800;letter-spacing:.08em;margin-bottom:3px;text-transform:uppercase}.reflection-guide>summary span:nth-child(2),.reflection-video-guidance>summary span:nth-child(2){font-size:1rem;font-weight:800;line-height:1.35}.reflection-guide__prompt{border:1px solid #e5c76a;border-radius:999px;color:#fff;font-size:.78rem;font-weight:800;padding:7px 10px}.reflection-guide[open] .reflection-guide__prompt{font-size:0}.reflection-guide[open] .reflection-guide__prompt:before{content:'Close guide';font-size:.78rem}.reflection-guide__body{background:#f7f7f5;display:block!important;padding:24px}.reflection-guide__body .reflection-guide-card__lead{font-size:.96rem;margin:0 0 18px;max-width:780px}
+:is(#unit2WorksheetView,#unit3WorksheetView).assessment-document .reflection-guide-card{background:#f5f6f7;border:1px solid #d7dbde;border-left:5px solid #747b80;border-radius:9px;color:#252525;display:block!important;margin:0 0 14px;padding:20px 22px}
+.reflection-guide-card__eyebrow{color:#69520d;display:block;font-size:.72rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}.reflection-guide-card h3{color:#1f1f1f;font-size:1.16rem;margin:4px 0 7px}.reflection-guide-card__lead{font-size:.95rem;line-height:1.6;margin:0;max-width:780px}
+:is(#unit2WorksheetView,#unit3WorksheetView).assessment-document .reflection-steps{display:grid!important;gap:9px 12px!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;list-style:none!important;margin:18px 0!important;padding:0!important}.reflection-steps li{background:#fff;border:1px solid #dfe1e2;border-radius:6px;display:block!important;margin:0!important;min-height:82px;padding:11px 12px}.reflection-steps strong{color:#1f1f1f;display:block;font-size:.85rem;margin-bottom:4px}.reflection-steps span{color:#454545;display:block;font-size:.82rem;line-height:1.45}
+:is(#unit2WorksheetView,#unit3WorksheetView).assessment-document .reflection-handout{align-items:center;background:#fff;border:1px solid #d6d9da;border-radius:6px;display:flex!important;gap:12px!important;margin:0!important;padding:12px 14px}.reflection-handout strong{color:#252525;flex:0 1 auto;margin:0!important}.reflection-handout span{color:#5d5d5d;font-size:.83rem;line-height:1.45}
+:is(#unit2WorksheetView,#unit3WorksheetView).assessment-document .reflection-video-guidance{background:#fff;border:1px solid #ded7c6;border-radius:10px;display:block!important;margin:0!important;overflow:hidden}.reflection-video-guidance>summary{align-items:center;background:#fff;color:#201f1c;cursor:pointer;display:grid!important;font-size:14px;font-weight:800;gap:12px;grid-template-columns:auto 1fr auto;list-style:none;min-height:76px;padding:14px 18px}.reflection-video-guidance>summary::-webkit-details-marker{display:none}.reflection-video-guidance__play{align-items:center;background:#171717;border-radius:50%;color:#fff;display:flex;height:39px;justify-content:center;width:39px}.reflection-video-guidance__tag{background:#fff8e5;border:1px solid #ead9a6;border-radius:999px;color:#6a4b00;font-size:10px;font-weight:800;margin-left:auto;padding:6px 9px;text-transform:uppercase}.reflection-video-guidance__body{background:#f7f7f5;border-top:1px solid var(--hub-line);display:block!important;padding:24px}.reflection-video-player{align-items:center;aspect-ratio:16/7;background:#e9e7e0;border:1px dashed #bdb7aa;border-radius:8px;color:#5f5b52;display:flex!important;font-size:.88rem;justify-content:center;min-height:160px;padding:14px;text-align:center}.reflection-video-player iframe{border:0;height:100%;min-height:160px;width:100%}
+/* Isolate the reflective guide from the compact worksheet-support strip styles. */
+:is(#unit2WorksheetView,#unit3WorksheetView).assessment-document .reflection-support.worksheet-inline-support{display:block!important;font-size:16px!important;padding:0!important}
+:is(#unit2WorksheetView,#unit3WorksheetView).assessment-document .reflection-support.worksheet-inline-support .reflection-support__body{display:block!important;gap:0!important}
+:is(#unit2WorksheetView,#unit3WorksheetView).assessment-document .reflection-support.worksheet-inline-support .reflection-intro{display:flex!important;gap:22px!important}
+:is(#unit2WorksheetView,#unit3WorksheetView).assessment-document .reflection-support.worksheet-inline-support .reflection-content-grid{display:grid!important;gap:22px!important;grid-template-columns:minmax(0,1.15fr) minmax(250px,.85fr)!important}
+:is(#unit2WorksheetView,#unit3WorksheetView).assessment-document .reflection-support.worksheet-inline-support .reflection-resources{display:grid!important;gap:12px!important}
+:is(#unit2WorksheetView,#unit3WorksheetView).assessment-document .reflection-support.worksheet-inline-support :is(.reflection-handout,.reflection-video){display:block!important}
+.other-evidence{background:#f3f4f4;border:1px solid #d0d3d4;border-radius:8px;padding:16px;margin:14px 0}.other-evidence[hidden]{display:none!important}
+.other-evidence label{display:block!important;margin:0 0 8px!important;font-weight:700}.other-evidence p{margin:0 0 12px!important;line-height:1.6}
+.other-evidence textarea{display:block;width:100%;min-height:110px;margin:0!important}
+.evidence-selection-guidance{display:block!important;line-height:1.65!important;margin:16px 0 10px!important}
+#actions button:focus-visible,.reflection-support summary:focus-visible{outline:3px solid #8b6c20;outline-offset:3px}
+@media(max-width:720px){.reflection-support>summary{grid-template-columns:1fr}.support-summary__hint{grid-column:1;grid-row:auto}.reflection-intro,:is(#unit2WorksheetView,#unit3WorksheetView).assessment-document .reflection-support.worksheet-inline-support .reflection-intro{display:block!important}.reflection-sequence{margin-top:14px;max-width:none}.reflection-content-grid,:is(#unit2WorksheetView,#unit3WorksheetView).assessment-document .reflection-support.worksheet-inline-support .reflection-content-grid{grid-template-columns:1fr!important}.reflection-video-guidance__body{grid-template-columns:1fr!important}.reflection-steps,:is(#unit2WorksheetView,#unit3WorksheetView).assessment-document .reflection-steps{grid-template-columns:repeat(2,minmax(0,1fr))!important}.hub-tour-card{align-items:flex-start;grid-template-columns:auto 1fr}.hub-tour-card__action{align-items:flex-start;grid-column:2}.feedback-assistant__save-note{flex-basis:100%}}@media(max-width:640px){.action-record-tools>*{flex:1 1 100%;text-align:center}.reflection-support__body{padding:16px}.reflection-steps,:is(#unit2WorksheetView,#unit3WorksheetView).assessment-document .reflection-steps{grid-template-columns:1fr!important}.reflection-handout,:is(#unit2WorksheetView,#unit3WorksheetView).assessment-document .reflection-handout{align-items:flex-start;flex-direction:column}.hub-tour-card{padding:18px}}
+@media print{.action-tutorial,.action-record-tools,.reflection-support{display:none!important}}
+</style>
+<script id="cava-action-records">
+/* Action Plan records: account-owned cloud records, recoverable local drafts. */
+(function () {
+  'use strict';
+  const $ = id => document.getElementById(id);
+  const bridge = () => window.actionPlanBridge;
+  const local = location.protocol === 'file:';
+  let owner, records = [], active, ready = false, conflicted = false, mailbox = null;
+  let queue = Promise.resolve(), pending = 0, busy = false;
+  const key = () => 'cava-action-records-v4:' + owner;
+  function tell(message, detail) {
+    $('actionSaveState').textContent = message;
+    if (detail) $('actionDraftMessage').textContent = detail;
+  }
+  function persist() {
+    localStorage.setItem(key(), JSON.stringify({ records, activeId: active?.id }));
+  }
+  function reference(values) {
+    const d = (values.meetingDate || new Date().toLocaleDateString('en-CA')).slice(0,10);
+    const date = /^\d{4}-\d{2}-\d{2}$/.test(d) ? d.split('-').reverse().join('-') : new Date().toLocaleDateString('en-GB').replaceAll('/','-');
+    return (values.planType === 'Session Review and Action Plan' ? 'RP' : 'IP') + '-' + date + '-' + String(values.meetingNumber || 1).padStart(2,'0');
+  }
+  function create(values = {}) {
+    const payload = {version:4,actionCount:1,values:{planType:'Initial Action Plan',programmeLevel:'2',meetingNumber:'1',recordStatus:'Draft',...values}};
+    payload.values.recordRef ||= reference(payload.values);
+    return { id: crypto.randomUUID(), owner_id:owner, payload, status:'draft', revision:0, updated_at:new Date().toISOString() };
+  }
+  function cache(record) {
+    const i = records.findIndex(r => r.id === record.id);
+    if (i < 0) records.push(record); else records[i] = record;
+    persist();
+  }
+  function display(record) {
+    active = record;
+    bridge().reset(); bridge().count(record.payload.actionCount || 1);
+    bridge().apply({...record.payload.values,recordStatus:record.status === 'finalised' ? 'Finalised':'Draft'});
+    const locked = record.status === 'finalised';
+    document.querySelectorAll('#actions [data-action-field],#actions [data-action-plan-type],#actions .action-programme-switch button,#addActionItem,#actions .action-item__remove').forEach(el => { el.disabled = locked; });
+    $('actionRecordStatus').disabled = true;
+    $('actionFinalise').disabled = locked || busy;
+    $('actionSaveDraft').disabled = locked;
+    $('actionEmailLearner').disabled = !locked || !mailbox?.connected;
+    $('actionEmailLearnerFooter').disabled = !locked || !mailbox?.connected;
+    $('actionCreateCorrection').hidden = !locked;
+    $('actionCreateCorrection').disabled = !locked || busy;
+    $('actionEmailLearner').hidden = !locked;
+    $('actionEmailLearnerFooter').hidden = !locked;
+    persist(); renderHistory();
+    tell(locked ? 'Finalised record' : local ? 'Local draft' : 'Draft ready',locked ? 'This record is locked as the final audit copy. Use Create correction copy only if you need to correct a mistake, then finalise and send the corrected copy.' : local ? 'Saved on this device. Download a plan backup before moving to the live hub.' : 'Changes save to your account. Wait for “Saved to your account” before leaving.');
+    if (!local) emailStatus(record.id);
+  }
+  async function upload(record, payload, finalise) {
+    if (conflicted) throw new Error('A newer copy exists. Download a backup of this draft, then reload to open the saved version.');
+    let result;
+    if (!record.revision) {
+      result = await sb.from('action_plan_records').insert({id:record.id,owner_id:owner,payload,status:'draft'}).select().single();
+    } else {
+      result = await sb.from('action_plan_records').update({payload,status:finalise ? 'finalised':'draft'}).eq('id',record.id).eq('revision',record.revision).select().maybeSingle();
+    }
+    if (result.error) throw new Error(result.error.message);
+    if (!result.data) { conflicted=true; throw new Error('This plan changed on another device. Download your draft backup and reload before continuing.'); }
+    record.revision = result.data.revision;
+    record.updated_at = result.data.updated_at;
+    if (finalise && result.data.status !== 'finalised') return upload(record,payload,true);
+    if (finalise) {record.status='finalised';record.finalised_at=result.data.finalised_at;}
+    record.syncedPayload = JSON.stringify(payload);
+    record.dirty = JSON.stringify(record.payload) !== record.syncedPayload;
+    record.syncError = null;
+    cache(record);
+  }
+  function enqueue(record,payload,finalise=false) {
+    pending++;
+    const task = queue.catch(()=>{}).then(async()=>{
+      if (!local) await upload(record,payload,finalise);
+      else if(finalise) {record.status='finalised';record.finalised_at=new Date().toISOString();cache(record);}
+    });
+    queue = task;
+    task.then(()=>{
+      pending--;
+      if(!pending) tell(local?'Saved on this device':'Saved to your account',local?'Download a plan backup to transfer this record to the live hub.':'Your Action Plan has been saved securely to your account.');
+      renderHistory();
+    },error=>{
+      pending--; record.syncError=error.message;persist();
+      tell('Account save incomplete','Your draft is kept on this device. '+error.message);
+    });
+    return task;
+  }
+  function save(show) {
+    if(!ready || !active) return bridge().collect();
+    if(active.status==='finalised') return active.payload;
+    const payload=bridge().collect();
+    const unchanged = JSON.stringify(payload.values)===JSON.stringify(active.payload.values) && payload.actionCount===active.payload.actionCount;
+    active.payload=payload; active.updated_at=new Date().toISOString();
+    try {cache(active);} catch(error) {tell('Unable to save','Device storage is full. Download a PDF or plan backup now.');return payload;}
+    if(!unchanged || !active.revision || active.syncError || active.dirty) { active.dirty=true; persist(); enqueue(active,structuredClone(payload)); }
+    else if(show) tell(local?'Saved on this device':'Saved to your account');
+    return payload;
+  }
+  function renderHistory() {
+    const box=$('actionPlanHistory'); if(!box)return;
+    box.replaceChildren();
+    [...records].sort((a,b)=>b.updated_at.localeCompare(a.updated_at)).forEach(record=>{
+      const item=document.createElement('div');item.className='action-history__item';
+      const title=document.createElement('strong');title.textContent=[record.payload.values.recordRef,record.payload.values.learnerName || 'New learner',record.status==='finalised'?'Finalised':'Draft'].join(' · ');
+      const date=document.createElement('p');date.textContent=new Date(record.finalised_at||record.updated_at).toLocaleString('en-GB');
+      const button=document.createElement('button');button.type='button';button.className='action-button action-button--secondary';button.textContent=active?.id===record.id?'Current record':'Open record';button.disabled=active?.id===record.id;
+      button.onclick=async()=>{if(busy)return;save(false);await queue.catch(()=>{});display(record);};
+      item.append(title,date,button);box.append(item);
+    });
+  }
+  async function newPlan(review) {
+    if(busy)return;
+    save(false);await queue.catch(()=>{});
+    const old=active?.payload.values || {};
+    const values={assessorName:old.assessorName||'',assessorEmail:old.assessorEmail||'',assessorAgreementName:old.assessorName||''};
+    if(review)Object.assign(values,{planType:'Session Review and Action Plan',learnerName:old.learnerName,learnerEmail:old.learnerEmail,programmeLevel:old.programmeLevel,meetingNumber:String((Number(old.meetingNumber)||1)+1),currentPosition:'Review of '+old.recordRef+':\n',previousPlanId:active.id});
+    const record=create(values);cache(record);display(record);save(false);
+    $('action-part-1').scrollIntoView({behavior:'smooth'});
+  }
+  async function createCorrection() {
+    if (busy || active?.status !== 'finalised') return;
+    const source = active;
+    save(false); await queue.catch(()=>{});
+    const values = structuredClone(source.payload.values);
+    values.recordStatus = 'Draft';
+    values.sendCopy = false;
+    values.correctsRecordRef = source.payload.values.recordRef || '';
+    values.recordRef = (source.payload.values.recordRef || reference(values)) + '-CORRECTED';
+    values.currentPosition = (values.currentPosition ? values.currentPosition + '\n\n' : '') + 'Correction copy created from final record ' + (source.payload.values.recordRef || '') + '.';
+    const record = create(values);
+    record.payload = structuredClone(source.payload);
+    record.payload.values = values;
+    record.payload.actionCount = source.payload.actionCount || 1;
+    cache(record); display(record); save(false);
+    $('action-part-1').scrollIntoView({behavior:'smooth'});
+    tell('Correction copy created','The original final record remains unchanged. Update the necessary details, then finalise and send this corrected copy.');
+  }
+  async function finalise() {
+    if(busy||active?.status==='finalised')return;
+    const payload=bridge().collect(),v=payload.values;
+    const issues=[];
+    if(!v.learnerName?.trim()||!v.assessorName?.trim())issues.push('learner and trainee assessor names');
+    if(!v.recordRef?.trim()||!v.meetingDate||Number(v.meetingNumber)<1)issues.push('record reference, meeting date and review number');
+    if(!v.learnerAgreementName?.trim()||!v.assessorAgreementName?.trim()||!v.learnerAgreementDate||!v.assessorAgreementDate)issues.push('both agreement names and dates');
+    for(let i=0;i<payload.actionCount;i++)if(!v['action'+i+'Task']?.trim()||!v['action'+i+'Component'])issues.push('task and assessment component for Action '+(i+1));
+    if(issues.length){tell('Complete the plan','Before finalising, complete: '+issues.join('; ')+'.');return;}
+    busy=true;$('actionFinalise').disabled=true;
+    try {
+      save(false);await queue;
+      const finalPayload=structuredClone(active.payload);finalPayload.values.recordStatus='Finalised';
+      await enqueue(active,finalPayload,true);active.payload=finalPayload;cache(active);display(active);
+      if(v.sendCopy)await sendEmail();
+    } catch(error){tell('Not finalised',error.message);}finally{busy=false;$('actionFinalise').disabled=active.status==='finalised';}
+  }
+  async function invoke(body) {
+    const {data,error}=await sb.functions.invoke('action-plan-mailbox',{body});
+    if(error||data?.error)throw new Error(data?.error||'The mailbox service is unavailable. Your saved plan is safe.');
+    return data;
+  }
+  async function checkMailbox() {
+    if(local){$('actionMailboxStatus').textContent='Open the live hub and sign in to connect your Google mailbox.';$('actionConnectMailbox').disabled=true;return;}
+    try {
+      mailbox=await invoke({action:'status'});
+      $('actionMailboxStatus').textContent=mailbox.connected?'Connected: '+mailbox.email:mailbox.configured?'Connect the Google mailbox matching your signed-in email address.':'Google mailbox connection is awaiting administrator setup. You can save and download plans now; email has not been sent.';
+      $('actionConnectMailbox').disabled=!mailbox.configured;
+      $('actionConnectMailbox').textContent=mailbox.connected?'Reconnect Google mailbox':'Connect Google mailbox';
+      $('actionEmailLearner').disabled=!mailbox.connected||active.status!=='finalised';
+      $('actionEmailLearnerFooter').disabled=!mailbox.connected||active.status!=='finalised';
+      if(mailbox.connected && active.status==='draft'){$('actionAssessorEmail').value=mailbox.email;$('actionAssessorEmail').readOnly=true;save(false);}
+    }catch(error){$('actionMailboxStatus').textContent=error.message;$('actionConnectMailbox').disabled=true;}
+  }
+  async function emailStatus(id) {
+    const {data}=await sb.from('action_plan_email_events').select('status,sender,recipient,sent_at,detail').eq('plan_id',id).maybeSingle();
+    if(active?.id!==id)return;
+    $('actionEmailStatus').textContent=data?data.status==='sent'?'Sent from '+data.sender+' to '+data.recipient+' on '+new Date(data.sent_at).toLocaleString('en-GB')+'. Receipt has not been confirmed.':data.detail||'Email status: '+data.status:'No email has been sent for this plan.';
+    if(data?.status==='sent'||data?.status==='sending'||data?.status==='unknown'){$('actionEmailLearner').disabled=true;$('actionEmailLearnerFooter').disabled=true;}
+  }
+  async function sendEmail() {
+    if(local||!mailbox?.connected){$('actionEmailStatus').textContent='Plan saved. Email not sent: connect your mailbox on the live hub first.';return;}
+    if(active.status!=='finalised')return;
+    const record=active;
+    $('actionEmailLearner').disabled=true;
+    $('actionEmailLearnerFooter').disabled=true;
+    try{
+      if(record.payload.values.assessorEmail?.toLowerCase()!==mailbox.email.toLowerCase())throw new Error('The signed plan email does not match your connected mailbox. Create a corrected plan before sending.');
+      const pdf=await bridge().buildPdf(false);
+      let binary='';for(const byte of pdf.bytes)binary+=String.fromCharCode(byte);
+      await invoke({action:'send',planId:record.id,pdf:btoa(binary)});
+      await emailStatus(record.id);
+    }catch(error){$('actionEmailStatus').textContent='Email not confirmed: '+error.message;await emailStatus(record.id);}
+  }
+  async function prepare() {
+    let user;
+    if(local){owner='local-preview-learner';}else{
+      const result=await sb.auth.getUser();user=result.data?.user;
+      if(!user)return false;owner=user.id;
+    }
+    let saved;try{saved=JSON.parse(localStorage.getItem(key())||'null');}catch(_){}
+    records=Array.isArray(saved?.records)?saved.records:[];
+    if(!local){
+      const {data,error}=await sb.from('action_plan_records').select('*').order('updated_at',{ascending:false});
+      if(error){tell('Unable to load saved plans','Please reload when your connection is available.');return false;}
+      const deviceRecords=records;
+      records=data.map(row=>({...row,syncedPayload:JSON.stringify(row.payload)}));
+      // Preserve drafts that have not reached the server, including conflicts, as separate recoverable copies.
+      for(const r of deviceRecords){const cloud=records.find(c=>c.id===r.id);if(!cloud)records.push(r);else if((r.syncError||r.dirty) && JSON.stringify(r.payload.values)!==JSON.stringify(cloud.payload.values)){const copy=create(r.payload.values);copy.payload=structuredClone(r.payload);copy.payload.values.recordStatus='Draft';copy.payload.values.recordRef+='-recovered';records.push(copy);}}
+    }
+    if(!records.length){
+      const legacy=bridge().localDraft();
+      if(legacy?.values){const record=create(legacy.values);record.payload=legacy;record.payload.values.recordStatus='Draft';records.push(record);}
+      if(local)for(const old of bridge().legacyHistory()){if(!old.values)continue;const record=create(old.values);record.payload.values.recordStatus='Finalised';record.status='finalised';record.finalised_at=old.finalisedAt;records.push(record);}
+    }
+    active=records.find(r=>r.id===saved?.activeId)||records[0];
+    if(!active){active=create({assessorEmail:user?.email||''});records.push(active);}
+    ready=true;return active.payload;
+  }
+  function bind() {
+    display(active);checkMailbox();
+    $('actionNewPlan').onclick=()=>newPlan(false);$('actionNewReview').onclick=()=>newPlan(true);
+    $('actionConnectMailbox').onclick=async()=>{try{const data=await invoke({action:'connect'});location.assign(data.url);}catch(error){$('actionMailboxStatus').textContent=error.message;}};
+    $('actionEmailLearner').onclick=sendEmail;
+    $('actionEmailLearnerFooter').onclick=sendEmail;
+    $('actionCreateCorrection').onclick=createCorrection;
+    $('actionRecordBackup').onclick=()=>{
+      save(false);const blob=new Blob([JSON.stringify({format:'cava-action-plan-backup',version:1,record:{...active,payload:active.status==='finalised'?active.payload:bridge().collect()}},null,2)],{type:'application/json'});
+      const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=(active.payload.values.recordRef||'Action-Plan')+'-backup.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+    };
+    $('actionRecordImport').onchange=async event=>{
+      const file=event.target.files[0];if(!file)return;
+      try{
+        if(file.size>5*1024*1024)throw new Error('This backup is too large.');
+        const data=JSON.parse(await file.text());const payload=data.record?.payload;
+        if(data.format!=='cava-action-plan-backup'||!payload?.values||!Number.isInteger(payload.actionCount)||payload.actionCount<1||payload.actionCount>100)throw new Error('Choose a valid Action Plan backup.');
+        save(false);await queue.catch(()=>{});const r=create();r.payload=payload;r.payload.values.recordStatus='Draft';cache(r);display(r);save(false);
+        tell('Backup imported','Imported as an editable draft. Check the details before finalising.');
+      }catch(error){tell('Import failed',error.message);}event.target.value='';
+    };
+    const config=window.CAVA_ACTION_PLAN_TUTORIAL||{};
+    if(config.url){try{const url=new URL(config.url);if(url.protocol!=='https:')return;const frame=document.createElement('iframe');frame.src=url.href;frame.title='How to complete your action plan';frame.allowFullscreen=true;frame.loading='lazy';$('actionTutorialPlayer').replaceChildren(frame);}catch(_){}}
+    window.addEventListener('beforeunload',e=>{if(pending){e.preventDefault();e.returnValue='';}});
+  }
+  window.actionRecords={prepare,bind,save,renderHistory,finalise};
+})();
+
+
+</script>
+<script id="cava-evidence-support">
+/* Shared evidence choices and optional reflective-account support. */
+(function () {
+  const catalogue = {
+    plan: ['Action Plan / assessment plan',/action plan|assessment plan/i],
+    meeting:['Assessment planning meeting notes',/meeting.*(note|record)|planning.*note/i],
+    email:['Email or written communication confirming assessment arrangements',/email|written communication/i],
+    telephone:['Telephone discussion record',/telephone/i],
+    online:['Online meeting / recorded discussion',/online|recorded discussion|video.*(call|meeting)/i],
+    learner:['Learner confirmation / statement',/learner.*(confirmation|statement|acknowledg)/i],
+    timetable:['Assessment timetable or schedule',/timetable|schedule/i],
+    mapping:['Assessment mapping / cross-referencing record',/mapping|cross-referenc/i],
+    briefing:['Assessment briefing or instructions',/briefing|instruction/i],
+    needs:['Learner needs discussion / initial assessment record',/needs|initial assessment|consultation/i],
+    support:['Reasonable adjustment or support record, where applicable',/adjustment|support record|support plan/i],
+    discussion:['Assessment discussion record',/discussion|questioning/i],
+    holistic:['Assessment activity showing how multiple requirements are evidenced',/holistic|multiple requirements/i],
+    work:['Assessed learner work / work products',/marked|assessed.*work|work product|product evidence|workbook/i],
+    observation:['Observation / assessment activity record',/observation/i],
+    decision:['Assessment decision / Pass or Refer record',/decision|pass.*refer|marking record/i],
+    feedback:['Written assessor feedback',/feedback/i],
+    review:['Session Review and Action Plan',/session review|assessment review/i],
+    self:['Learner self-evaluation',/self.evaluation|self.assess/i],
+    next:['Agreed next-action record',/action plan|action record|next.action/i],
+    gap:['Evidence-gap / additional evidence request record',/gap|additional evidence|insufficient/i],
+    reassess:['Reassessment record, where available',/reassess/i],
+    progress:['Learner progress / assessment tracking record',/progress|tracking/i],
+    audit:['Assessment audit trail',/audit/i],
+    authorised:['Communication with an authorised assessor, IQA or manager',/IQA|manager|authorised|quality assur/i],
+    storage:['Evidence of the approved secure storage system',/storage|secure.*record|secure.*file/i],
+    access:['Access / permission record, where appropriate',/access|permission/i],
+    policy:['Organisational procedure supported by evidence of its application',/polic|procedure/i],
+    sharing:['Secure information-sharing record',/shar/i],
+    anonymous:['Anonymised screenshot demonstrating secure handling',/anonymis|screenshot/i],
+    reflection:['Reflective account explaining applied assessment practice',/reflect/i],
+    safety:['Health, safety or welfare assessment record',/safety|welfare|risk/i],
+    adaptation:['Assessment record demonstrating adaptation to learner needs',/adapt|adjustment/i],
+    iqa:['Assessor / IQA feedback',/IQA.*feedback|assessor.*feedback/i],
+    learnerfeedback:['Learner feedback',/learner.*feedback/i],
+    standard:['Standardisation activity / feedback record',/standardisation/i],
+    evaluation:['Self-evaluation of assessment practice',/self.evaluation|self.assess/i],
+    cpd:['CPD / development record showing impact on assessment practice',/CPD|development/i],
+    training:['Training / CPD certificate',/training|certificate/i],
+    industry:['Relevant industry update / professional activity',/industry|professional activity/i],
+    resources:['Resource and assessment materials checklist',/resource|material|checklist/i],
+    equipment:['Assessment environment / equipment check',/equipment|environment/i],
+    technology:['Technology arrangements for assessment',/technology|online.*arrangement/i],
+    management:['Communication showing how assessment issues were managed',/issues|management/i],
+    analysis:['Assessment record showing analysis against requirements',/analysis|analys|evidence review/i],
+    sample:['Sample assessment standardisation activity',/sample/i],
+    guidance:['Agreed assessment guidance',/guidance/i],
+    incident:['Incident / escalation record, where applicable',/incident|concern|escalation/i]
+  };
+  const menus = {
+    2:{'1.1':'plan meeting email telephone online learner timetable mapping','1.2':'plan email learner telephone online meeting briefing','1.3':'plan needs learner email telephone online support','1.4':'plan mapping meeting discussion holistic','2.1':'work observation discussion decision mapping feedback','2.2':'feedback review discussion email online learner decision','2.3':'learner self review discussion meeting email next','2.4':'decision gap feedback plan email discussion reassess','3.1':'decision feedback review progress reassess audit','3.2':'learner email review meeting authorised online','3.3':'storage access policy sharing anonymous reflection','4.1':'decision policy safety email','4.2':'needs support plan adaptation learnerfeedback reflection','4.3':'reflection iqa observation standard learnerfeedback evaluation next','4.4':'cpd training standard discussion industry reflection'},
+    3:{'1.1':'plan needs mapping meeting email telephone online','1.2':'plan resources briefing equipment technology safety support','1.3':'plan briefing email telephone online learner meeting','2.1':'decision plan review observation progress management','2.2':'support decision learnerfeedback learner discussion reflection','2.3':'work mapping observation discussion analysis feedback','2.4':'decision work mapping feedback reassess','2.5':'standard sample iqa guidance reflection','2.6':'feedback review discussion online email learner next','3.1':'decision progress review feedback reassess audit','3.2':'email authorised meeting sharing','3.3':'storage access sharing policy anonymous reflection','4.1':'needs support email decision reflection','4.2':'safety observation incident policy reflection','4.3':'evaluation learnerfeedback iqa standard cpd reflection'}
+  };
+  const guidance='Select your evidence: choose at least two relevant pieces of evidence that demonstrate this assessment criterion. If your evidence is not listed, select Other relevant evidence and describe it below.';
+  for(const unit of [2,3]){
+    const root=document.getElementById('unit'+unit+'WorksheetView');
+    root.querySelectorAll('.ac-block').forEach(block=>{
+      const title=block.querySelector('.ac-title, .ac-disclosure>summary')?.textContent||'';
+      const ac=title.match(/AC\s*(\d+\.\d+)/i)?.[1];
+      const select=block.querySelector('select[multiple]');if(!select||!ac)return;
+      for(const category of (menus[unit][ac]||'').split(' ').filter(Boolean)){
+        const [label,pattern]=catalogue[category];
+        if(!Array.from(select.options).some(option=>pattern.test(option.textContent))){const option=document.createElement('option');option.textContent=label;select.append(option);}
+      }
+      if(!Array.from(select.options).some(o=>o.value==='Other relevant evidence')){const option=document.createElement('option');option.textContent='Other relevant evidence';select.append(option);}
+      const label=select.previousElementSibling;
+      if(label?.tagName==='LABEL'){label.textContent=guidance;label.htmlFor=select.id;label.classList.add('evidence-selection-guidance');}
+      let other=block.querySelector('.other-evidence');
+      if(!other){
+        other=document.createElement('div');other.className='other-evidence';other.hidden=true;
+        const id=select.id+'-other-description';
+        const name=document.createElement('label');name.htmlFor=id;name.textContent='Describe your evidence';
+        const hint=document.createElement('p');hint.id=id+'-hint';hint.textContent='Briefly explain what the evidence is and how it relates to this assessment criterion.';
+        const field=document.createElement('textarea');field.id=id;field.name=id;field.className='other-evidence-description';field.setAttribute('aria-describedby',hint.id);
+        other.append(name,hint,field);select.insertAdjacentElement('afterend',other);
+      }
+      const sync=()=>{const shown=Array.from(select.selectedOptions).some(o=>o.value==='Other relevant evidence');other.hidden=!shown;other.querySelector('textarea').required=shown;};
+      select.addEventListener('change',sync);window.addEventListener('cava:journey-render',sync);document.addEventListener('DOMContentLoaded',()=>setTimeout(sync,0));sync();
+    });
+  }
+  function addSupport(){
+    for(const unit of [2,3]){
+      const root=document.getElementById('unit'+unit+'WorksheetView');if(root.querySelector('.reflection-support'))continue;
+      const panel=document.createElement('section');panel.className='reflection-support';
+      panel.innerHTML='<details class="reflection-guide"><summary><span class="reflection-guide__icon" aria-hidden="true">✎</span><span><small>Written guidance</small>How to Write Your Reflective Account</span><span class="reflection-guide__prompt">Open guide</span></summary><div class="reflection-guide__body"><p class="reflection-guide-card__lead">Use this structure to explain your own assessment practice and reasoning. Do more than list files or repeat the evidence.</p><ol class="reflection-steps"><li><strong>1. Context</strong><span>What was the assessment activity?</span></li><li><strong>2. What I did</strong><span>What did you do as the trainee assessor?</span></li><li><strong>3. Why</strong><span>Explain your choices and decisions.</span></li><li><strong>4. Learner involvement</strong><span>What did you discuss, check or agree?</span></li><li><strong>5. Evidence</strong><span>Link each point to evidence and what it demonstrates.</span></li><li><strong>6. Reflection</strong><span>What worked, what did you learn and what would you improve?</span></li></ol><div class="reflection-handout"><strong>Reflective Account Writing Guide &amp; Worked Example</strong><span>The downloadable guide will be added once the final worked example is ready.</span></div></div></details><details class="reflection-video-guidance"><summary><span class="reflection-video-guidance__play" aria-hidden="true">▶</span><span><small>Video tutorial</small>Watch: How to Write Your Reflective Account</span><span class="reflection-video-guidance__tag">Optional support</span></summary><div class="reflection-video-guidance__body"><div class="reflection-video-player"><span>This tutorial shows how to turn your assessment activity, evidence and reasoning into a clear reflective account.</span></div></div></details>';
+      const firstHeader=root.querySelector('.document-main .lo-section .lo-header')||root.querySelector('.lo-section .lo-header');
+      if(firstHeader)firstHeader.insertAdjacentElement('afterend',panel);else root.querySelector('.worksheet-unit-strip').insertAdjacentElement('afterend',panel);
+      const assets=window.CAVA_SUPPORT_ASSETS||{};
+      if(assets.reflectiveGuide){try{const url=new URL(assets.reflectiveGuide,location.href);if(['https:','file:'].includes(url.protocol)){const link=document.createElement('a');link.href=url.href;link.textContent='Download Reflective Account Writing Guide & Worked Example';link.target='_blank';link.rel='noopener';panel.querySelector('.reflection-handout').replaceChildren(link);}}catch(_){}}
+      if(assets.reflectiveVideo){try{const url=new URL(assets.reflectiveVideo);if(url.protocol==='https:'){const iframe=document.createElement('iframe');iframe.src=url.href;iframe.title='How to Write Your Reflective Account';iframe.allowFullscreen=true;panel.querySelector('.reflection-video-player').replaceChildren(iframe);}}catch(_){}}
+    }
+  }
+  function addHubTour(){
+    const dashboard=document.getElementById('dashboard');if(!dashboard||dashboard.querySelector('.hub-tour-card'))return;
+    const card=document.createElement('section');card.className='hub-tour-card';card.setAttribute('aria-labelledby','hubTourTitle');
+    card.innerHTML='<div class="hub-tour-card__icon" aria-hidden="true">▶</div><div class="hub-tour-card__copy"><span class="hub-tour-card__eyebrow">Start here</span><h3 id="hubTourTitle">Take a quick tour of your Learner Hub</h3><p>See where to find your documents, action plans, evidence uploads, feedback and progress tracking before you begin.</p></div><div class="hub-tour-card__action"><span class="hub-tour-card__tag">Video guide</span><span class="hub-tour-card__status">Coming after filming</span></div>';
+    const focus=dashboard.querySelector('#learnerFocusCard');(focus||dashboard.firstElementChild).insertAdjacentElement('afterend',card);
+    const url=window.CAVA_SUPPORT_ASSETS?.hubTourVideo;
+    if(url){try{const link=document.createElement('a');link.href=new URL(url,location.href).href;link.target='_blank';link.rel='noopener';link.className='hub-tour-card__watch';link.textContent='Watch the Learner Hub tour';card.querySelector('.hub-tour-card__action').replaceChildren(link);}catch(_){}}
+  }
+  document.addEventListener('DOMContentLoaded',function(){addSupport();addHubTour();});
+})();
+
+
+</script>
 </body>
 </html>
+
