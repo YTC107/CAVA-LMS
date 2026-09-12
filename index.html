@@ -9245,7 +9245,18 @@ function submitForm() {
       const finalPayload=structuredClone(active.payload);finalPayload.values.recordStatus='Finalised';
       await enqueue(active,finalPayload,true);active.payload=finalPayload;cache(active);display(active);
       if(v.sendCopy)await sendEmail();
-    } catch(error){tell('Not finalised',error.message);}finally{busy=false;$('actionFinalise').disabled=active.status==='finalised';}
+    } catch(error){tell('Not finalised',error.message);}finally{
+      busy=false;
+      $('actionFinalise').disabled=active.status==='finalised';
+      if(active?.status==='finalised'){
+        $('actionCreateCorrection').hidden=false;
+        $('actionCreateCorrection').disabled=false;
+        $('actionEmailLearner').hidden=false;
+        $('actionEmailLearnerFooter').hidden=false;
+        $('actionEmailLearner').disabled=!mailbox?.connected;
+        $('actionEmailLearnerFooter').disabled=!mailbox?.connected;
+      }
+    }
   }
   async function invoke(body) {
     const {data,error}=await sb.functions.invoke('action-plan-mailbox',{body});
