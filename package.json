@@ -1,0 +1,13 @@
+{
+  "name": "cava-learner-hub-checks",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs && node --test mailbox-relay/test/*.test.mjs"
+  },
+  "devDependencies": {
+    "@electric-sql/pglite": "0.5.8",
+    "jsdom": "30.0.1",
+    "typescript": "5.9.3"
+  }
+}

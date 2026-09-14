@@ -1,0 +1,6 @@
+project_id = "cava-lms"
+
+[functions.action-plan-mailbox]
+# OAuth callbacks have no Hub JWT. POST requests authenticate with auth.getUser;
+# callbacks require a single-use, expiring PKCE state and mailbox identity checks.
+verify_jwt = false
