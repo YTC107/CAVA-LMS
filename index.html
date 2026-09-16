@@ -351,6 +351,13 @@
 #unit2WorksheetView .upload-area p{ font-size: 13px; color: #888; }
 #unit2WorksheetView .upload-icon{ font-size: 24px; color: #c9a84c; }
 #unit2WorksheetView .filename-display{ font-size: 12px; color: #2d6a2d; margin-top: 6px; font-style: italic; }
+#unit2WorksheetView .evidence-list{ margin-top: 10px; }
+#unit2WorksheetView .evidence-list__heading{ color: #2d6a2d; font-weight: 700; font-size: 13px; }
+#unit2WorksheetView .evidence-list__item{ display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #ddd; padding: 8px 0; font-size: 12px; }
+#unit2WorksheetView .evidence-list__name{ flex: 1; overflow-wrap: anywhere; }
+#unit2WorksheetView .evidence-list__status{ color: #777; font-style: italic; }
+#unit2WorksheetView .evidence-list__action{ border: 1px solid #2d6a2d; background: #fff; color: #2d6a2d; border-radius: 3px; padding: 4px 7px; cursor: pointer; font-size: 11px; }
+#unit2WorksheetView .evidence-list__action.remove{ border-color: #c0392b; color: #c0392b; }
 #unit2WorksheetView .judgement-panel{ background: #fffbe6; border: 2px solid #c9a84c; border-radius: 6px; padding: 16px; margin-top: 16px; }
 #unit2WorksheetView .judgement-panel h4{ color: #7a5c00; font-size: 14px; margin-bottom: 12px; }
 #unit2WorksheetView .judgement-panel label{ color: #333; margin-top: 10px; }
@@ -5510,6 +5517,130 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
     display.textContent = names.length ? '\uD83D\uDCC4 ' + names.join(', ') : '';
   }
 
+  async function evidencePocRequest(action, values) {
+    const response = await sb.functions.invoke('evidence-attachments', { body: { action, ...values } });
+    if (response.error || response.data?.error) throw new Error(response.data?.error || response.error.message || 'Evidence request failed.');
+    return response.data;
+  }
+
+  function evidencePocLearnerId() {
+    return localStorage.getItem(ACTIVE_ASSESSOR_LEARNER_KEY) || currentLearnerRecord?.id || '';
+  }
+
+  let evidencePocAttachments = [];
+  let evidencePocUploads = [];
+
+  function renderEvidencePoc(list, attachments = evidencePocAttachments, busyMessage) {
+    list.replaceChildren();
+    const heading = document.createElement('div');
+    heading.className = 'evidence-list__heading';
+    heading.textContent = 'Uploaded evidence (' + attachments.length + ')';
+    list.appendChild(heading);
+    if (busyMessage) {
+      const status = document.createElement('div');
+      status.className = 'evidence-list__status';
+      status.textContent = busyMessage;
+      list.appendChild(status);
+    }
+    attachments.forEach(attachment => {
+      const item = document.createElement('div');
+      item.className = 'evidence-list__item';
+      const name = document.createElement('span');
+      name.className = 'evidence-list__name';
+      name.textContent = attachment.original_filename;
+      const view = document.createElement('button');
+      view.type = 'button'; view.className = 'evidence-list__action'; view.textContent = 'View / Download';
+      view.addEventListener('click', async () => {
+        view.disabled = true;
+        try {
+          const result = await evidencePocRequest('download', { attachmentId: attachment.id });
+          window.open(result.url, '_blank', 'noopener');
+        } catch (error) { alert(error.message); }
+        view.disabled = false;
+      });
+      const remove = document.createElement('button');
+      remove.type = 'button'; remove.className = 'evidence-list__action remove'; remove.textContent = 'Remove';
+      remove.addEventListener('click', async () => {
+        if (!confirm('Remove this evidence file?')) return;
+        remove.disabled = true;
+        try { await evidencePocRequest('remove', { attachmentId: attachment.id }); await loadEvidencePoc(); }
+        catch (error) { alert(error.message); remove.disabled = false; }
+      });
+      item.append(name, view, remove);
+      list.appendChild(item);
+    });
+    evidencePocUploads.forEach(upload => {
+      const item = document.createElement('div');
+      item.className = 'evidence-list__item';
+      const name = document.createElement('span');
+      name.className = 'evidence-list__name';
+      name.textContent = upload.name;
+      const status = document.createElement('span');
+      status.className = 'evidence-list__status';
+      status.textContent = upload.status;
+      item.append(name, status);
+      list.appendChild(item);
+    });
+  }
+
+  async function loadEvidencePoc(message) {
+    const block = document.querySelector('#unit2WorksheetView .learner-block.green .ac-block');
+    const list = block?.querySelector('[data-evidence-list]');
+    if (!block || !list) return;
+    const learnerId = evidencePocLearnerId();
+    if (!learnerId || !currentUser?.id || isLocalLearnerHubPreview()) {
+      renderEvidencePoc(list, [], 'Sign in as an allocated assessor to load evidence.');
+      return;
+    }
+    try {
+      const data = await evidencePocRequest('list', { learnerId, unitCode: 'unit2', learningOutcomeCode: 'lo1', assessmentCriterion: '1.1' });
+      evidencePocAttachments = data.attachments || [];
+      renderEvidencePoc(list, evidencePocAttachments, message);
+    } catch (error) { renderEvidencePoc(list, [], error.message); }
+  }
+
+  async function uploadEvidencePoc(file, block, list) {
+    const learnerId = evidencePocLearnerId();
+    if (!learnerId) throw new Error('Select an allocated learner before uploading evidence.');
+    const evidenceType = block.querySelector('select[multiple]')?.selectedOptions?.[0]?.textContent || '';
+    const prepared = await evidencePocRequest('create-upload', { learnerId, unitCode: 'unit2', learningOutcomeCode: 'lo1', assessmentCriterion: '1.1', originalFilename: file.name, mimeType: file.type || 'application/octet-stream', byteSize: file.size });
+    const upload = await sb.storage.from('cava-evidence').uploadToSignedUrl(prepared.path, prepared.token, file);
+    if (upload.error) throw upload.error;
+    await evidencePocRequest('complete-upload', { attachmentId: prepared.attachmentId, learnerId, unitCode: 'unit2', learningOutcomeCode: 'lo1', assessmentCriterion: '1.1', evidenceType });
+    await loadEvidencePoc();
+  }
+
+  function initialiseEvidencePoc() {
+    const block = document.querySelector('#unit2WorksheetView .learner-block.green .ac-block');
+    const input = block?.querySelector('input[type="file"]');
+    const area = block?.querySelector('.upload-area');
+    const list = block?.querySelector('[data-evidence-list]');
+    if (!block || !input || !area || !list || input.dataset.evidencePocReady) return;
+    input.dataset.evidencePocReady = 'true';
+    input.multiple = true;
+    input.accept = '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,text/plain,image/jpeg,image/png,image/gif,image/webp';
+    const prompt = area.querySelector('p');
+    if (prompt) prompt.textContent = 'Click to attach or drag and drop one or more files';
+    input.addEventListener('change', async () => {
+      const files = Array.from(input.files || []);
+      input.value = '';
+      for (const file of files) {
+        const upload = {name: file.name, status: 'Uploading...'};
+        evidencePocUploads.push(upload);
+        renderEvidencePoc(list);
+        try {
+          await uploadEvidencePoc(file, block, list);
+          evidencePocUploads = evidencePocUploads.filter(item => item !== upload);
+          renderEvidencePoc(list);
+        } catch (error) {
+          upload.status = 'Upload failed';
+          renderEvidencePoc(list, evidencePocAttachments, error.message);
+        }
+      }
+    });
+    loadEvidencePoc();
+  }
+
   function toggleOutcomeUnit3(button) {
     const row = button.closest('.toggle-row') || button.closest('.feedback-outcome-row');
     if (!row) return;
@@ -6559,6 +6690,7 @@ async function init() {
   initialiseAssessmentPlan();
   applySharedAssessmentSchedule(sharedAssessmentSchedule);
   await loadSavedData();
+  initialiseEvidencePoc();
   updateProgress();
 }
 
