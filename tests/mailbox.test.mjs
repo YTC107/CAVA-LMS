@@ -6,6 +6,9 @@ import {PGlite} from '@electric-sql/pglite';
 const root=new URL('../',import.meta.url);
 const read=p=>fs.readFileSync(new URL(p,root),'utf8');
 const compile=p=>ts.transpileModule(read(p),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.CommonJS}}).outputText;
+const referenceSource=read('index.html');
+const referenceBlock=referenceSource.slice(referenceSource.indexOf('  function learnerInitials(name) {'),referenceSource.indexOf('  function create(values = {}) {'));
+const referenceFactory=records=>new Function('records',referenceBlock+'; return {learnerInitials,reference};')(records);
 const security={};new Function('exports',compile('supabase/functions/action-plan-mailbox/security.ts'))(security);
 const keyText=Buffer.alloc(32,173).toString('base64url');
 const db=new PGlite();
@@ -59,7 +62,7 @@ async function mailbox(provider='google',email=account,legacy=false){
   else cipher=await security.encrypt('test-only-refresh',key,owner,provider);
   await db.query('insert into action_plan_private.mailboxes(owner_id,email,provider,token_cipher) values($1,$2,$3,$4)',[owner,email,provider,cipher]);
 }
-async function finalPlan(planOwner=owner,values={}){await db.query("insert into public.action_plan_records(id,owner_id,payload,status) values($1,$2,$3,'finalised')",[plan,planOwner,JSON.stringify({values:{assessorEmail:account,learnerEmail:'learner@example.com',learnerName:'Test Learner',assessorName:'Test Assessor',recordRef:'AP-TEST',...values}})]);}
+async function finalPlan(planOwner=owner,values={}){const {actionCount=undefined,...recordValues}=values;await db.query("insert into public.action_plan_records(id,owner_id,payload,status) values($1,$2,$3,'finalised')",[plan,planOwner,JSON.stringify({...(actionCount === undefined ? {} : {actionCount}),values:{assessorEmail:account,learnerEmail:'learner@example.com',learnerName:'Test Learner',assessorName:'Test Assessor',recordRef:'AP-TEST',...recordValues}})]);}
 beforeEach(async()=>{await db.exec('delete from public.action_plan_email_events; delete from public.action_plan_records; delete from action_plan_private.mailboxes; delete from action_plan_private.oauth_states; delete from action_plan_private.connection_guards;');account='assessor@example.com';providerEmail=account;requests=[];providerStatus=200;refreshDenied=false;delayedToken=null;});
 after(()=>db.close());
 test('encrypted credentials bind to owner and provider, base64url keys work',async()=>{
@@ -96,15 +99,17 @@ test('existing Gmail ciphertext survives migration and sends from the original a
 });
 test('learner email includes dynamic actions, UK dates, review date and existing PDF attachment',async()=>{
   await mailbox();
-  await finalPlan(owner,{learnerName:'  Coral Jamieson  ',assessorName:'Alex Assessor',recordRef:'AP-EMAIL',actionCount:3,action0Task:'Complete the programme card',action0Target:'2026-09-16',action1Task:'Submit the reflection',action1Target:'2026-10-07',action2Task:'   ',action2Target:'not-a-date',reviewDate:'2026-10-07T14:30'});
+  await finalPlan(owner,{learnerName:'  Coral Jamieson  ',assessorName:'Alex Assessor',recordRef:'AP-EMAIL',actionCount:3,planType:'Initial Action Plan',meetingDate:'2026-09-16T10:00',action0Task:'Complete the programme card.\n\nDetailed evidence instructions that must remain in the Action Plan.',action0Target:'2026-09-16',action1Task:'Submit the reflection',action1Target:'2026-10-07',action2Task:'   ',action2Target:'not-a-date',reviewDate:'2026-10-07T14:30'});
   assert.equal((await invoke({action:'send',planId:plan,pdf})).status,200);
   const sent=requests.find(r=>r.url.includes('messages/send'));const mime=Buffer.from(JSON.parse(sent.init.body).raw,'base64url').toString();const encodedBody=mime.split('Content-Transfer-Encoding: base64\r\n\r\n')[1].split('\r\n--')[0];const text=Buffer.from(encodedBody,'base64').toString();
-  assert.match(mime,/Subject: =\?UTF-8\?B\?QWN0aW9uIFBsYW46IEFQLUVNQUlM\?=/);
+  assert.match(mime,/Subject: =\?UTF-8\?B\?WW91ciBJbml0aWFsIFBsYW4g4oCTIDE2IFNlcHRlbWJlciAyMDI2\?=/);
   assert.match(text,/Hi Coral,/);
-  assert.match(text,/Your agreed actions\r\n\r\n1\. Complete the programme card\r\nTarget date: 16 September 2026\r\n\r\n2\. Submit the reflection\r\nTarget date: 7 October 2026/);
+  assert.match(text,/Your agreed actions\r\n\r\nAction 1: Complete the programme card\r\nTarget date: 16 September 2026\r\n\r\nAction 2: Submit the reflection\r\nTarget date: 7 October 2026/);
   assert.match(text,/Next review: 7 October 2026/);
+  assert.match(text,/Full details of your agreed actions are included in the attached Action Plan\./);
+  assert.match(text,/Action Plan reference: AP-EMAIL/);
   assert.match(text,/Kind regards,\r\nAlex Assessor/);
-  assert.doesNotMatch(text,/action2|not-a-date/);
+  assert.doesNotMatch(text,/Detailed evidence instructions/);
   assert.match(mime,/Content-Type: application\/pdf; name="Action-Plan\.pdf"\r\nContent-Disposition: attachment; filename="Action-Plan\.pdf"\r\nContent-Transfer-Encoding: base64\r\n\r\n[\s\S]*JVBERi0xLjcKZml4dHVyZQ==/);
 });
 test('invalid or absent review date omits the next review line safely',async()=>{
@@ -112,7 +117,30 @@ test('invalid or absent review date omits the next review line safely',async()=>
   assert.equal((await invoke({action:'send',planId:plan,pdf})).status,200);
   const sent=requests.find(r=>r.url.includes('messages/send'));const mime=Buffer.from(JSON.parse(sent.init.body).raw,'base64url').toString();const encodedBody=mime.split('Content-Transfer-Encoding: base64\r\n\r\n')[1].split('\r\n--')[0];const text=Buffer.from(encodedBody,'base64').toString();
   assert.doesNotMatch(text,/Next review:/);
-  assert.match(text,/1\. Complete the task/);
+  assert.match(text,/Action 1: Complete the task/);
+});
+test('new cloud references use plan type, meeting date, initials and owner-local suffixes',()=>{
+  const first=referenceFactory([]);
+  assert.equal(first.learnerInitials('   '),'');
+  assert.equal(first.reference({planType:'Initial Action Plan',meetingDate:'2026-09-16',learnerName:'   '}),'');
+  assert.equal(first.learnerInitials(' Megan  Louise King '),'MK');
+  assert.equal(first.learnerInitials('Mary-Jane Smith'),'MS');
+  assert.equal(first.reference({planType:'Initial Action Plan',meetingDate:'2026-09-16T10:00',learnerName:'Megan King'}),'IP-16-09-2026-MK');
+  assert.equal(first.reference({planType:'Session Review and Action Plan',meetingDate:'2026-09-16T10:00',learnerName:'Megan King'}),'AP-16-09-2026-MK');
+  const invalidDate=first.reference({planType:'Initial Action Plan',meetingDate:'2026-02-30',learnerName:'Megan King'});
+  assert.notEqual(invalidDate,'IP-30-02-2026-MK');
+  assert.match(invalidDate,/^IP-\d{2}-\d{2}-\d{4}-MK$/);
+  const missingDate=first.reference({planType:'Initial Action Plan',learnerName:'Megan King'});
+  assert.match(missingDate,/^IP-\d{2}-\d{2}-\d{4}-MK$/);
+  const second=referenceFactory([{payload:{values:{recordRef:'AP-16-09-2026-MK'}}},{payload:{values:{recordRef:'AP-16-09-2026-MK-02'}}}]);
+  assert.equal(second.reference({planType:'Session Review and Action Plan',meetingDate:'2026-09-16',learnerName:'Megan King'}),'AP-16-09-2026-MK-03');
+});
+test('session review email uses Action Plan subject and reference-date fallback',async()=>{
+  await mailbox();await finalPlan(owner,{planType:'Session Review and Action Plan',recordRef:'AP-14-09-2026-MK',actionCount:1,action0Task:'Review the submitted evidence',action0Target:'2026-09-23',meetingDate:'invalid'});
+  assert.equal((await invoke({action:'send',planId:plan,pdf})).status,200);
+  const sent=requests.find(r=>r.url.includes('messages/send'));const mime=Buffer.from(JSON.parse(sent.init.body).raw,'base64url').toString();const encodedBody=mime.split('Content-Transfer-Encoding: base64\r\n\r\n')[1].split('\r\n--')[0];const text=Buffer.from(encodedBody,'base64').toString();
+  assert.match(mime,/Subject: =\?UTF-8\?B\?WW91ciBBY3Rpb24gUGxhbiDigKwgMTQgU2VwdGVtYmVyIDIwMjY=\?=/);
+  assert.match(text,/Action Plan reference: AP-14-09-2026-MK/);
 });
 test('wrong owner, changed email and header injection cannot send',async()=>{
   await mailbox();await finalPlan(other);assert.equal((await invoke({action:'send',planId:plan,pdf})).status,409);assert.equal(requests.length,0);

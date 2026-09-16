@@ -181,7 +181,8 @@ export async function handler(req: Request) {
     if (!isProvider(provider)) throw new Error('Invalid provider');
     requireConfigured(provider);
     assertIdentity(accountEmail, mailbox.email);
-    const v = plans[0].payload.values;
+    const payload = plans[0].payload;
+    const v = payload.values;
     assertIdentity(mailbox.email, normalEmail(v.assessorEmail));
     const recipient = normalEmail(v.learnerEmail);
     if (!validEmail(recipient)) throw new MailboxError('invalid_recipient', 'The saved plan needs a valid learner email address.');
@@ -206,7 +207,6 @@ export async function handler(req: Request) {
     }
     const claimed = await sql`insert into public.action_plan_email_events(plan_id,owner_id,status,sender,recipient) values(${body.planId},${owner},'sending',${mailbox.email},${recipient}) on conflict(plan_id) do update set status='sending',detail=null,updated_at=now() where action_plan_email_events.status='failed' and action_plan_email_events.owner_id=${owner} returning plan_id`;
     if (!claimed.length) throw new MailboxError('already_sent', 'This email is already sent or awaiting confirmation. Check the record before sending again.', 409);
-    const subject = 'Action Plan: ' + String(v.recordRef || '');
     const formatEmailDate = (value: unknown) => {
       const match = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
       if (!match) return '';
@@ -215,14 +215,28 @@ export async function handler(req: Request) {
       if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return '';
       return date.toLocaleDateString('en-GB', {day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'});
     };
+    const formatReferenceDate = (value: unknown) => {
+      const match = String(value || '').match(/(?:^|-)(\d{2})-(\d{2})-(\d{4})(?:-|$)/);
+      return match ? formatEmailDate(match[3] + '-' + match[2] + '-' + match[1]) : '';
+    };
+    const planDate = formatEmailDate(v.meetingDate) || formatReferenceDate(v.recordRef);
+    const subjectLabel = v.planType === 'Initial Action Plan' ? 'Initial Plan' : 'Action Plan';
+    const subject = 'Your ' + subjectLabel + (planDate ? ' – ' + planDate : '');
     const learnerFirstName = String(v.learnerName || '').trim().split(/\s+/)[0] || 'there';
-    const actionCount = Number.isInteger(Number(v.actionCount)) && Number(v.actionCount) > 0 ? Number(v.actionCount) : 0;
+    const summarizeEmailAction = (value: unknown) => {
+      const paragraph = String(value || '').trim().split(/(?:\r?\n)\s*(?:\r?\n)+/).map(item => item.trim()).find(Boolean) || '';
+      const normalized = paragraph.replace(/\s+/g, ' ').trim();
+      if (normalized.length <= 240) return normalized;
+      const sentence = normalized.match(/^(.+?[.!?])(?:\s|$)/);
+      return sentence ? sentence[1].trim() : normalized;
+    };
+    const actionCount = Number.isInteger(Number(payload.actionCount)) && Number(payload.actionCount) > 0 ? Number(payload.actionCount) : 0;
     const actions: string[] = [];
     for (let index = 0; index < actionCount; index++) {
-      const task = String(v['action' + index + 'Task'] || '').trim();
+      const task = summarizeEmailAction(v['action' + index + 'Task']);
       if (!task) continue;
       const targetDate = formatEmailDate(v['action' + index + 'Target']);
-      actions.push((actions.length + 1) + '. ' + task + (targetDate ? '\r\nTarget date: ' + targetDate : ''));
+      actions.push('Action ' + (actions.length + 1) + ': ' + task + (targetDate ? '\r\nTarget date: ' + targetDate : ''));
     }
     const reviewDate = formatEmailDate(v.reviewDate);
     const text = [
@@ -234,6 +248,10 @@ export async function handler(req: Request) {
       '',
       actions.join('\r\n\r\n'),
       ...(reviewDate ? ['', 'Next review: ' + reviewDate] : []),
+      '',
+      'Full details of your agreed actions are included in the attached Action Plan.',
+      '',
+      'Action Plan reference: ' + String(v.recordRef || ''),
       '',
       "Please have a read through and reply to this email to confirm you've received your Action Plan. If you have any questions or anything needs clarifying, just let me know.",
       '',

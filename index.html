@@ -7674,7 +7674,7 @@ function submitForm() {
     ensureActionCount(saved?.actionCount || 1);
     if (saved?.values) applyValues(saved.values);
     var reference = document.getElementById('actionRecordRef');
-    if (reference && !reference.value) reference.value = makeRecordReference();
+    if (reference && !reference.value && !window.actionRecords) reference.value = makeRecordReference();
     syncTraineeAssessorFromHub();
     var hubNameDisplay = document.getElementById('learnerNameDisplay');
     if (hubNameDisplay) new MutationObserver(syncTraineeAssessorFromHub).observe(hubNameDisplay, { childList: true, characterData: true, subtree: true });
@@ -9165,14 +9165,35 @@ function submitForm() {
   function persist() {
     localStorage.setItem(key(), JSON.stringify({ records, activeId: active?.id }));
   }
+  function learnerInitials(name) {
+    const parts = String(name || '').trim().split(/\s+/).filter(Boolean);
+    if (!parts.length) return '';
+    return (parts.length === 1 ? parts[0][0] : parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+  }
   function reference(values) {
-    const d = (values.meetingDate || new Date().toLocaleDateString('en-CA')).slice(0,10);
-    const date = /^\d{4}-\d{2}-\d{2}$/.test(d) ? d.split('-').reverse().join('-') : new Date().toLocaleDateString('en-GB').replaceAll('/','-');
-    return (values.planType === 'Session Review and Action Plan' ? 'RP' : 'IP') + '-' + date + '-' + String(values.meetingNumber || 1).padStart(2,'0');
+    const initials = learnerInitials(values.learnerName);
+    if (!initials) return '';
+    const meetingDate = String(values.meetingDate || '');
+    const match = meetingDate.match(/^(\d{4})-(\d{2})-(\d{2})/);
+    const year = match ? Number(match[1]) : 0;
+    const month = match ? Number(match[2]) : 0;
+    const day = match ? Number(match[3]) : 0;
+    const parsed = match ? new Date(Date.UTC(year, month - 1, day)) : null;
+    const validMeetingDate = parsed && parsed.getUTCFullYear() === year && parsed.getUTCMonth() === month - 1 && parsed.getUTCDate() === day;
+    const date = validMeetingDate ? String(day).padStart(2,'0') + '-' + String(month).padStart(2,'0') + '-' + year : new Date().toLocaleDateString('en-GB').replaceAll('/','-');
+    const prefix = values.planType === 'Initial Action Plan' ? 'IP' : 'AP';
+    const base = prefix + '-' + date + '-' + initials;
+    let candidate = base;
+    let suffix = 2;
+    while (records.some(record => record.payload?.values?.recordRef === candidate)) candidate = base + '-' + String(suffix++).padStart(2,'0');
+    return candidate;
   }
   function create(values = {}) {
     const payload = {version:4,actionCount:1,values:{planType:'Initial Action Plan',programmeLevel:'2',meetingNumber:'1',recordStatus:'Draft',...values}};
-    payload.values.recordRef ||= reference(payload.values);
+    if (!payload.values.recordRef && payload.values.learnerName) {
+      const generatedReference = reference(payload.values);
+      if (generatedReference) payload.values.recordRef = generatedReference;
+    }
     return { id: crypto.randomUUID(), owner_id:owner, payload, status:'draft', revision:0, updated_at:new Date().toISOString() };
   }
   function cache(record) {
@@ -9239,6 +9260,14 @@ function submitForm() {
     if(!ready || !active) return bridge().collect();
     if(active.status==='finalised') return active.payload;
     const payload=bridge().collect();
+    if (!payload.values.recordRef && payload.values.learnerName?.trim()) {
+      const generatedReference = reference(payload.values);
+      if (generatedReference) {
+        payload.values.recordRef = generatedReference;
+        const referenceControl = $('actionRecordRef');
+        if (referenceControl) referenceControl.value = payload.values.recordRef;
+      }
+    }
     const unchanged = JSON.stringify(payload.values)===JSON.stringify(active.payload.values) && payload.actionCount===active.payload.actionCount;
     active.payload=payload; active.updated_at=new Date().toISOString();
     try {cache(active);} catch(error) {tell('Unable to save','Device storage is full. Download a PDF or plan backup now.');return payload;}
@@ -9290,6 +9319,10 @@ function submitForm() {
     const payload=bridge().collect(),v=payload.values;
     const issues=[];
     if(!v.learnerName?.trim()||!v.assessorName?.trim())issues.push('learner and trainee assessor names');
+    if(!v.recordRef?.trim() && v.learnerName?.trim()) {
+      const generatedReference = reference(v);
+      if (generatedReference) v.recordRef = generatedReference;
+    }
     if(!v.recordRef?.trim()||!v.meetingDate||Number(v.meetingNumber)<1)issues.push('record reference, meeting date and review number');
     if(!v.learnerAgreementName?.trim()||!v.assessorAgreementName?.trim()||!v.learnerAgreementDate||!v.assessorAgreementDate)issues.push('both agreement names and dates');
     for(let i=0;i<payload.actionCount;i++)if(!v['action'+i+'Task']?.trim()||!v['action'+i+'Component'])issues.push('task and assessment component for Action '+(i+1));
