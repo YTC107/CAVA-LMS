@@ -3089,10 +3089,10 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
             </div>
             <p id="actionEmailStatus" role="status">After finalising, send the final PDF from the connected assessor mailbox to the learner email recorded in this plan.</p>
           </div></section>
-          <section class="action-section" aria-labelledby="action-history-title">
-            <div class="action-section__heading"><span aria-hidden="true">↺</span><div><h3 id="action-history-title">Saved action plans and reviews</h3><p>Finalised records appear here as evidence for the trainee assessor's Level 3 qualification.</p></div></div>
+          <details class="action-section action-history-section">
+            <summary class="action-section__heading"><span aria-hidden="true">↺</span><div><h3 id="action-history-title">Saved Action Plans &amp; Reviews<span id="action-history-count"></span></h3><p>Your saved Action Plans and Reviews are stored here. Open a record to continue a draft or view a completed record.</p></div><span id="action-history-toggle-label" class="action-tutorial__prompt">View saved records</span></summary>
             <div class="action-section__body"><div id="actionPlanHistory" class="action-history"><div class="action-history__empty">No finalised action plans yet.</div></div></div>
-          </section>
+          </details>
 
           <footer class="action-workspace__footer">
             <p id="actionDraftMessage">Changes save automatically on this device.</p>
@@ -5574,6 +5574,10 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
       btn.setAttribute('tabindex', '-1');
     });
     const pane = document.getElementById(tab);
+    if (tab === 'actions') {
+      const savedHistory = document.querySelector('.action-history-section');
+      if (savedHistory) savedHistory.open = false;
+    }
     const button = trigger || document.querySelector('.tab-btn[data-tab="' + tab + '"]');
     if (pane) {
       pane.classList.add('active');
@@ -7225,6 +7229,8 @@ function submitForm() {
     var container = document.getElementById('actionPlanHistory');
     if (!container) return;
     var records = loadHistory();
+    var count = document.getElementById('action-history-count');
+    if (count) count.textContent = records.length ? ' · ' + records.length + (records.length === 1 ? ' record' : ' records') : '';
     if (!records.length) {
       container.innerHTML = '<div class="action-history__empty">No finalised action plans yet.</div>';
       return;
@@ -9294,6 +9300,7 @@ function submitForm() {
   }
   function renderHistory() {
     const box=$('actionPlanHistory'); if(!box)return;
+    const count=$('action-history-count'); if(count) count.textContent=records.length ? ' · '+records.length+(records.length===1?' record':' records') : '';
     box.replaceChildren();
     [...records].sort((a,b)=>b.updated_at.localeCompare(a.updated_at)).forEach(record=>{
       const item=document.createElement('div');item.className='action-history__item';
@@ -9303,6 +9310,15 @@ function submitForm() {
       button.onclick=async()=>{if(busy)return;save(false);await queue.catch(()=>{});display(record);};
       item.append(title,date,button);box.append(item);
     });
+  }
+  function bindHistoryDisclosure() {
+    const disclosure=document.querySelector('.action-history-section');
+    const label=$('action-history-toggle-label');
+    if(!disclosure||!label||disclosure.dataset.bound)return;
+    disclosure.dataset.bound='true';
+    const update=()=>{label.textContent=disclosure.open?'Hide saved records':'View saved records';};
+    disclosure.addEventListener('toggle',update);
+    update();
   }
   async function newPlan(review) {
     if(busy)return;
@@ -9480,7 +9496,7 @@ function submitForm() {
     ready=true;return active.payload;
   }
   function bind() {
-    display(active);checkMailbox();
+    display(active);bindHistoryDisclosure();checkMailbox();
     $('actionNewPlan').onclick=()=>newPlan(false);$('actionNewReview').onclick=()=>newPlan(true);
     $('actionConnectMailbox').onclick=()=>{if(mailboxBusy)return;$('actionMailboxOptions').hidden=false;$('actionConnectMailbox').setAttribute('aria-expanded','true');if(mailbox?.provider)$('actionMailboxProvider').value=mailbox.provider;updateMailboxProvider();$('actionMailboxProvider').focus();};
     $('actionMailboxProvider').onchange=updateMailboxProvider;
