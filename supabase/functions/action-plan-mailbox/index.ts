@@ -207,7 +207,39 @@ export async function handler(req: Request) {
     const claimed = await sql`insert into public.action_plan_email_events(plan_id,owner_id,status,sender,recipient) values(${body.planId},${owner},'sending',${mailbox.email},${recipient}) on conflict(plan_id) do update set status='sending',detail=null,updated_at=now() where action_plan_email_events.status='failed' and action_plan_email_events.owner_id=${owner} returning plan_id`;
     if (!claimed.length) throw new MailboxError('already_sent', 'This email is already sent or awaiting confirmation. Check the record before sending again.', 409);
     const subject = 'Action Plan: ' + String(v.recordRef || '');
-    const text = 'Hello ' + v.learnerName + ',\r\n\r\nPlease find your agreed Action Plan attached. Please reply to confirm receipt and let me know if you have any questions.\r\n\r\n' + v.assessorName;
+    const formatEmailDate = (value: unknown) => {
+      const match = String(value || '').match(/^(\d{4})-(\d{2})-(\d{2})/);
+      if (!match) return '';
+      const year = Number(match[1]), month = Number(match[2]), day = Number(match[3]);
+      const date = new Date(Date.UTC(year, month - 1, day));
+      if (date.getUTCFullYear() !== year || date.getUTCMonth() !== month - 1 || date.getUTCDate() !== day) return '';
+      return date.toLocaleDateString('en-GB', {day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC'});
+    };
+    const learnerFirstName = String(v.learnerName || '').trim().split(/\s+/)[0] || 'there';
+    const actionCount = Number.isInteger(Number(v.actionCount)) && Number(v.actionCount) > 0 ? Number(v.actionCount) : 0;
+    const actions: string[] = [];
+    for (let index = 0; index < actionCount; index++) {
+      const task = String(v['action' + index + 'Task'] || '').trim();
+      if (!task) continue;
+      const targetDate = formatEmailDate(v['action' + index + 'Target']);
+      actions.push((actions.length + 1) + '. ' + task + (targetDate ? '\r\nTarget date: ' + targetDate : ''));
+    }
+    const reviewDate = formatEmailDate(v.reviewDate);
+    const text = [
+      'Hi ' + learnerFirstName + ',',
+      '',
+      "Thanks for taking the time to catch up with me. I've attached a copy of the Action Plan we agreed together.",
+      '',
+      'Your agreed actions',
+      '',
+      actions.join('\r\n\r\n'),
+      ...(reviewDate ? ['', 'Next review: ' + reviewDate] : []),
+      '',
+      "Please have a read through and reply to this email to confirm you've received your Action Plan. If you have any questions or anything needs clarifying, just let me know.",
+      '',
+      'Kind regards,',
+      String(v.assessorName || '').trim()
+    ].join('\r\n');
     const messageId = '<' + body.planId + '@action-plans.pt-academy.invalid>';
     let outcome: {status: string; id?: string; reconnect?: boolean} = {status: 'unknown'};
     try {

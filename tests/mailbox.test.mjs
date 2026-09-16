@@ -59,7 +59,7 @@ async function mailbox(provider='google',email=account,legacy=false){
   else cipher=await security.encrypt('test-only-refresh',key,owner,provider);
   await db.query('insert into action_plan_private.mailboxes(owner_id,email,provider,token_cipher) values($1,$2,$3,$4)',[owner,email,provider,cipher]);
 }
-async function finalPlan(planOwner=owner){await db.query("insert into public.action_plan_records(id,owner_id,payload,status) values($1,$2,$3,'finalised')",[plan,planOwner,JSON.stringify({values:{assessorEmail:account,learnerEmail:'learner@example.com',learnerName:'Test Learner',assessorName:'Test Assessor',recordRef:'AP-TEST'}})]);}
+async function finalPlan(planOwner=owner,values={}){await db.query("insert into public.action_plan_records(id,owner_id,payload,status) values($1,$2,$3,'finalised')",[plan,planOwner,JSON.stringify({values:{assessorEmail:account,learnerEmail:'learner@example.com',learnerName:'Test Learner',assessorName:'Test Assessor',recordRef:'AP-TEST',...values}})]);}
 beforeEach(async()=>{await db.exec('delete from public.action_plan_email_events; delete from public.action_plan_records; delete from action_plan_private.mailboxes; delete from action_plan_private.oauth_states; delete from action_plan_private.connection_guards;');account='assessor@example.com';providerEmail=account;requests=[];providerStatus=200;refreshDenied=false;delayedToken=null;});
 after(()=>db.close());
 test('encrypted credentials bind to owner and provider, base64url keys work',async()=>{
@@ -93,6 +93,26 @@ test('Microsoft connects and sends with Graph 202, rotates refresh token',async(
 test('existing Gmail ciphertext survives migration and sends from the original assessor',async()=>{
   await mailbox('google',account,true);await finalPlan();assert.equal((await invoke({action:'send',planId:plan,pdf})).status,200);
   const sent=requests.find(r=>r.url.includes('messages/send'));const mime=Buffer.from(JSON.parse(sent.init.body).raw,'base64url').toString();assert.match(mime,/From: assessor@example.com\r\nTo: learner@example.com/);assert.ok(!mime.includes('ptacademy.cava.support'));
+});
+test('learner email includes dynamic actions, UK dates, review date and existing PDF attachment',async()=>{
+  await mailbox();
+  await finalPlan(owner,{learnerName:'  Coral Jamieson  ',assessorName:'Alex Assessor',recordRef:'AP-EMAIL',actionCount:3,action0Task:'Complete the programme card',action0Target:'2026-09-16',action1Task:'Submit the reflection',action1Target:'2026-10-07',action2Task:'   ',action2Target:'not-a-date',reviewDate:'2026-10-07T14:30'});
+  assert.equal((await invoke({action:'send',planId:plan,pdf})).status,200);
+  const sent=requests.find(r=>r.url.includes('messages/send'));const mime=Buffer.from(JSON.parse(sent.init.body).raw,'base64url').toString();const encodedBody=mime.split('Content-Transfer-Encoding: base64\r\n\r\n')[1].split('\r\n--')[0];const text=Buffer.from(encodedBody,'base64').toString();
+  assert.match(mime,/Subject: =\?UTF-8\?B\?QWN0aW9uIFBsYW46IEFQLUVNQUlM\?=/);
+  assert.match(text,/Hi Coral,/);
+  assert.match(text,/Your agreed actions\r\n\r\n1\. Complete the programme card\r\nTarget date: 16 September 2026\r\n\r\n2\. Submit the reflection\r\nTarget date: 7 October 2026/);
+  assert.match(text,/Next review: 7 October 2026/);
+  assert.match(text,/Kind regards,\r\nAlex Assessor/);
+  assert.doesNotMatch(text,/action2|not-a-date/);
+  assert.match(mime,/Content-Type: application\/pdf; name="Action-Plan\.pdf"\r\nContent-Disposition: attachment; filename="Action-Plan\.pdf"\r\nContent-Transfer-Encoding: base64\r\n\r\n[\s\S]*JVBERi0xLjcKZml4dHVyZQ==/);
+});
+test('invalid or absent review date omits the next review line safely',async()=>{
+  await mailbox();await finalPlan(owner,{actionCount:1,action0Task:'Complete the task',action0Target:'2026-02-30',reviewDate:'invalid'});
+  assert.equal((await invoke({action:'send',planId:plan,pdf})).status,200);
+  const sent=requests.find(r=>r.url.includes('messages/send'));const mime=Buffer.from(JSON.parse(sent.init.body).raw,'base64url').toString();const encodedBody=mime.split('Content-Transfer-Encoding: base64\r\n\r\n')[1].split('\r\n--')[0];const text=Buffer.from(encodedBody,'base64').toString();
+  assert.doesNotMatch(text,/Next review:/);
+  assert.match(text,/1\. Complete the task/);
 });
 test('wrong owner, changed email and header injection cannot send',async()=>{
   await mailbox();await finalPlan(other);assert.equal((await invoke({action:'send',planId:plan,pdf})).status,409);assert.equal(requests.length,0);
