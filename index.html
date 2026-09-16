@@ -3090,8 +3090,8 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
             <p id="actionEmailStatus" role="status">After finalising, send the final PDF from the connected assessor mailbox to the learner email recorded in this plan.</p>
           </div></section>
           <details class="action-section action-history-section">
-            <summary class="action-section__heading"><span aria-hidden="true">↺</span><div><h3 id="action-history-title">Saved Action Plans &amp; Reviews<span id="action-history-count"></span></h3><p>Your saved Action Plans and Reviews are stored here. Open a record to continue a draft or view a completed record.</p></div><span id="action-history-toggle-label" class="action-tutorial__prompt">View saved records</span></summary>
-            <div class="action-section__body"><div id="actionPlanHistory" class="action-history"><div class="action-history__empty">No finalised action plans yet.</div></div></div>
+            <summary class="action-history-summary"><span class="action-history-summary__icon" aria-hidden="true">↺</span><span class="action-history-summary__copy"><small>SAVED ACTION PLANS &amp; REVIEWS</small><strong id="action-history-title">Your saved records</strong><span id="action-history-count">0 Action Plans &amp; Reviews stored</span></span><span id="action-history-toggle-label" class="action-history-summary__toggle">View records <span aria-hidden="true">▼</span></span></summary>
+            <div class="action-section__body"><p class="action-history-summary__explanation">Your saved Action Plans and Reviews are stored here. Open a record to continue a draft or view a completed record.</p><div id="actionPlanHistory" class="action-history"><div class="action-history__empty">No finalised action plans yet.</div></div></div>
           </details>
 
           <footer class="action-workspace__footer">
@@ -7230,7 +7230,7 @@ function submitForm() {
     if (!container) return;
     var records = loadHistory();
     var count = document.getElementById('action-history-count');
-    if (count) count.textContent = records.length ? ' · ' + records.length + (records.length === 1 ? ' record' : ' records') : '';
+    if (count) count.textContent = records.length + ' Action Plans & Reviews stored';
     if (!records.length) {
       container.innerHTML = '<div class="action-history__empty">No finalised action plans yet.</div>';
       return;
@@ -9139,6 +9139,7 @@ function submitForm() {
 <style id="action-records-and-evidence-support">
 .action-record-tools{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
 .action-record-tools label{cursor:pointer;margin:0}
+.action-history-summary{align-items:center;background:linear-gradient(135deg,#1c1c1c,#353535);color:#fff;cursor:pointer;display:grid;gap:15px;grid-template-columns:auto minmax(0,1fr) auto;list-style:none;min-height:88px;padding:17px 20px}.action-history-summary::-webkit-details-marker{display:none}.action-history-summary__icon{align-items:center;background:#c9a84c;border-radius:50%;color:#171717;display:flex;font-size:17px;font-weight:800;height:42px;justify-content:center;width:42px}.action-history-summary__copy{display:grid;gap:3px;min-width:0}.action-history-summary__copy small{color:#e2c66f;font-size:.7rem;font-weight:800;letter-spacing:.08em;line-height:1.2}.action-history-summary__copy strong{color:#fff;font-size:1.12rem;line-height:1.3}.action-history-summary__copy>span{color:#ddd;font-size:.82rem;line-height:1.35}.action-history-summary__toggle{border:1px solid #e2c66f;border-radius:999px;color:#fff;font-size:.8rem;font-weight:800;padding:8px 11px;white-space:nowrap}.action-history-summary__explanation{color:var(--hub-muted);font-size:13px;line-height:1.45;margin:0;padding:18px 20px 0}.action-history-section[open] .action-history-summary{border-bottom:1px solid rgba(255,255,255,.18)}
 .action-tutorial{border:1px solid #c9a84c!important;border-left:7px solid #c9a84c!important;border-radius:10px!important;box-shadow:0 7px 18px rgba(0,0,0,.13);overflow:hidden}.action-tutorial summary{align-items:center;background:linear-gradient(135deg,#1c1c1c,#353535);color:#fff;cursor:pointer;display:grid!important;gap:14px;grid-template-columns:auto 1fr auto;list-style:none;min-height:84px;padding:16px 20px}.action-tutorial summary::-webkit-details-marker{display:none}.action-tutorial__play{align-items:center;background:#c9a84c;border-radius:50%;color:#171717;display:flex;font-size:15px;height:42px;justify-content:center;padding-left:2px;width:42px}.action-tutorial summary small{color:#e2c66f;display:block;font-size:.7rem;font-weight:800;letter-spacing:.08em;margin-bottom:4px;text-transform:uppercase}.action-tutorial summary span:nth-child(2){font-size:1.08rem;font-weight:800;line-height:1.3}.action-tutorial__prompt{border:1px solid #e2c66f;border-radius:999px;color:#fff;font-size:.8rem;font-weight:800;padding:8px 11px}.action-tutorial[open] .action-tutorial__prompt{font-size:0}.action-tutorial[open] .action-tutorial__prompt:before{content:'Close tutorial';font-size:.8rem}.action-tutorial .action-section__body{background:#fff;padding:22px!important}.action-tutorial p{color:#3c3c3c;font-size:.94rem;line-height:1.65;margin:0 0 18px;max-width:800px}.action-tutorial__placeholder{align-items:center;aspect-ratio:16/7;background:#ece9e2;border:1px dashed #bdb7aa;border-radius:8px;color:#555;display:flex;font-size:.9rem;justify-content:center;min-height:170px;padding:16px;text-align:center}#actionTutorialPlayer iframe{aspect-ratio:16/9;border:0;display:block;width:100%}
 .action-tutorial p,#actionMailboxStatus,#actionEmailStatus{line-height:1.65;margin:0 0 12px}
 .reflection-support.worksheet-inline-support{display:block!important;background:#fff;border:1px solid #d5d3ce;border-radius:12px;box-shadow:0 5px 16px rgba(24,24,24,.08);margin:20px 0;overflow:hidden}
@@ -9300,7 +9301,7 @@ function submitForm() {
   }
   function renderHistory() {
     const box=$('actionPlanHistory'); if(!box)return;
-    const count=$('action-history-count'); if(count) count.textContent=records.length ? ' · '+records.length+(records.length===1?' record':' records') : '';
+    const count=$('action-history-count'); if(count) count.textContent=records.length+' Action Plans & Reviews stored';
     box.replaceChildren();
     [...records].sort((a,b)=>b.updated_at.localeCompare(a.updated_at)).forEach(record=>{
       const item=document.createElement('div');item.className='action-history__item';
@@ -9316,7 +9317,7 @@ function submitForm() {
     const label=$('action-history-toggle-label');
     if(!disclosure||!label||disclosure.dataset.bound)return;
     disclosure.dataset.bound='true';
-    const update=()=>{label.textContent=disclosure.open?'Hide saved records':'View saved records';};
+    const update=()=>{label.innerHTML=disclosure.open?'Hide records <span aria-hidden="true">▲</span>':'View records <span aria-hidden="true">▼</span>';};
     disclosure.addEventListener('toggle',update);
     update();
   }
