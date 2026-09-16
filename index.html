@@ -2923,7 +2923,7 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
         </nav>
 
         <div class="action-workspace__main">
-          <details class="action-section action-tutorial" open>
+          <details class="action-section action-tutorial">
             <summary><span class="action-tutorial__play" aria-hidden="true">▶</span><span><small>Video tutorial</small>How to complete your Action Plan</span><span class="action-tutorial__prompt">Watch tutorial</span></summary>
             <div class="action-section__body"><p>This tutorial walks you through creating an Initial Action Plan or Session Review, recording meeting details, selecting assessment components, agreeing actions and confirming the record.</p><div id="actionTutorialPlayer"><div class="action-tutorial__placeholder">Video tutorial: completing your Action Plan</div></div></div>
           </details>
@@ -2957,7 +2957,7 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
                 <div class="action-field"><label for="actionLearnerName">Learner name</label><input id="actionLearnerName" type="text" data-action-field="learnerName" autocomplete="name" placeholder="Learner's full name"></div>
                 <div class="action-field"><label for="actionLearnerEmail">Learner email</label><input id="actionLearnerEmail" type="email" data-action-field="learnerEmail" autocomplete="email" placeholder="learner@email.com"></div>
                 <div class="action-field"><label for="actionMeetingDateDisplay">Meeting date and time</label><div class="uk-date-control"><input id="actionMeetingDateDisplay" class="uk-date-display" type="text" placeholder="DD/MM/YYYY, HH:MM" readonly aria-hidden="true"><input id="actionMeetingDate" class="uk-date-picker" type="datetime-local" data-action-field="meetingDate" aria-label="Choose meeting date and time"></div></div>
-                <div class="action-field"><label for="actionMeetingMethod">Meeting method</label><select id="actionMeetingMethod" data-action-field="meetingMethod"><option value="">Select method</option><option>Face to face</option><option>Video call (Zoom or Teams)</option><option>Telephone</option></select></div>
+                <div class="action-field"><label for="actionMeetingMethod">Meeting method</label><select id="actionMeetingMethod" data-action-field="meetingMethod"><option value="">Select method</option><option>Face to face</option><option>Video call (e.g. Zoom, Microsoft Teams, Google Meet, WhatsApp)</option><option>Telephone / audio call</option><option>Other</option></select><div id="actionMeetingMethodOtherWrap" hidden><label for="actionMeetingMethodOther">Please specify</label><input id="actionMeetingMethodOther" type="text" data-action-field="meetingMethodOther" placeholder="Enter the meeting method"></div></div>
                 <div class="action-field"><label for="actionReviewDateDisplay">Next meeting date and time</label><div class="uk-date-control"><input id="actionReviewDateDisplay" class="uk-date-display" type="text" placeholder="DD/MM/YYYY, HH:MM" readonly aria-hidden="true"><input id="actionReviewDate" class="uk-date-picker" type="datetime-local" data-action-field="reviewDate" aria-label="Choose next meeting date and time"></div></div>
                 <div class="action-field"><label for="actionAssessorName">Trainee assessor name</label><input id="actionAssessorName" type="text" data-action-field="assessorName" autocomplete="name" placeholder="Trainee assessor's full name"></div>
                 <div class="action-field"><label for="actionAssessorEmail">Trainee assessor email</label><input id="actionAssessorEmail" type="email" data-action-field="assessorEmail" autocomplete="email" placeholder="assessor@email.com"></div>
@@ -6947,6 +6947,19 @@ function submitForm() {
     if (parts.length !== 3) return value;
     return parts[2] + '/' + parts[1] + '/' + parts[0] + (pieces[1] ? ', ' + pieces[1].slice(0,5) : '');
   }
+  function updateMeetingMethodOtherVisibility() {
+    var method = document.getElementById('actionMeetingMethod');
+    var wrapper = document.getElementById('actionMeetingMethodOtherWrap');
+    if (wrapper) wrapper.hidden = method?.value !== 'Other';
+  }
+  function preserveMeetingMethodOption(value) {
+    var method = document.getElementById('actionMeetingMethod');
+    if (!method || !value || Array.from(method.options).some(function (option) { return option.value === value; })) return;
+    var option = document.createElement('option');
+    option.value = value;
+    option.textContent = value;
+    method.appendChild(option);
+  }
   function syncDateDisplay(input) {
     var display = input?.previousElementSibling;
     if (display?.classList.contains('uk-date-display')) display.value = formatUKDate(input.value);
@@ -6965,6 +6978,7 @@ function submitForm() {
   }
   function applyValues(values) {
     if (!values) return;
+    preserveMeetingMethodOption(values.meetingMethod);
     actionControls().forEach(function (control) {
       var key = control.getAttribute('data-action-field');
       if (!(key in values)) return;
@@ -6973,6 +6987,7 @@ function submitForm() {
       if (control.classList.contains('uk-date-picker')) syncDateDisplay(control);
       if (control.tagName === 'TEXTAREA') expandTextarea(control);
     });
+    updateMeetingMethodOtherVisibility();
     selectPlanType(values.planType || 'Initial Action Plan', false);
     selectProgramme(values.programmeLevel || '2', false);
     updateActionComponentOptions();
@@ -7161,7 +7176,7 @@ function submitForm() {
     if (control.dataset.actionBound === 'true') return;
     control.dataset.actionBound = 'true';
     control.addEventListener('input', scheduleSave);
-    control.addEventListener('change', function () { if (control.matches('[data-programme-component]')) updateActionComponentOptions(); scheduleSave(); });
+    control.addEventListener('change', function () { if (control.matches('[data-programme-component]')) updateActionComponentOptions(); if (control.id === 'actionMeetingMethod') updateMeetingMethodOtherVisibility(); scheduleSave(); });
     if (control.tagName === 'TEXTAREA') {
       expandTextarea(control);
       control.addEventListener('input', function () { expandTextarea(control); });
@@ -7525,7 +7540,7 @@ function submitForm() {
     );
     fieldPair(
       { label: 'Meeting date and time', key: 'meetingDate', value: formatUKDate(values.meetingDate || ''), options: { multiline: false } },
-      { label: 'Meeting method', key: 'meetingMethod', value: values.meetingMethod || '', options: { multiline: false } },
+      { label: 'Meeting method', key: 'meetingMethod', value: values.meetingMethod === 'Other' && values.meetingMethodOther ? 'Other: ' + values.meetingMethodOther : values.meetingMethod || '', options: { multiline: false } },
       { multiline: false }
     );
     fieldPair(
@@ -9203,6 +9218,8 @@ function submitForm() {
   }
   function display(record) {
     active = record;
+    var tutorial = document.querySelector('.action-tutorial');
+    if (tutorial) tutorial.open = false;
     bridge().reset(); bridge().count(record.payload.actionCount || 1);
     bridge().apply({...record.payload.values,recordStatus:record.status === 'finalised' ? 'Finalised':'Draft'});
     const locked = record.status === 'finalised';
