@@ -5680,6 +5680,12 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
     }
     dateInput?.addEventListener('change', syncAppointmentDate);
     requestButton?.addEventListener('click', function() {
+      const status = document.getElementById('appointmentRequestStatus');
+      const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailPattern.test(supportEmail)) {
+        if (status) status.textContent = 'Support email is not configured correctly. Please contact PT Academy through your usual support route.';
+        return;
+      }
       const supportType = document.getElementById('appointmentSupportType')?.value || 'Programme support';
       const preferredDate = dateDisplay?.value || 'Not specified';
       const preferredTime = document.getElementById('appointmentPreferredTime')?.value || 'Not specified';
@@ -5701,10 +5707,48 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
         'Reason for appointment:', reason, '',
         'Kind regards,', name
       ].join('\n');
-      const href = 'mailto:' + encodeURIComponent(supportEmail) + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(body);
-      const status = document.getElementById('appointmentRequestStatus');
-      if (status) status.textContent = supportEmail ? 'Opening your email with the appointment request prepared.' : 'Opening a prepared email. Add the support recipient before sending.';
-      window.location.href = href;
+      const encodedRecipient = encodeURIComponent(supportEmail);
+      const encodedSubject = encodeURIComponent(subject);
+      const encodedBody = encodeURIComponent(body);
+      const mailtoHref = 'mailto:' + encodedRecipient + '?subject=' + encodedSubject + '&body=' + encodedBody;
+      const gmailHref = 'https://mail.google.com/mail/?view=cm&fs=1&to=' + encodedRecipient + '&su=' + encodedSubject + '&body=' + encodedBody;
+      if (status) {
+        status.replaceChildren(document.createTextNode('Opening your email with the appointment request prepared. If no email application opens, use '));
+        const gmailLink = document.createElement('a');
+        gmailLink.className = 'appointment-request__button secondary';
+        gmailLink.href = gmailHref;
+        gmailLink.target = '_blank';
+        gmailLink.rel = 'noopener';
+        gmailLink.textContent = 'Open in Gmail';
+        status.appendChild(gmailLink);
+        const copyButton = document.createElement('button');
+        copyButton.className = 'appointment-request__button secondary';
+        copyButton.type = 'button';
+        copyButton.textContent = 'Copy request details';
+        copyButton.addEventListener('click', async function() {
+          const requestText = 'To: ' + supportEmail + '\nSubject: ' + subject + '\n\n' + body;
+          try {
+            if (navigator.clipboard?.writeText) await navigator.clipboard.writeText(requestText);
+            else {
+              const textarea = document.createElement('textarea');
+              textarea.value = requestText;
+              textarea.setAttribute('readonly', '');
+              textarea.style.position = 'fixed';
+              textarea.style.opacity = '0';
+              document.body.appendChild(textarea);
+              textarea.select();
+              if (!document.execCommand('copy')) throw new Error('Clipboard copy failed');
+              textarea.remove();
+            }
+            copyButton.textContent = 'Request details copied';
+          } catch (error) {
+            copyButton.textContent = 'Copy failed - select the request manually';
+          }
+        });
+        status.appendChild(document.createTextNode(' '));
+        status.appendChild(copyButton);
+      }
+      window.location.href = mailtoHref;
     });
   }
 
