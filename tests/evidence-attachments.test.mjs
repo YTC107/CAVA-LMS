@@ -66,7 +66,9 @@ test('embedded AC 1.1 uses persistent append/list wiring without a count limit',
   assert.match(hub, /evidencePocRequest\('remove'/);
   assert.match(hub, /evidencePocUploads\.push\(upload\)/);
   assert.match(hub, /Upload failed/);
-  assert.match(hub, /input\.removeAttribute\('onchange'\)/);
-  assert.match(hub, /textContent\.includes\('AC 1\.1'\)/);
-  assert.match(hub, /legacyDisplay\.hidden = true/);
+  assert.match(hub, /data-evidence-poc="unit2-lo1-ac1"/);
+  assert.match(hub, /document\.querySelector\('#unit2WorksheetView \[data-evidence-poc="unit2-lo1-ac1"\]'\)/);
+  assert.match(hub, /type="file" accept="\.pdf,\.doc,\.docx,\.xls,\.xlsx,\.ppt,\.pptx,\.txt,\.jpg,\.jpeg,\.png,\.gif,\.webp/);
+  assert.match(hub, /multiple data-evidence-input><\/div><div class="evidence-list" data-evidence-list/);
+  assert.doesNotMatch(hub, /accept="\.pdf,image\/\*" onchange="showFilename\(this,'fn-l1-lo1-ac1'\)/);
 });
