@@ -66,4 +66,7 @@ test('embedded AC 1.1 uses persistent append/list wiring without a count limit',
   assert.match(hub, /evidencePocRequest\('remove'/);
   assert.match(hub, /evidencePocUploads\.push\(upload\)/);
   assert.match(hub, /Upload failed/);
+  assert.match(hub, /input\.removeAttribute\('onchange'\)/);
+  assert.match(hub, /textContent\.includes\('AC 1\.1'\)/);
+  assert.match(hub, /legacyDisplay\.hidden = true/);
 });

@@ -5584,19 +5584,19 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
   }
 
   async function loadEvidencePoc(message) {
-    const block = document.querySelector('#unit2WorksheetView .learner-block.green .ac-block');
+    const block = Array.from(document.querySelectorAll('#unit2WorksheetView .learner-block.green .ac-block')).find(item => item.querySelector('.ac-title')?.textContent.includes('AC 1.1'));
     const list = block?.querySelector('[data-evidence-list]');
     if (!block || !list) return;
     const learnerId = evidencePocLearnerId();
     if (!learnerId || !currentUser?.id || isLocalLearnerHubPreview()) {
-      renderEvidencePoc(list, [], 'Sign in as an allocated assessor to load evidence.');
+      renderEvidencePoc(list, evidencePocAttachments, 'Sign in as an allocated assessor to load evidence.');
       return;
     }
     try {
       const data = await evidencePocRequest('list', { learnerId, unitCode: 'unit2', learningOutcomeCode: 'lo1', assessmentCriterion: '1.1' });
       evidencePocAttachments = data.attachments || [];
       renderEvidencePoc(list, evidencePocAttachments, message);
-    } catch (error) { renderEvidencePoc(list, [], error.message); }
+    } catch (error) { renderEvidencePoc(list, evidencePocAttachments, error.message); }
   }
 
   async function uploadEvidencePoc(file, block, list) {
@@ -5611,11 +5611,21 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
   }
 
   function initialiseEvidencePoc() {
-    const block = document.querySelector('#unit2WorksheetView .learner-block.green .ac-block');
+    const block = Array.from(document.querySelectorAll('#unit2WorksheetView .learner-block.green .ac-block')).find(item => item.querySelector('.ac-title')?.textContent.includes('AC 1.1'));
     const input = block?.querySelector('input[type="file"]');
     const area = block?.querySelector('.upload-area');
-    const list = block?.querySelector('[data-evidence-list]');
-    if (!block || !input || !area || !list || input.dataset.evidencePocReady) return;
+    if (!block || !input || !area || input.dataset.evidencePocReady) return;
+    input.removeAttribute('onchange');
+    const legacyDisplay = area.nextElementSibling;
+    if (legacyDisplay?.classList.contains('filename-display')) legacyDisplay.hidden = true;
+    let list = block.querySelector('[data-evidence-list]');
+    if (!list) {
+      list = document.createElement('div');
+      list.className = 'evidence-list';
+      list.dataset.evidenceList = 'true';
+      list.setAttribute('aria-live', 'polite');
+      (legacyDisplay || area).insertAdjacentElement('afterend', list);
+    }
     input.dataset.evidencePocReady = 'true';
     input.multiple = true;
     input.accept = '.pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,text/plain,image/jpeg,image/png,image/gif,image/webp';
