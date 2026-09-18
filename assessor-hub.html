@@ -1450,50 +1450,31 @@
       const route=document.getElementById('programmeRoute'); route.value=learner.route; document.getElementById('paymentTracking').checked=learner.paymentTracking;
       document.querySelectorAll('[data-unit-control]').forEach(select=>select.value=learner.unitSettings[select.dataset.unitControl]||'locked');
       route.addEventListener('change',updateFundingVisibility); updateFundingVisibility();
-      renderLiveLearnerAllocations(learner);
+      loadVocationalLearnerOversight(learner);
     }
 
-    async function allocationRequest(action, values) {
-      const response = await sb.functions.invoke('assessor-learner-allocations', { body: { action, ...values } });
-      if (response.error || response.data?.error) throw new Error(response.data?.error || response.error.message || 'Learner allocation request failed.');
-      return response.data;
-    }
-
-    function learnerOptions(selectedId) {
-      return ['<option value="">Select a real learner</option>'].concat(learners.filter(item => item.id !== selectedId).map(item => `<option value="${escapeHtml(item.id)}">${escapeHtml(item.fullName)}${item.email ? ' · ' + escapeHtml(item.email) : ''}</option>`)).join('');
-    }
-
-    async function renderLiveLearnerAllocations(assessorRecord) {
+    async function loadVocationalLearnerOversight(assessorRecord) {
       document.getElementById('authoritativeLearnerAllocations')?.remove();
-      if (!canInviteLearners) return;
-      const targetAssessorId = assessorRecord.authUserId;
+      if (!assessorRecord.authUserId) return;
       const section = document.createElement('section');
       section.id = 'authoritativeLearnerAllocations';
       section.className = 'detail-card allocation-controls';
-      section.innerHTML = `<h4>Authoritative Learner Allocations</h4><p class="field-help">These UUID-backed assignments drive persistent evidence. Legacy text fields above are display-only and are not used for evidence access.</p><div class="form-grid"><div class="field"><label for="authoritativeL1">Learner 1 — Level 2 Gym Instructor</label><select id="authoritativeL1">${learnerOptions(assessorRecord.id)}</select><div class="allocation-actions"><button type="button" class="save-button" data-allocation-slot="l1">Save/Assign</button><button type="button" class="secondary-link" data-allocation-remove="l1">Remove</button></div></div><div class="field"><label for="authoritativeL2">Learner 2 — Level 3 Personal Trainer</label><select id="authoritativeL2">${learnerOptions(assessorRecord.id)}</select><div class="allocation-actions"><button type="button" class="save-button" data-allocation-slot="l2">Save/Assign</button><button type="button" class="secondary-link" data-allocation-remove="l2">Remove</button></div></div></div><div class="invite-message" data-allocation-message role="status" aria-live="polite"></div>`;
-      document.getElementById('level2Learner')?.closest('.field')?.setAttribute('hidden','');
-      document.getElementById('level3Learner')?.closest('.field')?.setAttribute('hidden','');
+      section.innerHTML = '<h4>Vocational Learner Details</h4><p class="field-help">Details supplied by the trainee assessor. These records identify the evidence workspaces and are read-only here.</p><div class="key-value"><span>Learner 1 — Level 2 Gym Instructor</span><strong data-vocational-oversight="l1">Not yet provided</strong></div><div class="key-value"><span>Learner 2 — Level 3 Personal Trainer</span><strong data-vocational-oversight="l2">Not yet provided</strong></div>';
+      document.getElementById('level2Learner')?.closest('.field')?.setAttribute('hidden', '');
+      document.getElementById('level3Learner')?.closest('.field')?.setAttribute('hidden', '');
       document.getElementById('record-programme')?.append(section);
-      const message = section.querySelector('[data-allocation-message]');
-      if (!targetAssessorId) { message.textContent='This trainee assessor has no linked Auth account, so UUID-backed allocation is unavailable.'; message.className='invite-message error show'; return; }
+      document.querySelectorAll('#record-overview .key-value').forEach(row => {
+        const label = row.querySelector('span')?.textContent || '';
+        if (/Level 2 Gym Instructor|Level 3 Personal Training/.test(label)) row.querySelector('strong').textContent = 'See vocational learner details below';
+      });
       try {
-        const data = await allocationRequest('list', {targetAssessorId});
-        (data.allocations || []).forEach(row => { const select = section.querySelector('#authoritative' + row.learner_slot.toUpperCase()); if (select) select.value = row.learner_id; });
-      } catch (error) { message.textContent = error.message; message.className='invite-message error show'; }
-      section.querySelectorAll('[data-allocation-slot]').forEach(button => button.addEventListener('click', async () => {
-        const slot = button.dataset.allocationSlot; const select = section.querySelector('#authoritative' + slot.toUpperCase());
-        if (!select.value) { message.textContent='Select a real learner before saving this slot.'; message.className='invite-message error show'; return; }
-        button.disabled=true;
-        try { await allocationRequest('assign', {targetAssessorId, learnerId:select.value, learnerSlot:slot}); message.textContent='Allocation saved.'; message.className='invite-message success show'; }
-        catch (error) { message.textContent=error.message; message.className='invite-message error show'; }
-        button.disabled=false;
-      }));
-      section.querySelectorAll('[data-allocation-remove]').forEach(button => button.addEventListener('click', async () => {
-        button.disabled=true;
-        try { await allocationRequest('remove', {targetAssessorId, learnerSlot:button.dataset.allocationRemove}); section.querySelector('#authoritative' + button.dataset.allocationRemove.toUpperCase()).value=''; message.textContent='Allocation removed.'; message.className='invite-message success show'; }
-        catch (error) { message.textContent=error.message; message.className='invite-message error show'; }
-        button.disabled=false;
-      }));
+        const {data, error} = await sb.functions.invoke('cava-vocational-learners', {body: {action:'list', targetAssessorId:assessorRecord.authUserId}});
+        if (error || data?.error) throw new Error(data?.error || error.message);
+        (data.learners || []).forEach(record => {
+          const target = section.querySelector('[data-vocational-oversight="' + record.learner_slot + '"]');
+          if (target) target.textContent = record.full_name + ' · ' + record.email;
+        });
+      } catch (error) { section.querySelector('.field-help').textContent = error.message; }
     }
 
     function updateFundingVisibility() {

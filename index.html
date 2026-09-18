@@ -2305,6 +2305,16 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
 
     <div id="assessmentPlanActionNotice" class="intro-card" style="display:none;border-left-color:#6f42c1;background:#f7f2ff;" role="status" aria-live="polite"></div>
 
+    <section class="intro-card vocational-learner-details" aria-labelledby="vocationalLearnerDetailsHeading">
+      <h3 id="vocationalLearnerDetailsHeading">Your Allocated Vocational Learners</h3>
+      <p>Enter the full name and email address of the two vocational learners allocated to you by PT Academy. These details identify the Learner 1 and Learner 2 evidence workspaces.</p>
+      <div class="form-grid">
+        <div class="field"><h4>Learner 1 — Level 2 Gym Instructor</h4><label for="vocationalL1Name">Full name</label><input id="vocationalL1Name" type="text" maxlength="160" autocomplete="name"><label for="vocationalL1Email">Email address</label><input id="vocationalL1Email" type="email" maxlength="254" autocomplete="email"><button type="button" class="save-button" data-vocational-slot="l1">Save Learner 1 details</button></div>
+        <div class="field"><h4>Learner 2 — Level 3 Personal Trainer</h4><label for="vocationalL2Name">Full name</label><input id="vocationalL2Name" type="text" maxlength="160" autocomplete="name"><label for="vocationalL2Email">Email address</label><input id="vocationalL2Email" type="email" maxlength="254" autocomplete="email"><button type="button" class="save-button" data-vocational-slot="l2">Save Learner 2 details</button></div>
+      </div>
+      <p id="vocationalLearnerDetailsStatus" role="status" aria-live="polite"></p>
+    </section>
+
     <section class="plan-schedule-card" aria-labelledby="programmeScheduleHeading">
       <div class="plan-schedule-header">
         <div>
@@ -5506,6 +5516,8 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
     evidenceLearnerIdsPromise = (async () => {
       const assignment = await sb.from('assessor_assignments table').select('learner_id,learner_slot').eq('assessor_id', currentUser?.id || '').not('learner_id', 'is', null);
       if (assignment.error) throw new Error('Learner allocation configuration could not be loaded.');
+      const vocational = await sb.from('cava_vocational_learners').select('id,learner_slot').eq('assessor_id', currentUser?.id || '');
+      const vocationalRows = vocational.error ? [] : (vocational.data || []);
       const rows = assignment.data || [];
       const invalid = rows.some(row => !['l1', 'l2'].includes(row.learner_slot));
       const l1Rows = rows.filter(row => row.learner_slot === 'l1');
@@ -5515,8 +5527,8 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
         throw new Error('Learner allocation configuration cannot assign the same learner to both slots.');
       }
       return {
-        l1: l1Rows.length === 1 ? l1Rows[0].learner_id : '',
-        l2: l2Rows.length === 1 ? l2Rows[0].learner_id : '',
+        l1: vocationalRows.find(row => row.learner_slot === 'l1')?.id || (l1Rows.length === 1 ? l1Rows[0].learner_id : ''),
+        l2: vocationalRows.find(row => row.learner_slot === 'l2')?.id || (l2Rows.length === 1 ? l2Rows[0].learner_id : ''),
         errors: {
           l1: l1Rows.length > 1 ? 'Learner 1 has duplicate allocation rows. Evidence upload is unavailable.' : '',
           l2: l2Rows.length > 1 ? 'Learner 2 has duplicate allocation rows. Evidence upload is unavailable.' : ''
@@ -6526,6 +6538,51 @@ async function invokeAssessmentPlanWorkflow(body) {
   return data?.schedule||null;
 }
 
+async function vocationalLearnerRequest(action, values) {
+  const {data, error} = await sb.functions.invoke('cava-vocational-learners', {body: {action, ...values}});
+  if (error || data?.error) throw new Error(data?.error || error.message || 'Vocational learner details could not be saved.');
+  return data;
+}
+
+function renderVocationalLearnerDetails(records) {
+  const names = {};
+  (records || []).forEach(record => {
+    const prefix = record.learner_slot === 'l1' ? 'vocationalL1' : 'vocationalL2';
+    const name = document.getElementById(prefix + 'Name');
+    const email = document.getElementById(prefix + 'Email');
+    if (name) name.value = record.full_name || '';
+    if (email) email.value = record.email || '';
+    names[record.learner_slot] = record.full_name || '';
+  });
+  document.querySelectorAll('#unit2WorksheetView .learner-header.green, #unit3WorksheetView .learner-header.green').forEach(header => { if (names.l1) header.textContent = 'Learner 1 • Level 2 Gym Instructor • ' + names.l1; });
+  document.querySelectorAll('#unit2WorksheetView .learner-header.purple, #unit3WorksheetView .learner-header.purple').forEach(header => { if (names.l2) header.textContent = 'Learner 2 • Level 3 Personal Trainer • ' + names.l2; });
+}
+
+async function loadVocationalLearnerDetails() {
+  if (!currentUser?.id || isLocalLearnerHubPreview()) return;
+  try {
+    const data = await vocationalLearnerRequest('list', {});
+    renderVocationalLearnerDetails(data.learners);
+  } catch (error) {
+    const status = document.getElementById('vocationalLearnerDetailsStatus');
+    if (status) status.textContent = error.message;
+  }
+}
+
+async function saveVocationalLearnerDetails(slot) {
+  const prefix = slot === 'l1' ? 'vocationalL1' : 'vocationalL2';
+  const status = document.getElementById('vocationalLearnerDetailsStatus');
+  const button = document.querySelector('[data-vocational-slot="' + slot + '"]');
+  try {
+    if (button) button.disabled = true;
+    await vocationalLearnerRequest('save', {learnerSlot: slot, fullName: document.getElementById(prefix + 'Name')?.value || '', email: document.getElementById(prefix + 'Email')?.value || ''});
+    if (status) status.textContent = (slot === 'l1' ? 'Learner 1' : 'Learner 2') + ' details saved.';
+  } catch (error) { if (status) status.textContent = error.message; }
+  finally { if (button) button.disabled = false; }
+}
+
+document.querySelectorAll('[data-vocational-slot]').forEach(button => button.addEventListener('click', () => saveVocationalLearnerDetails(button.dataset.vocationalSlot)));
+
 async function loadSharedAssessmentPlanForLearner() {
   const {data:learner,error:learnerError}=await sb.from('learners').select('id,full_name,email,programme_start_date').eq('auth_user_id',currentUser.id).maybeSingle();
   if(learnerError||!learner){console.warn('No learner profile is linked to this login.',learnerError);return;}
@@ -6701,6 +6758,7 @@ async function init() {
   document.getElementById('authCheck').style.display = 'none';
   document.getElementById('worksheetContent').style.display = 'block';
   await loadSharedAssessmentPlanForLearner();
+  await loadVocationalLearnerDetails();
   initialiseAssessmentPlan();
   applySharedAssessmentSchedule(sharedAssessmentSchedule);
   await loadSavedData();

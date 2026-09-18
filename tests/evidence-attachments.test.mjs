@@ -22,6 +22,9 @@ test('evidence function uses authenticated allocation ownership and private sign
   assert.match(functionSource, /from\('assessor_assignments table'\)/);
   assert.match(functionSource, /eq\('assessor_id', owner\)/);
   assert.match(functionSource, /eq\('learner_id', learnerId\)/);
+  assert.match(functionSource, /from\('cava_vocational_learners'\)/);
+  assert.match(functionSource, /learner_source: source/);
+  assert.match(functionSource, /from\('assessor_assignments table'\)/);
   assert.match(functionSource, /createSignedUploadUrl\(path\)/);
   assert.match(functionSource, /createSignedUrl\(attachment\.storage_path, 300\)/);
   assert.match(functionSource, /status === 'locked'/);

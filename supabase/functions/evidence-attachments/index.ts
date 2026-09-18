@@ -52,7 +52,15 @@ async function isSuperAdmin(owner: string) {
 async function allocationExists(owner: string, learnerId: string) {
   const {data, error} = await (await getAdmin()).from('assessor_assignments table').select('id').eq('assessor_id', owner).eq('learner_id', learnerId).limit(1).maybeSingle();
   if (error) throw new Error('Unable to verify learner allocation.');
-  return Boolean(data);
+  if (data) return true;
+  const {data: vocational, error: vocationalError} = await (await getAdmin()).from('cava_vocational_learners').select('id').eq('assessor_id', owner).eq('id', learnerId).maybeSingle();
+  if (vocationalError) throw new Error('Unable to verify vocational learner allocation.');
+  return Boolean(vocational);
+}
+async function learnerSource(owner: string, learnerId: string) {
+  const {data, error} = await (await getAdmin()).from('cava_vocational_learners').select('id').eq('assessor_id', owner).eq('id', learnerId).maybeSingle();
+  if (error) throw new Error('Unable to verify vocational learner allocation.');
+  return data ? 'vocational' : 'legacy';
 }
 async function authorised(owner: string, learnerId: string) {
   return (await isSuperAdmin(owner)) || (await allocationExists(owner, learnerId));
@@ -83,7 +91,8 @@ async function handleCreateUpload(owner: string, body: Record<string, unknown>) 
   const path = pathFor(owner, body.learnerId as string, body.unitCode as string, body.learningOutcomeCode as string, body.assessmentCriterion as string, id);
   const {data, error} = await (await getAdmin()).storage.from(bucket).createSignedUploadUrl(path);
   if (error || !data?.token) return json({error: 'Could not prepare the evidence upload.'}, 503);
-  const {error: insertError} = await (await getAdmin()).from('evidence_attachments').insert({id, owner_id: owner, learner_id: body.learnerId, uploaded_by: owner, storage_bucket: bucket, storage_path: path, original_filename: filename, mime_type: mimeType, byte_size: byteSize, content_hash: typeof body.contentHash === 'string' ? body.contentHash : null, status: 'pending'});
+  const source = await learnerSource(owner, body.learnerId as string);
+  const {error: insertError} = await (await getAdmin()).from('evidence_attachments').insert({id, owner_id: owner, learner_id: body.learnerId, learner_source: source, uploaded_by: owner, storage_bucket: bucket, storage_path: path, original_filename: filename, mime_type: mimeType, byte_size: byteSize, content_hash: typeof body.contentHash === 'string' ? body.contentHash : null, status: 'pending'});
   if (insertError) {
     await (await getAdmin()).storage.from(bucket).remove([path]);
     return json({error: 'Could not prepare the evidence record.'}, 503);
