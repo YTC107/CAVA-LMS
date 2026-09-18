@@ -55,20 +55,40 @@ test('evidence function exposes the proof-of-concept lifecycle', () => {
   assert.match(functionSource, /status: 'failed'/);
 });
 
-test('embedded AC 1.1 uses persistent append/list wiring without a count limit', () => {
-  assert.match(hub, /data-evidence-poc|initialiseEvidencePoc/);
+test('embedded Unit 2 and Unit 3 ACs use the shared persistent uploader', () => {
+  assert.match(hub, /initialiseEvidenceUploaders/);
   assert.match(hub, /input\.multiple = true/);
   assert.match(hub, /Array\.from\(input\.files \|\| \[\]\)/);
   assert.match(hub, /input\.value = ''/);
   assert.match(hub, /uploadToSignedUrl/);
-  assert.match(hub, /Uploaded evidence \(' \+ attachments\.length \+ '\)/);
+  assert.match(hub, /Uploaded evidence \(' \+ state\.attachments\.length \+ '\)/);
   assert.match(hub, /data-evidence-list/);
-  assert.match(hub, /evidencePocRequest\('remove'/);
-  assert.match(hub, /evidencePocUploads\.push\(upload\)/);
+  assert.match(hub, /evidenceRequest\('remove'/);
+  assert.match(hub, /state\.uploads\.push\(upload\)/);
   assert.match(hub, /Upload failed/);
-  assert.match(hub, /data-evidence-poc="unit2-lo1-ac1"/);
-  assert.match(hub, /document\.querySelector\('#unit2WorksheetView \[data-evidence-poc="unit2-lo1-ac1"\]'\)/);
-  assert.match(hub, /type="file" accept="\.pdf,\.doc,\.docx,\.xls,\.xlsx,\.ppt,\.pptx,\.txt,\.jpg,\.jpeg,\.png,\.gif,\.webp/);
-  assert.match(hub, /multiple data-evidence-input><\/div><div class="evidence-list" data-evidence-list/);
-  assert.doesNotMatch(hub, /accept="\.pdf,image\/\*" onchange="showFilename\(this,'fn-l1-lo1-ac1'\)/);
+  assert.match(hub, /document\.querySelectorAll\('input\[data-evidence-context\]'\)/);
+  assert.match(hub, /data-evidence-context="unit2\|l1\|lo1\|1\.1"/);
+  assert.match(hub, /data-evidence-context="unit3\|l2\|lo4\|4\.3"/);
+  assert.match(hub, /select\('learner_id,learner_slot'\)/);
+  assert.match(hub, /return \{ l1: l1Rows\[0\]\.learner_id, l2: l2Rows\[0\]\.learner_id \}/);
+  assert.match(hub, /row\.learner_slot === 'l1'/);
+  assert.match(hub, /row\.learner_slot === 'l2'/);
+  assert.match(hub, /l1Rows\.length !== 1 \|\| l2Rows\.length !== 1/);
+  assert.match(hub, /l1Rows\[0\]\.learner_id === l2Rows\[0\]\.learner_id/);
+  assert.doesNotMatch(hub, /learner_type/);
+  assert.doesNotMatch(hub, /ids\[0\]|ids\.find\(|full_name \|\|/);
+  assert.equal((hub.match(/data-evidence-context="(?:unit2|unit3)\|/g) || []).length, 59);
+  assert.equal((hub.match(/data-evidence-list/g) || []).length >= 59, true);
+  assert.doesNotMatch(hub, /onchange="showFilename\(this,'fn-l[12]-lo[1-4]-ac[1-6]'\)/);
+  assert.doesNotMatch(hub, /onchange="showFilenameUnit3\(this\)"[^>]*id="u3-[^"]+-ac[1-6]-files"/);
+  assert.match(hub, /Deno\.serve/);
+});
+
+test('learner-slot migration preserves NULL rows and enforces one slot per assessor', () => {
+  const slots = read('supabase/migrations/20260918120000_add_assessor_learner_slots.sql');
+  assert.match(slots, /add column if not exists learner_slot text/);
+  assert.match(slots, /check \(learner_slot in \('l1', 'l2'\)\)/);
+  assert.match(slots, /where learner_slot = 'l1'/);
+  assert.match(slots, /where learner_slot = 'l2'/);
+  assert.match(slots, /if not exists/);
 });
