@@ -70,11 +70,14 @@ test('embedded Unit 2 and Unit 3 ACs use the shared persistent uploader', () => 
   assert.match(hub, /data-evidence-context="unit2\|l1\|lo1\|1\.1"/);
   assert.match(hub, /data-evidence-context="unit3\|l2\|lo4\|4\.3"/);
   assert.match(hub, /select\('learner_id,learner_slot'\)/);
-  assert.match(hub, /return \{ l1: l1Rows\[0\]\.learner_id, l2: l2Rows\[0\]\.learner_id \}/);
+  assert.match(hub, /l1: l1Rows\.length === 1 \? l1Rows\[0\]\.learner_id : ''/);
+  assert.match(hub, /l2: l2Rows\.length === 1 \? l2Rows\[0\]\.learner_id : ''/);
   assert.match(hub, /row\.learner_slot === 'l1'/);
   assert.match(hub, /row\.learner_slot === 'l2'/);
-  assert.match(hub, /l1Rows\.length !== 1 \|\| l2Rows\.length !== 1/);
+  assert.match(hub, /l1Rows\.length > 1/);
+  assert.match(hub, /l2Rows\.length > 1/);
   assert.match(hub, /l1Rows\[0\]\.learner_id === l2Rows\[0\]\.learner_id/);
+  assert.match(hub, /This learner slot is not currently allocated/);
   assert.doesNotMatch(hub, /learner_type/);
   assert.doesNotMatch(hub, /ids\[0\]|ids\.find\(|full_name \|\|/);
   assert.equal((hub.match(/data-evidence-context="(?:unit2|unit3)\|/g) || []).length, 59);

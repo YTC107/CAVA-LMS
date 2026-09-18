@@ -5539,10 +5539,18 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
       const invalid = rows.some(row => !['l1', 'l2'].includes(row.learner_slot));
       const l1Rows = rows.filter(row => row.learner_slot === 'l1');
       const l2Rows = rows.filter(row => row.learner_slot === 'l2');
-      if (invalid || l1Rows.length !== 1 || l2Rows.length !== 1 || l1Rows[0].learner_id === l2Rows[0].learner_id) {
-        throw new Error('Learner allocation configuration must contain exactly one distinct l1 and l2 assignment.');
+      if (invalid) throw new Error('Learner allocation configuration contains an invalid learner slot.');
+      if (l1Rows.length === 1 && l2Rows.length === 1 && l1Rows[0].learner_id === l2Rows[0].learner_id) {
+        throw new Error('Learner allocation configuration cannot assign the same learner to both slots.');
       }
-      return { l1: l1Rows[0].learner_id, l2: l2Rows[0].learner_id };
+      return {
+        l1: l1Rows.length === 1 ? l1Rows[0].learner_id : '',
+        l2: l2Rows.length === 1 ? l2Rows[0].learner_id : '',
+        errors: {
+          l1: l1Rows.length > 1 ? 'Learner 1 has duplicate allocation rows. Evidence upload is unavailable.' : '',
+          l2: l2Rows.length > 1 ? 'Learner 2 has duplicate allocation rows. Evidence upload is unavailable.' : ''
+        }
+      };
     })();
     return evidenceLearnerIdsPromise;
   }
@@ -5615,8 +5623,9 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
     try {
       const context = evidenceContext(block);
       const ids = await evidenceLearnerIds();
+      if (ids.errors?.[context.learnerSlot]) throw new Error(ids.errors[context.learnerSlot]);
       const learnerId = ids[context.learnerSlot];
-      if (!learnerId) throw new Error('This allocated learner could not be resolved. Evidence upload is unavailable.');
+      if (!learnerId) throw new Error('This learner slot is not currently allocated. Evidence upload is unavailable.');
       const data = await evidenceRequest('list', { learnerId, unitCode: context.unitCode, learningOutcomeCode: context.learningOutcomeCode, assessmentCriterion: context.assessmentCriterion });
       state.attachments = data.attachments || [];
       renderEvidenceList(block, message);
@@ -5626,8 +5635,9 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
   async function uploadEvidenceFile(file, block) {
     const context = evidenceContext(block);
     const ids = await evidenceLearnerIds();
+    if (ids.errors?.[context.learnerSlot]) throw new Error(ids.errors[context.learnerSlot]);
     const learnerId = ids[context.learnerSlot];
-    if (!learnerId) throw new Error('The allocated learner could not be resolved.');
+    if (!learnerId) throw new Error('This learner slot is not currently allocated.');
     const evidenceType = block.querySelector('select[multiple]')?.selectedOptions?.[0]?.textContent || '';
     const prepared = await evidenceRequest('create-upload', { learnerId, unitCode: context.unitCode, learningOutcomeCode: context.learningOutcomeCode, assessmentCriterion: context.assessmentCriterion, originalFilename: file.name, mimeType: file.type || 'application/octet-stream', byteSize: file.size });
     const upload = await sb.storage.from('cava-evidence').uploadToSignedUrl(prepared.path, prepared.token, file);
