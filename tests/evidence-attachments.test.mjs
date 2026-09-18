@@ -108,7 +108,14 @@ test('embedded Unit 2 and Unit 3 ACs use the shared persistent uploader', () => 
     const next = persistentInputs[index + 1]?.index ?? hub.length;
     const followingMarkup = hub.slice(start, next);
     assert.equal((followingMarkup.match(/data-evidence-list/g) || []).length, 1);
+    assert.doesNotMatch(match[0], /data-evidence-list/);
+    assert.match(followingMarkup, /<\/div><div class="evidence-list" data-evidence-list/);
   });
+  assert.match(hub, /#unit2WorksheetView \.evidence-list, #unit3WorksheetView \.evidence-list/);
+  assert.match(hub, /#unit2WorksheetView \.evidence-list__item, #unit3WorksheetView \.evidence-list__item/);
+  assert.match(hub, /#unit2WorksheetView \.evidence-list__action, #unit3WorksheetView \.evidence-list__action/);
+  assert.match(hub, /const icon = area\.querySelector\('\.upload-icon'\)/);
+  assert.match(hub, /icon\.textContent = '📎'/);
   assert.doesNotMatch(hub, /onchange="showFilename\(this,'fn-l[12]-lo[1-4]-ac[1-6]'\)/);
   assert.doesNotMatch(hub, /onchange="showFilenameUnit3\(this\)"[^>]*id="u3-[^"]+-ac[1-6]-files"/);
   assert.match(hub, /Deno\.serve/);
