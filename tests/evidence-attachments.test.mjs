@@ -67,7 +67,14 @@ test('embedded Unit 2 and Unit 3 ACs use the shared persistent uploader', () => 
   assert.match(hub, /state\.uploads\.push\(upload\)/);
   assert.match(hub, /Upload failed/);
   assert.match(hub, /document\.querySelectorAll\('input\[data-evidence-context\]'\)/);
-  assert.match(hub, /data-evidence-context="unit2\|l1\|lo1\|1\.1"/);
+  const persistentInputs = [...hub.matchAll(/<input\b[^>]*data-evidence-input[^>]*>/g)];
+  const contexts = persistentInputs.map(match => match[0].match(/data-evidence-context="([^"]+)"/)?.[1] || '');
+  const ac11Start = hub.indexOf('data-evidence-poc="unit2-lo1-ac1"');
+  const ac11End = hub.indexOf('<label>Your reflective account</label>', ac11Start);
+  const ac11 = hub.slice(ac11Start, ac11End);
+  assert.match(ac11, /data-evidence-context="unit2\|l1\|lo1\|1\.1"/);
+  assert.match(ac11, /data-evidence-input/);
+  assert.equal((ac11.match(/data-evidence-list/g) || []).length, 1);
   assert.match(hub, /data-evidence-context="unit3\|l2\|lo4\|4\.3"/);
   assert.match(hub, /select\('learner_id,learner_slot'\)/);
   assert.match(hub, /l1: l1Rows\.length === 1 \? l1Rows\[0\]\.learner_id : ''/);
@@ -80,8 +87,28 @@ test('embedded Unit 2 and Unit 3 ACs use the shared persistent uploader', () => 
   assert.match(hub, /This learner slot is not currently allocated/);
   assert.doesNotMatch(hub, /learner_type/);
   assert.doesNotMatch(hub, /ids\[0\]|ids\.find\(|full_name \|\|/);
-  assert.equal((hub.match(/data-evidence-context="(?:unit2|unit3)\|/g) || []).length, 59);
-  assert.equal((hub.match(/data-evidence-list/g) || []).length >= 59, true);
+  const unit2Contexts = contexts.filter(context => context.startsWith('unit2|'));
+  const unit3Contexts = contexts.filter(context => context.startsWith('unit3|'));
+  assert.equal(persistentInputs.length, 60);
+  assert.equal(unit2Contexts.length, 30);
+  assert.equal(unit3Contexts.length, 30);
+  assert.equal(contexts.filter(Boolean).length, 60);
+  assert.equal(contexts.filter(context => !context).length, 0);
+  assert.equal(new Set(contexts).size, 60);
+  assert.equal(contexts.length - new Set(contexts).size, 0);
+  contexts.forEach(context => {
+    const parts = context.split('|');
+    assert.equal(parts.length, 4);
+    parts.forEach(part => assert.ok(part));
+    assert.match(parts[0], /^unit[23]$/);
+    assert.match(parts[1], /^l[12]$/);
+  });
+  persistentInputs.forEach((match, index) => {
+    const start = match.index + match[0].length;
+    const next = persistentInputs[index + 1]?.index ?? hub.length;
+    const followingMarkup = hub.slice(start, next);
+    assert.equal((followingMarkup.match(/data-evidence-list/g) || []).length, 1);
+  });
   assert.doesNotMatch(hub, /onchange="showFilename\(this,'fn-l[12]-lo[1-4]-ac[1-6]'\)/);
   assert.doesNotMatch(hub, /onchange="showFilenameUnit3\(this\)"[^>]*id="u3-[^"]+-ac[1-6]-files"/);
   assert.match(hub, /Deno\.serve/);
