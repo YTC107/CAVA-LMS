@@ -172,6 +172,16 @@
     .plan-field label { color: #333; display: block; font-size: 0.8rem; font-weight: 800; margin-bottom: 7px; }
     .plan-field input, .plan-field select { background: #fff; border: 1px solid #bdb9af; border-radius: 4px; color: #111; font: inherit; font-size: 0.95rem; min-height: 46px; padding: 10px 12px; width: 100%; }
     .plan-field input:focus, .plan-field select:focus { border-color: #9e7c20; box-shadow: 0 0 0 4px rgba(201,168,76,0.16); outline: none; }
+    .vocational-learner-details .form-grid { display: grid; gap: 16px; grid-template-columns: repeat(2, minmax(220px, 1fr)); }
+    .vocational-learner-details .field { background: #fff; border: 1px solid #d8d3c8; border-radius: 6px; padding: 16px; }
+    .vocational-learner-details .field h4 { color: #24221f; font-size: 1rem; margin: 0 0 14px; }
+    .vocational-learner-details label { color: #333; display: block; font-size: .875rem; font-weight: 800; line-height: 1.4; margin: 10px 0 6px; }
+    .vocational-learner-details input { background: #fff; border: 1px solid #bdb9af; border-radius: 4px; color: #111; font: inherit; font-size: .95rem; min-height: 46px; padding: 10px 12px; width: 100%; }
+    .vocational-learner-details input:focus { border-color: #9e7c20; box-shadow: 0 0 0 4px rgba(201,168,76,0.16); outline: none; }
+    .vocational-learner-details .save-button { background: #c9a84c; border: 1px solid #b28b25; border-radius: 4px; color: #171717; cursor: pointer; font: inherit; font-weight: 800; margin-top: 16px; min-height: 42px; padding: 9px 14px; }
+    .vocational-learner-details .save-button:hover { background: #b28b25; }
+    .vocational-learner-details .save-button:disabled { cursor: wait; opacity: .65; }
+    @media (max-width: 760px) { .vocational-learner-details .form-grid { grid-template-columns: 1fr; } }
     .plan-help { color: #6c6c6c; font-size: 0.78rem; line-height: 1.45; margin-top: 6px; }
     .plan-milestones { background: #f8f6f0; border-radius: 5px; display: grid; gap: 1px; grid-template-columns: repeat(4, 1fr); margin-top: 20px; overflow: hidden; }
     .plan-milestone { background: #f8f6f0; border-left: 1px solid #dedbd3; padding: 14px 16px; }
