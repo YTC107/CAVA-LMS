@@ -49,11 +49,10 @@ test('Learner Hub captures details once and evidence resolves vocational UUIDs f
 });
 
 test('Assessor Hub is read-only for submitted vocational details', () => {
-  assert.match(assessorHub, /Vocational Learner Details/);
   assert.match(assessorHub, /cava-vocational-learners/);
   assert.match(assessorHub, /assessorRecord\.authUserId \|\| assessorRecord\.id/);
-  assert.match(assessorHub, /Details supplied by the trainee assessor/);
-  assert.doesNotMatch(assessorHub, /assessor-learner-allocations/);
+  assert.match(assessorHub, /#record-overview \.key-value/);
+  assert.doesNotMatch(assessorHub, /record-programme.*append\(section\)/);
   assert.doesNotMatch(assessorHub, /data-allocation-slot/);
   assert.doesNotMatch(assessorHub, /assessor-learner-allocations/);
 });

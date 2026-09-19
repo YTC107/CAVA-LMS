@@ -1454,27 +1454,18 @@
     }
 
     async function loadVocationalLearnerOversight(assessorRecord) {
-      document.getElementById('authoritativeLearnerAllocations')?.remove();
-      const section = document.createElement('section');
-      section.id = 'authoritativeLearnerAllocations';
-      section.className = 'detail-card allocation-controls';
-      section.innerHTML = '<h4>Vocational Learner Details</h4><p class="field-help">Details supplied by the trainee assessor. These records identify the evidence workspaces and are read-only here.</p><div class="key-value"><span>Learner 1 — Level 2 Gym Instructor</span><strong data-vocational-oversight="l1">Not yet provided</strong></div><div class="key-value"><span>Learner 2 — Level 3 Personal Trainer</span><strong data-vocational-oversight="l2">Not yet provided</strong></div>';
-      document.getElementById('level2Learner')?.closest('.field')?.setAttribute('hidden', '');
-      document.getElementById('level3Learner')?.closest('.field')?.setAttribute('hidden', '');
-      document.getElementById('record-programme')?.append(section);
-      document.querySelectorAll('#record-overview .key-value').forEach(row => {
-        const label = row.querySelector('span')?.textContent || '';
-        if (/Level 2 Gym Instructor|Level 3 Personal Training/.test(label)) row.querySelector('strong').textContent = 'See vocational learner details below';
-      });
+      const rows = Array.from(document.querySelectorAll('#record-overview .key-value'));
+      const targets = {l1: rows.find(row => /Level 2 Gym Instructor/.test(row.querySelector('span')?.textContent || ''))?.querySelector('strong'), l2: rows.find(row => /Level 3 Personal Training/.test(row.querySelector('span')?.textContent || ''))?.querySelector('strong')};
+      Object.values(targets).forEach(target => { if (target) target.textContent = 'Not yet provided'; });
       try {
         const targetAssessorId = assessorRecord.authUserId || assessorRecord.id;
         const {data, error} = await sb.functions.invoke('cava-vocational-learners', {body: {action:'list', targetAssessorId}});
         if (error || data?.error) throw new Error(data?.error || error.message);
         (data.learners || []).forEach(record => {
-          const target = section.querySelector('[data-vocational-oversight="' + record.learner_slot + '"]');
+          const target = targets[record.learner_slot];
           if (target) target.textContent = record.full_name + ' · ' + record.email;
         });
-      } catch (error) { section.querySelector('.field-help').textContent = error.message; }
+      } catch (error) { Object.values(targets).forEach(target => { if (target) target.textContent = error.message; }); }
     }
 
     function updateFundingVisibility() {
