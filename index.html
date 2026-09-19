@@ -2319,8 +2319,8 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
       <h3 id="vocationalLearnerDetailsHeading">Your Allocated Vocational Learners</h3>
       <p>Enter the full name and email address of the two vocational learners allocated to you by PT Academy. These details identify the Learner 1 and Learner 2 evidence workspaces.</p>
       <div class="form-grid">
-        <div class="field"><h4>Learner 1 — Level 2 Gym Instructor</h4><label for="vocationalL1Name">Full name</label><input id="vocationalL1Name" type="text" maxlength="160" autocomplete="name"><label for="vocationalL1Email">Email address</label><input id="vocationalL1Email" type="email" maxlength="254" autocomplete="email"><button type="button" class="save-button" data-vocational-slot="l1">Save Learner 1 details</button></div>
-        <div class="field"><h4>Learner 2 — Level 3 Personal Trainer</h4><label for="vocationalL2Name">Full name</label><input id="vocationalL2Name" type="text" maxlength="160" autocomplete="name"><label for="vocationalL2Email">Email address</label><input id="vocationalL2Email" type="email" maxlength="254" autocomplete="email"><button type="button" class="save-button" data-vocational-slot="l2">Save Learner 2 details</button></div>
+        <div class="field"><h4>Learner 1 — Level 2 Gym Instructor</h4><label for="vocationalL1Name">Full name</label><input id="vocationalL1Name" type="text" maxlength="160" autocomplete="name"><label for="vocationalL1Email">Email address</label><input id="vocationalL1Email" type="email" maxlength="254" autocomplete="email"><button type="button" class="save-button" data-vocational-slot="l1">Save Learner 1 details</button><p class="vocational-learner-status" data-vocational-status="l1" role="status" aria-live="polite"></p></div>
+        <div class="field"><h4>Learner 2 — Level 3 Personal Trainer</h4><label for="vocationalL2Name">Full name</label><input id="vocationalL2Name" type="text" maxlength="160" autocomplete="name"><label for="vocationalL2Email">Email address</label><input id="vocationalL2Email" type="email" maxlength="254" autocomplete="email"><button type="button" class="save-button" data-vocational-slot="l2">Save Learner 2 details</button><p class="vocational-learner-status" data-vocational-status="l2" role="status" aria-live="polite"></p></div>
       </div>
       <p id="vocationalLearnerDetailsStatus" role="status" aria-live="polite"></p>
     </section>
@@ -6581,8 +6581,8 @@ async function loadVocationalLearnerDetails() {
 
 async function saveVocationalLearnerDetails(slot) {
   const prefix = slot === 'l1' ? 'vocationalL1' : 'vocationalL2';
-  const status = document.getElementById('vocationalLearnerDetailsStatus');
   const button = document.querySelector('[data-vocational-slot="' + slot + '"]');
+  const status = button?.closest('.field')?.querySelector('[data-vocational-status="' + slot + '"]');
   try {
     if (button) button.disabled = true;
     await vocationalLearnerRequest('save', {learnerSlot: slot, fullName: document.getElementById(prefix + 'Name')?.value || '', email: document.getElementById(prefix + 'Email')?.value || ''});
