@@ -1230,6 +1230,7 @@
     }
 
     function renderRecordOverview(learner) {
+      queueMicrotask(() => document.querySelectorAll('#record-overview .key-value').forEach(row => { if ((row.querySelector('span')?.textContent || '').trim() === 'Learner type') row.remove(); }));
       const plan=getLearnerPlan(learner), progress=getProgress(learner), queue=getQueueItems().filter(item=>item.learner.id===learner.id);
       const activity=getLearnerActivity(learner);
       const accessLabel=learner.accountStatus==='active'?'Send password setup email':learner.authUserId?'Resend access email':'Send platform invitation';
