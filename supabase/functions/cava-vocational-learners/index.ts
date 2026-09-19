@@ -36,6 +36,11 @@ async function listFor(assessorId: string) {
   if (error) throw new Error('Vocational learner details could not be loaded.');
   return data || [];
 }
+async function resolveAssessorId(value: string) {
+  const {data, error} = await (await getAdmin()).from('learners').select('id,auth_user_id').or('id.eq.' + value + ',auth_user_id.eq.' + value).maybeSingle();
+  if (error) throw new Error('Unable to resolve the selected trainee assessor identity.');
+  return data?.auth_user_id || data?.id || value;
+}
 function validSlot(value: unknown): value is 'l1' | 'l2' { return value === 'l1' || value === 'l2'; }
 export async function handler(req: Request) {
   if (req.method === 'OPTIONS') return new Response(null, {status: 204, headers});
@@ -47,9 +52,10 @@ export async function handler(req: Request) {
     const body = await req.json();
     const targetAssessorId = typeof body.targetAssessorId === 'string' ? body.targetAssessorId : user.id;
     if (!UUID.test(targetAssessorId)) return json({error: 'Invalid assessor identity.'}, 400);
-    const oversight = targetAssessorId !== user.id;
+    const resolvedTargetId = body.action === 'list' ? await resolveAssessorId(targetAssessorId) : targetAssessorId;
+    const oversight = resolvedTargetId !== user.id;
     if (oversight && !(await isAdmin(user.id))) return json({error: 'You may only view your own vocational learner details.'}, 403);
-    if (body.action === 'list') return json({learners: await listFor(targetAssessorId)});
+    if (body.action === 'list') return json({learners: await listFor(resolvedTargetId)});
     if (oversight) return json({error: 'Oversight access is read-only.'}, 403);
     if (body.action !== 'save') return json({error: 'Unknown vocational learner action.'}, 400);
     if (!validSlot(body.learnerSlot)) return json({error: 'Invalid learner slot.'}, 400);

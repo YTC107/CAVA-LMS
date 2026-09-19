@@ -1466,12 +1466,9 @@
         const label = row.querySelector('span')?.textContent || '';
         if (/Level 2 Gym Instructor|Level 3 Personal Training/.test(label)) row.querySelector('strong').textContent = 'See vocational learner details below';
       });
-      if (!assessorRecord.authUserId) {
-        section.querySelector('.field-help').textContent = 'The trainee assessor has no linked Hub account, so submitted vocational learner details cannot be loaded.';
-        return;
-      }
       try {
-        const {data, error} = await sb.functions.invoke('cava-vocational-learners', {body: {action:'list', targetAssessorId:assessorRecord.authUserId}});
+        const targetAssessorId = assessorRecord.authUserId || assessorRecord.id;
+        const {data, error} = await sb.functions.invoke('cava-vocational-learners', {body: {action:'list', targetAssessorId}});
         if (error || data?.error) throw new Error(data?.error || error.message);
         (data.learners || []).forEach(record => {
           const target = section.querySelector('[data-vocational-oversight="' + record.learner_slot + '"]');

@@ -30,6 +30,8 @@ test('vocational learner function validates ownership and preserves slot identit
   assert.match(functionSource, /labels = \{l1: 'Level 2 Gym Instructor', l2: 'Level 3 Personal Trainer'\}/);
   assert.match(functionSource, /upsert\(/);
   assert.match(functionSource, /Deno\.serve\(handler\)/);
+  assert.match(functionSource, /resolveAssessorId/);
+  assert.match(functionSource, /auth_user_id/);
   assert.doesNotMatch(functionSource, /learner_assessor_allocations/);
 });
 
@@ -49,6 +51,7 @@ test('Learner Hub captures details once and evidence resolves vocational UUIDs f
 test('Assessor Hub is read-only for submitted vocational details', () => {
   assert.match(assessorHub, /Vocational Learner Details/);
   assert.match(assessorHub, /cava-vocational-learners/);
+  assert.match(assessorHub, /assessorRecord\.authUserId \|\| assessorRecord\.id/);
   assert.match(assessorHub, /Details supplied by the trainee assessor/);
   assert.doesNotMatch(assessorHub, /assessor-learner-allocations/);
   assert.doesNotMatch(assessorHub, /data-allocation-slot/);
