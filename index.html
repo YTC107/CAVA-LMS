@@ -2971,7 +2971,7 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
             <div class="action-section__heading"><span>1</span><div><h3 id="action-part-1-title">Record identification</h3><p>Edit the reference while this is a draft. IP identifies an initial plan; RP identifies a review. Dates use day-month-year.</p></div></div>
             <div class="action-section__body">
               <div class="action-grid action-grid--three">
-                <div class="action-field"><label for="actionRecordRef">Record reference</label><input id="actionRecordRef" type="text" data-action-field="recordRef"></div>
+                <div class="action-field"><label for="actionRecordRef">Record reference</label><input id="actionRecordRef" type="text" data-action-field="recordRef" readonly aria-readonly="true" title="Generated automatically from the plan type, learner initials, plan number and meeting date."></div>
                 <div class="action-field"><label for="actionRecordStatus">Record status</label><select id="actionRecordStatus" data-action-field="recordStatus" disabled><option>Draft</option><option>Finalised</option><option hidden>Submitted</option></select></div>
                 <div class="action-field"><label for="actionMeetingNumber">Meeting or review number</label><input id="actionMeetingNumber" type="number" min="1" data-action-field="meetingNumber" value="1"></div>
               </div>
@@ -7617,29 +7617,43 @@ function submitForm() {
       page.drawText(pdfSafeText(values.planType || 'Action Plan'), { x: margin, y: pageHeight - 45, size: 18, font: bold, color: colours.gold });
       page.drawText(pdfSafeText(data.programme), { x: margin, y: pageHeight - 67, size: 10, font: regular, color: colours.white });
       var reference = pdfSafeText(values.recordRef || 'Draft record');
-      var refWidth = regular.widthOfTextAtSize(reference, 9);
-      page.drawText(reference, { x: pageWidth - margin - refWidth, y: pageHeight - 83, size: 9, font: regular, color: colours.white });
+      // Keep the whole reference inside the header band: shrink to fit, then wrap to at most two
+      // lines, so a long reference is never clipped or drawn outside the page.
+      var refSize = 9;
+      var refLimit = contentWidth * 0.62;
+      while (refSize > 6 && regular.widthOfTextAtSize(reference, refSize) > refLimit) refSize -= 0.5;
+      var refLines = regular.widthOfTextAtSize(reference, refSize) > refLimit ? wrap(reference, regular, refSize, refLimit) : [reference];
+      if (refLines.length > 2) refLines = [refLines.slice(0, -1).join(' '), refLines[refLines.length - 1]];
+      var refTop = refLines.length > 1 ? pageHeight - 79 : pageHeight - 83;
+      refLines.slice(0, 2).forEach(function (refLine, refIndex) {
+        var refWidth = regular.widthOfTextAtSize(refLine, refSize);
+        page.drawText(refLine, { x: Math.max(margin, pageWidth - margin - refWidth), y: refTop - (refIndex * 9.5), size: refSize, font: regular, color: colours.white });
+      });
       y = pageHeight - 120;
     }
     function ensure(height) {
       if (!page || y - height < 48) addPage();
     }
     function section(title, note) {
-      ensure(note ? 58 : 39);
+      var sectionNoteLines = note ? wrap(note, regular, 8.5, contentWidth) : [];
+      ensure(39 + (sectionNoteLines.length * 11) + (note ? 8 : 0));
       page.drawText(pdfSafeText(title), { x: margin, y: y, size: 14, font: bold, color: colours.navy });
       page.drawLine({ start: { x: margin, y: y - 8 }, end: { x: pageWidth - margin, y: y - 8 }, thickness: 1.2, color: colours.gold });
       y -= 24;
       if (note) {
-        var noteLines = wrap(note, regular, 8.5, contentWidth);
-        drawLines(noteLines, margin, y, { size: 8.5, lineHeight: 11, color: colours.muted });
-        y -= (noteLines.length * 11) + 8;
+        drawLines(sectionNoteLines, margin, y, { size: 8.5, lineHeight: 11, color: colours.muted });
+        y -= (sectionNoteLines.length * 11) + 8;
       }
     }
     function fieldHeight(value, width, options) {
       var multiline = options?.multiline !== false;
       if (!multiline) return options?.height || 30;
       var lines = wrap(value || '', regular, 9, width - 16);
-      return Math.max(options?.minHeight || 54, Math.min(options?.maxHeight || 220, (lines.length * 12) + 18));
+      // Height always follows the wrapped content so text cannot draw outside its box. An explicit
+      // maxHeight is still honoured, and tall blocks are moved to the paginating field path.
+      var height = Math.max(options?.minHeight || 54, (lines.length * 12) + 18);
+      if (options?.maxHeight) height = Math.min(options.maxHeight, height);
+      return height;
     }
     function fieldName(key) {
       fieldCounter += 1;
@@ -7674,7 +7688,7 @@ function submitForm() {
       var offset = 0, part = 0;
       do {
         ensure(Math.max(options.minHeight || 54, 54) + 36);
-        var capacity = Math.max(1, Math.floor((y - 100) / 12));
+        var capacity = Math.max(1, Math.floor((y - 110) / 12));
         var chunk = lines.slice(offset, offset + capacity);
         var height = Math.max(options.minHeight || (options.multiline === false ? 30 : 54), chunk.length * 12 + 18);
         var fieldOptions = Object.assign({}, options, { multiline: options.multiline !== false || chunk.length > 1 });
@@ -7688,14 +7702,16 @@ function submitForm() {
       options = options || {};
       var gap = 16;
       var width = (contentWidth - gap) / 2;
-      if (wrap(left.value || '', regular, 9, width - 16).length > 9 || wrap(right.value || '', regular, 9, width - 16).length > 9) {
+      var leftHeight = fieldHeight(left.value, width, left.options || options);
+      var rightHeight = fieldHeight(right.value, width, right.options || options);
+      var height = Math.max(leftHeight, rightHeight);
+      // Normal content keeps the two-column layout. Long or tall content moves to the sequential
+      // paginating path so nothing is clipped, overlapped or drawn outside the page.
+      if (wrap(left.value || '', regular, 9, width - 16).length > 9 || wrap(right.value || '', regular, 9, width - 16).length > 9 || height > y - 110) {
         textField(left.label, left.key, left.value, left.options || options);
         textField(right.label, right.key, right.value, right.options || options);
         return;
       }
-      var leftHeight = fieldHeight(left.value, width, left.options || options);
-      var rightHeight = fieldHeight(right.value, width, right.options || options);
-      var height = Math.max(leftHeight, rightHeight);
       ensure(height + 36);
       renderFieldAt(left.label, left.key, left.value, margin, y, width, height, left.options || options);
       renderFieldAt(right.label, right.key, right.value, margin + width + gap, y, width, height, right.options || options);
@@ -7704,10 +7720,20 @@ function submitForm() {
     function fieldTriple(fields) {
       var gap = 12;
       var width = (contentWidth - (gap * 2)) / 3;
-      var height = 30;
+      // Row height follows the longest wrapped value so a multi-line value cannot draw outside
+      // its box, and a tall row falls back to the paginating single-column path.
+      var height = fields.reduce(function (tallest, item) {
+        return Math.max(tallest, 30, (wrap(item.value || '', regular, 9, width - 16).length * 12) + 18);
+      }, 30);
+      if (height > y - 110) {
+        fields.forEach(function (item) {
+          textField(item.label, item.key, item.value, { multiline: false, width: width });
+        });
+        return;
+      }
       ensure(height + 36);
       fields.forEach(function (item, index) {
-        renderFieldAt(item.label, item.key, item.value, margin + (index * (width + gap)), y, width, height, { multiline: false, height: height });
+        renderFieldAt(item.label, item.key, item.value, margin + (index * (width + gap)), y, width, height, { multiline: height > 34, height: height });
       });
       y -= height + 34;
     }
@@ -9406,6 +9432,11 @@ function submitForm() {
     if (!parts.length) return '';
     return (parts.length === 1 ? parts[0][0] : parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
   }
+  // Canonical, deterministic record references:
+  //   IAP-[INITIALS]-[PLAN NUMBER]-[DD-MM-YYYY]   (Initial Action Plan)
+  //   SRAP-[INITIALS]-[PLAN NUMBER]-[DD-MM-YYYY]  (Session Review and Action Plan)
+  // Built only from the record's own data, so saving, recovery and correction copies can never
+  // append CORRECTED, recovered, timestamps or any other suffix.
   function reference(values) {
     const initials = learnerInitials(values.learnerName);
     if (!initials) return '';
@@ -9417,12 +9448,12 @@ function submitForm() {
     const parsed = match ? new Date(Date.UTC(year, month - 1, day)) : null;
     const validMeetingDate = parsed && parsed.getUTCFullYear() === year && parsed.getUTCMonth() === month - 1 && parsed.getUTCDate() === day;
     const date = validMeetingDate ? String(day).padStart(2,'0') + '-' + String(month).padStart(2,'0') + '-' + year : new Date().toLocaleDateString('en-GB').replaceAll('/','-');
-    const prefix = values.planType === 'Initial Action Plan' ? 'IP' : 'AP';
-    const base = prefix + '-' + date + '-' + initials;
-    let candidate = base;
-    let suffix = 2;
-    while (records.some(record => record.payload?.values?.recordRef === candidate)) candidate = base + '-' + String(suffix++).padStart(2,'0');
-    return candidate;
+    const prefix = values.planType === 'Initial Action Plan' ? 'IAP' : 'SRAP';
+    const number = String(Math.max(1, Math.trunc(Number(values.meetingNumber)) || 1)).padStart(2, '0');
+    return prefix + '-' + initials + '-' + number + '-' + date;
+  }
+  function isCanonicalReference(value) {
+    return /^(IAP|SRAP)-[A-Z\u00C0-\u00DE]+-\d{2,}-\d{2}-\d{2}-\d{4}$/.test(String(value || '').trim());
   }
   function create(values = {}) {
     const payload = {version:4,actionCount:1,values:{planType:'Initial Action Plan',programmeLevel:'2',meetingNumber:'1',recordStatus:'Draft',...values}};
@@ -9498,7 +9529,9 @@ function submitForm() {
     if(!ready || !active) return bridge().collect();
     if(active.status==='finalised') return active.payload;
     const payload=bridge().collect();
-    if (!payload.values.recordRef && payload.values.learnerName?.trim()) {
+    // Drafts are normalised to the canonical reference when it is missing or was polluted by an
+    // older build. Finalised records return above and are never rewritten.
+    if (!isCanonicalReference(payload.values.recordRef) && payload.values.learnerName?.trim()) {
       const generatedReference = reference(payload.values);
       if (generatedReference) {
         payload.values.recordRef = generatedReference;
@@ -9552,7 +9585,7 @@ function submitForm() {
     values.recordStatus = 'Draft';
     values.sendCopy = false;
     values.correctsRecordRef = source.payload.values.recordRef || '';
-    values.recordRef = (source.payload.values.recordRef || reference(values)) + '-CORRECTED';
+    values.recordRef = reference(values) || source.payload.values.recordRef || '';
     values.currentPosition = (values.currentPosition ? values.currentPosition + '\n\n' : '') + 'Correction copy created from final record ' + (source.payload.values.recordRef || '') + '.';
     const record = create(values);
     record.payload = structuredClone(source.payload);
@@ -9567,7 +9600,7 @@ function submitForm() {
     const payload=bridge().collect(),v=payload.values;
     const issues=[];
     if(!v.learnerName?.trim()||!v.assessorName?.trim())issues.push('learner and trainee assessor names');
-    if(!v.recordRef?.trim() && v.learnerName?.trim()) {
+    if(!isCanonicalReference(v.recordRef) && v.learnerName?.trim()) {
       const generatedReference = reference(v);
       if (generatedReference) v.recordRef = generatedReference;
     }
@@ -9699,7 +9732,7 @@ function submitForm() {
       const deviceRecords=records;
       records=data.map(row=>({...row,syncedPayload:JSON.stringify(row.payload)}));
       // Preserve drafts that have not reached the server, including conflicts, as separate recoverable copies.
-      for(const r of deviceRecords){const cloud=records.find(c=>c.id===r.id);if(!cloud)records.push(r);else if((r.syncError||r.dirty) && JSON.stringify(r.payload.values)!==JSON.stringify(cloud.payload.values)){const copy=create(r.payload.values);copy.payload=structuredClone(r.payload);copy.payload.values.recordStatus='Draft';copy.payload.values.recordRef+='-recovered';records.push(copy);}}
+      for(const r of deviceRecords){const cloud=records.find(c=>c.id===r.id);if(!cloud)records.push(r);else if((r.syncError||r.dirty) && JSON.stringify(r.payload.values)!==JSON.stringify(cloud.payload.values)){const copy=create(r.payload.values);copy.payload=structuredClone(r.payload);copy.payload.values.recordStatus='Draft';copy.payload.values.recordRef=reference(copy.payload.values)||copy.payload.values.recordRef;records.push(copy);}}
     }
     if(!records.length){
       const legacy=bridge().localDraft();
