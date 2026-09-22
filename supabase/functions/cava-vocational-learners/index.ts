@@ -1,4 +1,4 @@
-const origin = 'https://ytc107.github.io';
+const origin = 'https://cava-learner-hub.pages.dev';
 const headers = {
   'Access-Control-Allow-Origin': origin,
   'Access-Control-Allow-Headers': 'authorization, apikey, content-type, x-client-info',

@@ -1,4 +1,4 @@
-const origin = 'https://ytc107.github.io';
+const origin = 'https://cava-learner-hub.pages.dev';
 const bucket = 'cava-evidence';
 let adminClient: any = null;
 function getAdmin() {

@@ -3,7 +3,7 @@ import postgres from 'npm:postgres@3.4.5';
 import {isProvider, normalEmail, validEmail, b64, url64, credentialKey, encrypt, decrypt, assertIdentity, validPdf, MailboxError, type Provider} from './security.ts';
 
 const origin = 'https://cava-learner-hub.pages.dev';
-const home = origin + '/CAVA-LMS/?tab=actions';
+const home = origin + '/?tab=actions';
 const base = Deno.env.get('SUPABASE_URL')!;
 // Keep the previously registered Google callback unchanged.
 const redirect = base + '/functions/v1/action-plan-mailbox/callback';
