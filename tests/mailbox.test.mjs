@@ -52,7 +52,7 @@ async function providerFetch(url,init){
 }
 const exports={};
 new Function('exports','require','Deno','fetch',compile('supabase/functions/action-plan-mailbox/index.ts'))(exports,p=>p.includes('supabase-js')?{createClient:()=>admin}:p.includes('postgres')?{default:()=>sqlFor(db)}:security,{env:{get:k=>env[k]},serve(){}},providerFetch);
-const invoke=(body,token='valid')=>exports.handler(new Request('https://example.supabase.co/functions/v1/action-plan-mailbox',{method:'POST',headers:{Authorization:'Bearer '+token,Origin:'https://ytc107.github.io','Content-Type':'application/json'},body:JSON.stringify(body)}));
+const invoke=(body,token='valid')=>exports.handler(new Request('https://example.supabase.co/functions/v1/action-plan-mailbox',{method:'POST',headers:{Authorization:'Bearer '+token,Origin:'https://cava-learner-hub.pages.dev','Content-Type':'application/json'},body:JSON.stringify(body)}));
 const callback=state=>exports.handler(new Request('https://example.supabase.co/functions/v1/action-plan-mailbox/callback?state='+state+'&code=test-code'));
 const pdf=Buffer.from('%PDF-1.7\nfixture').toString('base64');
 async function mailbox(provider='google',email=account,legacy=false){

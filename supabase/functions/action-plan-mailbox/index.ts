@@ -2,7 +2,7 @@ import { createClient } from 'npm:@supabase/supabase-js@2.57.4';
 import postgres from 'npm:postgres@3.4.5';
 import {isProvider, normalEmail, validEmail, b64, url64, credentialKey, encrypt, decrypt, assertIdentity, validPdf, MailboxError, type Provider} from './security.ts';
 
-const origin = 'https://ytc107.github.io';
+const origin = 'https://cava-learner-hub.pages.dev';
 const home = origin + '/CAVA-LMS/?tab=actions';
 const base = Deno.env.get('SUPABASE_URL')!;
 // Keep the previously registered Google callback unchanged.
