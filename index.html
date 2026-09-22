@@ -3101,11 +3101,21 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
           </section>
 
           <section class="action-section" aria-labelledby="action-mailbox-title"><div class="action-section__body">
-            <h3 id="action-mailbox-title">Email delivery</h3>
-            <p>Finalised Action Plans are sent through the PT Academy managed email service. Assessors and learners are never asked to enter an email password here.</p>
-            <p id="actionMailboxStatus" role="status">Checking central email service…</p>
-            <p id="actionEmailStatus" role="status">No email has been sent for this plan.</p>
-            <div class="action-record-tools"><button type="button" id="actionEmailLearner" class="action-button action-button--secondary" disabled>Email finalised plan to learner</button></div>
+            <h3 id="action-mailbox-title">Connect your email</h3>
+            <p>Send Action Plans from your own email address. Your learner can reply directly to you. Connect the same address you use to sign in to the Learner Hub.</p>
+            <p id="actionMailboxStatus" role="status">Checking your mailbox connection…</p>
+            <p id="actionMailboxNotice" role="status" hidden></p>
+            <div class="action-record-tools"><button type="button" id="actionConnectMailbox" class="action-button action-button--secondary" aria-expanded="false" aria-controls="actionMailboxOptions">Connect your email</button><button type="button" id="actionRefreshMailbox" class="action-button action-button--secondary">Refresh connection status</button><button type="button" id="actionDisconnectMailbox" class="action-button action-button--secondary" hidden>Disconnect email</button><button type="button" id="actionEmailLearner" class="action-button action-button--secondary" disabled>Email finalised plan to learner</button></div>
+            <div id="actionMailboxOptions" hidden>
+              <div class="action-field"><label for="actionMailboxProvider">Who hosts your email?</label><select id="actionMailboxProvider"><option value="google">Google / Gmail / Google Workspace</option><option value="microsoft">Outlook / Microsoft 365 / Hotmail</option><option value="icloud">iCloud / me.com / mac.com</option><option value="yahoo">Yahoo</option><option value="custom">Other company email</option></select></div>
+              <p id="actionMailboxProviderHelp" role="status"></p>
+              <div id="actionMailboxPasswordFields" hidden>
+                <div class="action-field"><label for="actionMailboxAppPassword">Email provider app password</label><input id="actionMailboxAppPassword" type="password" autocomplete="off" maxlength="256" spellcheck="false" aria-describedby="actionMailboxPasswordHelp"></div>
+                <p id="actionMailboxPasswordHelp">Generate an app password in your email provider’s security settings. The Hub encrypts it for future sends. Do not enter your normal account password.</p>
+              </div>
+              <div class="action-record-tools"><button type="button" id="actionMailboxContinue" class="action-button action-button--primary">Continue with Google</button><button type="button" id="actionMailboxCancel" class="action-button action-button--secondary">Cancel</button></div>
+            </div>
+            <p id="actionEmailStatus" role="status">After finalising, send the final PDF from the connected assessor mailbox to the learner email recorded in this plan.</p>
           </div></section>
           <details class="action-section action-history-section">
             <summary class="action-history-summary"><span class="action-history-summary__icon" aria-hidden="true">↺</span><span class="action-history-summary__copy"><small>SAVED ACTION PLANS &amp; REVIEWS</small><strong id="action-history-title">Your saved records</strong><span id="action-history-count">0 Action Plans &amp; Reviews stored</span></span><span id="action-history-toggle-label" class="action-history-summary__toggle">View records <span aria-hidden="true">▼</span></span></summary>
@@ -9591,33 +9601,84 @@ function submitForm() {
     if(error||detail?.error)throw new Error(detail?.error||'The mailbox service is unavailable. Your saved plan is safe.');
     return data;
   }
+  const providerNames={google:'Google',microsoft:'Microsoft',icloud:'iCloud',yahoo:'Yahoo',custom:'your email provider'};
   let mailboxBusy=false;
+  function closeMailboxOptions(){
+    $('actionMailboxOptions').hidden=true;
+    $('actionConnectMailbox').setAttribute('aria-expanded','false');
+    $('actionMailboxAppPassword').value='';
+  }
+  function updateMailboxProvider(){
+    const provider=$('actionMailboxProvider').value;
+    const available=Boolean(mailbox?.providers?.[provider]);
+    const password=!['google','microsoft'].includes(provider);
+    $('actionMailboxAppPassword').value='';
+    $('actionMailboxPasswordFields').hidden=!password||!available;
+    $('actionMailboxContinue').disabled=!available||mailboxBusy;
+    $('actionMailboxContinue').textContent=password?'Connect securely':'Continue with '+providerNames[provider];
+    $('actionMailboxProviderHelp').textContent=!available?'This provider is awaiting administrator setup. You can still save and download your Action Plans.':password?'Connect '+(mailbox.accountEmail||'your signed-in email')+'. '+(provider==='custom'?'Your administrator must approve the company mail server first. If Google or Microsoft hosts your email, choose that provider above.':'Use the app password from your provider’s security settings.'):'Continue to '+providerNames[provider]+' and choose '+(mailbox.accountEmail||'the address you use to sign in here')+'. Your connection will be remembered for future sends.';
+  }
   async function checkMailbox() {
-    if(local){$('actionMailboxStatus').textContent='Email delivery is available only through the live Learner Hub.';$('actionEmailLearner').disabled=true;$('actionEmailLearnerFooter').disabled=true;return;}
+    if(local){$('actionMailboxStatus').textContent='Open the live hub and sign in to connect your email.';$('actionConnectMailbox').disabled=true;$('actionRefreshMailbox').disabled=true;return;}
+    $('actionRefreshMailbox').disabled=true;
     try {
       mailbox=await invoke({action:'status'});
-      const ready=Boolean(mailbox?.centralManaged&&mailbox?.configured);
-      $('actionMailboxStatus').textContent=ready?'Central email service is ready. Finalised plans can be emailed to the learner.':'Central email service is awaiting secure administrator setup. Your saved plans are safe.';
-      $('actionEmailLearner').disabled=!ready||active?.status!=='finalised';
-      $('actionEmailLearnerFooter').disabled=!ready||active?.status!=='finalised';
+      // During a staged deployment, the existing Gmail-only function remains usable.
+      if(!mailbox.providers)mailbox.providers={google:mailbox.configured};
+      $('actionMailboxStatus').textContent=mailbox.connected?'Connected: '+mailbox.email+' via '+(providerNames[mailbox.provider]||'Google')+'.':mailbox.connectionStatus==='reconnect_required'?'Your email permission needs renewing. Reconnect your email before sending.':mailbox.connectionStatus==='identity_mismatch'?'The saved mailbox no longer matches your Hub email. Connect your current address.':mailbox.connectionStatus==='setup_required'?'Your connected provider is awaiting administrator setup.': 'Choose your email provider to connect your own mailbox.';
+      $('actionConnectMailbox').disabled=mailboxBusy;
+      $('actionConnectMailbox').textContent=mailbox.email?'Reconnect or change provider':'Connect your email';
+      $('actionDisconnectMailbox').hidden=!mailbox.email;
+      $('actionEmailLearner').disabled=!mailbox.connected||active?.status!=='finalised';
+      $('actionEmailLearnerFooter').disabled=!mailbox.connected||active?.status!=='finalised';
+      if(mailbox.connected && active?.status==='draft'){$('actionAssessorEmail').value=mailbox.email;$('actionAssessorEmail').readOnly=true;save(false);}
+      if(!$('actionMailboxOptions').hidden)updateMailboxProvider();
       if(active?.id)await emailStatus(active.id);
-    }catch(error){mailbox=null;$('actionMailboxStatus').textContent='Central email service is currently unavailable. Your saved plans are safe.';$('actionEmailLearner').disabled=true;$('actionEmailLearnerFooter').disabled=true;}
+    }catch(error){mailbox=null;$('actionMailboxStatus').textContent=error.message;$('actionConnectMailbox').disabled=true;$('actionEmailLearner').disabled=true;$('actionEmailLearnerFooter').disabled=true;}
+    finally{$('actionRefreshMailbox').disabled=false;}
+  }
+  async function connectMailbox(){
+    if(mailboxBusy)return;
+    mailboxBusy=true;
+    $('actionMailboxContinue').disabled=true;
+    $('actionMailboxProvider').disabled=true;
+    $('actionMailboxCancel').disabled=true;
+    $('actionDisconnectMailbox').disabled=true;
+    $('actionMailboxStatus').textContent='Connecting your email…';
+    try{
+      const provider=$('actionMailboxProvider').value;
+      const appPassword=$('actionMailboxAppPassword').value;
+      $('actionMailboxAppPassword').value='';
+      const data=await invoke({action:'connect',provider,...(!['google','microsoft'].includes(provider)?{appPassword}:{})});
+      if(data.url){
+        const target=new URL(data.url);
+        if(target.protocol!=='https:'||!['accounts.google.com','login.microsoftonline.com'].includes(target.hostname))throw new Error('The email provider returned an invalid connection link.');
+        location.assign(target.href);
+      }else{closeMailboxOptions();await checkMailbox();}
+    }catch(error){$('actionMailboxStatus').textContent=error.message;}
+    finally{mailboxBusy=false;$('actionMailboxProvider').disabled=false;$('actionMailboxCancel').disabled=false;$('actionDisconnectMailbox').disabled=false;$('actionConnectMailbox').disabled=!mailbox;$('actionMailboxContinue').disabled=!mailbox?.providers?.[$('actionMailboxProvider').value];}
+  }
+  async function disconnectMailbox(){
+    if(mailboxBusy)return;
+    mailboxBusy=true;$('actionDisconnectMailbox').disabled=true;$('actionConnectMailbox').disabled=true;
+    try{await invoke({action:'disconnect'});closeMailboxOptions();await checkMailbox();$('actionMailboxStatus').textContent='Email disconnected. The Hub has removed its saved authorization. You can also revoke the app permission or app password in your provider’s security settings.';}
+    catch(error){$('actionMailboxStatus').textContent=error.message;}
+    finally{mailboxBusy=false;$('actionDisconnectMailbox').disabled=false;$('actionConnectMailbox').disabled=!mailbox;}
   }
   async function emailStatus(id) {
-
     const {data}=await sb.from('action_plan_email_events').select('status,sender,recipient,sent_at,detail').eq('plan_id',id).maybeSingle();
     if(active?.id!==id)return;
     $('actionEmailStatus').textContent=data?data.status==='sent'?'Sent from '+data.sender+' to '+data.recipient+' on '+new Date(data.sent_at).toLocaleString('en-GB')+'. Receipt has not been confirmed.':data.detail||'Email status: '+data.status:'No email has been sent for this plan.';
     if(data?.status==='sent'||data?.status==='sending'||data?.status==='unknown'){$('actionEmailLearner').disabled=true;$('actionEmailLearnerFooter').disabled=true;}
   }
   async function sendEmail() {
-    if(local||!mailbox?.centralManaged||!mailbox?.configured){$('actionEmailStatus').textContent='Plan saved. Email delivery will be available once the secure central service has been configured.';return;}
+    if(local||!mailbox?.connected){$('actionEmailStatus').textContent='Plan saved. Email not sent: connect your mailbox on the live hub first.';return;}
     if(active.status!=='finalised')return;
     const record=active;
     $('actionEmailLearner').disabled=true;
     $('actionEmailLearnerFooter').disabled=true;
     try{
-      if(record.payload.values.assessorEmail?.toLowerCase()!==mailbox.accountEmail?.toLowerCase())throw new Error('The assessor email on the signed plan must match your Hub sign-in email.');
+      if(record.payload.values.assessorEmail?.toLowerCase()!==mailbox.email.toLowerCase())throw new Error('The signed plan email does not match your connected mailbox. Create a corrected plan before sending.');
       const pdf=await bridge().buildPdf(false);
       let binary='';for(const byte of pdf.bytes)binary+=String.fromCharCode(byte);
       await invoke({action:'send',planId:record.id,pdf:btoa(binary)});
@@ -9652,6 +9713,20 @@ function submitForm() {
   function bind() {
     display(active);bindHistoryDisclosure();checkMailbox();
     $('actionNewPlan').onclick=()=>newPlan(false);$('actionNewReview').onclick=()=>newPlan(true);
+    $('actionConnectMailbox').onclick=()=>{if(mailboxBusy)return;$('actionMailboxOptions').hidden=false;$('actionConnectMailbox').setAttribute('aria-expanded','true');if(mailbox?.provider)$('actionMailboxProvider').value=mailbox.provider;updateMailboxProvider();$('actionMailboxProvider').focus();};
+    $('actionMailboxProvider').onchange=updateMailboxProvider;
+    $('actionMailboxContinue').onclick=connectMailbox;
+    $('actionMailboxCancel').onclick=()=>{closeMailboxOptions();$('actionConnectMailbox').focus();};
+    $('actionRefreshMailbox').onclick=checkMailbox;
+    $('actionDisconnectMailbox').onclick=disconnectMailbox;
+    window.addEventListener('pagehide',()=>{$('actionMailboxAppPassword').value='';});
+    const callbackStatus=new URLSearchParams(location.search).get('mailbox');
+    if(callbackStatus){
+      const notices={connected:'Your email connection was saved. Refresh the connection status to check it.',cancelled:'Email connection was cancelled. Your previous connection has been kept.',expired:'The connection request expired or was replaced. Please connect again.',identity_mismatch:'The selected mailbox does not match your Hub email. Choose the address you use to sign in here.',setup_required:'This email provider is awaiting administrator setup.',connection_failed:'Email connection could not be completed. Try again and allow sending permission.'};
+      $('actionMailboxNotice').hidden=false;
+      $('actionMailboxNotice').textContent=notices[callbackStatus]||'Check your email connection status.';
+      const clean=new URL(location.href);clean.searchParams.delete('mailbox');history.replaceState(null,'',clean.href);
+    }
     $('actionEmailLearner').onclick=sendEmail;
     $('actionEmailLearnerFooter').onclick=sendEmail;
     $('actionCreateCorrection').onclick=createCorrection;
