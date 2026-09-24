@@ -1483,6 +1483,7 @@ textarea:disabled { cursor: not-allowed; opacity: .72; }
   :is(#unit2WorksheetView,#unit3WorksheetView) .unit2-video-guidance__body { border-top: 1px solid var(--hub-line); display: grid; gap: 17px; grid-template-columns: minmax(230px,.85fr) minmax(0,1.15fr); padding: 17px; }
   :is(#unit2WorksheetView,#unit3WorksheetView) .unit2-video-guidance__media { align-items: center; aspect-ratio: 16 / 9; background: #f3f1ec; border: 1px dashed #c9c3b8; border-radius: 8px; color: #6b665d; display: flex; flex-direction: column; font-size: 12px; gap: 7px; justify-content: center; min-height: 150px; overflow: hidden; text-align: center; }
   :is(#unit2WorksheetView,#unit3WorksheetView) .unit2-video-guidance__media iframe { border: 0; height: 100%; width: 100%; }
+  :is(#unit2WorksheetView,#unit3WorksheetView) .unit2-video-guidance__media video { border: 0; height: 100%; width: 100%; }
   :is(#unit2WorksheetView,#unit3WorksheetView) .unit2-video-guidance__play { align-items: center; background: #171717; border-radius: 50%; color: #fff; display: flex; font-size: 13px; height: 38px; justify-content: center; width: 38px; }
   :is(#unit2WorksheetView,#unit3WorksheetView) .unit2-video-guidance__copy h3 { color: #24221f; font-size: 15px; margin: 0 0 6px; }
   :is(#unit2WorksheetView,#unit3WorksheetView) .unit2-video-guidance__copy p { color: #5d5952; font-size: 13px; line-height: 1.55; margin: 0 0 10px; }
@@ -7029,7 +7030,19 @@ function submitForm() {
       var media = document.createElement('div'); media.className = 'unit2-video-guidance__media';
       var videoUrl = normaliseTutorialUrl(guidance.url);
       if (videoUrl) {
-        var iframe = document.createElement('iframe'); iframe.src = videoUrl; iframe.title = guidance.title; iframe.loading = 'lazy'; iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'; iframe.allowFullscreen = true; media.appendChild(iframe);
+        var isDirectVideo = /\.(mp4|webm|ogg)(\?.*)?$/i.test(videoUrl);
+        if (isDirectVideo) {
+          var video = document.createElement('video');
+          video.src = videoUrl;
+          video.controls = true;
+          video.title = guidance.title;
+          video.preload = 'metadata';
+          video.style.width = '100%';
+          video.style.height = '100%';
+          media.appendChild(video);
+        } else {
+          var iframe = document.createElement('iframe'); iframe.src = videoUrl; iframe.title = guidance.title; iframe.loading = 'lazy'; iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture'; iframe.allowFullscreen = true; media.appendChild(iframe);
+        }
       } else {
         media.innerHTML = '<span class="unit2-video-guidance__play" aria-hidden="true">▶</span><strong>Tutorial ready to connect</strong><span>The approved video will appear here.</span>';
       }
