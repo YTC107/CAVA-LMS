@@ -9935,10 +9935,10 @@ function submitForm() {
   function addHubTour(){
     const dashboard=document.getElementById('dashboard');if(!dashboard||dashboard.querySelector('.hub-tour-card'))return;
     const card=document.createElement('section');card.className='hub-tour-card';card.setAttribute('aria-labelledby','hubTourTitle');
-    card.innerHTML='<div class="hub-tour-card__icon" aria-hidden="true">▶</div><div class="hub-tour-card__copy"><span class="hub-tour-card__eyebrow">Start here</span><h3 id="hubTourTitle">Take a quick tour of your Learner Hub</h3><p>See where to find your documents, action plans, evidence uploads, feedback and progress tracking before you begin.</p></div><div class="hub-tour-card__action"><span class="hub-tour-card__tag">Video guide</span></div>';
+    card.innerHTML='<div class="hub-tour-card__icon" aria-hidden="true">▶</div><div class="hub-tour-card__copy"><span class="hub-tour-card__eyebrow">Start here</span><h3 id="hubTourTitle">Take a quick tour of your Learner Hub</h3><p>See where to find your documents, action plans, evidence uploads, feedback and progress tracking before you begin.</p></div><div class="hub-tour-card__action"><div class="hub-tour-video"></div></div>';
     const focus=dashboard.querySelector('#learnerFocusCard');(focus||dashboard.firstElementChild).insertAdjacentElement('afterend',card);
     const url=window.CAVA_SUPPORT_ASSETS?.hubTourVideo;
-    if(url){try{const link=document.createElement('a');link.href=new URL(url,location.href).href;link.target='_blank';link.rel='noopener';link.className='hub-tour-card__watch';link.textContent='Watch the Learner Hub tour';card.querySelector('.hub-tour-card__action').replaceChildren(link);}catch(_){}}
+    if(url){try{const video=document.createElement('video');video.src=url;video.controls=true;video.preload='metadata';video.style.width='100%';video.style.height='auto';card.querySelector('.hub-tour-video').replaceChildren(video);}catch(_){}}
   }
   document.addEventListener('DOMContentLoaded',function(){addSupport();addHubTour();});
 })();
