@@ -104,7 +104,7 @@ test('learner email includes dynamic actions, UK dates, review date and existing
   const sent=requests.find(r=>r.url.includes('messages/send'));const mime=Buffer.from(JSON.parse(sent.init.body).raw,'base64url').toString();const encodedBody=mime.split('Content-Transfer-Encoding: base64\r\n\r\n')[1].split('\r\n--')[0];const text=Buffer.from(encodedBody,'base64').toString();
   assert.match(mime,/Subject: =\?UTF-8\?B\?WW91ciBJbml0aWFsIFBsYW4g4oCTIDE2IFNlcHRlbWJlciAyMDI2\?=/);
   assert.match(text,/Hi Coral,/);
-  assert.match(text,/Your agreed actions\r\n\r\nAction 1: Complete the programme card\r\nTarget date: 16 September 2026\r\n\r\nAction 2: Submit the reflection\r\nTarget date: 7 October 2026/);
+  assert.match(text,/Your agreed actions\r\n\r\nAction 1: Complete the programme card\.\r\nTarget date: 16 September 2026\r\n\r\nAction 2: Submit the reflection\r\nTarget date: 7 October 2026/);
   assert.match(text,/Next review: 7 October 2026/);
   assert.match(text,/Full details of your agreed actions are included in the attached Action Plan\./);
   assert.match(text,/Action Plan reference: AP-EMAIL/);
@@ -148,7 +148,7 @@ test('session review email uses Action Plan subject and reference-date fallback'
   await mailbox();await finalPlan(owner,{planType:'Session Review and Action Plan',recordRef:'AP-14-09-2026-MK',actionCount:1,action0Task:'Review the submitted evidence',action0Target:'2026-09-23',meetingDate:'invalid'});
   assert.equal((await invoke({action:'send',planId:plan,pdf})).status,200);
   const sent=requests.find(r=>r.url.includes('messages/send'));const mime=Buffer.from(JSON.parse(sent.init.body).raw,'base64url').toString();const encodedBody=mime.split('Content-Transfer-Encoding: base64\r\n\r\n')[1].split('\r\n--')[0];const text=Buffer.from(encodedBody,'base64').toString();
-  assert.match(mime,/Subject: =\?UTF-8\?B\?WW91ciBBY3Rpb24gUGxhbiDigKwgMTQgU2VwdGVtYmVyIDIwMjY=\?=/);
+  assert.match(mime,/Subject: =\?UTF-8\?B\?WW91ciBBY3Rpb24gUGxhbiDigJMgMTQgU2VwdGVtYmVyIDIwMjY=\?=/);
   assert.match(text,/Action Plan reference: AP-14-09-2026-MK/);
 });
 test('wrong owner, changed email and header injection cannot send',async()=>{

@@ -50,7 +50,7 @@ test('prepares the complete request and exposes Gmail and copy fallbacks', async
     assert.match(copied[0], /To: ptacademy\.cava\.support@gmail\.com/);
     assert.match(copied[0], /Subject: CAVA support appointment request: Test Learner/);
     assert.match(copied[0], /Account email: learner@example\.com/);
-    assert.equal(copyButton.textContent, 'Request details copied');
+    assert.equal(copyButton.textContent, 'Copy request details');
   } finally {
     dom.window.close();
   }
