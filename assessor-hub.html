@@ -1499,7 +1499,7 @@
       document.querySelectorAll('[data-unit-control]').forEach(select=>learner.unitSettings[select.dataset.unitControl]=select.value);
       if(canInviteLearners&&remoteLoadComplete){
         const {data,error}=await sb.functions.invoke('update-learner-profile',{body:{learner_id:learner.id,full_name:learner.fullName,email:learner.email,contact_number:learner.contactNumber||'',learner_type:learner.route}});
-        if(error||data?.error){alert(data?.error||'The learner type could not be saved to Supabase. Please try again.');return;}
+        if(error||data?.error){alert(error?.message||data?.error||'The learner type could not be saved to Supabase. Please try again.');return;}
       }
       saveLearnerSettings(learner); renderRecordOverview(learner); renderRecordProgramme(learner); renderAll(); alert('Units and learner type saved for '+learner.fullName+'.');
     }
@@ -1768,8 +1768,8 @@
       const {data,error}=await sb.functions.invoke('update-learner-profile',{body});
       button.disabled=false;button.textContent='Save Learner Details';
       if(error||data?.error){
-        message.textContent=data?.error||'The learner details could not be updated. Please try again.';
-        message.className='invite-message error show';return;
+        const msg=error?.message||data?.error||'The learner details could not be updated. Please try again.';
+        message.textContent=msg;message.className='invite-message error show';return;
       }
       const currentLearner=learners.find(item=>item.id===learnerId);
       if(currentLearner)migrateLearnerEmailStorage(currentLearner,oldEmail,newEmail);
@@ -1797,7 +1797,7 @@
       button.disabled=true;button.textContent='Sending email…';message.className='invite-message';message.textContent='';
       const {data,error}=await sb.functions.invoke('invite-learner',{body:{learner_id:learner.id,mode:'existing'}});
       button.disabled=false;
-      if(error||data?.error){message.textContent=data?.error||'The access email could not be sent. Please try again.';message.className='invite-message error show';button.textContent=learner.authUserId?'Resend access email':'Send platform invitation';return;}
+      if(error||data?.error){const msg=error?.message||data?.error||'The access email could not be sent. Please try again.';message.textContent=msg;message.className='invite-message error show';button.textContent=learner.authUserId?'Resend access email':'Send platform invitation';return;}
       message.textContent=data?.message||'The Learner Hub access email has been sent.';message.className='invite-message success show';
       await loadRemoteLearners();loadLearners();
       const refreshed=learners.find(item=>item.id===learnerId);
@@ -1826,7 +1826,9 @@
       const body=Object.fromEntries(new FormData(form).entries());
       const {data,error}=await sb.functions.invoke('invite-learner',{body});
       button.disabled=false;button.textContent='Send Invitation';
-      if(error||data?.error){message.textContent=data?.error||'The invitation could not be sent. Please try again.';message.className='invite-message error show';return;}
+      if(error||data?.error){
+        const msg=error?.message||data?.error||'The invitation could not be sent. Please try again.';
+        message.textContent=msg;message.className='invite-message error show';return;}
       message.textContent='Invitation sent. The learner is now awaiting account activation.';message.className='invite-message success show';
       form.reset();await loadRemoteLearners();loadLearners();renderAll();
     });
