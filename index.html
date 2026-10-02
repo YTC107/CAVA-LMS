@@ -7208,7 +7208,7 @@ function submitForm() {
       title.remove(); body.remove(); details.appendChild(summary); details.appendChild(body); block.appendChild(details);
     });
     enhanceWorksheetVideoGuidance(view, unitNumber === 3 ? UNIT3_VIDEO_GUIDANCE : UNIT2_VIDEO_GUIDANCE);
-    initialiseAssessmentDocument(view, unitNumber);
+    try { initialiseAssessmentDocument(view, unitNumber); } catch (e) { console.error('Unit ' + unitNumber + ' assessment document initialisation failed:', e); }
   }
   window.__syncDocumentsShell = function () {
     var activePane = document.querySelector('.tab-pane.active');
@@ -7217,8 +7217,8 @@ function submitForm() {
     if (activeTab === 'documents') { enhanceWorksheet('unit2WorksheetView', 2); enhanceWorksheet('unit3WorksheetView', 3); }
   };
   document.addEventListener('DOMContentLoaded', function () {
-    enhanceWorksheet('unit2WorksheetView', 2);
-    enhanceWorksheet('unit3WorksheetView', 3);
+    try { enhanceWorksheet('unit2WorksheetView', 2); } catch (e) { console.error('Unit 2 worksheet enhancement failed:', e); }
+    try { enhanceWorksheet('unit3WorksheetView', 3); } catch (e) { console.error('Unit 3 worksheet enhancement failed:', e); }
     window.__syncDocumentsShell();
     var toggle = document.getElementById('documentsMobileToggle');
     toggle?.addEventListener('click', function () {
