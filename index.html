@@ -3799,7 +3799,7 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
         <h3>Action Plan • Learner 1</h3>
         <div class="plan-grid">
           <div><label>Action Plan Type</label><select id="l1-lo2-plan-type"><option value="">Select plan type</option><option>Initial Action Plan</option><option>Session Review & Action Plan</option></select></div>
-          <div><label>Upload Signed Action Plan</label><div class="upload-area"><div class="upload-icon">&#128206;</div><p>Click to attach or drag and drop (PDF or image)</p><input type="file" accept=".pdf,image/*" onchange="showFilename(this,'l1-lo2-plan-file')"></div><div class="filename-display" id="l1-lo2-plan-file"></div></div>
+          <div><label>Upload Signed Action Plan</label><div class="upload-area"><div class="upload-icon">&#128206;</div><p>Click to attach or drag and drop (PDF or image)</p><input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l1|initial"></div>
         </div>
         <label>Summary of What Was Agreed</label>
         <textarea id="l1-lo2-plan-summary" class="min-160" placeholder="Summarise the key agreements made during the assessment planning meeting."></textarea>
@@ -3820,7 +3820,7 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
         <h3>Action Plan • Learner 2</h3>
         <div class="plan-grid">
           <div><label>Action Plan Type</label><select id="l2-lo2-plan-type"><option value="">Select plan type</option><option>Initial Action Plan</option><option>Session Review & Action Plan</option></select></div>
-          <div><label>Upload Signed Action Plan</label><div class="upload-area"><div class="upload-icon">&#128206;</div><p>Click to attach or drag and drop (PDF or image)</p><input type="file" accept=".pdf,image/*" onchange="showFilename(this,'l2-lo2-plan-file')"></div><div class="filename-display" id="l2-lo2-plan-file"></div></div>
+          <div><label>Upload Signed Action Plan</label><div class="upload-area"><div class="upload-icon">&#128206;</div><p>Click to attach or drag and drop (PDF or image)</p><input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l2|initial"></div>
         </div>
         <label>Summary of What Was Agreed</label>
         <textarea id="l2-lo2-plan-summary" class="min-160" placeholder="Summarise the key agreements made during the assessment planning meeting."></textarea>
@@ -3850,7 +3850,7 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
         <h3>Action Plan • Learner 1</h3>
         <div class="plan-grid">
           <div><label>Action Plan Type</label><select id="l1-lo3-plan-type"><option value="">Select plan type</option><option>Initial Action Plan</option><option>Session Review & Action Plan</option></select></div>
-          <div><label>Upload Signed Action Plan</label><div class="upload-area"><div class="upload-icon">&#128206;</div><p>Click to attach or drag and drop (PDF or image)</p><input type="file" accept=".pdf,image/*" onchange="showFilename(this,'l1-lo3-plan-file')"></div><div class="filename-display" id="l1-lo3-plan-file"></div></div>
+          <div><label>Upload Signed Action Plan</label><div class="upload-area"><div class="upload-icon">&#128206;</div><p>Click to attach or drag and drop (PDF or image)</p><input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l1|initial"></div>
         </div>
         <label>Summary of What Was Agreed</label>
         <textarea id="l1-lo3-plan-summary" class="min-160" placeholder="Summarise the key agreements made during the assessment planning meeting."></textarea>
@@ -3870,7 +3870,7 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
         <h3>Action Plan • Learner 2</h3>
         <div class="plan-grid">
           <div><label>Action Plan Type</label><select id="l2-lo3-plan-type"><option value="">Select plan type</option><option>Initial Action Plan</option><option>Session Review & Action Plan</option></select></div>
-          <div><label>Upload Signed Action Plan</label><div class="upload-area"><div class="upload-icon">&#128206;</div><p>Click to attach or drag and drop (PDF or image)</p><input type="file" accept=".pdf,image/*" onchange="showFilename(this,'l2-lo3-plan-file')"></div><div class="filename-display" id="l2-lo3-plan-file"></div></div>
+          <div><label>Upload Signed Action Plan</label><div class="upload-area"><div class="upload-icon">&#128206;</div><p>Click to attach or drag and drop (PDF or image)</p><input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l2|initial"></div>
         </div>
         <label>Summary of What Was Agreed</label>
         <textarea id="l2-lo3-plan-summary" class="min-160" placeholder="Summarise the key agreements made during the assessment planning meeting."></textarea>
@@ -5636,7 +5636,13 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
   }
 
   function evidenceContext(block) {
-    const [unitCode, learnerSlot, learningOutcomeCode, assessmentCriterion] = String(block.dataset.evidenceContext || '').split('|');
+    const ctx = String(block.dataset.evidenceContext || '').split('|');
+    if (ctx[0] === 'action-plan') {
+      // Action Plan format: action-plan|l1|initial or action-plan|l1|review
+      return { unitCode: ctx[0], learnerSlot: ctx[1], learningOutcomeCode: ctx[1], assessmentCriterion: ctx[2] };
+    }
+    // Regular evidence format: unit2|l1|lo1|1.1
+    const [unitCode, learnerSlot, learningOutcomeCode, assessmentCriterion] = ctx;
     return { unitCode, learnerSlot, learningOutcomeCode, assessmentCriterion };
   }
 
@@ -5715,11 +5721,13 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
   async function uploadEvidenceFile(file, block) {
     if (file.size > MAX_FILE_SIZE) throw new Error('File exceeds maximum size of 50MB. Please choose a smaller file.');
     const context = evidenceContext(block);
+    if (context.unitCode === 'action-plan' && !context.assessmentCriterion) throw new Error('Please select an Action Plan Type before attaching a document.');
     const ids = await evidenceLearnerIds();
     if (ids.errors?.[context.learnerSlot]) throw new Error(ids.errors[context.learnerSlot]);
     const learnerId = ids[context.learnerSlot];
     if (!learnerId) throw new Error('This learner slot is not currently allocated.');
-    const evidenceType = block.querySelector('select[multiple]')?.selectedOptions?.[0]?.textContent || '';
+    const isActionPlan = context.unitCode === 'action-plan';
+    const evidenceType = isActionPlan ? 'action-plan' : (block.querySelector('select[multiple]')?.selectedOptions?.[0]?.textContent || '');
     const prepared = await evidenceRequest('create-upload', { learnerId, unitCode: context.unitCode, learningOutcomeCode: context.learningOutcomeCode, assessmentCriterion: context.assessmentCriterion, originalFilename: file.name, mimeType: file.type || 'application/octet-stream', byteSize: file.size });
     const upload = await sb.storage.from('cava-evidence').uploadToSignedUrl(prepared.path, prepared.token, file);
     if (upload.error) throw upload.error;
