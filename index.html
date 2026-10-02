@@ -7217,8 +7217,8 @@ function submitForm() {
     if (activeTab === 'documents') { enhanceWorksheet('unit2WorksheetView', 2); enhanceWorksheet('unit3WorksheetView', 3); }
   };
   document.addEventListener('DOMContentLoaded', function () {
-    try { enhanceWorksheet('unit2WorksheetView', 2); } catch (e) { console.error('Unit 2 worksheet enhancement failed:', e); }
-    try { enhanceWorksheet('unit3WorksheetView', 3); } catch (e) { console.error('Unit 3 worksheet enhancement failed:', e); }
+    try { enhanceWorksheet('unit2WorksheetView', 2); } catch (e) { console.error('Unit 2 worksheet enhancement failed:', e); if (typeof showPageError === 'function') showPageError('Unit 2 worksheet enhancement failed: ' + e.message); }
+    try { enhanceWorksheet('unit3WorksheetView', 3); } catch (e) { console.error('Unit 3 worksheet enhancement failed:', e); if (typeof showPageError === 'function') showPageError('Unit 3 worksheet enhancement failed: ' + e.message); }
     window.__syncDocumentsShell();
     var toggle = document.getElementById('documentsMobileToggle');
     toggle?.addEventListener('click', function () {
