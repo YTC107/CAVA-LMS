@@ -66,7 +66,9 @@ test('embedded Unit 2 and Unit 3 ACs use the shared persistent uploader', () => 
   assert.match(hub, /Array\.from\(input\.files \|\| \[\]\)/);
   assert.match(hub, /input\.value = ''/);
   assert.match(hub, /uploadToSignedUrl/);
-  assert.match(hub, /Uploaded evidence \(' \+ state\.attachments\.length \+ '\)/);
+  assert.match(hub, /evidence-list__heading/);
+  assert.match(hub, /isActionPlan/);
+  assert.match(hub, /Uploaded Action Plan Documents/);
   assert.match(hub, /data-evidence-list/);
   assert.match(hub, /evidenceRequest\('remove'/);
   assert.match(hub, /state\.uploads\.push\(upload\)/);

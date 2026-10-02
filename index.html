@@ -5656,7 +5656,9 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
     list.replaceChildren();
     const heading = document.createElement('div');
     heading.className = 'evidence-list__heading';
-    heading.textContent = 'Uploaded evidence (' + state.attachments.length + ')';
+    const ctx = String(block.dataset.evidenceContext || '').split('|');
+    const isActionPlan = ctx[0] === 'action-plan';
+    heading.textContent = (isActionPlan ? 'Uploaded Action Plan Documents' : 'Uploaded evidence') + ' (' + state.attachments.length + ')';
     list.appendChild(heading);
     if (message) {
       const status = document.createElement('div');
