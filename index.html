@@ -3748,7 +3748,8 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
         <h3>Action Plan &bull; Learner 1</h3>
         <div class="plan-grid">
           <div><label>Action Plan Type</label><select id="l1-lo1-plan-type"><option value="">Select plan type</option><option>Initial Action Plan</option><option>Session Review & Action Plan</option></select></div>
-          <div><label>Upload Signed Action Plan</label><div class="upload-area"><div class="upload-icon">&#128206;</div><p>Click to attach or drag and drop (PDF or image)</p><input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l1|initial"></div></div>
+          <div><label>Upload Signed Action Plan</label><div class="upload-area"><div class="upload-icon">&#128206;</div><p>Click to attach or drag and drop (PDF or image)</p><input id="u3-l1-lo1-plan-file" name="u3-l1-lo1-plan-file" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" onchange="showFilenameUnit3(this)">
+            <div class="filename-display"></div></div></div>
         </div>
         <label>Summary of What Was Agreed</label>
         <textarea id="l1-lo1-plan-summary" class="min-160" placeholder="Summarise the key agreements made during the assessment planning meeting."></textarea>
@@ -3769,7 +3770,8 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
         <h3>Action Plan &bull; Learner 2</h3>
         <div class="plan-grid">
           <div><label>Action Plan Type</label><select id="l2-lo1-plan-type"><option value="">Select plan type</option><option>Initial Action Plan</option><option>Session Review & Action Plan</option></select></div>
-          <div><label>Upload Signed Action Plan</label><div class="upload-area"><div class="upload-icon">&#128206;</div><p>Click to attach or drag and drop (PDF or image)</p><input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l2|initial"></div></div>
+          <div><label>Upload Signed Action Plan</label><div class="upload-area"><div class="upload-icon">&#128206;</div><p>Click to attach or drag and drop (PDF or image)</p><input id="u3-l2-lo1-plan-file" name="u3-l2-lo1-plan-file" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" onchange="showFilenameUnit3(this)">
+            <div class="filename-display"></div></div></div>
         </div>
         <label>Summary of What Was Agreed</label>
         <textarea id="l2-lo1-plan-summary" class="min-160" placeholder="Summarise the key agreements made during the assessment planning meeting."></textarea>
@@ -4039,7 +4041,8 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
           <div class="upload-area">
             <div class="upload-icon">📎</div>
             <p>Click to attach or drag and drop</p>
-            <input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l1|initial">
+            <input id="u3-l1-lo1-plan-file" name="u3-l1-lo1-plan-file" onchange="showFilenameUnit3(this)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l1|initial">
+            <div class="filename-display"></div>
           </div>
         </div>
       </div>
@@ -4166,7 +4169,8 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
           <div class="upload-area">
             <div class="upload-icon">📎</div>
             <p>Click to attach or drag and drop</p>
-            <input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l2|initial">
+            <input id="u3-l2-lo1-plan-file" name="u3-l2-lo1-plan-file" onchange="showFilenameUnit3(this)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l2|initial">
+            <div class="filename-display"></div>
           </div>
         </div>
       </div>
@@ -4303,7 +4307,8 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
           <div class="upload-area">
             <div class="upload-icon">📎</div>
             <p>Click to attach or drag and drop</p>
-            <input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l1|initial">
+            <input id="u3-l1-lo2-plan-file" name="u3-l1-lo2-plan-file" onchange="showFilenameUnit3(this)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l1|initial">
+            <div class="filename-display"></div>
           </div>
         </div>
       </div>
@@ -4505,7 +4510,8 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
           <div class="upload-area">
             <div class="upload-icon">📎</div>
             <p>Click to attach or drag and drop</p>
-            <input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l2|initial">
+            <input id="u3-l2-lo2-plan-file" name="u3-l2-lo2-plan-file" onchange="showFilenameUnit3(this)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l2|initial">
+            <div class="filename-display"></div>
           </div>
         </div>
       </div>
@@ -4715,7 +4721,8 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
           <div class="upload-area">
             <div class="upload-icon">📎</div>
             <p>Click to attach or drag and drop</p>
-            <input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l1|initial">
+            <input id="u3-l1-lo3-plan-file" name="u3-l1-lo3-plan-file" onchange="showFilenameUnit3(this)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l1|initial">
+            <div class="filename-display"></div>
           </div>
         </div>
       </div>
@@ -4842,7 +4849,8 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
           <div class="upload-area">
             <div class="upload-icon">📎</div>
             <p>Click to attach or drag and drop</p>
-            <input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l2|initial">
+            <input id="u3-l2-lo3-plan-file" name="u3-l2-lo3-plan-file" onchange="showFilenameUnit3(this)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l2|initial">
+            <div class="filename-display"></div>
           </div>
         </div>
       </div>
@@ -4979,7 +4987,8 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
           <div class="upload-area">
             <div class="upload-icon">📎</div>
             <p>Click to attach or drag and drop</p>
-            <input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l1|initial">
+            <input id="u3-l1-lo4-plan-file" name="u3-l1-lo4-plan-file" onchange="showFilenameUnit3(this)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l1|initial">
+            <div class="filename-display"></div>
           </div>
         </div>
       </div>
@@ -5106,7 +5115,8 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
           <div class="upload-area">
             <div class="upload-icon">📎</div>
             <p>Click to attach or drag and drop</p>
-            <input type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l2|initial">
+            <input id="u3-l2-lo4-plan-file" name="u3-l2-lo4-plan-file" onchange="showFilenameUnit3(this)" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png,.gif,.webp,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/jpeg,image/png,image/gif,image/webp" data-evidence-context="action-plan|l2|initial">
+            <div class="filename-display"></div>
           </div>
         </div>
       </div>
