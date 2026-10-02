@@ -5596,7 +5596,10 @@ body.assessment-workspace-active .documents-footer-bar__previous,body.assessment
 
   async function evidenceRequest(action, values) {
     const response = await sb.functions.invoke('evidence-attachments', { body: { action, ...values } });
-    if (response.error || response.data?.error) throw new Error(response.data?.error || response.error.message || 'Evidence request failed.');
+    if (response.error || response.data?.error) {
+      const backendError = response.error?.context?.body?.error || response.data?.error;
+      throw new Error(backendError || response.error?.message || 'Evidence request failed.');
+    }
     return response.data;
   }
 
