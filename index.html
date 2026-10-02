@@ -1253,7 +1253,13 @@ textarea:disabled { cursor: not-allowed; opacity: .72; }
   body.documents-active #unit2WorksheetView .worksheet-unit-strip, body.documents-active #unit3WorksheetView .worksheet-unit-strip { align-items: flex-start; background: var(--ux-surface); border: 1px solid var(--ux-line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.04); display: flex; justify-content: space-between; margin-bottom: 16px; padding: 24px; }
   body.documents-active .worksheet-unit-eyebrow, body.documents-active .candidate-box > .label { color: var(--ux-gold); font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
   body.documents-active .worksheet-unit-title { color: #1a1a1a; font-size: 19px; line-height: 1.35; margin: 5px 0; } body.documents-active .worksheet-unit-type, body.documents-active .worksheet-unit-meta { color: #8a8a8a; font-size: 13px; }
-  body.documents-active .worksheet-unit-meta strong { color: #3a3a3a; } body.documents-active .embedded-back-button { display: none; }
+  body.documents-active .worksheet-unit-meta strong { color: #3a3a3a; } body.documents-active .embedded-back-button { display: none !important; }
+body.assessment-workspace-active .embedded-back-button { display: none !important; }
+
+body.documents-active #unit2WorksheetView,
+body.documents-active #unit3WorksheetView {
+  padding-bottom: 80px; /* Account for fixed footer bar (60px) + margin */
+}
   .documents-progress { align-items: center; color: #6a6a6a; display: flex; font-size: 12px; gap: 12px; margin-top: 20px; } .documents-progress__track { background: var(--ux-line); border-radius: 99px; height: 6px; overflow: hidden; width: 240px; } .documents-progress__fill { background: var(--ux-gold); display: block; height: 100%; width: 25%; }
   body.documents-active #unit2WorksheetView .top-nav, body.documents-active #unit3WorksheetView .top-nav { align-items: stretch; background: var(--ux-surface); border: 1px solid var(--ux-line); border-radius: 10px; box-shadow: 0 1px 2px rgba(0,0,0,.04); display: block; margin-bottom: 16px; padding: 12px; position: static; }
   body.documents-active .lo-nav-group { display: flex; gap: 4px; } body.documents-active .nav-tab { align-items: center; background: transparent; border: 0; color: #5a5a5a; display: flex; flex: 1; font-size: 13px; font-weight: 600; gap: 8px; justify-content: flex-start; min-height: 52px; padding: 8px; text-align: left; } body.documents-active .nav-tab::before { align-items: center; background: #f0eeea; border-radius: 50%; color: #8a8a8a; content: attr(data-step); display: flex; flex: 0 0 26px; font-size: 11px; height: 26px; justify-content: center; width: 26px; } body.documents-active .nav-tab.active-tab { background: #fffdf5; border: 1px solid var(--ux-gold); border-radius: 8px; color: #1a1a1a; } body.documents-active .nav-tab.active-tab::before { background: var(--ux-gold); color: #fff; content: '✓'; } body.documents-active .worksheet-nav-tools { display: none; }
